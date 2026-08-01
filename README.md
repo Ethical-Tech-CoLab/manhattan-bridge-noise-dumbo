@@ -12,7 +12,7 @@ A rigorous problem-definition document about noise from NYC Subway **B, D, N and
 
 It is **not a design**. It is the artifact that must exist *before* a design can be honestly procured: a statement of what is known, what is claimed but unevidenced, and what has never been asked.
 
-**Read [`IDEA-CONCEPT.md`](IDEA-CONCEPT.md).** It is self-contained, ~19,600 words, 14 parts.
+**Start with [`IDEA-CONCEPT.md`](IDEA-CONCEPT.md).** It is self-contained, ~19,600 words, 14 parts. Three further documents extend it — see [Documents](#documents).
 
 ## Two headline findings
 
@@ -42,6 +42,8 @@ No evidence was found that the level was ever established. The Manhattan Bridge 
 |---|---|
 | **[`IDEA-CONCEPT.md`](IDEA-CONCEPT.md)** | **What is the problem?** Defines the DUMBO rail-noise problem from agency evidence, establishes who is responsible under what law, and derives the questions nobody has asked of this site. Q1–Q13, Methods 0–5. |
 | **[`PRECEDENT-AND-MATERIALS.md`](PRECEDENT-AND-MATERIALS.md)** | **What has the world already built?** Surveys elevated-transit noise mitigation precedent worldwide — Japan, China, Sweden, Germany, Hong Kong, Australia, Chicago — plus materials and robotics to 2026, and tests what actually transfers to a 1909 suspension bridge. Q14–Q22, Methods 6–10. |
+| **[`WILLIAMSBURG-COMPARATOR.md`](WILLIAMSBURG-COMPARATOR.md)** | **There is a second bridge with the same owner, the same operator, the same division of rolling stock and the same statute. What does it already tell us, and what would measuring it establish?** A two-site comparative survey of the public outdoor space beneath both East River subway bridges. Q23–Q31, Methods 11–14. |
+| **[`VISUAL-MODEL-FRAMEWORK.md`](VISUAL-MODEL-FRAMEWORK.md)** | **Every argument in the first three documents is an argument about a cross-section nobody has drawn.** Can that drawing be built from open data and open tools — and can it be made to admit what it does not know? Q32–Q41, Methods 15–20. Reference implementation: [`visual-review/section-problem.html`](visual-review/section-problem.html). |
 
 The second document is organised around **two research tracks, partitioned by who owns the asset you would have to touch**:
 
@@ -89,6 +91,86 @@ The second document is organised around **two research tracks, partitioned by wh
 | 12 | Sources, retrieval priorities, and what was explicitly not found |
 
 **Parts 8 and 11 are the contribution.** A survey that lists what exists without testing transferability is a catalogue, not research.
+
+### Structure of `WILLIAMSBURG-COMPARATOR.md`
+
+| Part | Question |
+|---|---|
+| 1 | Why this bridge, and why is it not merely "another case study"? |
+| 2 | What are the two bridges actually, structurally? |
+| 3 | What data already exists for the Williamsburg Bridge? |
+| **4** | **The regulatory finding: outdoor space is orphaned** |
+| 5 | How do you design the inference — and which metric? |
+| 6 | The measurement protocol |
+| **7** | **The questions this opens** (Q23–Q31) |
+| 8 | How would we answer them? (Methods 11–14) |
+| **9** | **Where this document is likely to be wrong** |
+| 10 | Sources, retrieval priority, and what was explicitly not found |
+
+**Parts 4 and 5 are the contribution.** Part 4 finds a regulatory hole; Part 5 finds that the entire New York evidence base is recorded in units that cannot support the comparison anyone would want to make.
+
+### Structure of `VISUAL-MODEL-FRAMEWORK.md`
+
+| Part | Question |
+|---|---|
+| 1 | Why build a model at all, and which question is it supposed to answer? |
+| 2 | What geometric data already exists — including the negative results |
+| 3 | The occlusion problem, and four ways past it |
+| 4 | The level-of-detail ladder, mapped to `LOD` and `LOA` |
+| **5** | **Carrying provenance alongside accuracy** |
+| 6 | The open-source toolchain, and where it will mislead you |
+| 7 | What a model of this is actually for — three uses, three data requirements |
+| 8 | The reference implementation |
+| **9** | **The questions this opens** (Q32–Q41) |
+| 10 | How would we answer them? (Methods 15–20) |
+| **11** | **Where this document is likely to be wrong** |
+| 12 | Sources, retrieval priority, and what was explicitly not found |
+
+**Part 5 is the contribution.** Everything else is inventory.
+
+## What the comparator study found
+
+**1. The city measured 82.5 dB(A) on the Williamsburg Bridge walkway and responded with one extra decibel of glazing.**
+
+The Domino Sugar rezoning FEIS recorded `Leq` **82.5 dB(A)** and `L1` **92.3** at a monitoring site on the Williamsburg Bridge pedestrian walkway. The entire regulatory consequence, in the document's own words, was that *"the south and west facades would require 31 dBA of attenuation rather than 30 dBA"* — a requirement placed on a private developer's windows.
+
+**CEQR's attenuation machinery acted only on building envelopes here, and a park has none.** In this instance people in outdoor public space were not merely under-protected; they were outside the analysis — the FEIS says the bridge sites were used *"solely for the purpose of determining the building attenuation required."* Whether that is a system-wide gap or one project's scoping decision is **not** established: draft v1.1 withdrew the broader claim and filed it as Method 14, a proper review against the CEQR Technical Manual and the Noise Control Code. It is the frame a design-build proposal should be built on if it survives that review, because it would be a hole rather than a failure.
+
+**2. Nobody has published the one metric that would let the two sites be compared.** `Leq` and `L10(1)` integrate or rank over a period, so they measure the *timetable* as much as the bridge; `Lmax` discards event information. **No located document on either bridge reports `SEL`**, the per-event energy metric. Draft v1.0 concluded from this that "the entire New York evidence base is in the wrong units" — **that is withdrawn.** `Leq` and `L10` are the correct units for the regulatory purpose they serve. They are simply not sufficient for a between-site comparison, and `SEL` is not sufficient either, since consist length, axle count and speed also differ.
+
+**3. Rutgers CAIT instrumented the Manhattan Bridge and found an association between joint condition and structural response.** Working with NYCDOT, they classified bolted rail joints fair, poor and severe, and found that *"the more severely misaligned splices resulted in more vibration on the bridge, almost double that of the fair splices."* The same researchers observe that *"many of the problems these days are actually on the approach spans."* This partially answers Q2 — bolted joints exist and are misaligned. Draft v1.0 read it as evidence of maintenance "headroom"; **that is withdrawn** — there was no treatment trial and no acoustic outcome was measured. It remains the cheapest, most inconvenient possible lead for the programme.
+
+**4. And the comparison itself is weaker than the first draft claimed.** Draft v1.0 framed this as a matched-pair natural experiment that could falsify a mechanism. It cannot. Fleet, speed, consist, service frequency, rail and joint condition, structural mobility, approach geometry and receptor propagation field all change together with the bridge. v1.1 reframes it as a **two-site comparative survey**: it can establish magnitude, character, and whether a difference exists large enough to be worth explaining. It cannot identify why.
+
+## What the visual framework found
+
+**1. Neither subway-carrying bridge has measured drawings in the national record. Their neighbour does.**
+
+| Bridge | HAER survey | Photographs | Measured drawings |
+|---|---|---|---|
+| Brooklyn Bridge | `ny1234` | 90 | **1 sheet** |
+| Manhattan Bridge | `ny0980` | 11 | **none** |
+| Williamsburg Bridge | `ny1263` | 9 | **none** |
+
+The only transverse dimensions stated in any located source for either bridge are the Williamsburg Bridge's **67 ft truss width and approximately 40 ft truss depth**, from a 2005 AISC paper co-authored by NYCDOT's Director of East River Bridges. Both describe the overall envelope; neither locates any element within the section.
+
+**2. The occlusion problem puts a hard floor under every open dataset.** Every citywide 3D dataset New York publishes is captured from an aircraft, and an aircraft sees the top of the deck. The floor beams, stringers, fastenings, cantilever framing and clearance envelope are all underneath it. **The surfaces that matter most acoustically are exactly the ones an aerial survey cannot see** — and that is a line-of-sight limit, not a resolution limit that money would fix.
+
+**3. Section geometry governs what the structure radiates — and we do not know how much of the total that is.** In a validated vibro-acoustic model of three elevated rail bridges differing *only* in section geometry, **structure-radiated** noise varied by **8.3 to 11.6 dB(A)** (Li, Dai, Zhu & Thompson, *Applied Acoustics* 186, 2022).
+
+Draft v1.0 set that beside the MTA's 3–5 dB(A) fastener figure and concluded *"the cross-section is worth more decibels than the fasteners."* **That comparison is invalid and is withdrawn.** The 8.3–11.6 dB(A) is a *component* figure; the MTA's is a *total*. The same paper reports rail noise about 10 dB above bridge noise on those structures — so eliminating bridge radiation entirely would have moved the total by roughly **0.4 dB**.
+
+What survives is stronger. Section geometry matters at the receptor **if and only if** structure radiation is a significant share of the total, and on the Manhattan Bridge that share has never been measured. This promotes **instrumented source apportionment** (`IDEA-CONCEPT.md` Method 1) from a useful investigation to a **prerequisite** — no design-build proposal that skips it is defensible.
+
+**4. The proposal: make the model carry the same provenance rubric as the prose.** `LOD 500` already requires that accuracy be *"noted or attached to the Model Element,"* and the USIBD `LOA` scale already separates Measured from Represented Accuracy — but nothing in the delivery chain requires *unmeasured* elements to be labelled as such, so surveyed and reasoned geometry ship as one undifferentiated object. Document 4 proposes **complementary lineage metadata** carried alongside `LOA`: two independent fields, `GeometryProvenance` (`MEASURED` / `DOCUMENTED` / `INFERRED` / `ASSUMED`) and `VerificationState` (`VERIFIED` / `SNIPPET` / `UNVERIFIED`), rendered visibly in the geometry and filterable. Reliability tagging is established practice in heritage BIM; **no novelty is claimed** — whether an analogue exists for transport infrastructure is filed as Method 20 and has not been searched.
+
+Keeping the two fields independent is the point. A source can be fully `VERIFIED` and still support no geometry at all, because a sentence establishing that an element *exists* says nothing about where it is.
+
+Of 27 components across both sections in the reference implementation: **0 measured, 0 documented, 23 inferred, 4 assumed.** Not one element of either section is drawn where any source places it; switching off both the inferred and assumed geometry leaves an empty frame. *(Draft v1.0 reported "8 verified, 10 inferred, 9 assumed" and "9 of 14 on the Manhattan Bridge placed by reasoning." Both were wrong — the artifact had collapsed the two schema fields into one, and the second figure excluded the inferred components, which are also placed by reasoning. The corrected Manhattan figure is 14 of 14.)*
+
+**5. Nobody can currently specify a robotic intervention on this bridge from public information.** Not scope it, not price it, not choose an end effector, not write a procurement document — because no public description of the work surface exists at the resolution any of those tasks require. Draft v1.0 called this "the first obstacle to the robotic thesis" and said the geometry gap "precedes the robotics question by two levels of development." **Both are withdrawn:** BIMForum states explicitly that `LOD 500` is not higher than `400`, so LOD is not a maturity ladder; and a robot can work from a task-specific survey or onboard sensing without any prior model. What remains is a **planning and procurement** blocker, not a technical one — and the way through it is surveying one representative bay, not modelling the structure.
+
+**6. Geometry is necessary and nowhere near sufficient.** No scan, drawing or model at any level of detail yields dynamic stiffness, loss factor or clamping preload — the fastener parameters a vibro-acoustic model actually consumes. Those come from a specification or a test. The programme currently holds **no value, no source and no rubric for a single material or interface property**, which is a larger hole than any documented so far.
 
 ## What the precedent survey found
 
@@ -154,26 +236,37 @@ Two further items come from the precedent survey and are cheaper than either:
 5. **A responsibility, approval and interface matrix** for the track–structure boundary — who approves, who is liable, what outage is needed, for each candidate intervention. A desk exercise measured in weeks. *(Q19, Method 10)*
 6. **The full text of Odebrant 1996** — the single most load-bearing source in `PRECEDENT-AND-MATERIALS.md` is currently an abstract. *(§12, retrieval priority 1)*
 
+And four more from the comparator study and the visual framework, of which the first two cost an email and a form:
+
+7. **Email Moon and Roy at Rutgers CAIT** for the Manhattan Bridge instrumentation report. It is the only located measurement of *this* bridge's structural response, it is cited here at one remove from an institutional news article, and it partially answers a question flagged blocking in the first document. *(Method 12)*
+8. **FOIL request to NYCDOT for record and rehabilitation drawings, both bridges.** Potentially resolves the section geometry, the vertical arrangement, and the fastening specification in a single step. The highest value-per-unit-effort action anywhere in the programme, and it has not been attempted. *(Method 15)*
+9. **A two-site `SEL` survey** of the public outdoor space beneath both bridges. Requires no permission from anyone; both measurement positions are public space. A screening and characterisation exercise, not an identification study. *(Method 11)*
+10. **A walkway photogrammetric survey of the Williamsburg Bridge**, targeted at the one geometric proposition the shielding hypothesis depends on: the relative *vertical* positions of track, roadway deck, walkway and truss bottom chord. A camera and an afternoon. *(Method 16)*
+
 See also **§14 *Counter-citations*** — five works surfaced during red-teaming that bear directly on Q1–Q8 and were **not read in full**. Any team taking this forward should start there.
 
 ## Status
 
 **`IDEA-CONCEPT.md` — draft v1.1.** Revised after an adversarial review pass.
 **`PRECEDENT-AND-MATERIALS.md` — draft v1.1.** Revised after an adversarial review that found three material errors in v1.0 and returned a verdict of *not fit to publish*; all are corrected and left visible.
+**`WILLIAMSBURG-COMPARATOR.md` — draft v1.1.** Revised after an adversarial review that returned *not fit to publish* with eight blocking issues; all corrected and left visible, with a ten-row table of withdrawn claims. Adopts the "locus" discipline: every quantitative or dispositive claim quotes the exact passage it rests on.
+**`VISUAL-MODEL-FRAMEWORK.md` — draft v1.1.** Revised after an adversarial review that returned *not fit to publish* with six blocking issues; twelve claims withdrawn, and the reference implementation reworked after the review found it violating the schema defined in the document it accompanies. Extends the locus discipline from citations to model geometry.
 
-Neither is peer-reviewed. Novelty claims are provisional; measured facts are solid. **Each document's own red-team Part is the best guide to how much to trust it** — `IDEA-CONCEPT.md` Part 13 and `PRECEDENT-AND-MATERIALS.md` Part 11.
+None is peer-reviewed. Novelty claims are provisional; measured facts are solid. **Each document's own red-team Part is the best guide to how much to trust it** — `IDEA-CONCEPT.md` Part 13, `PRECEDENT-AND-MATERIALS.md` Part 11, `WILLIAMSBURG-COMPARATOR.md` Part 9, `VISUAL-MODEL-FRAMEWORK.md` Part 11.
 
-**No option in either document is recommended for procurement.**
+**No option in any document is recommended for procurement.** **No measurement has been taken and no model has been built.** Everything here is a statement about documents.
 
 ## Contributing
 
 This is a working research repository. Useful contributions, roughly in order of value:
 
-- Answering any of **Q1–Q22** with sourced evidence
-- **Falsifying** any "not found" claim — five have already failed across two documents, and the prior on others failing is not low
+- Answering any of **Q1–Q41** with sourced evidence
+- **Falsifying** any "not found" claim — five have already failed across the first two documents, and the prior on others failing is not low
+- **Reclassifying** any component's provenance state in [`visual-review/section-problem.html`](visual-review/section-problem.html). Anyone with structural knowledge of riveted lattice trusses will find components that are misclassified, and that is the point of publishing the classification
 - Non-English literature (Japanese, Chinese, German elevated-transit retrofit precedent) — **narrowed** by `PRECEDENT-AND-MATERIALS.md`, which reached Japanese and Chinese institutions only through their English-language outputs, and therefore **not closed**
 - Full texts for the `SNIPPET` sources, especially **Odebrant 1996** (the single most load-bearing source in the precedent survey is currently an abstract), **TCRP Report 23** and the **WHO Environmental Noise Guidelines**, which are load-bearing
-- Legal research on § 1204-a implementation, NYC Noise Control Code preemption, SEQRA and nuisance doctrine
+- Legal research on § 1204-a implementation, NYC Noise Control Code preemption, SEQRA and nuisance doctrine — and, newly, on whether **any** instrument protects people in outdoor public space from transit noise
+
 
 ## License
 

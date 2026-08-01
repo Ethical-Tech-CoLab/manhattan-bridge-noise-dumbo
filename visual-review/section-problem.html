@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Section Problem — Visual Review of Two East River Rail Crossings</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+code, .mono { font-family: Consolas, "Courier New", Courier, monospace; }
+
+.wrap { max-width: 1400px; margin: 0 auto; padding: 28px 24px 80px; }
+
+header.masthead { border-bottom: 1px solid var(--cp-border); padding-bottom: 20px; margin-bottom: 24px; }
+.eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--cp-accent); font-weight: 700; margin-bottom: 8px; }
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 10px; font-weight: 650; letter-spacing: -0.01em; }
+.sub { color: var(--cp-text-muted); max-width: 88ch; margin: 0; font-size: 15px; }
+
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; margin: 22px 0 20px; border-bottom: 1px solid var(--cp-border); }
+.tab {
+  appearance: none; border: none; background: transparent; cursor: pointer;
+  font: inherit; font-size: 14px; font-weight: 550; color: var(--cp-text-muted);
+  padding: 9px 15px; border-radius: 0.625rem 0.625rem 0 0; border-bottom: 2px solid transparent;
+  margin-bottom: -1px; transition: color .12s, border-color .12s, background .12s;
+}
+.tab:hover { color: var(--cp-text); background: var(--cp-accent-soft); }
+.tab[aria-selected="true"] { color: var(--cp-accent); border-bottom-color: var(--cp-accent); }
+.panel[hidden] { display: none; }
+
+.card {
+  background: var(--cp-surface); border: 1px solid var(--cp-border);
+  border-radius: 16px; padding: 20px 22px; margin-bottom: 18px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.card h2 { font-size: 18px; margin: 0 0 6px; font-weight: 650; }
+.card h3 { font-size: 15px; margin: 20px 0 8px; font-weight: 650; }
+.card > p:first-of-type { margin-top: 0; }
+.muted { color: var(--cp-text-muted); }
+.small { font-size: 13px; }
+
+.callout {
+  border-left: 3px solid var(--cp-accent); background: var(--cp-accent-soft);
+  padding: 12px 16px; border-radius: 0 0.625rem 0.625rem 0; margin: 14px 0;
+}
+.callout strong { color: var(--cp-accent); }
+
+.controls { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+.ctl-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.ctl-label { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--cp-text-soft); font-weight: 700; }
+.chip {
+  appearance: none; cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 550;
+  padding: 5px 11px; border-radius: 999px; border: 1px solid var(--cp-border-strong);
+  background: var(--cp-surface); color: var(--cp-text-muted); transition: all .12s;
+}
+.chip:hover { border-color: var(--cp-accent); color: var(--cp-text); }
+.chip[aria-pressed="true"] { background: var(--cp-accent); border-color: var(--cp-accent); color: var(--cp-accent-fg); }
+.chip.off { opacity: .45; text-decoration: line-through; }
+
+.sections { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 1080px) { .sections { grid-template-columns: 1fr; } }
+.secbox { background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 16px; padding: 16px 18px 10px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14); }
+.secbox h3 { margin: 0 0 2px; font-size: 16px; font-weight: 650; }
+.secbox .meta { font-size: 12.5px; color: var(--cp-text-muted); margin-bottom: 10px; }
+svg.section { width: 100%; height: auto; display: block; }
+
+.comp { cursor: pointer; }
+.comp:hover .hit { stroke: var(--cp-accent); stroke-width: 2.5; }
+.comp.sel .hit { stroke: var(--cp-accent); stroke-width: 3; }
+.comp.dim { display: none; }
+.lbl { font-size: 8.5px; fill: var(--cp-text-muted); font-family: "Segoe UI", sans-serif; }
+.dimtxt { font-size: 8px; fill: var(--cp-accent); font-weight: 700; font-family: Consolas, monospace; }
+.axis { stroke: var(--cp-border-strong); stroke-width: .7; }
+
+.complist { list-style: none; margin: 10px 0 6px; padding: 0; border-top: 1px solid var(--cp-border); }
+.complist li {
+  display: flex; align-items: baseline; gap: 8px; cursor: pointer;
+  font-size: 12.5px; padding: 5px 6px; border-radius: 6px; color: var(--cp-text-muted);
+  border-bottom: 1px solid var(--cp-border);
+}
+.complist li:last-child { border-bottom: none; }
+.complist li:hover { background: var(--cp-accent-soft); color: var(--cp-text); }
+.complist li.sel { background: var(--cp-highlight); color: var(--cp-text); font-weight: 600; }
+.complist li.dim { opacity: .35; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 8px; }
+.d-MEASURED { background: var(--cp-success); }
+.d-DOCUMENTED { background: var(--cp-success); }
+.d-INFERRED { background: var(--cp-warning); }
+.d-ASSUMED  { background: var(--cp-danger); }
+.complist .st { margin-left: auto; font-family: Consolas, monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--cp-text-soft); }
+
+.prov {
+  position: sticky; top: 16px;
+  background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 16px;
+  padding: 18px 20px; box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.prov h3 { margin: 0 0 4px; font-size: 17px; font-weight: 650; }
+.prov .kv { display: grid; grid-template-columns: 108px 1fr; gap: 4px 12px; font-size: 13.5px; margin: 12px 0; }
+.prov .kv dt { color: var(--cp-text-soft); font-weight: 600; }
+.prov .kv dd { margin: 0; }
+.quote {
+  border-left: 3px solid var(--cp-border-strong); padding: 8px 0 8px 14px; margin: 12px 0;
+  font-size: 13.5px; color: var(--cp-text-muted); font-style: italic;
+}
+.layout { display: grid; grid-template-columns: 1fr 360px; gap: 18px; align-items: start; }
+@media (max-width: 1080px) { .layout { grid-template-columns: 1fr; } }
+
+.badge {
+  display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; padding: 2px 8px; border-radius: 999px; border: 1px solid;
+  font-family: Consolas, monospace;
+}
+.b-ver { color: var(--cp-success); border-color: var(--cp-success); background: transparent; }
+.b-inf { color: var(--cp-warning); border-color: var(--cp-warning); background: transparent; }
+.b-asm { color: var(--cp-danger); border-color: var(--cp-danger); background: transparent; }
+.rubric { font-family: Consolas, monospace; font-size: 12px; color: var(--cp-text-soft); }
+
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 12px 0 4px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--cp-border); vertical-align: top; }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--cp-text-soft); font-weight: 700; }
+tbody tr:hover { background: var(--cp-surface-soft); }
+td.num { font-family: Consolas, monospace; }
+
+.rung { display: grid; grid-template-columns: 74px 1fr 132px; gap: 14px; align-items: start;
+  padding: 14px 0; border-bottom: 1px solid var(--cp-border); }
+.rung:last-child { border-bottom: none; }
+.rung .lv { font-family: Consolas, monospace; font-weight: 700; font-size: 15px; color: var(--cp-accent); }
+.rung .lv small { display: block; font-size: 10.5px; color: var(--cp-text-soft); font-weight: 400; letter-spacing: .05em; text-transform: uppercase; }
+.rung h4 { margin: 0 0 4px; font-size: 14.5px; font-weight: 650; }
+.rung p { margin: 0; font-size: 13.5px; color: var(--cp-text-muted); }
+.avail { text-align: right; font-size: 11.5px; font-weight: 700; font-family: Consolas, monospace; }
+.a-good { color: var(--cp-success); }
+.a-part { color: var(--cp-warning); }
+.a-none { color: var(--cp-danger); }
+.bar { height: 5px; border-radius: 3px; background: var(--cp-surface-soft); margin-top: 6px; overflow: hidden; border: 1px solid var(--cp-border); }
+.bar i { display: block; height: 100%; }
+
+ul.tight { margin: 8px 0; padding-left: 20px; }
+ul.tight li { margin-bottom: 5px; }
+a { color: var(--cp-link); }
+footer.foot { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--cp-border); font-size: 12.5px; color: var(--cp-text-soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Ethical Tech CoLab · Manhattan Bridge Noise Research · Visual Review</div>
+  <h1>The Section Problem</h1>
+  <p class="sub">
+    Every argument about why DUMBO is loud is an argument about a <em>cross-section</em>: where the track sits, what stands
+    between it and a person in a park, and what the structure does with the energy in between. This tool draws that section for
+    both East River rail crossings — and marks every single line with how much we actually know about it.
+  </p>
+</header>
+
+<div class="callout">
+  <strong>The premise.</strong> A rendering is not evidence. A model built from photographs and reasonable guesses looks exactly
+  as authoritative as one built from measured drawings, and that is an epistemic hazard, not a presentation problem. So every
+  component here carries <em>two</em> independent fields, and conflating them is the mistake this tool exists to prevent.
+  <br><br>
+  <strong>Geometry provenance</strong> &mdash; what supports the shape drawn:
+  <span class="badge b-ver">measured</span> <span class="badge b-ver">documented</span>
+  <span class="badge b-inf">inferred</span> <span class="badge b-asm">assumed</span>.
+  <strong>Verification state</strong> &mdash; how deeply the source was read, the same scale used for citations in the written
+  research: <span class="badge b-ver">verified</span> <span class="badge b-inf">snippet</span>
+  <span class="badge b-asm">unverified</span>.
+  <br><br>
+  A source can be fully <em>verified</em> and still support no geometry at all &mdash; a sentence establishing that an element
+  exists says nothing about where it is. Switch the assumed geometry off and see what is left, then note that switching off the
+  inferred geometry too leaves nothing.
+</div>
+
+<nav class="tabs" role="tablist">
+  <button class="tab" role="tab" aria-selected="true" data-panel="p-sec">Sections</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="p-lod">Level-of-detail ladder</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="p-src">Data sources</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="p-tool">Open-source toolchain</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="p-gap">What this cannot do</button>
+</nav>
+
+<section class="panel" id="p-sec">
+  <div class="controls">
+    <div class="ctl-group">
+      <span class="ctl-label">Show geometry provenance</span>
+      <button class="chip" aria-pressed="true" data-filter="DOCUMENTED">Measured / documented</button>
+      <button class="chip" aria-pressed="true" data-filter="INFERRED">Inferred</button>
+      <button class="chip" aria-pressed="true" data-filter="ASSUMED">Assumed</button>
+    </div>
+    <div class="ctl-group">
+      <span class="ctl-label">Overlay</span>
+      <button class="chip" aria-pressed="false" data-overlay="path">Receptor sightline</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="sections">
+        <div class="secbox">
+          <h3>Williamsburg Bridge</h3>
+          <div class="meta">Opened 1903 · 2 tracks, <strong>central</strong> · services J M Z · stiffening truss 67 ft wide, ~40 ft deep <span class="badge b-ver">verified</span></div>
+          <svg class="section" id="svg-wb" viewBox="0 0 760 330" role="img" aria-label="Schematic cross-section of the Williamsburg Bridge"></svg>
+          <ul class="complist" id="list-wb"></ul>
+        </div>
+        <div class="secbox">
+          <h3>Manhattan Bridge</h3>
+          <div class="meta">Opened 1909 · 4 tracks, <strong>outboard</strong> · services B D N Q · all transverse geometry <span class="badge b-asm">assumed</span></div>
+          <svg class="section" id="svg-mb" viewBox="0 0 760 330" role="img" aria-label="Schematic cross-section of the Manhattan Bridge"></svg>
+          <ul class="complist" id="list-mb"></ul>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2>What the two sections are for</h2>
+        <p class="muted">
+          The written research proposes a matched-pair measurement study because these two bridges hold almost everything
+          constant — same owner, same operator, same trains, same statute, same river — and move one variable: <strong>where the
+          track sits.</strong> On the Williamsburg Bridge the rails run down the middle with roadway decks on either side. On the
+          Manhattan Bridge they hang off the outside edges with nothing between them and the neighbourhood.
+        </p>
+        <p class="muted">
+          That is a shielding hypothesis, and it is testable. But look at what colour the relevant components are. <strong>The
+          single most important geometric fact for the hypothesis — whether the flanking roadway decks actually stand between the
+          rail and a receptor below — is inferred, not verified.</strong> No section drawing of either bridge was located in
+          public sources. Which is the finding this tool exists to make visible.
+        </p>
+      </div>
+    </div>
+
+    <aside>
+      <div class="prov" id="prov">
+        <h3 id="pv-name">Select a component</h3>
+        <p class="small muted" id="pv-hint">Click any element in either section to see where its geometry came from, how
+          credible the source is, and the exact passage it rests on.</p>
+        <div id="pv-body" hidden>
+          <div id="pv-badges" style="margin-bottom:4px"></div>
+          <dl class="kv">
+            <dt>Bridge</dt><dd id="pv-bridge"></dd>
+            <dt>Geometry provenance</dt><dd id="pv-state"></dd>
+            <dt>Source read to</dt><dd id="pv-vstate"></dd>
+            <dt>Source</dt><dd id="pv-src"></dd>
+            <dt>Credibility</dt><dd id="pv-rub" class="rubric"></dd>
+            <dt>Source observed</dt><dd id="pv-obs" class="rubric"></dd>
+          </dl>
+          <div id="pv-quote-wrap" hidden>
+            <div class="ctl-label">Locus</div>
+            <div class="quote" id="pv-quote"></div>
+          </div>
+          <div class="ctl-label">What the source does and does not support</div>
+          <p class="small muted" id="pv-gpnote" style="margin-top:4px"></p>
+          <div class="ctl-label">Acoustic relevance</div>
+          <p class="small muted" id="pv-ac" style="margin-top:4px"></p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="panel" id="p-lod" hidden>
+  <div class="card">
+    <h2>How far down can we actually model?</h2>
+    <p class="muted">
+      The brief asks for a model that reaches "down to the schematics of screws, track rails, attachments, noise barriers,
+      clearance." Here is the honest ladder — and where it stops.
+    </p>
+    <div id="ladder"></div>
+  </div>
+
+  <div class="card">
+    <h2>The occlusion problem</h2>
+    <p class="muted">
+      Every citywide 3D dataset New York publishes is captured from an aircraft. An aircraft sees the <strong>top of the
+      deck</strong>. The geometry that governs this entire research programme — the underside, the floor beams, the track
+      stringers, the fastenings, the truss interior, the clearance envelope over the streets of DUMBO — is in the deck's
+      acoustic and optical shadow simultaneously.
+    </p>
+    <p class="muted">
+      This is not a resolution limit that better LiDAR would fix. It is a line-of-sight limit. <strong>There is a hard floor at
+      L2 for every free public dataset, and it is geometric, not financial.</strong>
+    </p>
+    <div class="callout">
+      <strong>The way through, and it is cheaper than it sounds.</strong> Both bridges carry <em>public pedestrian walkways
+      running the full length of the structure, alongside the track zone.</em> Structure-from-motion photogrammetry from a
+      walkway needs a camera and a permit-free afternoon. This is the same property the acoustic protocol has: the measurement
+      that matters can be taken from public space. It should be tested on the Williamsburg Bridge first, where the walkway
+      geometry relative to the tracks is the thing in question.
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="p-src" hidden>
+  <div class="card">
+    <h2>Geometry sources actually checked</h2>
+    <p class="muted">Each row was queried directly, not assumed to exist. Negative results are recorded because they are the
+      expensive thing to rediscover.</p>
+    <table>
+      <thead><tr><th>Source</th><th>Covers</th><th>Result</th><th>Useful to</th></tr></thead>
+      <tbody id="srctbl"></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>The HAER result, in detail</h2>
+    <p class="muted">
+      The Historic American Engineering Record is the natural first stop for measured drawings of landmark American structures.
+      Querying the Library of Congress collection API directly returns, for the three East River suspension bridges:
+    </p>
+    <table>
+      <thead><tr><th>Bridge</th><th>HAER survey</th><th>Photographs</th><th>Measured drawings</th></tr></thead>
+      <tbody>
+        <tr><td>Brooklyn Bridge</td><td class="num">ny1234</td><td class="num">90</td><td class="num" style="color:var(--cp-success);font-weight:700">1 sheet</td></tr>
+        <tr><td>Manhattan Bridge</td><td class="num">ny0980 · HAER NY-164</td><td class="num">11</td><td class="num" style="color:var(--cp-danger);font-weight:700">none</td></tr>
+        <tr><td>Williamsburg Bridge</td><td class="num">ny1263 · HAER NY-165</td><td class="num">9</td><td class="num" style="color:var(--cp-danger);font-weight:700">none</td></tr>
+      </tbody>
+    </table>
+    <p class="muted small" style="margin-top:12px">
+      The Brooklyn Bridge has a sheet titled <em>"Plan, elevation, detail at Manhattan tower."</em> Its two neighbours — the only
+      two that carry subway trains — have large-format photographs by Jet Lowe from 1991 and no drawings at all. The photographs
+      are not worthless: they are large-format, archivally scanned, and a plausible photogrammetric input, though no camera
+      calibration data accompanies them and self-calibrating structure-from-motion would have to recover it. But they are
+      pictures of a bridge, not a description of one.
+    </p>
+  </div>
+</section>
+
+<section class="panel" id="p-tool" hidden>
+  <div class="card">
+    <h2>An all-open-source path from public data to reviewable model</h2>
+    <p class="muted">No proprietary licence anywhere in the chain, so the result can be published under the same CC BY 4.0 terms
+      as the written research and rebuilt by anyone who disputes it.</p>
+    <table>
+      <thead><tr><th>Stage</th><th>Tool</th><th>Licence</th><th>Role in this project</th></tr></thead>
+      <tbody id="tooltbl"></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>Where the toolchain will mislead you</h2>
+    <p class="muted">Stated up front, because the failure mode of a good-looking pipeline is unearned confidence.</p>
+    <ul class="tight muted">
+      <li><strong>NoiseModelling implements CNOSSOS-EU, and CNOSSOS-EU's rail source model is calibrated on European
+        at-grade and ballasted track.</strong> A 1903 open-deck steel suspension bridge with jointed rail on stringers is
+        outside its domain. It will still return a number.</li>
+      <li><strong>CNOSSOS handles a barrier by diffraction over an obstacle.</strong> It does not model a steel structure
+        re-radiating as a surface — which the companion research argues is the central mechanism. The one thing you most want
+        modelled is the one thing it does not do.</li>
+      <li><strong>Use it for relative geometry, not absolute level.</strong> "Does moving this barrier 3 m change the shadow at
+        the dog run" is a fair question to ask it. "How many decibels" is not.</li>
+      <li><strong>Photogrammetry produces confident geometry from bad inputs.</strong> Structure-from-motion will happily
+        reconstruct a plausible fastener that does not exist. Scale must come from a measured reference in frame, not from the
+        solver.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="panel" id="p-gap" hidden>
+  <div class="card">
+    <h2>What this framework cannot do, in its current state</h2>
+    <ol class="muted" style="padding-left:20px">
+      <li style="margin-bottom:10px"><strong>It cannot show you a true section of either bridge.</strong> Both drawings here are
+        schematic and <em>not to scale</em>. For the Williamsburg Bridge exactly two transverse dimensions are stated in any
+        located source &mdash; the 67 ft stiffening truss width and the approximately 40 ft truss depth &mdash; and neither
+        locates any element <em>within</em> the section. For the Manhattan Bridge none are, at better than a tertiary source.
+        Every one of the 27 components is placed by reasoning.</li>
+      <li style="margin-bottom:10px"><strong>It cannot resolve the shielding hypothesis.</strong> Whether the Williamsburg
+        Bridge's flanking orthotropic roadway decks actually interrupt the path from rail to a receptor below depends on the
+        relative <em>vertical</em> positions of the track, the deck and the truss bottom chord. That is precisely what no located
+        source states. A deck rigidly connected to the floor system may also <em>radiate</em> rather than shield, which geometry
+        alone cannot settle either.</li>
+      <li style="margin-bottom:10px"><strong>It has no fastener-level content, because no public source has any &mdash; and
+        geometry would not be enough anyway.</strong> The brief asks for schematics down to screws. The rail fastening
+        specification for both bridges is a records request, not a modelling problem. Even a complete fastener geometry would
+        not supply dynamic stiffness, loss factor or clamping preload, which are the parameters a vibro-acoustic model actually
+        consumes and which come from a specification or a test.</li>
+      <li style="margin-bottom:10px"><strong>It is not an acoustic model and should not be dressed as one.</strong> No sound
+        propagation is computed anywhere in this artifact. The sightline overlay is a straight line, which is a statement about
+        geometry and not about sound.</li>
+      <li style="margin-bottom:10px"><strong>Its element colours describe geometric support, not source quality.</strong> Two
+        components are drawn from a fully verified source and still marked <span class="badge b-asm">assumed</span>, because the
+        source establishes that the element exists without locating it. Reading the amber and red as "bad sources" is the
+        specific misreading this schema was built to prevent.</li>
+      <li><strong>It encodes one author's inferences.</strong> The provenance states are assigned by the same person who drew
+        the geometry. That is a conflict, and the mitigation is that every inference is labelled and every source is named, so a
+        reviewer can attack them individually.</li>
+    </ol>
+    <div class="callout">
+      <strong>The productive use of this tool is as a shopping list.</strong> Every amber and red component is an argument for a
+      specific records request. Count them: that is the size of the gap between what this project claims to understand and what
+      it can actually show.
+      <div style="margin-top:10px;font-size:14px">
+        Current tally — <span id="tally"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  Ethical Tech CoLab · companion to <code>IDEA-CONCEPT.md</code>, <code>PRECEDENT-AND-MATERIALS.md</code> and
+  <code>WILLIAMSBURG-COMPARATOR.md</code> · released under CC BY 4.0 · schematic only, not for engineering use
+</footer>
+
+</div>
+
+<script>
+const SRC = {
+  aisc: {
+    name: "Haight & Patel, Reconstruction of the Williamsburg Bridge, AISC 2005",
+    rub: "5/5 — co-authored by the Director of East River Bridges, NYCDOT"
+  },
+  wiki: {
+    name: "IDEA-CONCEPT.md 4.1 (tertiary encyclopaedia)",
+    rub: "1/5 — tertiary; primaries never opened"
+  },
+  cait: {
+    name: "Rutgers CAIT / NYCDOT, Manhattan Bridge structural health, 2021",
+    rub: "3/5 — institutional research communication"
+  },
+  nyc: { name: "nycsubway.org line description", rub: "2/5 — enthusiast-technical" },
+  none: { name: "No source located", rub: "— placement by reasoning only" }
+};
+
+const WB = [
+  { id:"wb-truss-n", t:"rect", x:60, y:96, w:14, h:96, label:"Stiffening truss (N)", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"The stiffening truss is 67 feet wide and approximately 40 feet deep and is pinned at each main tower.",
+    gpNote:"The source gives the truss ENVELOPE — 67 ft wide, ~40 ft deep. It gives no chord size, no member position and no panel spacing. The rectangle drawn here is a placeholder inside a documented envelope, and the section is not to scale.",
+    ac:"The primary structural radiator and the load path. Its depth sets how much surface is available to re-radiate rail-induced vibration." },
+  { id:"wb-truss-s", t:"rect", x:686, y:96, w:14, h:96, label:"Stiffening truss (S)", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"The stiffening truss is 67 feet wide and approximately 40 feet deep and is pinned at each main tower.",
+    gpNote:"As north truss. Envelope documented, member geometry not.",
+    ac:"See north truss. Pinned at the main towers, which is the origin of the documented track profile kink." },
+  { id:"wb-walk-n", t:"rect", x:40, y:160, w:56, h:10, label:"North footwalk", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"NORTH FOOTWALK ... SOUTH PEDESTRIAN WALKWAY",
+    gpNote:"A drawing label establishes that a north footwalk exists. Neither its width nor its elevation relative to the track is stated anywhere located.",
+    ac:"Publicly accessible for the full span. The photogrammetry and acoustic vantage point, and the only place a member of the public can stand near the track." },
+  { id:"wb-road-n", t:"rect", x:104, y:158, w:180, h:12, label:"North roadway \u2014 4 lanes, closed-rib orthotropic deck", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"The North and South Roadways each consist of four lanes... replaced with a closed rib orthotropic deck system.",
+    gpNote:"Lane count and deck type documented. Deck width, and crucially its ELEVATION relative to the rail head, are not. The shielding hypothesis in Document 3 turns on that elevation and this drawing cannot supply it.",
+    ac:"THE hypothesis. A large stiff steel plate near the rail source. Simultaneously a candidate shield, a candidate radiator, and a candidate road-noise source, which is why all three must be separated by measurement." },
+  { id:"wb-road-s", t:"rect", x:476, y:158, w:180, h:12, label:"South roadway \u2014 4 lanes, closed-rib orthotropic deck", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"The North and South Roadways each consist of four lanes... replaced with a closed rib orthotropic deck system.",
+    gpNote:"As north roadway. Elevation relative to the rail head is the missing datum.",
+    ac:"Domino Park lies to the south, so this is the deck standing nearest the line between the rails and the receptor of interest." },
+  { id:"wb-walk-s", t:"rect", x:664, y:160, w:56, h:10, label:"South pedestrian walkway", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"a new footwalk/bikeway system that is barrier-free",
+    gpNote:"Existence documented. Width, elevation and offset from the truss are not.",
+    ac:"Faces South Williamsburg and Domino Park. The natural station for a walkway-level measurement replicating Domino FEIS Site 10." },
+  { id:"wb-track1", t:"track", x:322, y:152, w:44, label:"Track J1", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"The central section of the bridge, which contains two subway lines... CL.TRK J1 \u00b7 CL.TRK J2",
+    gpNote:"The source establishes that two tracks exist and that they are CENTRAL. It does not give a centreline offset, a track gauge, a track spacing or a rail-head elevation. Every coordinate here is reasoned.",
+    ac:"Source. Centreline designation taken from the reconstruction section drawing; position on this diagram is not." },
+  { id:"wb-track2", t:"track", x:394, y:152, w:44, label:"Track J2", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"Two subway tracks cross the Williamsburg Bridge from the first subterranean station in Manhattan to the first elevated station in Brooklyn.",
+    gpNote:"As track J1. Count and centrality documented; geometry reasoned.",
+    ac:"Source. Two tracks only, against four on the Manhattan Bridge." },
+  { id:"wb-stringer", t:"rect", x:310, y:170, w:140, h:9, label:"Track stringers, stringer columns and bracing", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"NEW TRACK STRINGER COLUMN AND BRACING ... a complete rehabilitation of the track stringers and support system, signal system, and rails.",
+    gpNote:"Drawing labels establish that stringers, stringer columns and bracing exist. Their sizes, spacings and positions are not stated, and the FASTENING between rail and stringer \u2014 the acoustically decisive interface \u2014 is not described at all.",
+    ac:"A stringer-supported arrangement is consistent with an unballasted open deck, which would mean the rail transmits force into steel framing with no granular layer to dissipate it. That is an INFERENCE from the element names, not a documented trackform. Document 3 Part 9 item 3 records it as unresolved." },
+  { id:"wb-floor", t:"rect", x:74, y:186, w:612, h:7, label:"Floor beam, truss bottom chord, lateral bracing", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"REPAIR FLOORBEAM, TRUSS BOTTOM CHORD, LATERAL BRACING (TYP)",
+    gpNote:"Existence documented by a repair-scope label. Depth, spacing and plate thickness \u2014 the parameters that set radiation efficiency \u2014 are not.",
+    ac:"The underside. Invisible to every aerial dataset, and the surface that radiates downward toward the receptors." },
+  { id:"wb-plat", t:"rect", x:180, y:200, w:400, h:8, label:"Traveling maintenance platform (119 ft x 17 ft, two of)", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"Two traveling maintenance platforms were installed for inspection and maintenance of the main span. The traveling maintenance platforms are approximately 119 feet wide and 17 feet long, in order to inspect one complete panel point without needing to move the platform.",
+    gpNote:"The two dimensions given are PLAN dimensions. Nothing states where the platform sits in section, how far it hangs below the floor system, or whether it is still in service in 2026 \u2014 the source describes a 2005 condition.",
+    ac:"Not acoustic, logistical, and possibly decisive. NYCDOT already owns a powered under-deck access system on this bridge. The companion research concluded access, not acoustics, is the binding constraint." },
+  { id:"wb-cable-n", t:"cable", x:67, label:"Main cables (2 of 4)", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"Four cables suspend the stiffening truss approximately 135 feet above mean high water level in the East River.",
+    gpNote:"Four cables, and a height above mean high water. No transverse position, no diameter at section, no spacing. The x-coordinates here are reasoned from the truss envelope.",
+    ac:"Sets the suspended-structure support condition that the worldwide literature has no analogue for." },
+  { id:"wb-cable-s", t:"cable", x:693, label:"Main cables (2 of 4)", vs:"VERIFIED", gp:"INFERRED", src:"aisc", obs:"2005",
+    quote:"The four main cables, each consisting of 7,696 bright steel wires",
+    gpNote:"As north cables. Count and construction documented; transverse position reasoned.",
+    ac:"See north cables." }
+];
+
+const MB = [
+  { id:"mb-truss-n", t:"rect", x:196, y:110, w:13, h:82, label:"Warren stiffening truss (N)", vs:"SNIPPET", gp:"INFERRED", src:"wiki", obs:"undated",
+    quote:"the Manhattan Bridge was the first suspension bridge in the world to use a lightly-webbed weight-saving Warren truss",
+    gpNote:"A tertiary source establishes the truss TYPE. No located source gives width, depth, chord size, panel spacing or position for this bridge \u2014 not one transverse dimension at rubric above 1/5.",
+    ac:"Deliberately weight-minimised. A light, lightly-damped steel structure is an efficient radiator, but the inherent damping of this bridge has never been measured." },
+  { id:"mb-truss-s", t:"rect", x:551, y:110, w:13, h:82, label:"Warren stiffening truss (S)", vs:"SNIPPET", gp:"INFERRED", src:"wiki", obs:"undated",
+    quote:"the Manhattan Bridge was the first suspension bridge in the world to use a lightly-webbed weight-saving Warren truss",
+    gpNote:"As north truss.",
+    ac:"See north truss." },
+  { id:"mb-road-u", t:"rect", x:214, y:126, w:332, h:11, label:"Upper roadway", vs:"SNIPPET", gp:"INFERRED", src:"wiki", quote:"", obs:"undated",
+    gpNote:"That the bridge has an upper and a lower roadway is not in dispute. Neither deck's width, thickness, construction nor vertical separation from the tracks is stated in any source located by this programme.",
+    ac:"Sits between the two track pairs, not between track and receptor. On this bridge no deck is known to shield the rail from the neighbourhood \u2014 which is itself an inference from an undrawn section." },
+  { id:"mb-road-l", t:"rect", x:214, y:166, w:332, h:11, label:"Lower roadway", vs:"SNIPPET", gp:"INFERRED", src:"wiki", quote:"", obs:"undated",
+    gpNote:"As upper roadway.",
+    ac:"As above." },
+  { id:"mb-track-n1", t:"track", x:96, y:152, w:40, label:"Track, north pair, outboard", vs:"SNIPPET", gp:"INFERRED", src:"wiki", quote:"", obs:"undated",
+    gpNote:"Four tracks in two outboard pairs is stated at rubric 1/5. No centreline offset, no track spacing, no rail-head elevation, no cantilever overhang dimension exists in any located source.",
+    ac:"Outboard cantilever. Eccentric live load, the documented origin of the bridge's torsional history, and no known structure between it and the receptor." },
+  { id:"mb-track-n2", t:"track", x:144, y:152, w:40, label:"Track, north pair, inboard", vs:"SNIPPET", gp:"INFERRED", src:"wiki", quote:"", obs:"undated",
+    gpNote:"As outboard track.",
+    ac:"See outboard track." },
+  { id:"mb-track-s1", t:"track", x:576, y:152, w:40, label:"Track, south pair, inboard", vs:"SNIPPET", gp:"INFERRED", src:"wiki", quote:"", obs:"undated",
+    gpNote:"As outboard track.",
+    ac:"The DUMBO side. Four tracks total against the Williamsburg Bridge's two." },
+  { id:"mb-track-s2", t:"track", x:624, y:152, w:40, label:"Track, south pair, outboard", vs:"SNIPPET", gp:"INFERRED", src:"wiki", quote:"", obs:"undated",
+    gpNote:"As outboard track. This is the element closest to the receptors and its position is reasoned, not stated.",
+    ac:"The outermost element of the entire structure, overhanging toward the neighbourhood." },
+  { id:"mb-cant-n", t:"rect", x:88, y:170, w:104, h:9, label:"Outboard cantilever framing (N)", vs:"UNVERIFIED", gp:"ASSUMED", src:"none", quote:"", obs:"n/a",
+    gpNote:"No source of any kind describes this framing. Its existence is deduced from the fact that something must carry an outboard track. Everything drawn here is engineering judgement.",
+    ac:"It carries the track, it is the nearest structure to the receptor, and its geometry is entirely unknown to this project." },
+  { id:"mb-cant-s", t:"rect", x:568, y:170, w:104, h:9, label:"Outboard cantilever framing (S)", vs:"UNVERIFIED", gp:"ASSUMED", src:"none", quote:"", obs:"n/a",
+    gpNote:"As north cantilever.",
+    ac:"This is the single most important unmodelled element in the entire research programme." },
+  { id:"mb-joint", t:"joint", x:600, y:150, label:"Bolted rail joints \u2014 fair, poor, severe", vs:"VERIFIED", gp:"ASSUMED", src:"cait", obs:"reported 2023",
+    quote:"the more severely misaligned splices resulted in more vibration on the bridge, almost double that of the fair splices. This was further corroborated by the long-term stress measurements.",
+    gpNote:"The source is VERIFIED and establishes that bolted joints exist and that condition class correlates with structural response. It does NOT locate any joint. CAIT's instrumented tests were at the MANHATTAN Approach; this marker sits on a Brooklyn-side track because that is where the receptors are. The position is invented and the marker should be read as 'joints exist on this bridge', not 'a joint is here'.",
+    ac:"Measured, on this bridge, by Rutgers CAIT with NYCDOT. An association between joint-condition class and structural response \u2014 not a treatment trial, and with no acoustic outcome measured. Document 3 withdrew the inference that this demonstrates maintenance headroom." },
+  { id:"mb-floor", t:"rect", x:88, y:186, w:584, h:7, label:"Floor system and underside", vs:"UNVERIFIED", gp:"ASSUMED", src:"none", quote:"", obs:"n/a",
+    gpNote:"No source. Occluded from aerial survey, absent from HAER, and not in any located drawing. Drawn as a flat plate because a flat plate is the simplest thing to draw, which is exactly the wrong reason.",
+    ac:"Unknown, and it is the surface facing the neighbourhood." },
+  { id:"mb-cable-n", t:"cable", x:202, label:"Main cables (2 of 4)", vs:"SNIPPET", gp:"INFERRED", src:"wiki", obs:"undated",
+    quote:"Main span 1,480 ft; towers 350 ft; four main cables; 1,400 suspender cables; deck 120 ft wide.",
+    gpNote:"Four cables and a 120 ft deck width at rubric 1/5. No transverse cable position, no diameter, no spacing. The x-coordinates here are reasoned.",
+    ac:"Rubric 1/5. Every dimension on this bridge is weaker than the equivalent on its neighbour." },
+  { id:"mb-cable-s", t:"cable", x:558, label:"Main cables (2 of 4)", vs:"SNIPPET", gp:"INFERRED", src:"wiki", obs:"undated",
+    quote:"Main span 1,480 ft; towers 350 ft; four main cables; 1,400 suspender cables; deck 120 ft wide.",
+    gpNote:"As north cables.",
+    ac:"See north cables." }
+];
+
+const STATE_STYLE = {
+  MEASURED:   { fill: "var(--cp-success)", op: 0.28, stroke: "var(--cp-success)", dash: "none", sw: 1.4 },
+  DOCUMENTED: { fill: "var(--cp-success)", op: 0.28, stroke: "var(--cp-success)", dash: "none", sw: 1.4 },
+  INFERRED:   { fill: "var(--cp-warning)", op: 0.24, stroke: "var(--cp-warning)", dash: "5 3",  sw: 1.3 },
+  ASSUMED:    { fill: "var(--cp-danger)",  op: 0.16, stroke: "var(--cp-danger)",  dash: "2 3",  sw: 1.2 }
+};
+
+function el(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  return n;
+}
+
+function drawSection(svgId, comps, opts) {
+  const svg = document.getElementById(svgId);
+  svg.innerHTML = "";
+
+  svg.appendChild(el("rect", { x:0, y:296, width:760, height:34, fill:"var(--cp-link)", opacity:0.10 }));
+  svg.appendChild(el("line", { x1:0, y1:296, x2:760, y2:296, class:"axis" }));
+  const wt = el("text", { x:8, y:292, class:"lbl" }); wt.textContent = "East River"; svg.appendChild(wt);
+
+  const rg = el("g", {});
+  const rx = opts.receptorX;
+  rg.appendChild(el("circle", { cx:rx, cy:288, r:4, fill:"var(--cp-accent)" }));
+  const rt = el("text", { x:rx - 6, y:283, class:"dimtxt", "text-anchor":"end" });
+  rt.textContent = opts.receptorLabel; rg.appendChild(rt);
+  svg.appendChild(rg);
+
+  const sl = el("g", { class:"sight", opacity:0 });
+  opts.sightFrom.forEach(p => {
+    sl.appendChild(el("line", { x1:p[0], y1:p[1], x2:rx, y2:286,
+      stroke:"var(--cp-accent)", "stroke-width":1.2, "stroke-dasharray":"4 3", opacity:0.85 }));
+  });
+  svg.appendChild(sl);
+
+  comps.forEach(c => {
+    const st = STATE_STYLE[c.gp];
+    const g = el("g", { class:"comp", "data-id":c.id, "data-state":c.gp, tabindex:"0" });
+
+    if (c.t === "rect") {
+      g.appendChild(el("rect", { class:"hit", x:c.x, y:c.y, width:c.w, height:c.h,
+        fill:st.fill, "fill-opacity":st.op, stroke:st.stroke, "stroke-width":st.sw, "stroke-dasharray":st.dash, rx:1.5 }));
+    } else if (c.t === "track") {
+      g.appendChild(el("rect", { class:"hit", x:c.x, y:c.y, width:c.w, height:14,
+        fill:st.fill, "fill-opacity":st.op, stroke:st.stroke, "stroke-width":st.sw, "stroke-dasharray":st.dash, rx:1.5 }));
+      [c.x + 8, c.x + c.w - 8].forEach(px => {
+        g.appendChild(el("rect", { x:px-2, y:c.y+1, width:4, height:8, fill:st.stroke, opacity:0.85 }));
+      });
+    } else if (c.t === "cable") {
+      g.appendChild(el("line", { class:"hit", x1:c.x, y1:10, x2:c.x, y2:150,
+        stroke:st.stroke, "stroke-width":3, "stroke-dasharray":st.dash, opacity:0.75 }));
+      g.appendChild(el("circle", { cx:c.x, cy:14, r:4, fill:st.fill, "fill-opacity":0.6, stroke:st.stroke }));
+    } else if (c.t === "joint") {
+      g.appendChild(el("circle", { class:"hit", cx:c.x, cy:c.y, r:7,
+        fill:st.fill, "fill-opacity":0.5, stroke:st.stroke, "stroke-width":2 }));
+      const z = el("text", { x:c.x, y:c.y+3.2, "text-anchor":"middle", class:"dimtxt" }); z.textContent = "J"; g.appendChild(z);
+    }
+    svg.appendChild(g);
+  });
+
+  if (opts.dim) {
+    const d = el("g", {});
+    d.appendChild(el("line", { x1:opts.dim.x1, y1:88, x2:opts.dim.x2, y2:88, stroke:"var(--cp-accent)", "stroke-width":1 }));
+    d.appendChild(el("line", { x1:opts.dim.x1, y1:83, x2:opts.dim.x1, y2:93, stroke:"var(--cp-accent)", "stroke-width":1 }));
+    d.appendChild(el("line", { x1:opts.dim.x2, y1:83, x2:opts.dim.x2, y2:93, stroke:"var(--cp-accent)", "stroke-width":1 }));
+    const t = el("text", { x:(opts.dim.x1+opts.dim.x2)/2, y:81, "text-anchor":"middle", class:"dimtxt" });
+    t.textContent = opts.dim.label; d.appendChild(t);
+    svg.appendChild(d);
+  }
+
+  const note = el("text", { x:8, y:322, class:"lbl" });
+  note.textContent = opts.note;
+  svg.appendChild(note);
+}
+
+drawSection("svg-wb", WB, {
+  receptorX: 736, receptorLabel: "Domino Park",
+  sightFrom: [[344,160],[416,160]],
+  dim: { x1:60, x2:700, label:"67 ft stiffening truss — the only verified transverse dimension" },
+  note: "Schematic. Transverse positions inferred from element list; no section drawing located."
+});
+
+drawSection("svg-mb", MB, {
+  receptorX: 736, receptorLabel: "DUMBO",
+  sightFrom: [[596,160],[644,160]],
+  dim: null,
+  note: "Schematic. No verified transverse dimension exists for this bridge at better than rubric 1/5."
+});
+
+const ALL = [...WB.map(c=>({...c,bridge:"Williamsburg Bridge"})), ...MB.map(c=>({...c,bridge:"Manhattan Bridge"}))];
+const byId = Object.fromEntries(ALL.map(c=>[c.id,c]));
+const BADGE = {
+  MEASURED:  '<span class="badge b-ver">measured</span>',
+  DOCUMENTED:'<span class="badge b-ver">documented</span>',
+  INFERRED:  '<span class="badge b-inf">inferred</span>',
+  ASSUMED:   '<span class="badge b-asm">assumed</span>'
+};
+const VBADGE = {
+  VERIFIED:  '<span class="badge b-ver">source verified</span>',
+  SNIPPET:   '<span class="badge b-inf">source snippet</span>',
+  UNVERIFIED:'<span class="badge b-asm">no source</span>'
+};
+const GP_DEF = {
+  MEASURED:  "Instrument reading of the actual structure",
+  DOCUMENTED:"This geometry is stated numerically in a source that was read",
+  INFERRED:  "Existence documented; this position or dimension is reasoned",
+  ASSUMED:   "Placed by engineering judgement; no source states it"
+};
+const VS_DEF = {
+  VERIFIED:  "Source opened and the supporting passage read",
+  SNIPPET:   "Only an abstract, search result or quoted excerpt seen",
+  UNVERIFIED:"No source consulted for this element"
+};
+
+function buildList(elId, comps) {
+  document.getElementById(elId).innerHTML = comps.map(c =>
+    '<li data-id="'+c.id+'" data-state="'+c.gp+'" tabindex="0">'
+    + '<span class="dot d-'+c.gp+'"></span><span>'+c.label+'</span>'
+    + '<span class="st">'+c.gp.toLowerCase()+'</span></li>').join("");
+}
+buildList("list-wb", WB);
+buildList("list-mb", MB);
+
+function select(id) {
+  document.querySelectorAll(".comp.sel, .complist li.sel").forEach(n=>n.classList.remove("sel"));
+  document.querySelectorAll('.comp[data-id="'+id+'"], .complist li[data-id="'+id+'"]').forEach(n=>n.classList.add("sel"));
+  const c = byId[id]; if (!c) return;
+  document.getElementById("pv-hint").hidden = true;
+  document.getElementById("pv-body").hidden = false;
+  document.getElementById("pv-name").textContent = c.label;
+  document.getElementById("pv-badges").innerHTML = BADGE[c.gp] + " " + VBADGE[c.vs];
+  document.getElementById("pv-bridge").textContent = c.bridge;
+  document.getElementById("pv-state").textContent = GP_DEF[c.gp];
+  document.getElementById("pv-vstate").textContent = VS_DEF[c.vs];
+  document.getElementById("pv-obs").textContent = c.obs;
+  document.getElementById("pv-src").textContent = SRC[c.src].name;
+  document.getElementById("pv-rub").textContent = SRC[c.src].rub;
+  const qw = document.getElementById("pv-quote-wrap");
+  if (c.quote) { qw.hidden = false; document.getElementById("pv-quote").textContent = '"' + c.quote + '"'; }
+  else qw.hidden = true;
+  document.getElementById("pv-gpnote").textContent = c.gpNote || "\u2014";
+  document.getElementById("pv-ac").textContent = c.ac;
+}
+
+document.addEventListener("click", e => {
+  const g = e.target.closest(".comp") || e.target.closest(".complist li");
+  if (g) select(g.getAttribute("data-id"));
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" || e.key === " ") {
+    const g = e.target.closest && (e.target.closest(".comp") || e.target.closest(".complist li"));
+    if (g) { e.preventDefault(); select(g.getAttribute("data-id")); }
+  }
+});
+
+const active = { MEASURED:true, DOCUMENTED:true, INFERRED:true, ASSUMED:true };
+document.querySelectorAll("[data-filter]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const k = btn.getAttribute("data-filter");
+    const on = !active[k];
+    active[k] = on;
+    if (k === "DOCUMENTED") active.MEASURED = on;
+    btn.setAttribute("aria-pressed", String(on));
+    btn.classList.toggle("off", !on);
+    document.querySelectorAll(".comp, .complist li").forEach(n => {
+      n.classList.toggle("dim", !active[n.getAttribute("data-state")]);
+    });
+  });
+});
+
+document.querySelector("[data-overlay='path']").addEventListener("click", function () {
+  const on = this.getAttribute("aria-pressed") !== "true";
+  this.setAttribute("aria-pressed", String(on));
+  document.querySelectorAll(".sight").forEach(n => n.setAttribute("opacity", on ? "1" : "0"));
+});
+
+document.querySelectorAll(".tab").forEach(t => {
+  t.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected","false"));
+    t.setAttribute("aria-selected","true");
+    document.querySelectorAll(".panel").forEach(p => p.hidden = true);
+    document.getElementById(t.dataset.panel).hidden = false;
+  });
+});
+
+const LADDER = [
+  { lv:"L0", nm:"Site and context", d:"Shorelines, street network, parcels, terrain, the receptor parks and their boundaries.",
+    a:"Complete", cls:"a-good", src:"NYC Open Data, OpenStreetMap, USGS 3DEP",
+    test:"Every element needed to place a receptor and a propagation path is obtainable today at published accuracy." },
+  { lv:"L1", nm:"Bridge massing", d:"Towers, cables, deck envelope, approach viaducts \u2014 the shape you see from the water.",
+    a:"Obtainable", cls:"a-good", src:"2017 NYC topobathymetric LiDAR, 1 ft DSM plus classified point cloud",
+    test:"An outer envelope can be extracted from public LiDAR. The underside is occluded from every aerial dataset." },
+  { lv:"L2", nm:"Structural system", d:"Trusses, floor beams, stringers, cantilever framing, bracing, the clearance envelope.",
+    a:"Two dimensions only", cls:"a-part", src:"HAER photographs; one dimensioned figure in the AISC paper",
+    test:"Count of transverse dimensions stated in any located source: Williamsburg 2 (67 ft truss width, ~40 ft truss depth), Manhattan 0 above rubric 1/5." },
+  { lv:"L3", nm:"Track assembly", d:"Rails, joints, bearers, guard rails, fastening layout, the stringer-to-rail interface.",
+    a:"Element names only", cls:"a-none", src:"Element names in one figure annotation; CAIT confirms bolted joints exist",
+    test:"Count of stated track dimensions \u2014 gauge, spacing, centreline offset, rail-head elevation \u2014 across both bridges: 0." },
+  { lv:"L4", nm:"Component schematics", d:"Fastener type, clip, pad, tie plate, bolt pattern \u2014 the level the brief asks for.",
+    a:"None", cls:"a-none", src:"No public source located for either bridge",
+    test:"Count of located fastener specifications: 0. Note that even a complete L4 geometry would not supply dynamic stiffness, damping or preload, which are the parameters an acoustic model actually consumes." }
+];
+document.getElementById("ladder").innerHTML = LADDER.map(r => {
+  const col = r.cls==='a-good'?'success':(r.cls==='a-part'?'warning':'danger');
+  const w = r.cls==='a-good'?100:(r.cls==='a-part'?45:8);
+  return '<div class="rung">'
+    + '<div class="lv">'+r.lv+'<small>'+r.a+'</small></div>'
+    + '<div><h4>'+r.nm+'</h4><p>'+r.d+'</p>'
+    + '<p class="small" style="margin-top:6px;color:var(--cp-text-soft)"><strong>Best available:</strong> '+r.src+'</p>'
+    + '<p class="small" style="margin-top:4px;color:var(--cp-text-soft)"><strong>Auditable test:</strong> '+r.test+'</p>'
+    + '<div class="bar"><i style="width:'+w+'%;background:var(--cp-'+col+')"></i></div></div>'
+    + '<div class="avail '+r.cls+'">'+r.a+'</div></div>';
+}).join("");
+
+const SOURCES = [
+  ["Library of Congress HAER collection","Both bridges","<strong style='color:var(--cp-danger)'>Photographs only. No measured drawings for either bridge.</strong> Brooklyn Bridge has one sheet.","L2 photogrammetric input"],
+  ["2017 NYC Topobathymetric LiDAR","Citywide, 1 ft DEM/DSM plus classified point cloud","Available — NYC Open Data, NYS GIS, NOAA S3, OpenTopography","L1 massing, water and shoreline"],
+  ["NYC 3D Model by Community District","Every building present in 2014, DoITT aerial survey","Available, <em>buildings only</em>","L0/L1 receptor context and reflection surfaces"],
+  ["OpenStreetMap","Both bridges as tagged ways including rail alignment","Available; Overpass API timed out during this review, so treat as unverified","L0 alignment and centrelines"],
+  ["AISC 2005 reconstruction paper","Williamsburg Bridge","Section figures with named elements; two stated dimensions \u2014 67 ft truss width, ~40 ft truss depth","The only real L2 content located"],
+  ["NYCDOT record drawings","Both bridges","Not public. Records request.","L3 and L4; the only route located"],
+  ["Rutgers CAIT instrumentation","Manhattan Bridge approach","Confirms bolted joints and a fair/poor/severe classification","L3 condition, not geometry"]
+];
+document.getElementById("srctbl").innerHTML = SOURCES.map(r =>
+  '<tr><td><strong>'+r[0]+'</strong></td><td class="muted">'+r[1]+'</td><td>'+r[2]+'</td><td class="muted small">'+r[3]+'</td></tr>').join("");
+
+const TOOLS = [
+  ["Geospatial base","QGIS","GPL","Georeferencing, terrain, parcels, receptor boundaries"],
+  ["Point cloud","CloudCompare","GPL","LiDAR handling, registration, cleanup, cloud-to-cloud comparison"],
+  ["Photogrammetry","Meshroom / COLMAP","MPL-2.0 / BSD","Structure-from-motion from walkway photography, the route past the occlusion floor"],
+  ["Cloud to BIM","Cloud2BIM","Open source, arXiv 2503.11498","Automated point cloud to IFC conversion"],
+  ["BIM core","IfcOpenShell","LGPL","IFC read/write. The interchange spine of the whole chain"],
+  ["Modelling","Blender + Bonsai","GPL","Component authoring, level-of-detail control, rendering"],
+  ["Parametric CAD","FreeCAD 1.0","LGPL","L4 fastener-level parametric parts, once a specification exists"],
+  ["Coordination","Speckle","Apache-2.0","Versioned model sharing and review"],
+  ["Acoustic mapping","NoiseModelling (Univ. Gustave Eiffel)","GPL-3.0","CNOSSOS-EU outdoor propagation, with the caveats below"],
+  ["Web delivery","glTF + Three.js","MIT","The reviewable artifact itself"]
+];
+document.getElementById("tooltbl").innerHTML = TOOLS.map(r =>
+  '<tr><td class="muted">'+r[0]+'</td><td><strong>'+r[1]+'</strong></td><td class="mono small">'+r[2]+'</td><td class="muted">'+r[3]+'</td></tr>').join("");
+
+const cnt = { MEASURED:0, DOCUMENTED:0, INFERRED:0, ASSUMED:0 };
+ALL.forEach(c => cnt[c.gp]++);
+const reasoned = ALL.filter(c => c.gp === "INFERRED" || c.gp === "ASSUMED").length;
+const mbReasoned = MB.filter(c => c.gp === "INFERRED" || c.gp === "ASSUMED").length;
+document.getElementById("tally").innerHTML =
+  '<span class="badge b-ver">measured 0</span> &nbsp; '
+  + '<span class="badge b-ver">documented '+cnt.DOCUMENTED+'</span> &nbsp; '
+  + '<span class="badge b-inf">inferred '+cnt.INFERRED+'</span> &nbsp; '
+  + '<span class="badge b-asm">assumed '+cnt.ASSUMED+'</span> &nbsp; '
+  + '<span class="muted small">of '+ALL.length+' components. <strong>Not one element of either section is drawn at a position '
+  + 'any source states.</strong> All '+reasoned+' are placed by reasoning: '+cnt.INFERRED+' where a source documents the element\u2019s '
+  + 'existence but not its geometry, and '+cnt.ASSUMED+' where no source describes the element at all. On the Manhattan Bridge, '
+  + 'the bridge this project exists to fix, that is '+mbReasoned+' of '+MB.length+', including both outboard cantilever assemblies, '
+  + 'which carry the tracks and stand nearest the receptors. The sections are schematic and <strong>not to scale</strong>; '
+  + 'no dimension is annotated on any component, because none could be.</span>';
+</script>
+</body>
+</html>
