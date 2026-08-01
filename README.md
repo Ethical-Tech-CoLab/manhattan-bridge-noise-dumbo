@@ -12,9 +12,9 @@ A rigorous problem-definition document about noise from NYC Subway **B, D, N and
 
 It is **not a design**. It is the artifact that must exist *before* a design can be honestly procured: a statement of what is known, what is claimed but unevidenced, and what has never been asked.
 
-**Start with [`IDEA-CONCEPT.md`](IDEA-CONCEPT.md).** It is self-contained, ~19,600 words, 14 parts. Four further documents extend it — see [Documents](#documents).
+**Start with [`IDEA-CONCEPT.md`](IDEA-CONCEPT.md).** It is self-contained, ~19,600 words, 14 parts. Five further documents extend it — see [Documents](#documents).
 
-## Two headline findings
+## Three headline findings
 
 **1. The problem is measured, severe, and confirmed by two independent agencies eighteen years apart.**
 
@@ -36,6 +36,20 @@ The 2005 FEIS also measured **trains at 77 dBA against vehicular traffic at 63 d
 
 No evidence was found that the level was ever established. The Manhattan Bridge is an elevated structure. Category IV is its category. Category IV has no standard.
 
+**3. That blank cell is not an isolated omission. It propagated — and the result is that rail noise in New York City is not under-reported, it is *unreportable*.**
+
+Three further instruments for recording urban noise in this city each contain **no category for rail**:
+
+| Instrument | What it is | Rail category |
+|---|---|---|
+| **NYC 311** | The city's complaint system — the dataset cited whenever anyone says noise is New York's top quality-of-life complaint | **None.** Citywide, all complaint types, since 2020: every category matching "subway", "train" or "rail" is a **guard rail or a trailer**. |
+| **SONYC** | NYU's NSF-funded acoustic sensor network. 55+ sensors, **150M+ recorded clips**, 18,510 citizen-annotated | **None.** 8 coarse and 23 fine classes. There is a class for `dog`. There is none for rail. |
+| **NYC Noise Code** | The city's noise ordinance | **None** — and the SONYC authors state their taxonomy was built *"through consultation with the New York Department of Environmental Protection **and the New York noise code**."* |
+
+Within **500 m of the Brooklyn Bridge Park dog run** — where the MTA measured **87.50 dB(A) Leq and 98.90 dB(A) peaks** — residents have filed **4,055 noise complaints since 2020**, and **not one of them can be about the train**. That circle produced 117 complaints about ice cream trucks and **95 about barking dogs**. The dogs at the dog run are complainable. The trains over it are not.
+
+This is a **mechanism**, not a motive. Nobody decided to ignore elevated rail noise; the category was never created, and every downstream instrument inherited the absence. It also yields the first remedy in this programme that a resident could act on this month: **amending a taxonomy is a far smaller ask than solving the noise, and it would start generating the missing evidence immediately.** See [`COMMUNITY-EVIDENCE-AUDIT.md`](COMMUNITY-EVIDENCE-AUDIT.md) — including the queries, printed in full so they can be re-run, and Part 7 on why the causal chain joining the three is the weakest joint in the argument.
+
 ### And one result derived here rather than found
 
 The MTA never published how long a train event lasts — but it published enough to determine it. Solving the session energy balance for the three public outdoor measurements gives equivalent event durations of **5.70, 6.28 and 7.25 seconds**: three sessions, different days, different places, baselines 21 dB apart, agreeing to within **1.04 dB of event energy**. Run the same arithmetic on the *indoor* rows and it breaks — which is independent corroboration that the indoor and outdoor datasets are not describing the same thing. See [`IDEA-CONCEPT.md` §1.7](IDEA-CONCEPT.md) for the derivation and its weaknesses, and [`visual-review/acoustic-demo.html`](visual-review/acoustic-demo.html) to hear it.
@@ -49,6 +63,7 @@ The MTA never published how long a train event lasts — but it published enough
 | **[`WILLIAMSBURG-COMPARATOR.md`](WILLIAMSBURG-COMPARATOR.md)** | **There is a second bridge with the same owner, the same operator, the same division of rolling stock and the same statute. What does it already tell us, and what would measuring it establish?** A two-site comparative survey of the public outdoor space beneath both East River subway bridges. Q23–Q31, Methods 11–14. |
 | **[`VISUAL-MODEL-FRAMEWORK.md`](VISUAL-MODEL-FRAMEWORK.md)** | **Every argument in the first three documents is an argument about a cross-section nobody has drawn.** Can that drawing be built from open data and open tools — and can it be made to admit what it does not know? Q32–Q41, Methods 15–20. Reference implementations: [`visual-review/section-problem.html`](visual-review/section-problem.html) and [`visual-review/model-3d.html`](visual-review/model-3d.html). |
 | **[`FIELD-CAPTURE-PROTOCOL.md`](FIELD-CAPTURE-PROTOCOL.md)** | **Every acoustic claim this programme makes beyond the published levels is invented. Can a consumer phone fix that this month?** A capture protocol for a Samsung Galaxy S23+ targeting the four things the MTA's five-number table discarded — spectral shape, temporal envelope, headway distribution and train attribution — all of which survive an uncalibrated recording chain. Captures C1–C5. Advances Methods 7, 11, 16, 17 and 19. |
+| **[`COMMUNITY-EVIDENCE-AUDIT.md`](COMMUNITY-EVIDENCE-AUDIT.md)** | **The people who live under it have been complaining since 2008. What have they already recorded, and why can nobody find it?** A search of Reddit, Freesound, the NYU sensor corpus, NYC Open Data, local press and petitions for crowd-sourced recordings. Finds none — and finds the structural reason: three instruments for recording city noise, no rail category in any of them. Q42–Q50, Methods 21–25. |
 
 The second document is organised around **two research tracks, partitioned by who owns the asset you would have to touch**:
 
@@ -314,9 +329,11 @@ See also **§14 *Counter-citations*** — five works surfaced during red-teaming
 
 ## What has not been done
 
-An honest audit, because a research programme that only publishes its outputs misrepresents itself. **Twenty methods are specified across the four documents. Zero have been executed.** Every one is a proposal. The distinction matters, because several of the cheapest are also the most load-bearing, and their being undone is the reason so many claims in this repository are hedged.
+An honest audit, because a research programme that only publishes its outputs misrepresents itself. **Twenty-five methods are specified across the six documents. Zero have been executed.** Every one is a proposal. The distinction matters, because several of the cheapest are also the most load-bearing, and their being undone is the reason so many claims in this repository are hedged.
 
 **Document 5, [`FIELD-CAPTURE-PROTOCOL.md`](FIELD-CAPTURE-PROTOCOL.md), does not add a method.** It specifies an executable route to parts of Methods 7, 11, 16, 17 and 19 using equipment the programme already has. It is also unexecuted.
+
+**Document 6, [`COMMUNITY-EVIDENCE-AUDIT.md`](COMMUNITY-EVIDENCE-AUDIT.md), adds Methods 21–25** and is the first document here to rest partly on data this programme queried directly rather than read about. That is genuine progress and it does not change the fundamental position: **nobody from this programme has stood in Brooklyn Bridge Park.**
 
 ### The method register, and its status
 
@@ -343,6 +360,11 @@ An honest audit, because a research programme that only publishes its outputs mi
 | 18 | Approach NYCDOT re. the traveling maintenance platforms | 4 | A relationship this programme does not have | Not started. Priority 2. |
 | 19 | Build and publish the provenance-tagged L1 model | 4 | Desk, existing public data | **Partially addressed, and not by the specified route.** See below. |
 | 20 | Negative-result search on provenance-tagged infrastructure models | 4 | Desk | **Not started. This blocks any novelty claim**, and one has already been withdrawn for being made ahead of it. |
+| 21 | **The taxonomy-blindness test** — 311 complaint density in elevated-adjacent tracts vs matched controls, citywide | 6 | **Desk, hours, free** | **Not started.** Tests the central claim of Document 6, using the same public API that produced it. **The cheapest high-value method in the programme.** Either result is publishable. |
+| 22 | FOIL the complaint record — MTA NYCT and district offices | 6 | A form; months of waiting | **Not started.** The § 1204-a report already dates official contact to 2022, which makes the request specific and hard to refuse as overbroad. |
+| 23 | Read the Reddit and community comment threads, logged in | 6 | **Desk, hours, free** | **Not started, and Document 6 explicitly did not do this.** Automated access returned HTTP 403. If a usable resident recording exists anywhere, this is where it is. |
+| 24 | Contact the named community actors and Brooklyn CB2 | 6 | Correspondence | **Not started.** Carries a standing ethical condition — see Document 6, Method 24. |
+| 25 | Interrogate the SONYC corpus by acoustic similarity rather than by label | 6 | Desk to research collaboration | **Not started.** 150M+ clips already collected and published. If elevated rail is in there unlabelled, retrieving it would produce the largest such corpus in existence from data that already exists. |
 
 **On Method 19.** [`visual-review/model-3d.html`](visual-review/model-3d.html) establishes the schema in a working artifact rather than a proposal, which was the method's stated purpose. **It is not the L1 model.** The specification called for 2017 LiDAR, the NYC 3D Model and OpenStreetMap assembled in QGIS and CloudCompare and exported as `IFC` with `Pset_ResearchProvenance` populated. None of that survey data is in the file — the geometry is hand-authored from photographs, historical accounts and engineering convention, which is exactly why the model contains zero `MEASURED` elements and goes empty when the filters are switched off. **Method 19 remains open.** What has been demonstrated is that the tagging discipline is implementable and legible; what has not been demonstrated is that it survives contact with real survey data.
 
@@ -379,6 +401,12 @@ The highest-value item is **C2, the temporal envelope**, because it is the only 
 
 **None of it has been executed.**
 
+### And one route that costs nothing at all
+
+**Method 21 is a database query.** It uses the same public NYC Open Data endpoint that produced headline finding 3, it needs no permission, no funding, no equipment and no relationship, and it directly tests the strongest new claim in the repository. If elevated-adjacent census tracts show no complaint elevation citywide, the taxonomy-blindness finding holds. If they show elevation in some proxy category, residents are routing around the missing category and **the workaround is itself the signal** — which is arguably the more useful outcome.
+
+It is the only method here that could be completed in an afternoon by anyone reading this, and it is the first thing in this programme that a resident could act on directly.
+
 ## Status
 
 **`IDEA-CONCEPT.md` — draft v1.2.** Revised after an adversarial review pass. v1.2 adds §1.7, a derivation of train-event duration from the MTA's published session statistics — the only result in the repository that is calculated here rather than retrieved.
@@ -386,19 +414,21 @@ The highest-value item is **C2, the temporal envelope**, because it is the only 
 **`WILLIAMSBURG-COMPARATOR.md` — draft v1.1.** Revised after an adversarial review that returned *not fit to publish* with eight blocking issues; all corrected and left visible, with a ten-row table of withdrawn claims. Adopts the "locus" discipline: every quantitative or dispositive claim quotes the exact passage it rests on.
 **`VISUAL-MODEL-FRAMEWORK.md` — draft v1.1.** Revised after an adversarial review that returned *not fit to publish* with six blocking issues; twelve claims withdrawn, and the reference implementation reworked after the review found it violating the schema defined in the document it accompanies. Extends the locus discipline from citations to model geometry.
 **`FIELD-CAPTURE-PROTOCOL.md` — draft v1.0.** Not yet red-teamed. Most of its hardware and application detail is rated `SNIPPET` rather than `VERIFIED`, because no Galaxy S23+ was tested in writing it; Part 4.6 specifies a bench test that settles those claims on the actual handset, and states that where the handset disagrees with the document, the handset is right.
+**`COMMUNITY-EVIDENCE-AUDIT.md` — draft v1.0.** Not yet red-teamed. Two claims are rated 5/5 `VERIFIED` on queries this programme ran directly against the NYC Open Data API, printed in full so they can be re-run. **The legal mechanism joining them is rated 2/5 `UNVERIFIED` and written as a question, not a finding** — and Part 8 names that joint as the place to attack the document first, because the finding is elegant and arrived unexpectedly, which is exactly the condition under which this programme has previously over-claimed.
 
 **Interactive artifacts — three, all self-contained and dependency-free.** [`section-problem.html`](visual-review/section-problem.html) (2D provenance-tagged section), [`model-3d.html`](visual-review/model-3d.html) (navigable four-tier 3D model of both bridges), [`acoustic-demo.html`](visual-review/acoustic-demo.html) (audible level demonstration with derived event durations). The 3D model contains **zero measured elements**; the audio demo is **synthesised, not recorded**. Both say so in their own interfaces.
 
 None is peer-reviewed. Novelty claims are provisional; measured facts are solid. **Each document's own red-team Part is the best guide to how much to trust it** — `IDEA-CONCEPT.md` Part 13, `PRECEDENT-AND-MATERIALS.md` Part 11, `WILLIAMSBURG-COMPARATOR.md` Part 9, `VISUAL-MODEL-FRAMEWORK.md` Part 11. The audio demo carries its own seven-item list of where it is likely to be wrong.
 
-**No option in any document is recommended for procurement.** **No measurement has been taken and no survey has been made.** Of the twenty methods specified across the four documents, **none has been executed** — see *[What has not been done](#what-has-not-been-done)*. Everything here is a statement about documents.
+**No option in any document is recommended for procurement.** **No measurement has been taken and no survey has been made.** Of the twenty-five methods specified across the six documents, **none has been executed** — see *[What has not been done](#what-has-not-been-done)*. Everything here is a statement about documents, with the exception of the two NYC Open Data queries in Document 6, which are statements about a dataset.
 
 ## Contributing
 
 This is a working research repository. Useful contributions, roughly in order of value:
 
-- **Executing any of Methods 0–20** — several cost an email, a form, or an afternoon, and none has been done
-- Answering any of **Q1–Q41** with sourced evidence
+- **Executing any of Methods 0–25** — several cost an email, a form, or an afternoon, and none has been done. **Method 21 costs a database query.**
+- Answering any of **Q1–Q50** with sourced evidence. **Q42 — whether elevated rapid transit is federally *preempted* from local noise regulation or merely *unregulated* — is the highest-value open question in the programme, and one competent lawyer could settle it in a day.**
+- **Posting a recording.** If you have ever recorded a train crossing the Manhattan Bridge from Brooklyn Bridge Park, DUMBO or the Williamsburg Bridge walkway, that recording is more useful to this programme than anything in it. See [`FIELD-CAPTURE-PROTOCOL.md`](FIELD-CAPTURE-PROTOCOL.md) for what makes one usable — the bar is far lower than most people assume, because **spectral shape and event timing survive an uncalibrated phone.**
 - **Falsifying** any "not found" claim — five have already failed across the first two documents, and the prior on others failing is not low
 - **Reclassifying** any component's provenance state in [`visual-review/section-problem.html`](visual-review/section-problem.html) or [`visual-review/model-3d.html`](visual-review/model-3d.html). Anyone with structural knowledge of riveted lattice trusses will find components that are misclassified, and that is the point of publishing the classification
 - **Correcting the acoustic synthesis in [`visual-review/acoustic-demo.html`](visual-review/acoustic-demo.html)** — particularly the assumed spectrum, which is the largest single fabrication in the repository. **A single published third-octave spectrum for either bridge would replace it with evidence.**
