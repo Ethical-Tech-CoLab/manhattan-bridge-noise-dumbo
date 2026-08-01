@@ -91,6 +91,12 @@ canvas.meter { display: block; width: 100%; height: 300px; border: 1px solid var
 .msub { font-size: 11px; color: var(--cp-text-muted); font-family: Consolas, monospace; }
 .plotwrap { display: flex; flex-direction: column; }
 canvas.plot { display: block; width: 100%; height: 300px; border: 1px solid var(--cp-border); border-radius: 8px; background: var(--cp-canvas); }
+canvas.strip { display: block; width: 100%; height: 176px; border: 1px solid var(--cp-border); border-radius: 8px; background: var(--cp-canvas); }
+.statrow { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 12px; }
+.stat { flex: 1 1 132px; border: 1px solid var(--cp-border); border-radius: 8px; padding: 8px 11px; background: var(--cp-surface-soft); }
+.stat .k { font-size: 9.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--cp-text-soft); font-weight: 700; display: block; }
+.stat .v { font-family: Consolas, monospace; font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; display: block; margin-top: 2px; }
+.stat .s { font-size: 10.5px; color: var(--cp-text-muted); font-family: Consolas, monospace; display: block; }
 
 .bigdiff { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin: 16px 0 4px;
   background: var(--cp-surface-soft); border: 1px solid var(--cp-border); border-radius: 8px; padding: 12px 16px; }
@@ -197,7 +203,45 @@ ol li, ul li { margin-bottom: 6px; }
       <div class="msub" id="plotSub" style="margin-top:6px">&nbsp;</div>
     </div>
   </div>
+
+  <div class="tgroup" id="contWrap" style="display:none;margin-top:22px;border-top:1px solid var(--cp-border);padding-top:16px">
+    <span class="tlab">Continuous running &mdash; the actual service pattern</span>
+    <div class="trow" id="rateBtns"></div>
+    <div class="statrow" id="contStats"></div>
+    <div class="mlab" style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cp-text-soft);font-weight:700;margin-bottom:5px">Level history &mdash; what a logging meter would have drawn</div>
+    <canvas class="strip" id="strip"></canvas>
+    <div class="msub" id="stripSub" style="margin-top:6px">&nbsp;</div>
+  </div>
 </div>
+
+<h2>Why continuous running is the more honest mode</h2>
+<p>A single pass-by is an <em>event</em>. What a person sitting in the park experiences is a <em>process</em>: the same
+event, on a headway, for twenty hours a day. Those are different claims about harm, and only the second one is the
+problem the MTA was asked about. The headway is published &mdash; it is the session duration divided by the train count,
+and at the dog run that is <b>26 trains in 37 minutes 45 seconds, one every 87 seconds</b> &mdash; so the process can be
+modelled from data just as directly as the event can.</p>
+
+<p>Three things change when the loop runs rather than a single pass.</p>
+<ol>
+  <li><b>The gaps become the argument.</b> At the dog run the train is meaningfully above background for roughly forty
+  seconds out of every eighty-seven. Long enough to notice; not long enough to adapt to. Written as a duty cycle
+  &mdash; <b>7.2%</b> of the session at full peak-equivalent energy &mdash; it sounds small. Sat through, it is not.</li>
+  <li><b>The energy average becomes measurable on screen.</b> The running <code>Leq</code> readout accumulates the
+  modelled power over modelled time and converges. That is the number CEQR, the FTA and § 1204-a are all written in, and
+  it is the number the MTA published. Watching the loop settle onto it is the closest this page comes to checking itself.</li>
+  <li><b>The tails overlap.</b> The loop sums the three nearest events rather than playing one at a time, because on a
+  four-track crossing the tail of a departing train is still arriving when the next one begins. Playing isolated events
+  back to back would quietly discard that energy.</li>
+</ol>
+
+<p><b>On time compression.</b> Real time is offered and is the default, but a real headway means real waiting. The
+compressed rates scale <em>every</em> interval by the same factor &mdash; the gaps and the pass-bys alike &mdash; so the
+duty cycle is preserved exactly and the energy average is unchanged. The only thing compression falsifies is the tempo:
+the trains sound faster than they are. Levels, differences and averages all remain what the measurements say.</p>
+
+<p><b>Two receptors have no continuous mode, on purpose.</b> Front and Pine Street and the Williamsburg Bridge walkway
+publish no train count and no session length, so neither has a measured headway. Running a loop there would mean
+inventing the service pattern, and the button is disabled rather than filled with a plausible guess.</p>
 
 <h2>What is measured, what is derived, and what is invented</h2>
 <p>Every parameter of this demonstration carries its own provenance, on the same
@@ -236,14 +280,43 @@ Solving the energy balance for the equivalent time each train would have to spen
   <li><b>The derived event duration assumes all trains are equal.</b> They are not. B, D, N and Q services differ in car
   class, consist length and axle count, and the MTA report normalises for none of these. The derived figure is an
   average over an unknown mixture.</li>
+  <li><b>Continuous running assumes a perfectly regular headway.</b> Real service is not a metronome. The published figure
+  is a session average &mdash; 26 trains in 37 minutes 45 seconds &mdash; and the real intervals scatter around it, bunch
+  behind delays, and differ by direction and by service. The loop is a <em>mean</em> rendered as a <em>rhythm</em>, and
+  the regularity you hear is an artifact of that. It also runs a single headway indefinitely, whereas real service thins
+  overnight; the MTA sessions were daytime, so the loop represents a daytime hour and not a day.</li>
   <li><b>It assumes the published baseline is a true train-free floor.</b> At the DUMBO Archway the "baseline" is 68.9 dB(A),
   which is not a quiet environment. Some of what is attributed to background may be distant rail.</li>
   <li><b>The meter agreement is engineered, not evidence.</b> The synthesis is scaled so the rendered A-weighted level
-  matches the modelled level. That the two agree confirms the scaling works. It confirms nothing about the bridge.</li>
+  matches the modelled level. That the two agree confirms the scaling works. It confirms nothing about the bridge.
+  Under time compression the meter's averaging window is shortened in proportion so that it still spans a comparable
+  slice of <em>modelled</em> time; that keeps the check fair but makes the rendered needle visibly noisier in the gaps,
+  where it is averaging a shorter piece of a random signal.</li>
+  <li><b>So is the running-average convergence.</b> The energy average of the loop settles onto the published Leq because
+  the event duration was <em>solved from</em> that Leq. It is a closed loop and it proves the arithmetic is consistent,
+  not that the model is true. It would be evidence only if the duration had come from somewhere else.
+  It is also not exact. The derivation in &sect;1.7 treats a train event as <em>replacing</em> the baseline for its duration,
+  whereas the loop adds the event on top of a baseline that never stops, so the loop carries slightly more energy than the
+  published figure: 0.002 dB more at the dog run, 0.021 dB at the DUMBO Archway. The residual is stated rather than removed,
+  because removing it would mean editing a published derivation to make an audio demonstration look tidier.</li>
   <li><b>Peak levels are single events.</b> A Max Lmax is the loudest thing that happened once. Treating it as the level of
   every train overstates the typical case, which is why the derived durations below are labelled "equivalent" and not "actual".</li>
   <li><b>The indoor sites break the derivation</b> and are shown here precisely so the failure is visible rather than hidden.</li>
 </ol>
+
+<h2>A correction to the first version of this page</h2>
+<p>The version of this artifact published on 1 August 2026 carried a button labelled
+<em>"Continuous, at the measured headway"</em>. It was not. The code capped the interval between trains at thirty
+seconds:</p>
+<div class="calcbox">const wait = Math.max(eventHalfSpan(s) * 2, Math.min(headway, 30));</div>
+<p><b>That is withdrawn.</b> No receptor on this page has a thirty-second headway; the measured figures are 85 to 126
+seconds. The cap inflated the duty cycle by between three and four times, which would have driven the energy average
+several decibels above the published one, and the label asserted a fidelity the implementation did not have. It is
+recorded here rather than quietly fixed because that is this programme's rule, and because it is a good example of the
+failure it keeps having to correct: <b>a plausible-sounding claim attached to something that was never checked against
+the number it named.</b> The running-average readout now on the page exists partly so that this class of error cannot
+recur silently &mdash; a capped headway would show up immediately as a running Leq that refused to settle on the
+published figure.</p>
 
 <div class="foot">
   <p><b>Provenance of this artifact.</b> Built for the Ethical Tech CoLab DUMBO rail-noise programme.
@@ -336,6 +409,51 @@ const N_DECAY = 1.5;
 function trainLevelAt(s, t) { return s.lmax - 10 * N_DECAY * Math.log10(1 + (t / s.tau) * (t / s.tau)); }
 function totalLevelAt(s, t) { return sum_dB(trainLevelAt(s, t), s.base); }
 function eventHalfSpan(s) { return s.tau * 6.5; }
+
+/* ---------------------------------------------------------------------------
+   The continuous service pattern.
+
+   A single pass-by is an event. What a resident experiences is a PROCESS: the
+   same event, arriving on a headway, for twenty hours a day. The headway is
+   published -- it is the session duration divided by the train count -- so the
+   process can be modelled from data as directly as the event can.
+   ------------------------------------------------------------------------ */
+function contHeadway(s) { return (s.n && s.secs) ? s.secs / s.n : null; }
+
+/* Level of the train stream at model time t, with peaks every H seconds at
+   t = 0, H, 2H ... The three nearest events are summed rather than the nearest
+   one taken alone, because the envelope tails overlap and that overlap is
+   physically real: on a four-track crossing the tail of a departing train is
+   still arriving when the next one starts. Summing also means the running
+   energy average converges on the published Leq instead of falling short of it. */
+function streamTrainLevelAt(s, t, H) {
+  const k = Math.round(t / H);
+  let p = 0;
+  for (let n = -1; n <= 1; n++) p += dB2p(trainLevelAt(s, t - (k + n) * H));
+  return p2dB(p);
+}
+function streamTotalAt(s, t, H) { return sum_dB(streamTrainLevelAt(s, t, H), s.base); }
+
+/* What the energy average MUST come out at, if the loop is built correctly.
+   Over one headway the train contributes exactly Te.10^(Lmax/10) (the envelope
+   integral, by construction) and the baseline contributes over the whole
+   period. For the three public outdoor sites this returns the published Leq to
+   within 0.03 dB, because that is the number Te was solved from -- which makes
+   the running average on screen a closed-loop check on the whole chain of
+   reasoning, and nothing more than that.
+
+   The residual is not rounding. Section 1.7 solves Te on the assumption that a
+   train event REPLACES the baseline for its duration; the loop adds the event
+   on top of a baseline that never stops. The gap between those two conventions
+   is Te.10^(Lbase/10) per headway, which is 0.002 dB at the dog run and 0.021 dB
+   at the DUMBO Archway, where the background is highest relative to the peak.
+   It is stated rather than corrected because correcting it would mean altering
+   a published derivation to flatter an audio demonstration.                   */
+function predictedStreamLeq(s) {
+  const H = contHeadway(s);
+  if (!H) return null;
+  return p2dB((s.te * dB2p(s.lmax) + H * dB2p(s.base)) / H);
+}
 
 /* ---------------------------------------------------------------------------
    Deterministic noise. A seeded generator so the artifact is reproducible:
@@ -478,7 +596,12 @@ const eng = {
   bgSrc: null, trSrc: null, bgGain: null, trGain: null, master: null,
   analyser: null, buf: null, calA: { bg: 1, tr: 1 },
   site: SITES[0], mode: 'idle', t0: 0, tPos: 0, raf: null,
-  loopTimer: null, peak: -99, vol: 0.55
+  loopTimer: null, peak: -99, vol: 0.55,
+  /* continuous-running state. eAcc/tAcc integrate the modelled power over
+     model time, so the running Leq is independent of the animation frame rate
+     and of the time-compression factor. */
+  cont: { on: false, rate: 1, H: 0, t0: 0, pk0: 0, sched: 0, trains: 0,
+          eAcc: 0, tAcc: 0, lastModel: 0, fadeEnd: 0, hist: [] }
 };
 
 async function initAudio() {
@@ -502,7 +625,6 @@ async function initAudio() {
   eng.analyser.fftSize = 8192;
   eng.master.connect(aw.input); aw.output.connect(eng.analyser);
   eng.buf = new Float32Array(eng.analyser.fftSize);
-
   const mkVoice = (makeBuf, kind, seed) => {
     const s = ac.createBufferSource();
     s.buffer = makeBuf(ac, seed); s.loop = true;
@@ -540,22 +662,23 @@ function setTrain(level, now, ramp) {
    ------------------------------------------------------------------------ */
 function stopAll() {
   eng.mode = 'idle'; eng.tPos = null;
-  if (eng.loopTimer) { clearTimeout(eng.loopTimer); eng.loopTimer = null; }
-  if (eng.ready) setTrain(null, eng.ac.currentTime, 0.12);
+  eng.cont.on = false;
+  if (eng.loopTimer) { clearInterval(eng.loopTimer); eng.loopTimer = null; }
+  setMeterWindow(1);
+  if (eng.ready) {
+    eng.trGain.gain.cancelScheduledValues(eng.ac.currentTime);
+    setTrain(null, eng.ac.currentTime, 0.12);
+  }
 }
 
-function playPass(continuous) {
+function playPass() {
   if (!eng.ready || !eng.on) return;
-  eng.mode = continuous ? 'continuous' : 'pass';
+  stopAll();
+  eng.mode = 'pass';
   eng.t0 = eng.ac.currentTime + 0.05;
   eng.tPos = -eventHalfSpan(eng.site);
   eng.peak = -99;
   scheduleEnvelope();
-  if (continuous) {
-    const headway = eng.site.n && eng.site.secs ? eng.site.secs / eng.site.n : 80;
-    const wait = Math.max(eventHalfSpan(eng.site) * 2, Math.min(headway, 30));
-    eng.loopTimer = setTimeout(() => { if (eng.mode === 'continuous') playPass(true); }, wait * 1000);
-  }
 }
 
 /* The envelope is written as scheduled automation rather than per-frame gain
@@ -571,6 +694,125 @@ function scheduleEnvelope() {
     g.linearRampToValueAtTime(gainFor('tr', trainLevelAt(s, t)), eng.t0 + span + t);
   }
   g.linearRampToValueAtTime(0, eng.t0 + 2 * span + 0.25);
+}
+
+/* ---------------------------------------------------------------------------
+   CONTINUOUS RUNNING
+
+   v1.0 of this page had a "continuous" button that capped the wait between
+   trains at 30 seconds:
+
+       const wait = Math.max(eventHalfSpan(s) * 2, Math.min(headway, 30));
+
+   while labelling itself "at the measured headway". **That is withdrawn.** It
+   was not the measured headway at any site, it inflated the duty cycle, and it
+   would have produced an energy average well above the published one. The
+   implementation below runs the real published headway and shows the running
+   average converging on the published Leq, which is the check the first version
+   could not have passed.
+
+   Audio is written as scheduled automation, one headway at a time, topped up
+   by a look-ahead timer. Nothing depends on the animation frame rate, so the
+   loop keeps correct time in a background tab.
+   ------------------------------------------------------------------------ */
+function startContinuous() {
+  if (!eng.ready || !eng.on) return;
+  const s = eng.site, H = contHeadway(s);
+  if (!H) return;
+  stopAll();
+  eng.mode = 'continuous';
+  eng.peak = -99;
+  const c = eng.cont;
+  c.on = true;
+  c.H = H;
+  c.t0 = eng.ac.currentTime + 0.15;
+  /* Start part-way into a gap so the first train approaches rather than
+     appearing at full level, but never make the listener wait a whole headway
+     for the first one. */
+  c.pk0 = Math.min(0.45 * H, Math.max(0.3 * H, 6.5 * s.tau));
+  c.sched = 0;
+  c.trains = 0;
+  c.eAcc = 0; c.tAcc = 0; c.lastModel = 0;
+  c.hist = [];
+  /* Entering mid-gap means entering at a non-zero level, so fade in over a
+     fraction of a second. Without this the first scheduled ramp is a step from
+     silence and it clicks. */
+  c.fadeEnd = c.t0 + 0.4;
+  setMeterWindow(c.rate);
+  eng.trGain.gain.cancelScheduledValues(eng.ac.currentTime);
+  eng.trGain.gain.setValueAtTime(0, c.t0);
+  eng.trGain.gain.linearRampToValueAtTime(gainFor('tr', streamTrainLevelAt(s, -c.pk0, H)), c.fadeEnd);
+  contSchedule();
+  eng.loopTimer = setInterval(contSchedule, 500);
+}
+/* Write gain automation ahead of the playhead, always six seconds of *audible*
+   time regardless of the compression factor. The cursor c.sched is a model-time
+   position, stepped finely through each event and coarsely across each gap, so
+   a 126-second headway costs about the same to schedule as a 6-second one.
+
+   Scheduling by point rather than by whole cycle matters: at 1x a headway is
+   87 to 126 seconds long, so a cycle-granular scheduler would not begin writing
+   a cycle until almost all of it was already in the past. */
+function contSchedule() {
+  const c = eng.cont;
+  if (!c.on || !eng.ready) return;
+  const s = eng.site, g = eng.trGain.gain, ac = eng.ac;
+  const horizon = (ac.currentTime + 6 - c.t0) * c.rate;
+  const dense = Math.min(c.H / 2, 9 * s.tau);
+  const stepD = Math.max(2 * dense / 240, 2e-3);
+  const stepS = Math.max((c.H / 2 - dense) / 14, stepD);
+  const floorAt = Math.max(ac.currentTime + 0.02, c.fadeEnd);
+  let guard = 0;
+  while (c.sched < horizon && guard++ < 6000) {
+    const rel = c.sched - c.pk0;
+    const off = rel - Math.round(rel / c.H) * c.H;   /* -H/2 .. +H/2 */
+    let step;
+    if (off < -dense)      step = Math.min(stepS, -dense - off);
+    else if (off <= dense) step = stepD;
+    else                   step = Math.min(stepS, (c.H - dense) - off);
+    c.sched += Math.max(step, 2e-3);
+    const at = audioTimeOf(c.sched);
+    if (at > floorAt)
+      g.linearRampToValueAtTime(gainFor('tr', streamTrainLevelAt(s, c.sched - c.pk0, c.H)), at);
+  }
+}
+function audioTimeOf(modelT) { return eng.cont.t0 + modelT / eng.cont.rate; }
+function modelTimeNow() { return (eng.ac.currentTime - eng.cont.t0) * eng.cont.rate; }
+
+/* The meter averages over a window fixed in REAL time, but under compression the
+   model moves through that window faster. At 20x an unchanged 186 ms window would
+   span 3.7 modelled seconds and would smear the peak by several decibels. So the
+   window is shortened in proportion, keeping the modelled averaging time roughly
+   constant. The MODELLED reading is unaffected either way; this only keeps the
+   RENDERED reading a fair check on it. */
+function setMeterWindow(rate) {
+  if (!eng.analyser) return;
+  let n = 8192;
+  while (n > 256 && n / 2 >= 8192 / Math.max(rate, 1) / 1.5) n /= 2;
+  if (eng.analyser.fftSize !== n) {
+    eng.analyser.fftSize = n;
+    eng.buf = new Float32Array(n);
+  }
+}
+
+function setRate(r) {
+  if (eng.cont.on) {
+    /* Preserve the current position in the cycle across a rate change, so the
+       running average is not disturbed by the listener changing the speed. */
+    const mt = modelTimeNow();
+    const g = eng.trGain.gain, now = eng.ac.currentTime;
+    eng.cont.rate = r;
+    eng.cont.t0 = now - mt / r;
+    eng.cont.sched = mt;
+    g.cancelScheduledValues(now);
+    g.setValueAtTime(g.value, now);        /* anchor, or the next ramp steps */
+    eng.cont.fadeEnd = now;
+    setMeterWindow(r);
+    contSchedule();
+  } else {
+    eng.cont.rate = r;
+  }
+  buildTransport();
 }
 
 function holdAt(t) {
@@ -606,9 +848,39 @@ function renderedDbA() {
 function modelledDbA() {
   const s = eng.site;
   if (!eng.on) return null;
+  if (eng.mode === 'continuous' && eng.cont.on)
+    return streamTotalAt(s, modelTimeNow() - eng.cont.pk0, eng.cont.H);
   if (eng.mode === 'baseline' || eng.mode === 'idle') return s.base;
   if (eng.tPos == null) return s.base;
   return totalLevelAt(s, eng.tPos);
+}
+
+/* Integrate the modelled power over MODEL time in bounded steps. Doing it this
+   way rather than once per animation frame keeps the running average correct
+   at high compression factors, where one frame can span several seconds of
+   modelled time and a single sample would miss the peak entirely. */
+function accumulateContinuous() {
+  const c = eng.cont, s = eng.site;
+  const mt = modelTimeNow();
+  if (mt <= c.lastModel) return;
+  const step = Math.min(0.05, c.H / 400);
+  let t = c.lastModel;
+  let guard = 0;
+  while (t < mt && guard++ < 6000) {
+    const dt = Math.min(step, mt - t);
+    const L = streamTotalAt(s, t + dt / 2 - c.pk0, c.H);
+    c.eAcc += dB2p(L) * dt;
+    c.tAcc += dt;
+    t += dt;
+  }
+  c.lastModel = t;
+  c.trains = Math.max(0, Math.floor((t - c.pk0) / c.H) + 1);
+  const last = c.hist.length ? c.hist[c.hist.length - 1].t : -1e9;
+  if (t - last > c.H / 400) {
+    c.hist.push({ t: t, L: streamTotalAt(s, t - c.pk0, c.H) });
+    const win = c.H * 3.2;
+    while (c.hist.length && c.hist[0].t < t - win) c.hist.shift();
+  }
 }
 
 /* ============================================================================
@@ -736,30 +1008,117 @@ function drawPlot(canvas) {
   g.fillStyle = cssVar('--cp-danger');
   g.beginPath(); g.arc(X(0), Y(totalLevelAt(s, 0)), 4, 0, Math.PI * 2); g.fill();
 
-  // playhead
-  if (eng.tPos != null && eng.tPos >= -span && eng.tPos <= span) {
-    const px = X(eng.tPos);
+  // playhead. In continuous mode this is the position within the current cycle,
+  // clamped to the plotted window and drawn faint once the train is far enough
+  // away that the event plot no longer covers it.
+  let ph = eng.tPos, faint = false, lvl = null;
+  if (eng.mode === 'continuous' && eng.cont.on) {
+    const rel = modelTimeNow() - eng.cont.pk0;
+    const off = rel - Math.round(rel / eng.cont.H) * eng.cont.H;
+    faint = Math.abs(off) > span;
+    ph = Math.max(-span, Math.min(span, off));
+    lvl = streamTotalAt(s, off, eng.cont.H);
+  }
+  if (ph != null && ph >= -span && ph <= span) {
+    const px = X(ph);
     g.strokeStyle = cssVar('--cp-text'); g.lineWidth = 1.5;
+    g.globalAlpha = faint ? 0.3 : 1;
+    if (faint) g.setLineDash([3, 4]);
     g.beginPath(); g.moveTo(px, padT); g.lineTo(px, h - padB); g.stroke();
-    const v = totalLevelAt(s, eng.tPos);
+    g.setLineDash([]);
+    const v = lvl != null ? lvl : totalLevelAt(s, ph);
     g.fillStyle = cssVar('--cp-text');
     g.beginPath(); g.arc(px, Y(v), 4.5, 0, Math.PI * 2); g.fill();
+    g.globalAlpha = 1;
+    if (faint) {
+      g.font = '9px Consolas, monospace'; g.fillStyle = cssVar('--cp-text-muted');
+      g.textAlign = ph < 0 ? 'left' : 'right';
+      g.fillText('between trains', px + (ph < 0 ? 6 : -6), padT + 10);
+    }
   }
 }
 
 /* ---------------------------------------------------------------------------
    Frame loop
    ------------------------------------------------------------------------ */
+/* The logging-meter trace. This is the view that makes the difference between
+   an event and a process visible: a single pass-by looks survivable, and the
+   same pass-by every 87 seconds for twenty hours does not. */
+function drawStrip(canvas) {
+  const { g, w, h } = fitCanvas(canvas);
+  const c = eng.cont, s = eng.site;
+  const padL = 34, padR = 10, padT = 10, padB = 20;
+  const Y = v => h - padB - (h - padT - padB) * (Math.max(METER_MIN, Math.min(METER_MAX, v)) - METER_MIN) / (METER_MAX - METER_MIN);
+
+  g.font = '9px Consolas, monospace';
+  g.textAlign = 'right'; g.fillStyle = cssVar('--cp-text-muted');
+  g.strokeStyle = cssVar('--cp-border'); g.lineWidth = 1;
+  for (let v = 40; v <= 100; v += 20) {
+    g.beginPath(); g.moveTo(padL, Y(v)); g.lineTo(w - padR, Y(v)); g.stroke();
+    g.fillText(String(v), padL - 4, Y(v) + 3);
+  }
+  for (const t of THRESH) {
+    g.strokeStyle = cssVar(t.c); g.lineWidth = 1.1; g.setLineDash([4, 3]);
+    g.beginPath(); g.moveTo(padL, Y(t.v)); g.lineTo(w - padR, Y(t.v)); g.stroke();
+    g.setLineDash([]);
+  }
+  if (!c.on || c.hist.length < 2) {
+    g.textAlign = 'center'; g.fillStyle = cssVar('--cp-text-muted'); g.font = '12px system-ui, sans-serif';
+    g.fillText('Start continuous running to draw the trace.', w / 2, h / 2);
+    return;
+  }
+
+  const win = c.H * 3.2, tEnd = c.hist[c.hist.length - 1].t, tStart = tEnd - win;
+  const X = t => padL + (w - padL - padR) * (t - tStart) / win;
+
+  /* running energy average, as a horizontal line -- the number the trace is
+     converging on, drawn against the number the MTA published */
+  const pub = s.leq;
+  if (pub != null) {
+    g.strokeStyle = cssVar('--cp-link'); g.lineWidth = 1.6; g.setLineDash([9, 4]);
+    g.beginPath(); g.moveTo(padL, Y(pub)); g.lineTo(w - padR, Y(pub)); g.stroke();
+    g.setLineDash([]);
+    g.textAlign = 'left'; g.font = '9px Consolas, monospace'; g.fillStyle = cssVar('--cp-link');
+    g.fillText('published Leq ' + pub.toFixed(2), padL + 4, Y(pub) - 3);
+  }
+  g.strokeStyle = cssVar('--cp-text-muted'); g.lineWidth = 1; g.setLineDash([2, 3]);
+  g.beginPath(); g.moveTo(padL, Y(s.base)); g.lineTo(w - padR, Y(s.base)); g.stroke();
+  g.setLineDash([]);
+
+  g.save();
+  g.beginPath(); g.rect(padL, padT, w - padL - padR, h - padT - padB); g.clip();
+  g.beginPath();
+  for (let i = 0; i < c.hist.length; i++) {
+    const p = c.hist[i];
+    if (i === 0) g.moveTo(X(p.t), Y(p.L)); else g.lineTo(X(p.t), Y(p.L));
+  }
+  g.lineTo(X(tEnd), Y(METER_MIN)); g.lineTo(X(c.hist[0].t), Y(METER_MIN)); g.closePath();
+  g.fillStyle = cssVar('--cp-accent'); g.globalAlpha = 0.13; g.fill(); g.globalAlpha = 1;
+  g.beginPath();
+  for (let i = 0; i < c.hist.length; i++) {
+    const p = c.hist[i];
+    if (i === 0) g.moveTo(X(p.t), Y(p.L)); else g.lineTo(X(p.t), Y(p.L));
+  }
+  g.strokeStyle = cssVar('--cp-accent'); g.lineWidth = 1.8; g.stroke();
+  g.restore();
+
+  g.strokeStyle = cssVar('--cp-text'); g.lineWidth = 1.4;
+  g.beginPath(); g.moveTo(X(tEnd), padT); g.lineTo(X(tEnd), h - padB); g.stroke();
+
+  g.textAlign = 'center'; g.fillStyle = cssVar('--cp-text-muted'); g.font = '9px Consolas, monospace';
+  g.fillText('-' + fmtDur(Math.round(win)) + ' of modelled time', padL + (w - padL - padR) * 0.2, h - 6);
+  g.fillText('now', X(tEnd) - 8, h - 6);
+}
+
 function frame() {
   const s = eng.site;
-  if (eng.mode === 'pass' || eng.mode === 'continuous') {
+  if (eng.mode === 'continuous' && eng.cont.on) {
+    accumulateContinuous();
+    eng.tPos = null;
+  } else if (eng.mode === 'pass') {
     const span = eventHalfSpan(s);
-    const el = eng.ac.currentTime - eng.t0;
-    eng.tPos = -span + el;
-    if (eng.tPos > span) {
-      if (eng.mode === 'pass') { eng.mode = 'baseline'; eng.tPos = null; }
-      else eng.tPos = null;
-    }
+    eng.tPos = -span + (eng.ac.currentTime - eng.t0);
+    if (eng.tPos > span) { eng.mode = 'baseline'; eng.tPos = null; }
   }
   const mod = modelledDbA();
   const ren = renderedDbA();
@@ -768,6 +1127,7 @@ function frame() {
   drawMeter($('mNow'), mod, eng.peak, s.base);
   drawMeter($('mBase'), eng.on ? s.base : null, null, null);
   drawPlot($('plot'));
+  if ($('contWrap').style.display !== 'none') { drawStrip($('strip')); updateContStats(); }
 
   $('vNow').textContent = mod == null ? '—' : mod.toFixed(1);
   $('vNow').style.color = levelColour(mod);
@@ -785,6 +1145,50 @@ function frame() {
 
   $('plotSub').innerHTML = plotCaption(s);
   eng.raf = requestAnimationFrame(frame);
+}
+
+/* The running average is the honest part of continuous mode. A pass-by is a
+   number you can dismiss; an energy average accumulated over an hour is the
+   number regulation is written in, and watching it settle onto the published
+   figure is the closest this page comes to validating itself. */
+function updateContStats() {
+  const c = eng.cont, s = eng.site;
+  const pub = s.leq, pred = predictedStreamLeq(s);
+  const run = c.tAcc > 0 ? p2dB(c.eAcc / c.tAcc) : null;
+  const mt = c.on ? modelTimeNow() : 0;
+  const next = c.on ? (c.H - (((mt - c.pk0) % c.H) + c.H) % c.H) : null;
+  const err = (run != null && pub != null) ? run - pub : null;
+
+  const cell = (k, v, sub, col) =>
+    '<div class="stat"><span class="k">' + k + '</span><span class="v"' +
+    (col ? ' style="color:' + col + '"' : '') + '>' + v + '</span><span class="s">' + sub + '</span></div>';
+
+  $('contStats').innerHTML =
+    cell('Modelled elapsed', c.on ? fmtDur(Math.round(mt)) : '—',
+         c.on ? 'at ' + c.rate + '\u00d7 real time' : 'not running') +
+    cell('Trains passed', c.on ? String(c.trains) : '—',
+         'every ' + (c.H ? c.H.toFixed(0) : '—') + ' s, as measured') +
+    cell('Next train in', c.on && next != null ? next.toFixed(0) + ' s' : '—',
+         c.on ? (next / Math.max(c.rate, 1)).toFixed(0) + ' s of your time' : '') +
+    cell('Running Leq', run != null ? run.toFixed(2) : '—',
+         'energy average so far', run != null ? levelColour(run) : null) +
+    cell('Published Leq', pub != null ? pub.toFixed(2) : 'not published',
+         pub != null ? 'MTA, this receptor' : 'nothing to converge on') +
+    cell('Convergence', err != null ? (err >= 0 ? '+' : '') + err.toFixed(2) + ' dB' : '—',
+         err != null ? (Math.abs(err) < 0.25 ? 'settled' : 'still settling') : '',
+         err != null ? (Math.abs(err) < 0.25 ? cssVar('--cp-success') : cssVar('--cp-warning')) : null);
+
+  $('stripSub').innerHTML = !c.on
+    ? 'The trace runs the published headway for this receptor. Time compression shortens every interval by the same factor \u2014 both the gaps <em>and</em> the pass-bys \u2014 so the duty cycle, and therefore the energy average, is unchanged. The trains simply sound faster than they are.'
+    : 'Peaks every <b>' + c.H.toFixed(1) + ' s</b> (' + s.n + ' trains in ' + fmtDur(s.secs) + ', as measured) &middot; ' +
+      'window <b>' + fmtDur(Math.round(c.H * 3.2)) + '</b> of modelled time &middot; ' +
+      'closed-form energy average for this loop <b>' + (pred != null ? pred.toFixed(2) : '—') + ' dB(A)</b>' +
+      (pub != null ? ' against a published <b>' + pub.toFixed(2) + '</b>' : '') +
+      (s.teSource === 'derived'
+        ? ' \u2014 agreeing to <b>' + (pub != null ? (Math.abs(pred - pub) < 0.005 ? 'better than 0.01' : (pred - pub).toFixed(3)) : '\u2014') +
+          ' dB</b>, because \u03c4 was solved from that Leq. This is a consistency check on the arithmetic, not independent evidence. ' +
+          'The small excess is real rather than rounding: the derivation treats each event as <em>replacing</em> the baseline for its duration, while the loop adds the event on top of a baseline that never stops.'
+        : '');
 }
 
 function describeDiff(d, s) {
@@ -832,19 +1236,38 @@ function buildSiteBtns() {
 
 function buildTransport() {
   const t = $('transBtns'); t.innerHTML = '';
-  const dis = !eng.on;
+  const s = eng.site, H = contHeadway(s), dis = !eng.on;
   const add = (label, mode, fn, cls) => {
     const b = mkBtn(label, eng.mode === mode, fn, cls);
-    b.disabled = dis; t.appendChild(b);
+    b.disabled = dis; t.appendChild(b); return b;
   };
   add('Background only &mdash; no train', 'baseline', () => { baselineOnly(); buildTransport(); }, 'big');
-  add('Play one train pass-by', 'pass', () => { playPass(false); buildTransport(); }, 'big');
-  add('Continuous, at the measured headway', 'continuous', () => { playPass(true); buildTransport(); }, 'big');
+  add('Play one train pass-by', 'pass', () => { playPass(); buildTransport(); }, 'big');
+  const cb = add(H ? 'Continuous &mdash; a train every ' + H.toFixed(0) + ' s' : 'Continuous &mdash; unavailable here',
+                 'continuous', () => { if (H) { startContinuous(); buildTransport(); } }, 'big');
+  if (!H) {
+    cb.disabled = true;
+    cb.title = 'This receptor has no published train count or session length, so it has no measured headway. ' +
+               'Running a loop here would mean inventing the service pattern, which is the one thing this page will not do.';
+  }
   const st = mkBtn('Stop', false, () => { stopAll(); baselineOnly(); buildTransport(); });
   st.disabled = dis; t.appendChild(st);
 
+  /* The continuous panel is shown only while it is meaningful, so the page does
+     not display an empty logging trace and six dashes as if they were data. */
+  $('contWrap').style.display = (eng.mode === 'continuous' && eng.cont.on) ? '' : 'none';
+
+  const rb = $('rateBtns'); rb.innerHTML = '';
+  const rates = [[1, 'Real time', 'every interval exactly as measured'],
+                 [6, '6\u00d7', 'six minutes of service per minute'],
+                 [20, '20\u00d7', 'an hour of service in three minutes']];
+  for (const [r, n, sub] of rates) {
+    const b = mkBtn(n + '<span class="lv">' + sub + '</span>', eng.cont.rate === r, () => setRate(r), 'site');
+    b.disabled = dis; rb.appendChild(b);
+  }
+
   const j = $('jumpBtns'); j.innerHTML = '';
-  const s = eng.site, span = eventHalfSpan(s);
+  const span = eventHalfSpan(s);
   const pts = [['Far off', -span], ['Approaching', -s.tau * 2], ['Close', -s.tau * 0.7],
                ['Passing &mdash; peak', 0], ['Receding', s.tau * 0.7], ['Departing', s.tau * 2], ['Gone', span]];
   for (const [n, tv] of pts) {
@@ -902,6 +1325,16 @@ function renderTables() {
        'Transcribed. Used as the energy constraint that fixes the event duration.'],
       ['Trains and session length', s.n ? s.n + ' trains in ' + fmtDur(s.secs) : 'not published', 'b-doc', 'DOCUMENTED',
        s.n ? 'Gives a headway of about ' + (s.secs / s.n).toFixed(0) + ' seconds between trains.' : 'Not reported for this site, so no duration can be derived here.'],
+      ['Headway used by continuous running', contHeadway(s) ? contHeadway(s).toFixed(1) + ' s' : 'unavailable',
+       contHeadway(s) ? 'b-doc' : 'b-asm', contHeadway(s) ? 'DOCUMENTED' : 'ASSUMED',
+       contHeadway(s)
+         ? 'Session duration divided by train count. It is a session mean, so the loop renders a regular rhythm where real service scatters, bunches and thins overnight.'
+         : 'This receptor publishes no train count or session length. Continuous running is disabled here rather than run on an invented headway.'],
+      ['Duty cycle of the loop', contHeadway(s) ? (100 * s.te / contHeadway(s)).toFixed(2) + '%' : '—',
+       contHeadway(s) ? 'b-der' : 'b-asm', contHeadway(s) ? 'DERIVED' : 'ASSUMED',
+       contHeadway(s)
+         ? 'Equivalent peak-level duration divided by headway. This is the fraction of the session spent at full event energy, and it is what makes the running average land where it does.'
+         : 'Not computable without a headway.'],
       ['Equivalent peak-level duration &tau;', s.tau.toFixed(3) + ' s', s.teSource === 'derived' ? 'b-der' : 'b-inf',
        s.teSource === 'derived' ? 'DERIVED' : 'INFERRED',
        s.teSource === 'derived'
