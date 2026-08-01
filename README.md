@@ -12,7 +12,7 @@ A rigorous problem-definition document about noise from NYC Subway **B, D, N and
 
 It is **not a design**. It is the artifact that must exist *before* a design can be honestly procured: a statement of what is known, what is claimed but unevidenced, and what has never been asked.
 
-**Start with [`IDEA-CONCEPT.md`](IDEA-CONCEPT.md).** It is self-contained, ~19,600 words, 14 parts. Three further documents extend it — see [Documents](#documents).
+**Start with [`IDEA-CONCEPT.md`](IDEA-CONCEPT.md).** It is self-contained, ~19,600 words, 14 parts. Four further documents extend it — see [Documents](#documents).
 
 ## Two headline findings
 
@@ -48,6 +48,7 @@ The MTA never published how long a train event lasts — but it published enough
 | **[`PRECEDENT-AND-MATERIALS.md`](PRECEDENT-AND-MATERIALS.md)** | **What has the world already built?** Surveys elevated-transit noise mitigation precedent worldwide — Japan, China, Sweden, Germany, Hong Kong, Australia, Chicago — plus materials and robotics to 2026, and tests what actually transfers to a 1909 suspension bridge. Q14–Q22, Methods 6–10. |
 | **[`WILLIAMSBURG-COMPARATOR.md`](WILLIAMSBURG-COMPARATOR.md)** | **There is a second bridge with the same owner, the same operator, the same division of rolling stock and the same statute. What does it already tell us, and what would measuring it establish?** A two-site comparative survey of the public outdoor space beneath both East River subway bridges. Q23–Q31, Methods 11–14. |
 | **[`VISUAL-MODEL-FRAMEWORK.md`](VISUAL-MODEL-FRAMEWORK.md)** | **Every argument in the first three documents is an argument about a cross-section nobody has drawn.** Can that drawing be built from open data and open tools — and can it be made to admit what it does not know? Q32–Q41, Methods 15–20. Reference implementations: [`visual-review/section-problem.html`](visual-review/section-problem.html) and [`visual-review/model-3d.html`](visual-review/model-3d.html). |
+| **[`FIELD-CAPTURE-PROTOCOL.md`](FIELD-CAPTURE-PROTOCOL.md)** | **Every acoustic claim this programme makes beyond the published levels is invented. Can a consumer phone fix that this month?** A capture protocol for a Samsung Galaxy S23+ targeting the four things the MTA's five-number table discarded — spectral shape, temporal envelope, headway distribution and train attribution — all of which survive an uncalibrated recording chain. Captures C1–C5. Advances Methods 7, 11, 16, 17 and 19. |
 
 The second document is organised around **two research tracks, partitioned by who owns the asset you would have to touch**:
 
@@ -315,6 +316,8 @@ See also **§14 *Counter-citations*** — five works surfaced during red-teaming
 
 An honest audit, because a research programme that only publishes its outputs misrepresents itself. **Twenty methods are specified across the four documents. Zero have been executed.** Every one is a proposal. The distinction matters, because several of the cheapest are also the most load-bearing, and their being undone is the reason so many claims in this repository are hedged.
 
+**Document 5, [`FIELD-CAPTURE-PROTOCOL.md`](FIELD-CAPTURE-PROTOCOL.md), does not add a method.** It specifies an executable route to parts of Methods 7, 11, 16, 17 and 19 using equipment the programme already has. It is also unexecuted.
+
 ### The method register, and its status
 
 | # | Method | Document | Cost | Status |
@@ -330,12 +333,12 @@ An honest audit, because a research programme that only publishes its outputs mi
 | 8 | Receptor-elevation barrier study | 2 | Desk or scale model | Not started. **Can eliminate an expensive option class early.** |
 | 9 | Comparative damping-installation study | 2 | Bench | Not started, correctly sequenced last. |
 | 10 | Responsibility, approval and interface matrix | 2 | **Desk, weeks** | **Not started.** Plausibly the highest ratio of decision value to cost in the programme. |
-| 11 | Two-site `SEL` survey, both bridges | 3 | **Two people, two meters, one week, no permissions** | **Not started.** The cheapest decision-relevant measurement anywhere here. Addresses Q23, Q24, Q26, Q27, Q30 at once. |
+| 11 | Two-site `SEL` survey, both bridges | 3 | **Two people, two meters, one week, no permissions** | **Not started.** The cheapest decision-relevant measurement anywhere here. Addresses Q23, Q24, Q26, Q27, Q30 at once. **A weaker phone-based route is now specified — see Document 5, Part 6.1.** |
 | 12 | Retrieve the CAIT report — email Moon and Roy, Rutgers | 3 | **An email** | **Not started.** The only located measurement of this bridge's structural response is cited at one remove from a news article. |
 | 13 | § 1204-a attention audit, via FOIL | 3 | A form; months of waiting | **Not started.** File first, read last. |
 | 14 | Outdoor-space regulatory review | 3 | Desk, a careful reader | **Not started.** The finding most likely to have consequences outside this project. |
 | 15 | FOIL to NYCDOT for record and rehabilitation drawings | 4 | **A form and a fee** | **Not started. Priority 1.** Could resolve Q32, Q33 and Q36 in one step. |
-| 16 | Walkway photogrammetric survey, Williamsburg Bridge | 4 | **A camera and an afternoon** | **Not started. Priority 2.** Targets the one proposition the shielding hypothesis depends on. |
+| 16 | Walkway photogrammetric survey, Williamsburg Bridge | 4 | **A camera and an afternoon** | **Not started. Priority 2.** Targets the one proposition the shielding hypothesis depends on. **Capture procedure now specified — Document 5, C5.** |
 | 17 | Rephotogrammetry of the HAER photographic sets | 4 | Free software, one afternoon | Not started. Priority 4; likely to fail on baseline grounds, and cheap to establish that. |
 | 18 | Approach NYCDOT re. the traveling maintenance platforms | 4 | A relationship this programme does not have | Not started. Priority 2. |
 | 19 | Build and publish the provenance-tagged L1 model | 4 | Desk, existing public data | **Partially addressed, and not by the specified route.** See below. |
@@ -366,12 +369,23 @@ An honest audit, because a research programme that only publishes its outputs mi
 
 `VISUAL-MODEL-FRAMEWORK.md` Part 11 item 15: **there is no material and interface property register.** The programme can describe geometry it has not measured and levels it has not recorded, but it has no compiled record of the loss factors, dynamic stiffnesses, damping ratios, bond properties or temperature dependencies of any material at any interface on either structure. Materials cannot be reasoned about without it, and no amount of further reading substitutes for a records request and a bench test.
 
+### The one route to executing any of this cheaply
+
+[`FIELD-CAPTURE-PROTOCOL.md`](FIELD-CAPTURE-PROTOCOL.md) specifies five captures achievable with a consumer phone from public ground, and is the only proposal in the programme that requires no permission, no funding and no relationship the programme does not already have. It does not replace Methods 1, 7 or 11 — it is pilot data intended to make the case for them.
+
+Its strategic claim is that **the phone is a poor sound level meter and an excellent sound recorder, and this programme does not need another sound level meter.** The MTA's levels are already rated 5/5 `VERIFIED`. What is missing is everything its five-number table discarded: spectral shape, temporal envelope, headway distribution and train attribution — **all four of which are relative or temporal, and therefore survive an uncalibrated chain.**
+
+The highest-value item is **C2, the temporal envelope**, because it is the only proposal anywhere in this repository that could establish that the programme's own derived result is wrong. `IDEA-CONCEPT.md` §1.7 solves for event duration under an *assumed* envelope shape, and the continuous audio loop then converges on the published `Leq` **because that is the number the shape was solved from** — a closed loop, which the artifact says of itself and which issues #13 and #15 exist to attack. A single measured envelope opens it.
+
+**None of it has been executed.**
+
 ## Status
 
 **`IDEA-CONCEPT.md` — draft v1.2.** Revised after an adversarial review pass. v1.2 adds §1.7, a derivation of train-event duration from the MTA's published session statistics — the only result in the repository that is calculated here rather than retrieved.
 **`PRECEDENT-AND-MATERIALS.md` — draft v1.1.** Revised after an adversarial review that found three material errors in v1.0 and returned a verdict of *not fit to publish*; all are corrected and left visible.
 **`WILLIAMSBURG-COMPARATOR.md` — draft v1.1.** Revised after an adversarial review that returned *not fit to publish* with eight blocking issues; all corrected and left visible, with a ten-row table of withdrawn claims. Adopts the "locus" discipline: every quantitative or dispositive claim quotes the exact passage it rests on.
 **`VISUAL-MODEL-FRAMEWORK.md` — draft v1.1.** Revised after an adversarial review that returned *not fit to publish* with six blocking issues; twelve claims withdrawn, and the reference implementation reworked after the review found it violating the schema defined in the document it accompanies. Extends the locus discipline from citations to model geometry.
+**`FIELD-CAPTURE-PROTOCOL.md` — draft v1.0.** Not yet red-teamed. Most of its hardware and application detail is rated `SNIPPET` rather than `VERIFIED`, because no Galaxy S23+ was tested in writing it; Part 4.6 specifies a bench test that settles those claims on the actual handset, and states that where the handset disagrees with the document, the handset is right.
 
 **Interactive artifacts — three, all self-contained and dependency-free.** [`section-problem.html`](visual-review/section-problem.html) (2D provenance-tagged section), [`model-3d.html`](visual-review/model-3d.html) (navigable four-tier 3D model of both bridges), [`acoustic-demo.html`](visual-review/acoustic-demo.html) (audible level demonstration with derived event durations). The 3D model contains **zero measured elements**; the audio demo is **synthesised, not recorded**. Both say so in their own interfaces.
 
