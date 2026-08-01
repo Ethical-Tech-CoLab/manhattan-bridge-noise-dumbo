@@ -36,7 +36,21 @@ The 2005 FEIS also measured **trains at 77 dBA against vehicular traffic at 63 d
 
 No evidence was found that the level was ever established. The Manhattan Bridge is an elevated structure. Category IV is its category. Category IV has no standard.
 
-## Structure
+## Documents
+
+| Document | Asks |
+|---|---|
+| **[`IDEA-CONCEPT.md`](IDEA-CONCEPT.md)** | **What is the problem?** Defines the DUMBO rail-noise problem from agency evidence, establishes who is responsible under what law, and derives the questions nobody has asked of this site. Q1–Q13, Methods 0–5. |
+| **[`PRECEDENT-AND-MATERIALS.md`](PRECEDENT-AND-MATERIALS.md)** | **What has the world already built?** Surveys elevated-transit noise mitigation precedent worldwide — Japan, China, Sweden, Germany, Hong Kong, Australia, Chicago — plus materials and robotics to 2026, and tests what actually transfers to a 1909 suspension bridge. Q14–Q22, Methods 6–10. |
+
+The second document is organised around **two research tracks, partitioned by who owns the asset you would have to touch**:
+
+- **Track A** — NYCDOT bridge steel, the path, and the receptors. *Assumes the MTA system is not modified.*
+- **Track B** — MTA rail, fixation, attachments and substrate.
+
+**These tracks are an implementation partition, not a physical one.** Draft v1.0 of that document wrongly assigned frequency bands to owners; v1.1 withdraws it. The physical partition is excitation → radiator → path → receptor, and the two are orthogonal.
+
+### Structure of `IDEA-CONCEPT.md`
 
 | Part | Question |
 |---|---|
@@ -56,6 +70,35 @@ No evidence was found that the level was ever established. The Manhattan Bridge 
 | 14 | Sources, with credibility scores and verification states |
 
 **Parts 10 and 13 are the contribution.** Parts 1–9 are synthesis.
+
+### Structure of `PRECEDENT-AND-MATERIALS.md`
+
+| Part | Question |
+|---|---|
+| 1 | How is the option space organised, and what partitions it? |
+| 2 | How much of the noise is the structure itself? |
+| 3 | **Track A** — what has been built on the structure, the path and the receptor? |
+| 4 | **Track B** — what has been built on track, attachments and substrate? |
+| 5 | What regulatory architecture exists elsewhere that New York lacks? |
+| 6 | What materials and methods are actually available in 2026? |
+| 7 | What are the labour, maintenance and whole-life models? |
+| 8 | **What actually transfers to a suspension bridge?** |
+| **9** | **The questions this survey opens** (Q14–Q22) |
+| 10 | How would we answer them? (Methods 6–10) |
+| **11** | **Where might this document still be wrong?** |
+| 12 | Sources, retrieval priorities, and what was explicitly not found |
+
+**Parts 8 and 11 are the contribution.** A survey that lists what exists without testing transferability is a catalogue, not research.
+
+## What the precedent survey found
+
+**Three findings, and the second is a correction of the first draft.**
+
+**1. No single measure has been shown to be sufficient.** The closest published analogue — a systematic study of four noise-reduction measures on a *steel railway bridge* — reports that reaching a 10 dB(A) goal required a **combination spanning both a track-side and a structure-side measure**. On this bridge that means **both owners would have to act**. *(Odebrant, Journal of Sound and Vibration, 1996 — and this rests on an abstract, which is exactly the weakness the method warns about.)*
+
+**2. The most attractive-looking option in the survey turned out to be disqualifying.** A 2024 *Scientific Reports* paper appeared to offer noise reduction by *removing* material — perforating the structure to create acoustic short circuits, the only treatment class that would *relax* rather than consume the unresolved mass budget. Reading past the abstract to the paper's conclusions reversed it: the technique has **"minimal effect on the bridge's radiated sound power, and may even lead to an increase,"** and produces **"a noise-amplifying phenomenon... beneath the bridge."** The authors are untroubled because those areas are *"free of residential development."* **In DUMBO, beneath the bridge is the residential area.** The option is excluded.
+
+**3. Japan set the number New York left blank.** N.Y. Public Authorities Law § 1204-a contains a Sound Level Table whose Category IV — ELEVATED STRUCTURES reads *"Sound level to be established."* It never was. Japan's Shinkansen environmental quality standard sets enforceable limits with **deadlines indexed to how bad the exceedance is** and a **mandated fallback to soundproofing dwellings** where the limit cannot be met. It is a non-binding foreign analogue for a different rail mode — not a legal argument — but it demonstrates that the architecture § 1204-a gestures at exists and has for decades.
 
 ## Method
 
@@ -83,6 +126,18 @@ The two most instructive failures — both caused by *summarising a source rathe
 
 Other corrections: the mass constraint was downgraded from a binary filter to an open question (the referee's identified "weakest link"); Q4's acoustical terminology was corrected; Q1's "four percentages" was withdrawn as ill-posed in favour of a source–radiator–path matrix; an unachievable success criterion was replaced; and Part 10's novelty claims were narrowed throughout to *"not found for this site."*
 
+**Then it happened again, three times, in the second document.** `PRECEDENT-AND-MATERIALS.md` v1.0 was refereed and returned **not fit to publish**. Three of its errors had the *same single cause* as the two above — **a source was summarised from its abstract rather than read to its conclusions**:
+
+| Error in v1.0 | What the source actually said |
+|---|---|
+| Perforation reduces bridge noise and removes mass | It does **not** reduce radiated sound power, may increase it, **amplifies beneath the bridge**, and the openings get covered with mesh plates |
+| Cold spray is field-proven on **in-service** bridge steel | The bridge was **decommissioned** — and `IDEA-CONCEPT.md` §8.1 already had this right, so v1.0 contradicted its own companion |
+| Track A addresses low frequency, Track B high | False — resilient fasteners are Track B and act on **low** frequency; barriers are Track A and act on **mid/high** |
+
+Also corrected: a rail-damper figure measured in a Perth **tunnel on slab track** had been declared "the applicable figure" for an open steel deck over a river; four separate overstatements in the Japan comparison; and a recommendation to "sequence Track A first" that conflicted with the document's own gates.
+
+**Five errors, one cause, across two documents.** That is the finding the method exists to produce. Rule 2 — *a plausible URL proves nothing; state whether you actually opened it* — is not bureaucratic overhead. **Every single failure in this repository so far has been a rule 2 failure.**
+
 ## Where further research should start
 
 Not with more reading. **The four highest-value actions are records requests, not research** — none has been done in twenty-one years, and each closes a larger uncertainty than any literature review could:
@@ -94,20 +149,30 @@ Not with more reading. **The four highest-value actions are records requests, no
 
 Then the instrumented source apportionment of **Method 1**.
 
+Two further items come from the precedent survey and are cheaper than either:
+
+5. **A responsibility, approval and interface matrix** for the track–structure boundary — who approves, who is liable, what outage is needed, for each candidate intervention. A desk exercise measured in weeks. *(Q19, Method 10)*
+6. **The full text of Odebrant 1996** — the single most load-bearing source in `PRECEDENT-AND-MATERIALS.md` is currently an abstract. *(§12, retrieval priority 1)*
+
 See also **§14 *Counter-citations*** — five works surfaced during red-teaming that bear directly on Q1–Q8 and were **not read in full**. Any team taking this forward should start there.
 
 ## Status
 
-**Draft v1.1.** Revised after an adversarial review pass. Not peer-reviewed. Novelty claims are provisional; measured facts are solid. The document's own Part 13 is the best guide to how much to trust it.
+**`IDEA-CONCEPT.md` — draft v1.1.** Revised after an adversarial review pass.
+**`PRECEDENT-AND-MATERIALS.md` — draft v1.1.** Revised after an adversarial review that found three material errors in v1.0 and returned a verdict of *not fit to publish*; all are corrected and left visible.
+
+Neither is peer-reviewed. Novelty claims are provisional; measured facts are solid. **Each document's own red-team Part is the best guide to how much to trust it** — `IDEA-CONCEPT.md` Part 13 and `PRECEDENT-AND-MATERIALS.md` Part 11.
+
+**No option in either document is recommended for procurement.**
 
 ## Contributing
 
 This is a working research repository. Useful contributions, roughly in order of value:
 
-- Answering any of Q1–Q13 with sourced evidence
-- **Falsifying** any "not found" claim in §14 — two have already failed, and the prior on others failing is not low
-- Non-English literature (Japanese, Chinese, German elevated-transit retrofit precedent), a known and material gap
-- Full texts for the 20 `SNIPPET` sources, especially **TCRP Report 23** and the **WHO Environmental Noise Guidelines**, which are load-bearing
+- Answering any of **Q1–Q22** with sourced evidence
+- **Falsifying** any "not found" claim — five have already failed across two documents, and the prior on others failing is not low
+- Non-English literature (Japanese, Chinese, German elevated-transit retrofit precedent) — **narrowed** by `PRECEDENT-AND-MATERIALS.md`, which reached Japanese and Chinese institutions only through their English-language outputs, and therefore **not closed**
+- Full texts for the `SNIPPET` sources, especially **Odebrant 1996** (the single most load-bearing source in the precedent survey is currently an abstract), **TCRP Report 23** and the **WHO Environmental Noise Guidelines**, which are load-bearing
 - Legal research on § 1204-a implementation, NYC Noise Control Code preemption, SEQRA and nuisance doctrine
 
 ## License
