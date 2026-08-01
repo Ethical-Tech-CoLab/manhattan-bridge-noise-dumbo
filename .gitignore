@@ -1,0 +1,17 @@
+# Research artifacts / working files
+*.tmp
+*.bak
+~$*
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+
+# Retrieved source caches (large; re-retrievable via Part 14 citations)
+sources/cache/
+*.pdf.txt
