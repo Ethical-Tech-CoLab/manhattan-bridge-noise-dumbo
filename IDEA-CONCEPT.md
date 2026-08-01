@@ -3,7 +3,7 @@
 ## Silencing the Span: Defining the Manhattan Bridge Rail-Noise Problem in DUMBO for a Design-Build Intervention
 
 **Document type:** Pre-proposal problem definition and research-gap analysis
-**Status:** Draft v1.1 — for academic review and design-build scoping. Revised after an adversarial review pass; see §0.1 and Part 13.
+**Status:** Draft v1.2 — for academic review and design-build scoping. Revised after an adversarial review pass; see §0.1 and Part 13. v1.2 adds §1.7, a derivation performed for this document rather than retrieved from a source.
 **Date:** 1 August 2026
 **Subject:** Noise emitted by New York City Subway B, D, N and Q services crossing the Manhattan Bridge, and received in DUMBO, Brooklyn
 
@@ -59,7 +59,7 @@ No claim in Parts 1–6 rests on an `UNVERIFIED` source.
 
 **A worked demonstration of why rule 2 matters.** Two of this document's original claims were wrong *because a source was summarised rather than opened*. The Rapid Transit Noise Code was characterised from the MTA's description of it rather than from the statute; reading the statute reversed the finding and strengthened it (§3.4, red-team item 10b). And an assertion that no other systematic measurement existed was falsified by a 2005 environmental impact statement that had been in the public record for two decades (§1.5). **Both errors were mine, both were caught adversarially, and both are left visible in the text rather than silently repaired** — because a methodology document that hides its own method failures is not evidence of the method working.
 
-**Status of this version.** Draft v1.1 incorporates an adversarial review pass. Corrections are marked in place with the reasoning shown, so that a reader can see what changed and why.
+**Status of this version.** Draft v1.1 incorporates an adversarial review pass. Corrections are marked in place with the reasoning shown, so that a reader can see what changed and why. **Draft v1.2 adds §1.7**, which is different in kind from everything else in this document: it reports arithmetic performed here on the MTA's published numbers rather than a claim retrieved from a source. It is labelled as such, its derivation is printed in full, and its weaknesses are stated with it, because a derived result carries no source rating and must therefore carry its own audit trail.
 
 ## 0.2 Notation
 
@@ -190,6 +190,42 @@ Read those two sentences together. The agency:
 **The park users received nothing.** The obligation was met by protecting future indoor private occupants and declaring the outdoor public realm beyond help. This is the same substitution documented sociologically in §2.2 — but here it is performed formally, in an environmental impact statement, and accepted.
 
 Note also the word *infeasible*. It is the same word MoW used to close Warren Barlowe's rail-joint proposal in two days in 2022 (§5.5). **In both instances the determinative finding in this seventy-year problem is an undocumented assertion of infeasibility.** That recurrence is the strongest single argument for the diagnostic-first procurement in §12.
+
+## 1.7 A quantity nobody published, recovered from the numbers that were
+
+*New in v1.2. This section reports arithmetic performed for this document, not a retrieved source. It is offered as a derivation to be checked, not as a measurement.*
+
+The § 1204-a survey reports, for each public-space session, four quantities: the session `Leq`, the peak `Lmax`, the train-free baseline, and a count of *N* trains over a stated duration *T*. It does not report **how long a train event lasts** — and that omission matters, because event duration is what converts a peak level into an exposure, and it is the quantity every downstream calculation in transit-noise assessment needs.
+
+Those four numbers nonetheless determine it. If a session is modelled as its baseline interrupted by *N* equal events, each spending an equivalent time `Te` at the peak level, the energy balance is:
+
+`10^(Leq/10) · T = N · Te · 10^(Lmax/10) + (T − N · Te) · 10^(Lbase/10)`
+
+which rearranges to:
+
+`Te = ( T · 10^(Leq/10) − T · 10^(Lbase/10) ) / ( N · ( 10^(Lmax/10) − 10^(Lbase/10) ) )`
+
+Applied to the three **public outdoor** sessions in §1.2:
+
+| Location | `Leq` | `Lmax` | Baseline | Trains | Session | **Derived `Te`** | Duty cycle |
+|---|---|---|---|---|---|---|---|
+| Adams Street Library | 84.65 | 98.10 | 48.1 | 9 | 0:18:56 | **5.70 s** | 4.52% |
+| Brooklyn Bridge Park dog run | 87.50 | 98.90 | 65.0 | 26 | 0:37:45 | **6.28 s** | 7.21% |
+| DUMBO Archway | 81.33 | 91.80 | 68.9 | 18 | 0:25:35 | **7.25 s** | 8.51% |
+
+**The three converge.** They were recorded at different places, on different days, with different train counts, different session lengths and baselines that differ by nearly 21 dB — and they resolve to equivalent event durations spanning **5.70 to 7.25 seconds**, a ratio of 1.27, which is **1.04 dB of event energy**. Three independent sessions agreeing to within about one decibel is not what one expects from noise; it is what one expects when the sessions are measuring **the same physical event**.
+
+That is the finding. It has three consequences.
+
+**(1) It supplies a missing input.** Any `SEL` calculation, any FTA-style assessment, and any synthesis of what the event actually sounds like requires a duration. None is published. This one is recoverable from the published record with no new measurement, and it can be checked by anyone with the same table.
+
+**(2) It independently corroborates §1.3.** Run the same arithmetic on the **indoor** rows and it breaks. At 31 Washington Street — `Leq` 54.54, Max `Lmax` 75.70, baseline 43.1, 423 trains over 8:16:40 — the balance returns **0.50 seconds**, an eighth of the outdoor figure. The reason is instructive rather than fatal: across 423 passages the *maximum* `Lmax` is a rare outlier, not a typical event, so using it as the level of every event forces the duration down to compensate. Substituting that site's *average* `Lmax` of 59.34 instead returns 22.2 seconds, a 31% duty cycle. **The outdoor sessions are stable under this test and the indoor ones are not**, which is exactly what §1.3 argues on entirely separate grounds: the indoor rows describe privately mitigated interiors and the outdoor rows describe the unmitigated condition, and the two datasets are not commensurable.
+
+**(3) It surfaces a probable reporting artefact that nobody appears to have queried.** At **56 Adams Street** the table reports an average `Leq` of 70.25 and an average `Lmax` of *also* 70.25. The balance resolves that to a **100% duty cycle** — the site would have to be at peak level continuously for eleven hours. That is not a physical result; it is a signal that the two columns for that row are not reporting what the column headings say. It may be a transcription error, a different averaging convention applied to one row, or a genuinely saturated measurement. **It should be asked about**, and it is the kind of question the raw time histories requested in §3.2 would settle immediately.
+
+**Where this derivation is weak.** It assumes every train event is identical, which they are not — B, D, N and Q services differ in car class, consist length and axle count, and the reports normalise for none of that. It assumes a rectangular event, so `Te` is an *equivalent* duration and not the time a train is audible, which is considerably longer. It assumes the published baseline is a true train-free floor, which at the DUMBO Archway (baseline 68.9 dB(A)) is doubtful — some of what is attributed to background there is plausibly distant rail. And it depends entirely on the four published numbers being what their column headings say, which the 56 Adams row gives direct reason to doubt. **None of these weaknesses is repaired by more reading. All are repaired by Method 1, or more cheaply by the raw time histories.**
+
+An interactive implementation of this derivation, with the arithmetic printed for each site and the failure at the indoor sites shown rather than hidden, is at [`visual-review/acoustic-demo.html`](visual-review/acoustic-demo.html).
 
 ---
 
@@ -1043,6 +1079,8 @@ Research conducted 1 August 2026 using the Tavily API (search, extract) for sour
 
 **Revision note (v1.1).** This document was subjected to an adversarial referee pass after drafting. That pass returned a verdict of *"not ready to justify procurement"* and identified nine blocking issues, of which the most serious were: an asserted-but-unmeasured mass constraint; a materially incorrect reading of PAL §1204-a; several acoustical terminology errors in Q4; an ill-posed decomposition in Q1; an unachievable success criterion in Part 12; and overstated novelty throughout Part 10. **All are corrected in place above, with the original claim quoted and the reasoning shown.** Nothing was quietly deleted. The referee's identification of the mass constraint as this document's "weakest link" was correct, and §6.0 now says so.
 
+**Revision note (v1.2).** One section was added after the v1.1 review: **§1.7**, which derives train-event duration from the MTA's published session statistics. It is flagged separately here because it is **the only claim in this document that is not a claim about a source.** Every other statement in these fourteen parts can be checked by retrieving a document; §1.7 can only be checked by redoing arithmetic. That makes it more exposed, not less — it carries no source rating to hide behind — so the derivation is printed in full, the sites where it fails are shown failing, and its four assumptions are stated in the section itself. **If it is wrong, it is wrong in a way that is visible on the page.** A reviewer who disagrees with the equal-event assumption or the treatment of Max `Lmax` should say so; that is what it is published for.
+
 **What the document claims after revision.** Not that the answer is known — that the question has never been properly asked. Specifically:
 
 1. **The problem is measured and severe.** Two independent agency datasets, 18 years apart, agree: trains dominate by ~14 dB, the structure is an efficient radiator, and a measured **L10(1) ≈ 81 dBA** at John and Adams Street sits above the City's own "clearly unacceptable" threshold. *(§1.5, §3.2)*
@@ -1050,5 +1088,6 @@ Research conducted 1 August 2026 using the Tavily API (search, extract) for sour
 3. **It has never been structurally scoped.** No mass, moment or wind-area budget exists, so half the option space is neither open nor closed. *(Q13)*
 4. **It has never been legally anchored.** The governing statute reaches this structure and these receptors, sets a 4/8/12-year compliance schedule for elevated structures, and leaves the sound level itself blank. *(§3.4, Q11)*
 5. **The four things that would change this are records requests, not research.** The load rating, the joint inventory, the raw time histories, and the Category IV records question. None has been done in twenty-one years. *(Method 0, §12.2)*
+6. **Even the published record has not been fully read.** §1.7 recovers a decision-relevant quantity from four numbers that have been sitting in an MTA memorandum since January 2024, and surfaces a probable reporting artefact in the same table that nobody appears to have queried. *(§1.7)*
 
 **This document is a problem definition, not a design.** Its operative recommendation is that no party should be asked to price a solution until Method 0 and Method 1 have been completed.

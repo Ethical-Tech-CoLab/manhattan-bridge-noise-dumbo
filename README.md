@@ -36,6 +36,10 @@ The 2005 FEIS also measured **trains at 77 dBA against vehicular traffic at 63 d
 
 No evidence was found that the level was ever established. The Manhattan Bridge is an elevated structure. Category IV is its category. Category IV has no standard.
 
+### And one result derived here rather than found
+
+The MTA never published how long a train event lasts — but it published enough to determine it. Solving the session energy balance for the three public outdoor measurements gives equivalent event durations of **5.70, 6.28 and 7.25 seconds**: three sessions, different days, different places, baselines 21 dB apart, agreeing to within **1.04 dB of event energy**. Run the same arithmetic on the *indoor* rows and it breaks — which is independent corroboration that the indoor and outdoor datasets are not describing the same thing. See [`IDEA-CONCEPT.md` §1.7](IDEA-CONCEPT.md) for the derivation and its weaknesses, and [`visual-review/acoustic-demo.html`](visual-review/acoustic-demo.html) to hear it.
+
 ## Documents
 
 | Document | Asks |
@@ -43,7 +47,7 @@ No evidence was found that the level was ever established. The Manhattan Bridge 
 | **[`IDEA-CONCEPT.md`](IDEA-CONCEPT.md)** | **What is the problem?** Defines the DUMBO rail-noise problem from agency evidence, establishes who is responsible under what law, and derives the questions nobody has asked of this site. Q1–Q13, Methods 0–5. |
 | **[`PRECEDENT-AND-MATERIALS.md`](PRECEDENT-AND-MATERIALS.md)** | **What has the world already built?** Surveys elevated-transit noise mitigation precedent worldwide — Japan, China, Sweden, Germany, Hong Kong, Australia, Chicago — plus materials and robotics to 2026, and tests what actually transfers to a 1909 suspension bridge. Q14–Q22, Methods 6–10. |
 | **[`WILLIAMSBURG-COMPARATOR.md`](WILLIAMSBURG-COMPARATOR.md)** | **There is a second bridge with the same owner, the same operator, the same division of rolling stock and the same statute. What does it already tell us, and what would measuring it establish?** A two-site comparative survey of the public outdoor space beneath both East River subway bridges. Q23–Q31, Methods 11–14. |
-| **[`VISUAL-MODEL-FRAMEWORK.md`](VISUAL-MODEL-FRAMEWORK.md)** | **Every argument in the first three documents is an argument about a cross-section nobody has drawn.** Can that drawing be built from open data and open tools — and can it be made to admit what it does not know? Q32–Q41, Methods 15–20. Reference implementation: [`visual-review/section-problem.html`](visual-review/section-problem.html). |
+| **[`VISUAL-MODEL-FRAMEWORK.md`](VISUAL-MODEL-FRAMEWORK.md)** | **Every argument in the first three documents is an argument about a cross-section nobody has drawn.** Can that drawing be built from open data and open tools — and can it be made to admit what it does not know? Q32–Q41, Methods 15–20. Reference implementations: [`visual-review/section-problem.html`](visual-review/section-problem.html) and [`visual-review/model-3d.html`](visual-review/model-3d.html). |
 
 The second document is organised around **two research tracks, partitioned by who owns the asset you would have to touch**:
 
@@ -51,6 +55,56 @@ The second document is organised around **two research tracks, partitioned by wh
 - **Track B** — MTA rail, fixation, attachments and substrate.
 
 **These tracks are an implementation partition, not a physical one.** Draft v1.0 of that document wrongly assigned frequency bands to owners; v1.1 withdraws it. The physical partition is excitation → radiator → path → receptor, and the two are orthogonal.
+
+## Interactive artifacts
+
+Three self-contained HTML files. **No build step, no server, no network access, no dependencies** — download and double-click, or clone and open. Each is a reference implementation of the provenance discipline described in `VISUAL-MODEL-FRAMEWORK.md`, applied to a different medium.
+
+| Artifact | What it is for | What to look at first |
+|---|---|---|
+| **[`visual-review/section-problem.html`](visual-review/section-problem.html)** | **The 2D provenance-tagged section.** Every component of the Manhattan Bridge track zone, colour-coded and dash-coded by how well it is known, with the source rubric attached to each. | Turn off the `DOCUMENTED` filter and watch most of the drawing disappear. |
+| **[`visual-review/model-3d.html`](visual-review/model-3d.html)** | **The navigable 3D model.** Both bridges, four zoom tiers from the whole crossing down to a single rail fastener, with anchored callouts, click-to-inspect components, and a live scale bar. | The tier ladder: **T0 Context → T1 Bay → T2 Track → T3 Fastener.** Then turn every provenance filter off. |
+| **[`visual-review/acoustic-demo.html`](visual-review/acoustic-demo.html)** | **The audible level demonstration.** Hear a train approach, pass and depart at the correct decibel difference against each receptor's measured background, with live A-weighted meters and CEQR threshold marks. | Select **Brooklyn Bridge Park dog run**, play one pass-by, and read the difference number. Then read why the event duration on that page is derived rather than published. |
+
+### The 3D model, in more detail
+
+`model-3d.html` answers the request to review the structure *"at a distance and at a very granular review"* through a four-tier ladder. Each tier reframes the camera, swaps the component set, and re-anchors its callouts:
+
+| Tier | Extent | What becomes visible | Components |
+|---|---|---|---|
+| **T0 — Context** | ~2,400 ft | The whole crossing, the water, the shore, and the sightlines from the track zone to the DUMBO receptors | 8 (MB) / 4 (WB) |
+| **T1 — Bay** | ~170 ft | One structural bay: truss panels, chords, floorbeams, the track's position within the section, and the deck arrangement that makes the two bridges different | 7 (MB) / 8 (WB) |
+| **T2 — Track** | ~26 ft | Rail, tie, fastener, ballast or direct fixation, and the transverse spacing that every acoustic argument depends on | 6 |
+| **T3 — Fastener** | ~2.2 ft | A single fastening assembly — clip, pad, bearer, bolt — at a scale bar reading in **inches** | 6 |
+
+**Every component carries two independent tags**, rendered as colour and as line dash so the classification survives greyscale printing and colour-blindness: `GeometryProvenance` (`MEASURED` / `DOCUMENTED` / `INFERRED` / `ASSUMED`) and `VerificationState` (`VERIFIED` / `SNIPPET` / `UNVERIFIED`). Click any component for its source, its rubric rating, and a note on what that source can and cannot carry.
+
+**The single most important thing in the file is what happens when you switch the filters off.** The model contains **zero `MEASURED` elements and zero elements at a `DOCUMENTED` position.** Hide `DOCUMENTED`, `INFERRED` and `ASSUMED` and the viewport goes completely empty, and the heads-up display says so: *the frame is empty. That is the finding.* Everything you can see is reasoned from photographs, historical accounts and engineering convention. Nothing is surveyed. That is the state of public knowledge about this structure, and the model is built to make it impossible to forget.
+
+Two consequences of that, both deliberate and both stated in the interface:
+
+- **T2 and T3 are generated from one shared template for both bridges.** They are identical because no located source describes either structure at those scales. The identity is not a modelling shortcut; it is an accurate representation of the evidence.
+- **No dimension annotation is ever attached to an `ASSUMED` element**, per the rendering rules in `VISUAL-MODEL-FRAMEWORK.md` §5.5. A number next to a guess reads as a measurement, and this project has already had to withdraw claims for exactly that reason.
+
+The sightlines drawn at T0 are **geometric only**. There is no propagation model, no attenuation, no diffraction, and no ground effect anywhere in the file.
+
+### The audio demonstration, in more detail
+
+The MTA's own summary of its DUMBO survey is one sentence: *"On average, the difference between the baseline and the peak sound level is 43 dB(A)."* Forty-three decibels means almost nothing to a reader and everything to a resident. `acoustic-demo.html` moves that number out of the table.
+
+**What is real.** The levels. Every background, peak and session `Leq` on the page is transcribed from MTA doc 138061 or, for the comparator, from the Domino FEIS. The differences between them transfer to your ears exactly.
+
+**What is not.** The timbre. **No third-octave spectrum has ever been published for either bridge**, so the sound is synthesised — generated noise whose level envelope is pinned to the published measurements. The page says this in a red banner before you can turn it on. It also says the thing that most audio demonstrations quietly omit: **a browser cannot reproduce absolute sound pressure level.** What comes out of your speakers depends on your volume knob, your hardware and your room. Only the difference is meaningful.
+
+**A new quantitative result, produced in building it.** The MTA publishes four numbers per public session — `Leq`, peak `Lmax`, train-free baseline, and *N* trains over a duration *T* — but never how long a train event lasts. Those four numbers nonetheless *determine* it, under an energy balance:
+
+`Te = ( T · 10^(Leq/10) − T · 10^(Lbase/10) ) / ( N · ( 10^(Lmax/10) − 10^(Lbase/10) ) )`
+
+Solved across the three public outdoor sessions — taken at different places, on different days, with different train counts and different session lengths — the equivalent event durations converge on **5.70, 6.28 and 7.25 seconds**, a spread of only **1.04 dB** in event energy. That mutual consistency is evidence the three sessions are measuring the same physical event.
+
+**The indoor rows do not converge at all**, and the page shows them failing rather than hiding them. 31 Washington Street resolves to half a second, because across 423 trains its Max `Lmax` is a rare outlier rather than a typical event. 56 Adams Street resolves to a 100% duty cycle — an impossible result, arising because the MTA table reports an `Leq` there identical to its Avg `Lmax`, which looks like a reporting artefact in the source and which no one appears to have queried. Both divergences are independent support for `IDEA-CONCEPT.md` §1.3: **the indoor and outdoor datasets are not describing the same thing.**
+
+The demo shows a **modelled** level and a **rendered** level side by side. They agree to a few tenths of a decibel — and the page states plainly that this agreement is *engineered, not evidential*. It confirms the synthesis is scaled correctly. It confirms nothing about the bridge.
 
 ### Structure of `IDEA-CONCEPT.md`
 
@@ -245,24 +299,84 @@ And four more from the comparator study and the visual framework, of which the f
 
 See also **§14 *Counter-citations*** — five works surfaced during red-teaming that bear directly on Q1–Q8 and were **not read in full**. Any team taking this forward should start there.
 
+## What has not been done
+
+An honest audit, because a research programme that only publishes its outputs misrepresents itself. **Twenty methods are specified across the four documents. Zero have been executed.** Every one is a proposal. The distinction matters, because several of the cheapest are also the most load-bearing, and their being undone is the reason so many claims in this repository are hedged.
+
+### The method register, and its status
+
+| # | Method | Document | Cost | Status |
+|---|---|---|---|---|
+| 0 | Documentary and structural envelope review | 1 | Records request + engineer | **Not started.** Prerequisite to everything. |
+| 1 | Instrumented source apportionment | 1 | Field campaign, 2 seasons, ≥200 passages | **Not started.** The programme's stated prerequisite — nothing else is non-arbitrary without it. |
+| 2 | Staged treatment with untreated control spans | 1 | Capital | Not started. Depends on 1. |
+| 3 | Hybrid FE/BE + SEA model | 1 | Modelling | Not started. **Worthless uncalibrated**, so depends on 1. |
+| 4 | Longitudinal health and exposure panel | 1 | IRB + several hundred participant-nights | Not started. Depends on 1 for a defensible exposure metric. |
+| 5 | Hedonic property-value analysis | 1 | Desk | Not started, and **ranked last on purpose** — identification is likely infeasible here. |
+| 6 | Operational modal and radiation survey of the truss | 2 | Dense instrumentation + acoustic intensity | Not started. Answers the gating structural question. |
+| 7 | Full-spectrum before/after protocol | 2 | Field | Not started. Must precede any installation. |
+| 8 | Receptor-elevation barrier study | 2 | Desk or scale model | Not started. **Can eliminate an expensive option class early.** |
+| 9 | Comparative damping-installation study | 2 | Bench | Not started, correctly sequenced last. |
+| 10 | Responsibility, approval and interface matrix | 2 | **Desk, weeks** | **Not started.** Plausibly the highest ratio of decision value to cost in the programme. |
+| 11 | Two-site `SEL` survey, both bridges | 3 | **Two people, two meters, one week, no permissions** | **Not started.** The cheapest decision-relevant measurement anywhere here. Addresses Q23, Q24, Q26, Q27, Q30 at once. |
+| 12 | Retrieve the CAIT report — email Moon and Roy, Rutgers | 3 | **An email** | **Not started.** The only located measurement of this bridge's structural response is cited at one remove from a news article. |
+| 13 | § 1204-a attention audit, via FOIL | 3 | A form; months of waiting | **Not started.** File first, read last. |
+| 14 | Outdoor-space regulatory review | 3 | Desk, a careful reader | **Not started.** The finding most likely to have consequences outside this project. |
+| 15 | FOIL to NYCDOT for record and rehabilitation drawings | 4 | **A form and a fee** | **Not started. Priority 1.** Could resolve Q32, Q33 and Q36 in one step. |
+| 16 | Walkway photogrammetric survey, Williamsburg Bridge | 4 | **A camera and an afternoon** | **Not started. Priority 2.** Targets the one proposition the shielding hypothesis depends on. |
+| 17 | Rephotogrammetry of the HAER photographic sets | 4 | Free software, one afternoon | Not started. Priority 4; likely to fail on baseline grounds, and cheap to establish that. |
+| 18 | Approach NYCDOT re. the traveling maintenance platforms | 4 | A relationship this programme does not have | Not started. Priority 2. |
+| 19 | Build and publish the provenance-tagged L1 model | 4 | Desk, existing public data | **Partially addressed, and not by the specified route.** See below. |
+| 20 | Negative-result search on provenance-tagged infrastructure models | 4 | Desk | **Not started. This blocks any novelty claim**, and one has already been withdrawn for being made ahead of it. |
+
+**On Method 19.** [`visual-review/model-3d.html`](visual-review/model-3d.html) establishes the schema in a working artifact rather than a proposal, which was the method's stated purpose. **It is not the L1 model.** The specification called for 2017 LiDAR, the NYC 3D Model and OpenStreetMap assembled in QGIS and CloudCompare and exported as `IFC` with `Pset_ResearchProvenance` populated. None of that survey data is in the file — the geometry is hand-authored from photographs, historical accounts and engineering convention, which is exactly why the model contains zero `MEASURED` elements and goes empty when the filters are switched off. **Method 19 remains open.** What has been demonstrated is that the tagging discipline is implementable and legible; what has not been demonstrated is that it survives contact with real survey data.
+
+### Retrieval priorities still outstanding
+
+| Source | Why it matters | Blocker |
+|---|---|---|
+| **Odebrant, *JSV* 193(1):227–233 (1996)** | The single most load-bearing source in `PRECEDENT-AND-MATERIALS.md`, and it is still an abstract | Paywall / interlibrary loan |
+| **ROSA-P `dot/35570`** | US transit noise source material | HTTP 403 on repeated attempts |
+| **NYC Parks FEIS `12DPR005Q`, Ch. 13** | Part 4's regulatory finding rests partly on a quotation **truncated mid-sentence** | Retrieved only as a `SNIPPET`; not opened |
+| **Banfi 2017; Brumana et al. 2019** | The entire heritage-BIM reliability-tagging precedent, and both are open-access | Read as `SNIPPET` only — the same failure mode this programme has corrected five times |
+| **IFC 4.3 / ISO 16739-1** | The edition actually cited is unconfirmed | Not verified against the standard |
+| **OpenStreetMap geometry for both bridges** | Would give a checkable planform | Overpass API returned 406 without a User-Agent, then 504 from both mirrors |
+| **`IDEA-CONCEPT.md` §14 counter-citations** | Five works that bear directly on Q1–Q8 | **Surfaced during red-teaming and not read in full** |
+
+### Questions marked blocking that are still open
+
+- **Q2 — the actual joint and rail-fixation specification** on the four tracks. Not documented in any located source. Method 15 or Method 0.
+- **Q32 — the measured transverse section of the Manhattan Bridge** at midspan, at a tower, and at the Brooklyn approach. *Every acoustic argument in this programme depends on it and no source above rubric 1/5 states any of it.*
+- **Q33 — the relative vertical positions** of the Williamsburg Bridge's track, roadway deck, walkway and truss bottom chord. Determines whether Document 3's shielding hypothesis is even geometrically possible.
+- **Q36 — the dynamic stiffness of the installed rail fastening assembly.** This is the acoustic model's boundary condition, not a detail.
+
+### The largest single hole, named
+
+`VISUAL-MODEL-FRAMEWORK.md` Part 11 item 15: **there is no material and interface property register.** The programme can describe geometry it has not measured and levels it has not recorded, but it has no compiled record of the loss factors, dynamic stiffnesses, damping ratios, bond properties or temperature dependencies of any material at any interface on either structure. Materials cannot be reasoned about without it, and no amount of further reading substitutes for a records request and a bench test.
+
 ## Status
 
-**`IDEA-CONCEPT.md` — draft v1.1.** Revised after an adversarial review pass.
+**`IDEA-CONCEPT.md` — draft v1.2.** Revised after an adversarial review pass. v1.2 adds §1.7, a derivation of train-event duration from the MTA's published session statistics — the only result in the repository that is calculated here rather than retrieved.
 **`PRECEDENT-AND-MATERIALS.md` — draft v1.1.** Revised after an adversarial review that found three material errors in v1.0 and returned a verdict of *not fit to publish*; all are corrected and left visible.
 **`WILLIAMSBURG-COMPARATOR.md` — draft v1.1.** Revised after an adversarial review that returned *not fit to publish* with eight blocking issues; all corrected and left visible, with a ten-row table of withdrawn claims. Adopts the "locus" discipline: every quantitative or dispositive claim quotes the exact passage it rests on.
 **`VISUAL-MODEL-FRAMEWORK.md` — draft v1.1.** Revised after an adversarial review that returned *not fit to publish* with six blocking issues; twelve claims withdrawn, and the reference implementation reworked after the review found it violating the schema defined in the document it accompanies. Extends the locus discipline from citations to model geometry.
 
-None is peer-reviewed. Novelty claims are provisional; measured facts are solid. **Each document's own red-team Part is the best guide to how much to trust it** — `IDEA-CONCEPT.md` Part 13, `PRECEDENT-AND-MATERIALS.md` Part 11, `WILLIAMSBURG-COMPARATOR.md` Part 9, `VISUAL-MODEL-FRAMEWORK.md` Part 11.
+**Interactive artifacts — three, all self-contained and dependency-free.** [`section-problem.html`](visual-review/section-problem.html) (2D provenance-tagged section), [`model-3d.html`](visual-review/model-3d.html) (navigable four-tier 3D model of both bridges), [`acoustic-demo.html`](visual-review/acoustic-demo.html) (audible level demonstration with derived event durations). The 3D model contains **zero measured elements**; the audio demo is **synthesised, not recorded**. Both say so in their own interfaces.
 
-**No option in any document is recommended for procurement.** **No measurement has been taken and no model has been built.** Everything here is a statement about documents.
+None is peer-reviewed. Novelty claims are provisional; measured facts are solid. **Each document's own red-team Part is the best guide to how much to trust it** — `IDEA-CONCEPT.md` Part 13, `PRECEDENT-AND-MATERIALS.md` Part 11, `WILLIAMSBURG-COMPARATOR.md` Part 9, `VISUAL-MODEL-FRAMEWORK.md` Part 11. The audio demo carries its own seven-item list of where it is likely to be wrong.
+
+**No option in any document is recommended for procurement.** **No measurement has been taken and no survey has been made.** Of the twenty methods specified across the four documents, **none has been executed** — see *[What has not been done](#what-has-not-been-done)*. Everything here is a statement about documents.
 
 ## Contributing
 
 This is a working research repository. Useful contributions, roughly in order of value:
 
+- **Executing any of Methods 0–20** — several cost an email, a form, or an afternoon, and none has been done
 - Answering any of **Q1–Q41** with sourced evidence
 - **Falsifying** any "not found" claim — five have already failed across the first two documents, and the prior on others failing is not low
-- **Reclassifying** any component's provenance state in [`visual-review/section-problem.html`](visual-review/section-problem.html). Anyone with structural knowledge of riveted lattice trusses will find components that are misclassified, and that is the point of publishing the classification
+- **Reclassifying** any component's provenance state in [`visual-review/section-problem.html`](visual-review/section-problem.html) or [`visual-review/model-3d.html`](visual-review/model-3d.html). Anyone with structural knowledge of riveted lattice trusses will find components that are misclassified, and that is the point of publishing the classification
+- **Correcting the acoustic synthesis in [`visual-review/acoustic-demo.html`](visual-review/acoustic-demo.html)** — particularly the assumed spectrum, which is the largest single fabrication in the repository. **A single published third-octave spectrum for either bridge would replace it with evidence.**
+- **Challenging the derived event durations.** The energy balance on that page is arithmetic on four published MTA numbers, and it is either right or it is wrong. It has not been reviewed by anyone.
 - Non-English literature (Japanese, Chinese, German elevated-transit retrofit precedent) — **narrowed** by `PRECEDENT-AND-MATERIALS.md`, which reached Japanese and Chinese institutions only through their English-language outputs, and therefore **not closed**
 - Full texts for the `SNIPPET` sources, especially **Odebrant 1996** (the single most load-bearing source in the precedent survey is currently an abstract), **TCRP Report 23** and the **WHO Environmental Noise Guidelines**, which are load-bearing
 - Legal research on § 1204-a implementation, NYC Noise Control Code preemption, SEQRA and nuisance doctrine — and, newly, on whether **any** instrument protects people in outdoor public space from transit noise

@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>What 87.5 dB(A) Sounds Like — Measured Level Demonstration, DUMBO</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef; --cp-bg-elevated: #fcfbf8; --cp-surface: #ffffff; --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede; --cp-border-strong: #919191; --cp-text: #242424; --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f; --cp-accent: #b11f4b; --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177,31,75,0.08); --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a; --cp-danger: #dc2626; --cp-warning: #f59e0b; --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0,0,0,0.12); --cp-panel-strong: rgba(255,255,255,0.96);
+  --cp-highlight: rgba(177,31,75,0.12); --cp-canvas: #eeeae3;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a; --cp-bg-elevated: #343231; --cp-surface: #292929; --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747; --cp-border-strong: #5f5f5f; --cp-text: #dedede; --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0; --cp-accent: #fd8ea1; --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253,142,161,0.14); --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80; --cp-danger: #f87171; --cp-warning: #fbbf24; --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0,0,0,0.32); --cp-panel-strong: rgba(41,41,41,0.96);
+  --cp-highlight: rgba(253,142,161,0.12); --cp-canvas: #232221;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--cp-bg); color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+}
+code, .mono { font-family: Consolas, "Courier New", Courier, monospace; }
+.wrap { max-width: 1400px; margin: 0 auto; padding: 24px 22px 70px; }
+header.masthead { border-bottom: 1px solid var(--cp-border); padding-bottom: 18px; margin-bottom: 18px; }
+.eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--cp-accent); font-weight: 700; margin-bottom: 8px; }
+h1 { font-size: 28px; line-height: 1.2; margin: 0 0 10px; font-weight: 650; letter-spacing: -0.01em; }
+.sub { color: var(--cp-text-muted); max-width: 92ch; margin: 0; font-size: 15px; }
+h2 { font-size: 19px; margin: 32px 0 10px; font-weight: 640; }
+h3 { font-size: 15px; margin: 16px 0 7px; font-weight: 640; }
+p { margin: 0 0 11px; }
+
+.warnbar { background: var(--cp-surface); border: 1px solid var(--cp-danger); border-left-width: 4px;
+  border-radius: 8px; padding: 13px 16px; margin: 0 0 16px; font-size: 13.5px; }
+.warnbar b { color: var(--cp-danger); }
+.premise { background: var(--cp-accent-soft); border: 1px solid var(--cp-accent); border-left-width: 4px;
+  border-radius: 8px; padding: 14px 16px; margin: 16px 0 20px; font-size: 14px; }
+.premise strong { color: var(--cp-accent); }
+
+.console { background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 12px; padding: 18px; }
+.masterrow { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; padding-bottom: 16px; border-bottom: 1px solid var(--cp-border); margin-bottom: 16px; }
+button.power {
+  appearance: none; border: 2px solid var(--cp-danger); background: transparent; color: var(--cp-danger);
+  border-radius: 10px; padding: 13px 26px; font-size: 16px; font-weight: 750; cursor: pointer;
+  font-family: inherit; letter-spacing: .06em; text-transform: uppercase; transition: all .15s; min-width: 210px;
+}
+button.power:hover { background: color-mix(in srgb, var(--cp-danger) 10%, transparent); }
+button.power.on { border-color: var(--cp-success); color: var(--cp-accent-fg); background: var(--cp-success); }
+.vol { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--cp-text-muted); }
+.vol input[type=range] { width: 190px; accent-color: var(--cp-accent); }
+
+.tgroup { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.tlab { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--cp-text-soft); font-weight: 700; }
+.trow { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+button.btn { appearance: none; border: 1px solid var(--cp-border-strong); background: var(--cp-surface-soft);
+  color: var(--cp-text); border-radius: 6px; padding: 6px 11px; font-size: 12.5px; cursor: pointer;
+  font-family: inherit; transition: background .12s, border-color .12s; }
+button.btn:hover { background: var(--cp-highlight); border-color: var(--cp-accent); }
+button.btn.on { background: var(--cp-accent); color: var(--cp-accent-fg); border-color: var(--cp-accent); font-weight: 600; }
+button.btn:disabled { opacity: .4; cursor: not-allowed; }
+button.btn.big { padding: 9px 16px; font-size: 13.5px; font-weight: 600; }
+button.btn.site { text-align: left; min-width: 176px; }
+button.btn.site .lv { display: block; font-size: 10px; letter-spacing: .05em; opacity: .8; font-family: Consolas, monospace; }
+
+.meters { display: grid; grid-template-columns: 118px 118px 1fr; gap: 20px; align-items: stretch; margin-top: 6px; }
+@media (max-width: 900px) { .meters { grid-template-columns: 1fr 1fr; } .meters .plotwrap { grid-column: 1 / -1; } }
+.metercell { text-align: center; }
+.metercell .mlab { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--cp-text-soft); font-weight: 700; margin-bottom: 5px; }
+canvas.meter { display: block; width: 100%; height: 300px; border: 1px solid var(--cp-border); border-radius: 8px; background: var(--cp-canvas); }
+.mval { font-family: Consolas, monospace; font-size: 21px; font-weight: 700; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.msub { font-size: 11px; color: var(--cp-text-muted); font-family: Consolas, monospace; }
+.plotwrap { display: flex; flex-direction: column; }
+canvas.plot { display: block; width: 100%; height: 300px; border: 1px solid var(--cp-border); border-radius: 8px; background: var(--cp-canvas); }
+
+.bigdiff { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin: 16px 0 4px;
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border); border-radius: 8px; padding: 12px 16px; }
+.bigdiff .n { font-family: Consolas, monospace; font-size: 34px; font-weight: 750; color: var(--cp-accent); font-variant-numeric: tabular-nums; }
+.bigdiff .t { font-size: 13px; color: var(--cp-text-muted); max-width: 62ch; }
+
+table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 10px 0 4px; }
+th, td { border: 1px solid var(--cp-border); padding: 6px 9px; text-align: left; vertical-align: top; }
+th { background: var(--cp-surface-soft); font-weight: 650; font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--cp-text-muted); }
+td.num { font-family: Consolas, monospace; text-align: right; font-variant-numeric: tabular-nums; }
+.badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 4px; border: 1px solid; white-space: nowrap; }
+.b-doc { color: var(--cp-success); border-color: var(--cp-success); background: color-mix(in srgb, var(--cp-success) 12%, transparent); }
+.b-der { color: var(--cp-link); border-color: var(--cp-link); background: color-mix(in srgb, var(--cp-link) 12%, transparent); }
+.b-inf { color: var(--cp-warning); border-color: var(--cp-warning); background: color-mix(in srgb, var(--cp-warning) 12%, transparent); }
+.b-asm { color: var(--cp-danger); border-color: var(--cp-danger); background: color-mix(in srgb, var(--cp-danger) 12%, transparent); }
+.note { font-size: 12.5px; color: var(--cp-text-muted); }
+a { color: var(--cp-link); }
+ol li, ul li { margin-bottom: 6px; }
+.foot { margin-top: 34px; border-top: 1px solid var(--cp-border); padding-top: 16px; font-size: 12.5px; color: var(--cp-text-muted); }
+.calcbox { background: var(--cp-surface-soft); border: 1px solid var(--cp-border); border-radius: 8px; padding: 12px 15px; font-family: Consolas, monospace; font-size: 12.5px; margin: 10px 0; overflow-x: auto; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Ethical Tech CoLab &middot; DUMBO rail-noise programme &middot; Interactive artifact 3 of 3</div>
+  <h1>What the measured levels actually sound like</h1>
+  <p class="sub">An audible demonstration of the sound levels the MTA recorded in DUMBO's public spaces in
+  November and December 2023 &mdash; a train approaching, passing and departing, at the correct decibel difference,
+  with live weighted meters. Companion to <a href="../IDEA-CONCEPT.md">IDEA-CONCEPT.md</a> Part 1.</p>
+</header>
+
+<div class="warnbar">
+  <b>This is a synthesis, not a recording.</b> Nobody in this programme has an audio recording of the Manhattan Bridge.
+  What you will hear is <b>generated noise whose level envelope is pinned to published measurements</b>.
+  The <em>levels</em> and their <em>differences</em> are real and traceable. The <em>timbre</em> is invented, because
+  <b>no third-octave spectrum has ever been published for either bridge</b> &mdash; so this demo tells you nothing
+  about what the noise sounds like, only about how loud it is relative to its own background.
+  <br><br>
+  <b>And your browser cannot reproduce absolute sound pressure level.</b> What comes out of your speakers depends on your
+  volume knob, your hardware and your room. The absolute dB(A) figures shown on the meters are the
+  <b>modelled level in the field</b>, not the level at your ear. What transfers faithfully to your ears is the
+  <b>difference</b> &mdash; and the difference is the whole point.
+</div>
+
+<div class="premise">
+  <p><strong>Why a demonstration is worth building at all.</strong> The MTA's own summary of its DUMBO survey is one sentence:
+  <em>"On average, the difference between the baseline and the peak sound level is 43 dB(A)."</em>
+  Forty-three decibels is a number that means almost nothing to a reader and everything to a resident. A factor of
+  roughly twenty thousand in acoustic power, arriving about once every eighty seconds, twenty hours a day, in a park.
+  This page exists to move that number out of the table and into your ears.</p>
+</div>
+
+<div class="console">
+  <div class="masterrow">
+    <button class="power" id="power">Sound is off</button>
+    <div class="vol">
+      <label for="vol">Playback volume</label>
+      <input type="range" id="vol" min="0" max="100" value="55" />
+      <span id="volv" class="mono">55</span>
+    </div>
+    <div class="note" style="flex:1;min-width:240px">Start low. The peak here is modelled at up to 98.9 dB(A) in the field &mdash;
+    if your system were calibrated to reproduce that, it would be genuinely unsafe. It is not calibrated, so it will not be. Use the difference, not the loudness.</div>
+  </div>
+
+  <div class="tgroup">
+    <span class="tlab">Receptor &mdash; where the MTA put the meter</span>
+    <div class="trow" id="siteBtns"></div>
+  </div>
+
+  <div class="tgroup">
+    <span class="tlab">What to play</span>
+    <div class="trow" id="transBtns"></div>
+  </div>
+
+  <div class="tgroup">
+    <span class="tlab">Jump to a moment in the pass-by</span>
+    <div class="trow" id="jumpBtns"></div>
+  </div>
+
+  <div class="bigdiff">
+    <span class="n" id="diffN">&mdash;</span>
+    <span class="t" id="diffT">Turn the sound on and play a pass-by. This reads the live difference between what you are hearing now and this receptor's train-free background level.</span>
+  </div>
+
+  <div class="meters">
+    <div class="metercell">
+      <div class="mlab">Now</div>
+      <canvas class="meter" id="mNow"></canvas>
+      <div class="mval" id="vNow">&mdash;</div>
+      <div class="msub" id="sNow">dB(A) modelled</div>
+    </div>
+    <div class="metercell">
+      <div class="mlab">Background</div>
+      <canvas class="meter" id="mBase"></canvas>
+      <div class="mval" id="vBase">&mdash;</div>
+      <div class="msub">train-free baseline</div>
+    </div>
+    <div class="plotwrap">
+      <div class="mlab" style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cp-text-soft);font-weight:700;margin-bottom:5px">Modelled level through the pass-by</div>
+      <canvas class="plot" id="plot"></canvas>
+      <div class="msub" id="plotSub" style="margin-top:6px">&nbsp;</div>
+    </div>
+  </div>
+</div>
+
+<h2>What is measured, what is derived, and what is invented</h2>
+<p>Every parameter of this demonstration carries its own provenance, on the same
+<span class="badge b-doc">DOCUMENTED</span> / <span class="badge b-inf">INFERRED</span> / <span class="badge b-asm">ASSUMED</span>
+scale the rest of this programme uses, with one addition:
+<span class="badge b-der">DERIVED</span> means it was calculated from published numbers by arithmetic shown in full below.</p>
+<div id="paramTable"></div>
+
+<h2>The one thing this demo derives that the sources do not state</h2>
+<p>The MTA publishes, for each public-space session, four numbers: the session <code>Leq</code>, the peak <code>Lmax</code>,
+the train-free baseline, and the number of trains over a stated duration. It does not publish how long a train event lasts.
+But those four numbers <strong>determine</strong> it, if you assume the session is baseline plus <em>N</em> equal train events.
+Solving the energy balance for the equivalent time each train would have to spend at its peak level gives:</p>
+<div class="calcbox" id="calcbox"></div>
+<div id="deriveTable"></div>
+<p id="deriveConc" class="note"></p>
+
+<h2>Thresholds this sits against</h2>
+<p>From the CEQR Technical Manual noise-exposure guidelines, as cited in
+<a href="../IDEA-CONCEPT.md">IDEA-CONCEPT.md</a> &sect;3.2. These are <code>L10</code> criteria; the MTA reported
+<code>Leq</code>, so a direct comparison is indicative and not a formal classification.</p>
+<table>
+  <tr><th>Receptor class</th><th>Criterion</th><th>Where DUMBO's public spaces sit</th></tr>
+  <tr><td>Outdoor area requiring serenity and quiet</td><td class="num">L10 &le; 55 dBA</td><td>Exceeded at every public location measured, by 26 to 33 dB</td></tr>
+  <tr><td>Residence, daytime</td><td class="num">L10 &le; 65 dBA</td><td>Exceeded at every public location measured</td></tr>
+  <tr><td><b>"Clearly unacceptable"</b> &mdash; residence at any hour, and school, museum or library</td><td class="num">L10 &gt; 80 dBA</td><td><b>Adams Street Library recorded an average Leq of 84.65 dB(A).</b> The dog run recorded 87.50.</td></tr>
+</table>
+
+<h2>Where this demonstration is likely to be wrong</h2>
+<ol>
+  <li><b>The spectrum is fabricated.</b> No third-octave data has been published for either bridge. Two sounds can share
+  an A-weighted level and be entirely different experiences. Nothing here should be used to argue about annoyance, speech
+  interference, or which frequencies a treatment should target.</li>
+  <li><b>The envelope shape is a convention, not a measurement.</b> The decay law used is a compromise between point-source
+  and line-source behaviour. Only its <em>energy</em> is pinned to data; its <em>shape</em> is chosen.</li>
+  <li><b>The derived event duration assumes all trains are equal.</b> They are not. B, D, N and Q services differ in car
+  class, consist length and axle count, and the MTA report normalises for none of these. The derived figure is an
+  average over an unknown mixture.</li>
+  <li><b>It assumes the published baseline is a true train-free floor.</b> At the DUMBO Archway the "baseline" is 68.9 dB(A),
+  which is not a quiet environment. Some of what is attributed to background may be distant rail.</li>
+  <li><b>The meter agreement is engineered, not evidence.</b> The synthesis is scaled so the rendered A-weighted level
+  matches the modelled level. That the two agree confirms the scaling works. It confirms nothing about the bridge.</li>
+  <li><b>Peak levels are single events.</b> A Max Lmax is the loudest thing that happened once. Treating it as the level of
+  every train overstates the typical case, which is why the derived durations below are labelled "equivalent" and not "actual".</li>
+  <li><b>The indoor sites break the derivation</b> and are shown here precisely so the failure is visible rather than hidden.</li>
+</ol>
+
+<div class="foot">
+  <p><b>Provenance of this artifact.</b> Built for the Ethical Tech CoLab DUMBO rail-noise programme.
+  All synthesis is Web Audio, generated in the browser from a seeded pseudo-random source, so the output is
+  deterministic and reproducible. No audio files, no external libraries, no network requests, no telemetry.
+  Measured values are from MTA doc 138061, appendix, memoranda of 18 January 2024 and 10 June 2022, and from the
+  Brooklyn Bridge Park FEIS (2005) and the Domino FEIS Site 10, all as cited and rated in
+  <a href="../IDEA-CONCEPT.md">IDEA-CONCEPT.md</a> and <a href="../WILLIAMSBURG-COMPARATOR.md">WILLIAMSBURG-COMPARATOR.md</a>.</p>
+  <p>Sibling artifacts: <a href="section-problem.html">section-problem.html</a> (2D provenance-tagged sections) and
+  <a href="model-3d.html">model-3d.html</a> (navigable 3D model).
+  <b>Licence.</b> CC BY 4.0. Reuse the numbers only with their caveats attached.</p>
+</div>
+
+</div>
+<script>
+/* ============================================================================
+   Measured level demonstration -- DUMBO rail noise.
+
+   DESIGN RULE governing every line below: the LEVELS come from published
+   measurements and the arithmetic that connects them is shown on the page.
+   The TIMBRE is invented, and is labelled as invented, because no third-octave
+   spectrum has ever been published for either bridge.
+
+   Reference convention: a modelled field level of REF_DBA dB(A) corresponds to
+   unity RMS at the output. Nothing calibrates that to a real ear, and the page
+   says so. Relative differences survive the mapping exactly; absolutes do not.
+   ========================================================================= */
+
+const REF_DBA = 100;
+const dB2p = d => Math.pow(10, d / 10);      // level -> power
+const p2dB = p => 10 * Math.log10(Math.max(p, 1e-12));
+const sum_dB = (...ls) => p2dB(ls.reduce((a, l) => a + dB2p(l), 0));
+
+/* ---------------------------------------------------------------------------
+   SITES. Every figure here is transcribed from a source and rated.
+   Te (equivalent peak-level event duration) is DERIVED on load, not typed in.
+   ------------------------------------------------------------------------ */
+const SITES = [
+  { id: 'dogrun', name: 'Brooklyn Bridge Park dog run', kind: 'public outdoor',
+    leq: 87.50, lmax: 98.90, base: 65.0, n: 26, secs: 37 * 60 + 45,
+    src: 'MTA doc 138061, memo 18 Jan 2024', note: 'The loudest public space the MTA measured. A park.' },
+  { id: 'library', name: 'Adams Street Library', kind: 'public outdoor',
+    leq: 84.65, lmax: 98.10, base: 48.1, n: 9, secs: 18 * 60 + 56,
+    src: 'MTA doc 138061, memo 18 Jan 2024', note: 'The headline number of the whole programme: a New York City public library.' },
+  { id: 'archway', name: 'DUMBO Archway', kind: 'public outdoor',
+    leq: 81.33, lmax: 91.80, base: 68.9, n: 18, secs: 25 * 60 + 35,
+    src: 'MTA doc 138061, memo 18 Jan 2024', note: 'Note the baseline: 68.9 dB(A) with no train is already not a quiet place.' },
+  { id: 'frontpine', name: 'Front and Pine Street', kind: 'street level, FAST response',
+    leq: null, lmax: 94.4, base: 68.2, n: null, secs: 30 * 60,
+    src: 'MTA doc 138061, memo 10 Jun 2022', note: 'Meter deliberately set to FAST response "due to indications that the noise impact is caused by sudden impact with a track element". The single most diagnostic line in the public record.' },
+  { id: 'wburg', name: 'Williamsburg Bridge walkway', kind: 'comparator, same operator',
+    leq: 82.5, lmax: 92.3, base: 75.7, n: null, secs: null,
+    src: 'Domino FEIS, Site 10 (L1 used as the event level)', note: 'Same MTA system, same rolling stock, a similar suspension bridge. The comparator Document 3 is built around. Train count and session length are not published, so no duration can be derived.' },
+  { id: 'washington', name: '31 Washington Street (indoor)', kind: 'indoor, privately mitigated',
+    leq: 54.54, lmax: 75.70, base: 43.1, n: 423, secs: 8 * 3600 + 16 * 60 + 40,
+    src: 'MTA doc 138061, memo 18 Jan 2024', note: 'Included as a contrast. This is inside a building whose occupants have already paid privately for acoustic isolation, and the derivation below visibly breaks here.' }
+];
+
+/* Solve the session energy balance for Te, the equivalent time each train would
+   have to spend AT ITS PEAK LEVEL to produce the published session Leq:
+
+     Leq = 10 log10 ( [ N.Te.10^(Lmax/10) + (T - N.Te).10^(Lbase/10) ] / T )
+
+   rearranged:  Te = ( T.10^(Leq/10) - T.10^(Lbase/10) ) / ( N.(10^(Lmax/10) - 10^(Lbase/10)) )
+
+   This is the only quantity on the page that no source states. It is arithmetic
+   on four published numbers, and the arithmetic is printed in full.            */
+function deriveTe(s) {
+  if (s.leq == null || s.n == null || s.secs == null) return null;
+  const P = dB2p(s.lmax), B = dB2p(s.base), A = dB2p(s.leq) * s.secs;
+  const te = (A - s.secs * B) / (s.n * (P - B));
+  return te > 0 ? te : null;
+}
+for (const s of SITES) {
+  s.te = deriveTe(s);
+  s.tau = s.te ? s.te / 2 : null;
+  s.teSource = s.te ? 'derived' : 'transferred';
+}
+/* Sites without the four numbers borrow the mean of the three public outdoor
+   sites, and are marked as having borrowed it. */
+const PUBLIC3 = SITES.filter(s => s.kind === 'public outdoor');
+const TE_MEAN = PUBLIC3.reduce((a, s) => a + s.te, 0) / PUBLIC3.length;
+for (const s of SITES) if (!s.te) { s.te = TE_MEAN; s.tau = TE_MEAN / 2; }
+
+/* Envelope. L(t) = Lmax - 10.n.log10(1 + (t/tau)^2), n = 1.5, a compromise
+   between point-source (n=2) and line-source (n=1) decay. Chosen, not measured.
+   With n = 1.5 the integral of the power envelope is exactly 2.tau, which is
+   why tau = Te/2 makes the event energy match the published Leq exactly.       */
+const N_DECAY = 1.5;
+function trainLevelAt(s, t) { return s.lmax - 10 * N_DECAY * Math.log10(1 + (t / s.tau) * (t / s.tau)); }
+function totalLevelAt(s, t) { return sum_dB(trainLevelAt(s, t), s.base); }
+function eventHalfSpan(s) { return s.tau * 6.5; }
+
+/* ---------------------------------------------------------------------------
+   Deterministic noise. A seeded generator so the artifact is reproducible:
+   the same page produces the same waveform on every machine, every time.
+   ------------------------------------------------------------------------ */
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+/* Background: pink-ish noise. Urban ambience is broadly pink; this is a
+   convention of acoustics practice and not a measurement of DUMBO.            */
+function makeBackgroundBuffer(ac, seed) {
+  const dur = 6, n = Math.floor(ac.sampleRate * dur);
+  const buf = ac.createBuffer(1, n, ac.sampleRate);
+  const d = buf.getChannelData(0);
+  const r = mulberry32(seed);
+  let b0 = 0, b1 = 0, b2 = 0;
+  for (let i = 0; i < n; i++) {
+    const w = r() * 2 - 1;
+    b0 = 0.99765 * b0 + w * 0.0990460;
+    b1 = 0.96300 * b1 + w * 0.2965164;
+    b2 = 0.57000 * b2 + w * 1.0526913;
+    d[i] = b0 + b1 + b2 + w * 0.1848;
+  }
+  crossfadeLoop(d, ac.sampleRate * 0.08);
+  normalizeRms(d);
+  return buf;
+}
+
+/* Train: broadband rolling noise with periodic impact transients baked in.
+   The impacts are here because the MTA set its meter to FAST response "due to
+   indications that the noise impact is caused by sudden impact with a track
+   element". That sentence justifies impulsive CHARACTER. It does not tell us
+   the rate, the spectrum or the source element -- all three are assumed.       */
+function makeTrainBuffer(ac, seed) {
+  const dur = 6, sr = ac.sampleRate, n = Math.floor(sr * dur);
+  const buf = ac.createBuffer(1, n, sr);
+  const d = buf.getChannelData(0);
+  const r = mulberry32(seed);
+  let lp = 0, hp = 0, prev = 0;
+  for (let i = 0; i < n; i++) {
+    const w = r() * 2 - 1;
+    lp = lp * 0.86 + w * 0.14;                 // rolling rumble
+    hp = 0.92 * (hp + w - prev); prev = w;      // rail hiss
+    d[i] = lp * 2.6 + hp * 0.55;
+  }
+  /* Impact transients. 7.5 per second is an ASSUMPTION standing in for wheel
+     and joint passage: no source gives train speed, consist length or axle
+     count on either bridge, so the rate cannot be computed. The period is an
+     exact divisor of the buffer length so the loop seam carries no glitch.    */
+  const impactsPerSec = 7.5, period = Math.round(sr / impactsPerSec);
+  const decay = Math.round(sr * 0.045);
+  for (let start = 0; start < n; start += period) {
+    const amp = 0.75 + r() * 0.5;
+    let ring = 0, ringPrev = 0;
+    for (let k = 0; k < decay && start + k < n; k++) {
+      const env = Math.exp(-k / (sr * 0.011));
+      const w = r() * 2 - 1;
+      ring = 0.55 * ring + 0.45 * (w - ringPrev); ringPrev = w;
+      d[start + k] += ring * env * amp * 3.1;
+    }
+  }
+  crossfadeLoop(d, sr * 0.05);
+  normalizeRms(d);
+  return buf;
+}
+
+function crossfadeLoop(d, fadeLen) {
+  const f = Math.floor(fadeLen), n = d.length;
+  for (let i = 0; i < f; i++) {
+    const k = i / f;
+    d[i] = d[i] * k + d[n - f + i] * (1 - k);
+  }
+}
+function normalizeRms(d) {
+  let s = 0;
+  for (let i = 0; i < d.length; i++) s += d[i] * d[i];
+  const rms = Math.sqrt(s / d.length) || 1;
+  for (let i = 0; i < d.length; i++) d[i] /= rms;
+}
+
+/* ---------------------------------------------------------------------------
+   A-weighting, as a measurement weighting on the METER path only -- never on
+   the signal you hear. Standard six-pole approximation.
+   ------------------------------------------------------------------------ */
+function buildAWeighting(ac) {
+  const mk = (type, f, q) => { const b = ac.createBiquadFilter(); b.type = type; b.frequency.value = f; b.Q.value = q; return b; };
+  const nodes = [mk('highpass', 20.6, 0.5), mk('highpass', 20.6, 0.5), mk('highpass', 107.7, 0.7071),
+                 mk('lowpass', 737.9, 0.7071), mk('lowpass', 12194, 0.5), mk('lowpass', 12194, 0.5)];
+  for (let i = 0; i < nodes.length - 1; i++) nodes[i].connect(nodes[i + 1]);
+  const g = ac.createGain(); g.gain.value = 1.2589; // +2 dB nominal 1 kHz correction
+  nodes[nodes.length - 1].connect(g);
+  return { input: nodes[0], output: g };
+}
+
+/* Voice filter chains. These give the two voices distinguishable character.
+   They are a stylistic choice, and because they change each voice's A-weighted
+   RMS they must be included in that voice's calibration -- which they are.    */
+function buildVoiceChain(ac, kind) {
+  const a = ac.createBiquadFilter(), b = ac.createBiquadFilter();
+  if (kind === 'bg') {
+    a.type = 'lowpass'; a.frequency.value = 1400; a.Q.value = 0.6;
+    b.type = 'lowshelf'; b.frequency.value = 180; b.gain.value = 5;
+  } else {
+    a.type = 'highpass'; a.frequency.value = 90; a.Q.value = 0.7;
+    b.type = 'peaking'; b.frequency.value = 900; b.Q.value = 0.8; b.gain.value = 4;
+  }
+  a.connect(b);
+  return { input: a, output: b };
+}
+
+/* One-time offline calibration: render each voice at unit gain through its own
+   chain and through A-weighting, and record the resulting RMS. Playback gain is
+   then set so the METER READS THE MODELLED LEVEL. This agreement is engineered
+   and the page says so -- it verifies the scaling, not the bridge.            */
+async function calibrateVoice(makeBuf, kind, seed) {
+  const sr = 44100, oc = new OfflineAudioContext(1, sr * 3, sr);
+  const src = oc.createBufferSource();
+  src.buffer = makeBuf(oc, seed); src.loop = true;
+  const chain = buildVoiceChain(oc, kind), aw = buildAWeighting(oc);
+  src.connect(chain.input); chain.output.connect(aw.input); aw.output.connect(oc.destination);
+  src.start();
+  const out = await oc.startRendering();
+  const d = out.getChannelData(0);
+  let s = 0, c = 0;
+  for (let i = sr; i < d.length; i++) { s += d[i] * d[i]; c++; }   // skip filter settling
+  return Math.sqrt(s / c) || 1;
+}
+
+/* ---------------------------------------------------------------------------
+   Engine
+   ------------------------------------------------------------------------ */
+const eng = {
+  ac: null, on: false, ready: false,
+  bgSrc: null, trSrc: null, bgGain: null, trGain: null, master: null,
+  analyser: null, buf: null, calA: { bg: 1, tr: 1 },
+  site: SITES[0], mode: 'idle', t0: 0, tPos: 0, raf: null,
+  loopTimer: null, peak: -99, vol: 0.55
+};
+
+async function initAudio() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  eng.ac = new AC();
+  const [cbg, ctr] = await Promise.all([
+    calibrateVoice(makeBackgroundBuffer, 'bg', 20231201),
+    calibrateVoice(makeTrainBuffer, 'tr', 20240118)
+  ]);
+  eng.calA = { bg: cbg, tr: ctr };
+
+  const ac = eng.ac;
+  eng.master = ac.createGain(); eng.master.gain.value = eng.vol;
+  eng.master.connect(ac.destination);
+
+  const aw = buildAWeighting(ac);
+  eng.analyser = ac.createAnalyser();
+  /* 8192 samples at 44.1 kHz is about 186 ms of averaging, deliberately close to
+     the 125 ms FAST time constant the MTA used at Front and Pine Street. A short
+     window makes the meter jitter on noise; a long one smears the transient.   */
+  eng.analyser.fftSize = 8192;
+  eng.master.connect(aw.input); aw.output.connect(eng.analyser);
+  eng.buf = new Float32Array(eng.analyser.fftSize);
+
+  const mkVoice = (makeBuf, kind, seed) => {
+    const s = ac.createBufferSource();
+    s.buffer = makeBuf(ac, seed); s.loop = true;
+    const chain = buildVoiceChain(ac, kind);
+    const g = ac.createGain(); g.gain.value = 0;
+    s.connect(chain.input); chain.output.connect(g); g.connect(eng.master);
+    s.start();
+    return { src: s, gain: g };
+  };
+  const bg = mkVoice(makeBackgroundBuffer, 'bg', 20231201);
+  const tr = mkVoice(makeTrainBuffer, 'tr', 20240118);
+  eng.bgSrc = bg.src; eng.bgGain = bg.gain;
+  eng.trSrc = tr.src; eng.trGain = tr.gain;
+  eng.ready = true;
+}
+
+/* gain such that the A-weighted rendered level equals the modelled level */
+function gainFor(voice, dbA) {
+  if (dbA == null || dbA < -20) return 0;
+  return Math.pow(10, (dbA - REF_DBA) / 20) / eng.calA[voice];
+}
+
+function setBackground(now) {
+  if (!eng.ready) return;
+  eng.bgGain.gain.setTargetAtTime(eng.on ? gainFor('bg', eng.site.base) : 0, now, 0.05);
+}
+function setTrain(level, now, ramp) {
+  if (!eng.ready) return;
+  const g = (eng.on && level != null) ? gainFor('tr', level) : 0;
+  eng.trGain.gain.setTargetAtTime(g, now, ramp == null ? 0.03 : ramp);
+}
+
+/* ---------------------------------------------------------------------------
+   Transport
+   ------------------------------------------------------------------------ */
+function stopAll() {
+  eng.mode = 'idle'; eng.tPos = null;
+  if (eng.loopTimer) { clearTimeout(eng.loopTimer); eng.loopTimer = null; }
+  if (eng.ready) setTrain(null, eng.ac.currentTime, 0.12);
+}
+
+function playPass(continuous) {
+  if (!eng.ready || !eng.on) return;
+  eng.mode = continuous ? 'continuous' : 'pass';
+  eng.t0 = eng.ac.currentTime + 0.05;
+  eng.tPos = -eventHalfSpan(eng.site);
+  eng.peak = -99;
+  scheduleEnvelope();
+  if (continuous) {
+    const headway = eng.site.n && eng.site.secs ? eng.site.secs / eng.site.n : 80;
+    const wait = Math.max(eventHalfSpan(eng.site) * 2, Math.min(headway, 30));
+    eng.loopTimer = setTimeout(() => { if (eng.mode === 'continuous') playPass(true); }, wait * 1000);
+  }
+}
+
+/* The envelope is written as scheduled automation rather than per-frame gain
+   writes, so the level curve is sample-accurate and independent of frame rate. */
+function scheduleEnvelope() {
+  const s = eng.site, ac = eng.ac, span = eventHalfSpan(s);
+  const g = eng.trGain.gain;
+  g.cancelScheduledValues(ac.currentTime);
+  g.setValueAtTime(0, eng.t0);
+  const steps = 260;
+  for (let i = 0; i <= steps; i++) {
+    const t = -span + (2 * span) * i / steps;
+    g.linearRampToValueAtTime(gainFor('tr', trainLevelAt(s, t)), eng.t0 + span + t);
+  }
+  g.linearRampToValueAtTime(0, eng.t0 + 2 * span + 0.25);
+}
+
+function holdAt(t) {
+  if (!eng.ready || !eng.on) return;
+  stopAll();
+  eng.mode = 'hold'; eng.tPos = t;
+  setTrain(trainLevelAt(eng.site, t), eng.ac.currentTime, 0.08);
+}
+
+function baselineOnly() {
+  stopAll();
+  eng.mode = 'baseline'; eng.tPos = null;
+}
+
+/* ---------------------------------------------------------------------------
+   Metering. Two numbers are shown side by side on purpose:
+     MODELLED  -- from the published data and the envelope, the authoritative value
+     RENDERED  -- A-weighted RMS measured off the actual audio graph
+   If they diverge, the synthesis is not doing what the model says it is doing.
+   ------------------------------------------------------------------------ */
+function renderedDbA() {
+  if (!eng.ready || !eng.on) return null;
+  eng.analyser.getFloatTimeDomainData(eng.buf);
+  let s = 0;
+  for (let i = 0; i < eng.buf.length; i++) s += eng.buf[i] * eng.buf[i];
+  const rms = Math.sqrt(s / eng.buf.length);
+  if (rms < 1e-9) return null;
+  /* master gain is a playback control and must not shift the reported field
+     level, so it is divided back out before the level is reported */
+  return 20 * Math.log10(rms / Math.max(eng.vol, 1e-6)) + REF_DBA;
+}
+
+function modelledDbA() {
+  const s = eng.site;
+  if (!eng.on) return null;
+  if (eng.mode === 'baseline' || eng.mode === 'idle') return s.base;
+  if (eng.tPos == null) return s.base;
+  return totalLevelAt(s, eng.tPos);
+}
+
+/* ============================================================================
+   UI: meters, level plot, transport, provenance tables.
+   ========================================================================= */
+
+const $ = id => document.getElementById(id);
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+const METER_MIN = 35, METER_MAX = 105;
+const THRESH = [
+  { v: 55, l: 'CEQR 55 - outdoor serenity', c: '--cp-success' },
+  { v: 65, l: 'CEQR 65 - residence day', c: '--cp-warning' },
+  { v: 80, l: 'CEQR 80 - clearly unacceptable', c: '--cp-danger' }
+];
+
+function fitCanvas(c) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const r = c.getBoundingClientRect();
+  const w = Math.max(60, Math.round(r.width)), h = Math.max(60, Math.round(r.height));
+  if (c.width !== Math.round(w * dpr) || c.height !== Math.round(h * dpr)) {
+    c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+  }
+  const g = c.getContext('2d');
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, w, h);
+  return { g, w, h };
+}
+
+function levelColour(v) {
+  if (v == null) return cssVar('--cp-text-muted');
+  if (v >= 80) return cssVar('--cp-danger');
+  if (v >= 65) return cssVar('--cp-warning');
+  if (v >= 55) return cssVar('--cp-link');
+  return cssVar('--cp-success');
+}
+
+function drawMeter(canvas, value, peak, marker) {
+  const { g, w, h } = fitCanvas(canvas);
+  const pad = 20, barX = 30, barW = w - barX - 8;
+  const y = v => h - pad - (h - pad * 2) * (Math.max(METER_MIN, Math.min(METER_MAX, v)) - METER_MIN) / (METER_MAX - METER_MIN);
+
+  g.strokeStyle = cssVar('--cp-border'); g.lineWidth = 1;
+  g.font = '9px Consolas, monospace'; g.textAlign = 'right';
+  g.fillStyle = cssVar('--cp-text-muted');
+  for (let v = 40; v <= 100; v += 10) {
+    g.beginPath(); g.moveTo(barX - 4, y(v)); g.lineTo(w - 8, y(v)); g.stroke();
+    g.fillText(String(v), barX - 6, y(v) + 3);
+  }
+  for (const t of THRESH) {
+    g.strokeStyle = cssVar(t.c); g.lineWidth = 1.4; g.setLineDash([4, 3]);
+    g.beginPath(); g.moveTo(barX - 2, y(t.v)); g.lineTo(w - 8, y(t.v)); g.stroke();
+    g.setLineDash([]);
+  }
+  if (marker != null) {
+    g.strokeStyle = cssVar('--cp-text'); g.lineWidth = 1.2; g.setLineDash([2, 2]);
+    g.beginPath(); g.moveTo(barX - 2, y(marker)); g.lineTo(w - 8, y(marker)); g.stroke();
+    g.setLineDash([]);
+  }
+  if (value != null) {
+    const top = y(value), bot = y(METER_MIN);
+    const grad = g.createLinearGradient(0, bot, 0, y(METER_MAX));
+    grad.addColorStop(0, cssVar('--cp-success'));
+    grad.addColorStop(0.42, cssVar('--cp-warning'));
+    grad.addColorStop(0.66, cssVar('--cp-danger'));
+    grad.addColorStop(1, cssVar('--cp-danger'));
+    g.fillStyle = grad;
+    g.fillRect(barX, top, barW, bot - top);
+    g.strokeStyle = cssVar('--cp-text'); g.lineWidth = 1;
+    g.strokeRect(barX + 0.5, top + 0.5, barW - 1, bot - top - 1);
+  }
+  if (peak != null && peak > METER_MIN) {
+    g.strokeStyle = cssVar('--cp-accent'); g.lineWidth = 2.4;
+    g.beginPath(); g.moveTo(barX, y(peak)); g.lineTo(barX + barW, y(peak)); g.stroke();
+  }
+}
+
+function drawPlot(canvas) {
+  const { g, w, h } = fitCanvas(canvas);
+  const s = eng.site, span = eventHalfSpan(s);
+  const padL = 34, padR = 10, padT = 12, padB = 24;
+  const X = t => padL + (w - padL - padR) * (t + span) / (2 * span);
+  const Y = v => h - padB - (h - padT - padB) * (Math.max(METER_MIN, Math.min(METER_MAX, v)) - METER_MIN) / (METER_MAX - METER_MIN);
+
+  g.font = '9px Consolas, monospace';
+  g.strokeStyle = cssVar('--cp-border'); g.lineWidth = 1; g.textAlign = 'right';
+  g.fillStyle = cssVar('--cp-text-muted');
+  for (let v = 40; v <= 100; v += 20) {
+    g.beginPath(); g.moveTo(padL, Y(v)); g.lineTo(w - padR, Y(v)); g.stroke();
+    g.fillText(String(v), padL - 4, Y(v) + 3);
+  }
+  for (const t of THRESH) {
+    g.strokeStyle = cssVar(t.c); g.lineWidth = 1.2; g.setLineDash([4, 3]);
+    g.beginPath(); g.moveTo(padL, Y(t.v)); g.lineTo(w - padR, Y(t.v)); g.stroke();
+    g.setLineDash([]);
+  }
+  g.textAlign = 'center'; g.fillStyle = cssVar('--cp-text-muted');
+  for (const t of [-span, -span / 2, 0, span / 2, span]) {
+    g.fillText((t > 0 ? '+' : '') + t.toFixed(0) + 's', X(t), h - 8);
+  }
+
+  // baseline
+  g.strokeStyle = cssVar('--cp-text-muted'); g.lineWidth = 1.4; g.setLineDash([6, 4]);
+  g.beginPath(); g.moveTo(padL, Y(s.base)); g.lineTo(w - padR, Y(s.base)); g.stroke();
+  g.setLineDash([]);
+
+  // level curve, filled to the baseline so the excursion is the visible area
+  g.beginPath();
+  const N = 240;
+  for (let i = 0; i <= N; i++) {
+    const t = -span + 2 * span * i / N, v = totalLevelAt(s, t);
+    if (i === 0) g.moveTo(X(t), Y(v)); else g.lineTo(X(t), Y(v));
+  }
+  g.lineTo(X(span), Y(s.base)); g.lineTo(X(-span), Y(s.base)); g.closePath();
+  g.fillStyle = cssVar('--cp-accent');
+  g.globalAlpha = 0.16; g.fill(); g.globalAlpha = 1;
+  g.beginPath();
+  for (let i = 0; i <= N; i++) {
+    const t = -span + 2 * span * i / N, v = totalLevelAt(s, t);
+    if (i === 0) g.moveTo(X(t), Y(v)); else g.lineTo(X(t), Y(v));
+  }
+  g.strokeStyle = cssVar('--cp-accent'); g.lineWidth = 2; g.stroke();
+
+  // peak marker
+  g.fillStyle = cssVar('--cp-danger');
+  g.beginPath(); g.arc(X(0), Y(totalLevelAt(s, 0)), 4, 0, Math.PI * 2); g.fill();
+
+  // playhead
+  if (eng.tPos != null && eng.tPos >= -span && eng.tPos <= span) {
+    const px = X(eng.tPos);
+    g.strokeStyle = cssVar('--cp-text'); g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(px, padT); g.lineTo(px, h - padB); g.stroke();
+    const v = totalLevelAt(s, eng.tPos);
+    g.fillStyle = cssVar('--cp-text');
+    g.beginPath(); g.arc(px, Y(v), 4.5, 0, Math.PI * 2); g.fill();
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Frame loop
+   ------------------------------------------------------------------------ */
+function frame() {
+  const s = eng.site;
+  if (eng.mode === 'pass' || eng.mode === 'continuous') {
+    const span = eventHalfSpan(s);
+    const el = eng.ac.currentTime - eng.t0;
+    eng.tPos = -span + el;
+    if (eng.tPos > span) {
+      if (eng.mode === 'pass') { eng.mode = 'baseline'; eng.tPos = null; }
+      else eng.tPos = null;
+    }
+  }
+  const mod = modelledDbA();
+  const ren = renderedDbA();
+  if (mod != null && mod > eng.peak) eng.peak = mod;
+
+  drawMeter($('mNow'), mod, eng.peak, s.base);
+  drawMeter($('mBase'), eng.on ? s.base : null, null, null);
+  drawPlot($('plot'));
+
+  $('vNow').textContent = mod == null ? '—' : mod.toFixed(1);
+  $('vNow').style.color = levelColour(mod);
+  $('vBase').textContent = s.base.toFixed(1);
+  $('vBase').style.color = levelColour(s.base);
+  $('sNow').innerHTML = mod == null ? 'dB(A) modelled'
+    : 'dB(A) modelled &middot; rendered ' + (ren == null ? '—' : ren.toFixed(1)) + ' &middot; peak ' + eng.peak.toFixed(1);
+
+  const d = mod == null ? null : mod - s.base;
+  $('diffN').textContent = d == null ? '—' : (d >= 0 ? '+' : '') + d.toFixed(1) + ' dB';
+  $('diffN').style.color = d == null ? cssVar('--cp-text-muted') : levelColour(mod);
+  $('diffT').innerHTML = d == null
+    ? 'Turn the sound on and play a pass-by. This reads the live difference between what you are hearing now and this receptor\u2019s train-free background level.'
+    : describeDiff(d, s);
+
+  $('plotSub').innerHTML = plotCaption(s);
+  eng.raf = requestAnimationFrame(frame);
+}
+
+function describeDiff(d, s) {
+  const ratio = Math.pow(10, d / 10);
+  const peakD = totalLevelAt(s, 0) - s.base;
+  if (d < 0.4) return 'Background only at <b>' + s.base.toFixed(1) + ' dB(A)</b>. At this receptor the full excursion when a train passes is <b>' +
+    peakD.toFixed(1) + ' dB</b> above this, a factor of ' + Math.round(Math.pow(10, peakD / 10)).toLocaleString() + ' in acoustic power.';
+  return 'above this receptor\u2019s train-free background of <b>' + s.base.toFixed(1) + ' dB(A)</b> \u2014 a factor of <b>' +
+    (ratio >= 1000 ? Math.round(ratio).toLocaleString() : ratio.toFixed(ratio < 10 ? 1 : 0)) +
+    '</b> in acoustic power. Peak excursion at this site is ' + peakD.toFixed(1) + ' dB.';
+}
+
+function plotCaption(s) {
+  const hw = s.n && s.secs ? (s.secs / s.n) : null;
+  return 'Peak <b>' + s.lmax.toFixed(2) + '</b> dB(A) &middot; background <b>' + s.base.toFixed(1) +
+    '</b> &middot; excursion <b>' + (totalLevelAt(s, 0) - s.base).toFixed(1) + ' dB</b>' +
+    (s.leq != null ? ' &middot; session Leq <b>' + s.leq.toFixed(2) + '</b>' : '') +
+    ' &middot; &tau; = <b>' + s.tau.toFixed(2) + ' s</b> (' + (s.teSource === 'derived' ? 'derived here' : 'borrowed') + ')' +
+    (hw ? ' &middot; a train every <b>' + hw.toFixed(0) + ' s</b>' : '');
+}
+
+/* ---------------------------------------------------------------------------
+   Controls
+   ------------------------------------------------------------------------ */
+function mkBtn(html, on, fn, cls) {
+  const b = document.createElement('button');
+  b.className = 'btn ' + (cls || '') + (on ? ' on' : '');
+  b.innerHTML = html;
+  b.addEventListener('click', fn);
+  return b;
+}
+
+function buildSiteBtns() {
+  const el = $('siteBtns'); el.innerHTML = '';
+  for (const s of SITES) {
+    el.appendChild(mkBtn(s.name + '<span class="lv">Leq ' + (s.leq != null ? s.leq.toFixed(2) : '  n/a') +
+      '  peak ' + s.lmax.toFixed(2) + '  bg ' + s.base.toFixed(1) + '</span>',
+      eng.site.id === s.id, () => {
+        eng.site = s; eng.peak = -99;
+        stopAll(); if (eng.on) { baselineOnly(); setBackground(eng.ac.currentTime); }
+        buildSiteBtns(); buildTransport(); renderTables();
+      }, 'site'));
+  }
+}
+
+function buildTransport() {
+  const t = $('transBtns'); t.innerHTML = '';
+  const dis = !eng.on;
+  const add = (label, mode, fn, cls) => {
+    const b = mkBtn(label, eng.mode === mode, fn, cls);
+    b.disabled = dis; t.appendChild(b);
+  };
+  add('Background only &mdash; no train', 'baseline', () => { baselineOnly(); buildTransport(); }, 'big');
+  add('Play one train pass-by', 'pass', () => { playPass(false); buildTransport(); }, 'big');
+  add('Continuous, at the measured headway', 'continuous', () => { playPass(true); buildTransport(); }, 'big');
+  const st = mkBtn('Stop', false, () => { stopAll(); baselineOnly(); buildTransport(); });
+  st.disabled = dis; t.appendChild(st);
+
+  const j = $('jumpBtns'); j.innerHTML = '';
+  const s = eng.site, span = eventHalfSpan(s);
+  const pts = [['Far off', -span], ['Approaching', -s.tau * 2], ['Close', -s.tau * 0.7],
+               ['Passing &mdash; peak', 0], ['Receding', s.tau * 0.7], ['Departing', s.tau * 2], ['Gone', span]];
+  for (const [n, tv] of pts) {
+    const b = mkBtn(n + '<br><span style="font-size:10px;opacity:.75;font-family:Consolas,monospace">' +
+      totalLevelAt(s, tv).toFixed(1) + ' dB(A)</span>', eng.mode === 'hold' && Math.abs((eng.tPos ?? 999) - tv) < 0.01,
+      () => { holdAt(tv); buildTransport(); });
+    b.disabled = dis; j.appendChild(b);
+  }
+}
+
+$('power').addEventListener('click', async () => {
+  const btn = $('power');
+  if (!eng.on) {
+    btn.textContent = 'Starting…'; btn.disabled = true;
+    try {
+      if (!eng.ac) await initAudio();
+      if (eng.ac.state === 'suspended') await eng.ac.resume();
+      eng.on = true;
+      btn.classList.add('on'); btn.textContent = 'Sound is on';
+      setBackground(eng.ac.currentTime);
+      baselineOnly();
+    } catch (e) {
+      btn.textContent = 'Audio unavailable';
+      $('diffT').textContent = 'This browser refused to start an audio context: ' + e.message;
+    }
+    btn.disabled = false;
+  } else {
+    eng.on = false; stopAll();
+    setBackground(eng.ac.currentTime);
+    btn.classList.remove('on'); btn.textContent = 'Sound is off';
+    eng.peak = -99;
+  }
+  buildTransport();
+});
+
+$('vol').addEventListener('input', e => {
+  eng.vol = Number(e.target.value) / 100;
+  $('volv').textContent = e.target.value;
+  if (eng.ready) eng.master.gain.setTargetAtTime(eng.vol, eng.ac.currentTime, 0.02);
+});
+
+/* ---------------------------------------------------------------------------
+   Provenance and derivation tables
+   ------------------------------------------------------------------------ */
+function renderTables() {
+  const s = eng.site;
+  $('paramTable').innerHTML =
+    '<table><tr><th>Parameter of this demonstration</th><th>Value for the selected receptor</th><th>Provenance</th><th>Why</th></tr>' +
+    [
+      ['Train-free background level', s.base.toFixed(1) + ' dB(A)', 'b-doc', 'DOCUMENTED',
+       'Transcribed from ' + s.src + '.'],
+      ['Peak level of a train event', s.lmax.toFixed(2) + ' dB(A)', 'b-doc', 'DOCUMENTED',
+       'Transcribed. For the public outdoor sites the MTA reports only a Max Lmax, so the peak of one event stands in for the peak of every event, which overstates the typical train.'],
+      ['Session equivalent level', s.leq != null ? s.leq.toFixed(2) + ' dB(A)' : 'not published', 'b-doc', 'DOCUMENTED',
+       'Transcribed. Used as the energy constraint that fixes the event duration.'],
+      ['Trains and session length', s.n ? s.n + ' trains in ' + fmtDur(s.secs) : 'not published', 'b-doc', 'DOCUMENTED',
+       s.n ? 'Gives a headway of about ' + (s.secs / s.n).toFixed(0) + ' seconds between trains.' : 'Not reported for this site, so no duration can be derived here.'],
+      ['Equivalent peak-level duration &tau;', s.tau.toFixed(3) + ' s', s.teSource === 'derived' ? 'b-der' : 'b-inf',
+       s.teSource === 'derived' ? 'DERIVED' : 'INFERRED',
+       s.teSource === 'derived'
+         ? 'Solved from the four numbers above by the energy balance printed below. No source states it.'
+         : 'This site lacks the numbers needed to derive it, so it borrows the mean of the three public outdoor sites. Marked as borrowed wherever it appears.'],
+      ['Level decay shape through the pass-by', 'n = 1.5', 'b-inf', 'INFERRED',
+       'A compromise between point-source and line-source decay. Only the ENERGY under this curve is constrained by data; the shape is a convention.'],
+      ['Impulsive character', '7.5 impacts per second', 'b-asm', 'ASSUMED',
+       'The MTA set its meter to FAST response "due to indications that the noise impact is caused by sudden impact with a track element", which justifies impulsive character but gives no rate. Train speed, consist length and axle count are unpublished for both bridges.'],
+      ['Frequency content', 'broadband, shaped by convention', 'b-asm', 'ASSUMED',
+       'No third-octave spectrum has ever been published for either bridge. This is the largest single fabrication on the page and nothing about timbre should be inferred from it.'],
+      ['A-weighting of the meter', 'six-pole approximation', 'b-doc', 'DOCUMENTED',
+       'Standard weighting network, applied to the measurement path only and never to what you hear.'],
+      ['Absolute level at your ear', 'unknowable', 'b-asm', 'ASSUMED',
+       'Depends on your volume, hardware and room. Only differences transfer.']
+    ].map(r => '<tr><td>' + r[0] + '</td><td class="num">' + r[1] + '</td><td><span class="badge ' + r[2] + '">' + r[3] + '</span></td><td>' + r[4] + '</td></tr>').join('') +
+    '</table>';
+
+  const P = dB2p(s.lmax), B = dB2p(s.base);
+  $('calcbox').innerHTML = s.teSource === 'derived'
+    ? 'Te = ( T &middot; 10^(Leq/10) &minus; T &middot; 10^(Lbase/10) ) / ( N &middot; ( 10^(Lmax/10) &minus; 10^(Lbase/10) ) )<br><br>' +
+      'for ' + s.name + ':<br>' +
+      '&nbsp;&nbsp;T    = ' + s.secs + ' s&nbsp;&nbsp;N = ' + s.n + '&nbsp;&nbsp;Leq = ' + s.leq.toFixed(2) +
+      '&nbsp;&nbsp;Lmax = ' + s.lmax.toFixed(2) + '&nbsp;&nbsp;Lbase = ' + s.base.toFixed(1) + '<br>' +
+      '&nbsp;&nbsp;Te   = ( ' + (dB2p(s.leq) * s.secs).toExponential(4) + ' &minus; ' + (s.secs * B).toExponential(4) + ' ) / ( ' +
+      s.n + ' &middot; ( ' + P.toExponential(4) + ' &minus; ' + B.toExponential(4) + ' ) )<br>' +
+      '&nbsp;&nbsp;Te   = <b>' + s.te.toFixed(3) + ' s</b>&nbsp;&nbsp;&rarr;&nbsp;&nbsp;&tau; = Te/2 = <b>' + s.tau.toFixed(3) + ' s</b><br><br>' +
+      'check: feeding Te back through the energy balance reconstructs Leq = <b>' +
+      p2dB((s.n * s.te * P + (s.secs - s.n * s.te) * B) / s.secs).toFixed(2) + '</b> against a published ' + s.leq.toFixed(2) + '.'
+    : s.name + ' does not publish the train count and session length the derivation needs.<br>' +
+      'It borrows &tau; = <b>' + s.tau.toFixed(3) + ' s</b>, the mean of the three public outdoor sites, and is labelled as borrowing it.';
+
+  $('deriveTable').innerHTML =
+    '<table><tr><th>Receptor</th><th>Leq</th><th>Peak</th><th>Background</th><th>Trains</th><th>Session</th><th>Derived Te</th><th>Duty cycle</th></tr>' +
+    SITES.map(x => {
+      const d = deriveTe(x);
+      return '<tr' + (x.id === s.id ? ' style="background:var(--cp-accent-soft)"' : '') + '><td>' + x.name + '</td>' +
+        '<td class="num">' + (x.leq != null ? x.leq.toFixed(2) : '—') + '</td>' +
+        '<td class="num">' + x.lmax.toFixed(2) + '</td>' +
+        '<td class="num">' + x.base.toFixed(1) + '</td>' +
+        '<td class="num">' + (x.n ?? '—') + '</td>' +
+        '<td class="num">' + (x.secs ? fmtDur(x.secs) : '—') + '</td>' +
+        '<td class="num">' + (d ? '<b>' + d.toFixed(2) + ' s</b>' : 'cannot derive') + '</td>' +
+        '<td class="num">' + (d ? (100 * x.n * d / x.secs).toFixed(2) + '%' : '—') + '</td></tr>';
+    }).join('') + '</table>';
+
+  const tes = PUBLIC3.map(x => x.te);
+  const spread = 10 * Math.log10(Math.max(...tes) / Math.min(...tes));
+  $('deriveConc').innerHTML =
+    '<b>Why this is worth stating.</b> The three public outdoor sessions were taken at different places, on different days, ' +
+    'with different train counts and different session lengths, and the MTA reports them as four unrelated rows in a table. ' +
+    'Solved for the equivalent event duration they converge on <b>' + Math.min(...tes).toFixed(2) + ' to ' + Math.max(...tes).toFixed(2) +
+    ' seconds</b> \u2014 a spread of only <b>' + spread.toFixed(2) + ' dB</b> in event energy. ' +
+    'That mutual consistency is evidence the three sessions are measuring the same physical event, and it is the constraint ' +
+    'that lets this page synthesise a pass-by without inventing its duration. ' +
+    '<b>The indoor rows do not converge at all</b> \u2014 31 Washington Street resolves to well under a second, because across ' +
+    '423 trains its Max Lmax is a rare outlier rather than a typical event. That divergence is not a defect in the method; ' +
+    'it is independent support for the argument in <a href="../IDEA-CONCEPT.md">IDEA-CONCEPT.md</a> \u00a71.3 that the indoor ' +
+    'and outdoor datasets are not describing the same thing, and that only the public spaces show the unmitigated condition. ' +
+    'At 56 Adams Street the MTA table reports an Leq identical to its Avg Lmax, which the balance resolves to a 100% duty ' +
+    'cycle \u2014 an impossible result that most likely indicates a reporting artefact in the source table rather than a ' +
+    'physical finding, and which no one appears to have queried.';
+}
+
+function fmtDur(s) {
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = Math.round(s % 60);
+  return (h ? h + 'h ' : '') + m + 'm ' + (x < 10 ? '0' : '') + x + 's';
+}
+
+/* -- boot ----------------------------------------------------------------- */
+window.addEventListener('resize', () => { drawPlot($('plot')); });
+buildSiteBtns(); buildTransport(); renderTables();
+baselineOnly();
+frame();
+
+</script>
+</body>
+</html>

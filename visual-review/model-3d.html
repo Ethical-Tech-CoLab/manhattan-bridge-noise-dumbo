@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Provenance-Tagged 3D Model — Manhattan and Williamsburg Bridge Rail Carriage</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+  --cp-canvas: #eeeae3;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+  --cp-canvas: #232221;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+code, .mono { font-family: Consolas, "Courier New", Courier, monospace; }
+
+.wrap { max-width: 1500px; margin: 0 auto; padding: 24px 22px 70px; }
+
+header.masthead { border-bottom: 1px solid var(--cp-border); padding-bottom: 18px; margin-bottom: 18px; }
+.eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--cp-accent); font-weight: 700; margin-bottom: 8px; }
+h1 { font-size: 28px; line-height: 1.2; margin: 0 0 10px; font-weight: 650; letter-spacing: -0.01em; }
+.sub { color: var(--cp-text-muted); max-width: 92ch; margin: 0; font-size: 15px; }
+h2 { font-size: 19px; margin: 30px 0 10px; font-weight: 640; }
+h3 { font-size: 15px; margin: 18px 0 7px; font-weight: 640; }
+
+.premise {
+  background: var(--cp-accent-soft);
+  border: 1px solid var(--cp-accent);
+  border-left-width: 4px;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 16px 0 20px;
+  font-size: 14px;
+}
+.premise strong { color: var(--cp-accent); }
+.premise p { margin: 0 0 9px; }
+.premise p:last-child { margin-bottom: 0; }
+
+.warnbar {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-danger);
+  border-left-width: 4px;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin: 0 0 16px;
+  font-size: 13.5px;
+}
+.warnbar b { color: var(--cp-danger); }
+
+.toolbar {
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start;
+  background: var(--cp-surface); border: 1px solid var(--cp-border);
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 12px;
+}
+.tgroup { display: flex; flex-direction: column; gap: 5px; }
+.tgroup > .tlab { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--cp-text-soft); font-weight: 700; }
+.trow { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+button.btn {
+  appearance: none; border: 1px solid var(--cp-border-strong); background: var(--cp-surface-soft);
+  color: var(--cp-text); border-radius: 6px; padding: 5px 10px; font-size: 12.5px;
+  cursor: pointer; font-family: inherit; transition: background .12s, border-color .12s;
+}
+button.btn:hover { background: var(--cp-highlight); border-color: var(--cp-accent); }
+button.btn.on { background: var(--cp-accent); color: var(--cp-accent-fg); border-color: var(--cp-accent); font-weight: 600; }
+button.btn.off { opacity: .42; text-decoration: line-through; }
+button.btn.tier { min-width: 118px; text-align: left; }
+button.btn.tier .tn { display: block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; opacity: .75; }
+
+.stage { position: relative; border: 1px solid var(--cp-border); border-radius: 10px; overflow: hidden; background: var(--cp-canvas); }
+canvas#gl { display: block; width: 100%; height: 620px; cursor: grab; touch-action: none; }
+canvas#gl.drag { cursor: grabbing; }
+.hud {
+  position: absolute; pointer-events: none; font-size: 11.5px;
+  background: var(--cp-panel-strong); border: 1px solid var(--cp-border);
+  border-radius: 6px; padding: 7px 10px; color: var(--cp-text-muted);
+}
+.hud.tl { top: 10px; left: 10px; max-width: 330px; }
+.hud.tr { top: 10px; right: 10px; text-align: right; }
+.hud.bl { bottom: 10px; left: 10px; }
+.hud.br { bottom: 10px; right: 10px; font-size: 11px; }
+.hud b { color: var(--cp-text); }
+.hud .big { font-size: 13px; color: var(--cp-accent); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+#scalebar { display: flex; align-items: center; gap: 8px; }
+#scalebar .bar { height: 7px; border: 1px solid var(--cp-text-muted); border-top: none; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 380px; gap: 16px; align-items: start; }
+@media (max-width: 1120px) { .grid2 { grid-template-columns: 1fr; } canvas#gl { height: 480px; } }
+
+.panel { background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 10px; padding: 14px 16px; }
+.panel h3 { margin-top: 0; }
+
+.badge {
+  display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 4px; border: 1px solid;
+  vertical-align: middle; white-space: nowrap;
+}
+.b-doc { color: var(--cp-success); border-color: var(--cp-success); background: color-mix(in srgb, var(--cp-success) 12%, transparent); }
+.b-inf { color: var(--cp-warning); border-color: var(--cp-warning); background: color-mix(in srgb, var(--cp-warning) 12%, transparent); }
+.b-asm { color: var(--cp-danger); border-color: var(--cp-danger); background: color-mix(in srgb, var(--cp-danger) 12%, transparent); }
+.b-neutral { color: var(--cp-text-muted); border-color: var(--cp-border-strong); }
+
+.kv { margin: 0; font-size: 13.5px; }
+.kv dt { font-size: 10px; letter-spacing: .09em; text-transform: uppercase; color: var(--cp-text-soft); font-weight: 700; margin-top: 11px; }
+.kv dd { margin: 3px 0 0; }
+.kv dd:first-of-type { margin-top: 2px; }
+
+.clist { list-style: none; margin: 0; padding: 0; max-height: 300px; overflow-y: auto; }
+.clist li {
+  border: 1px solid var(--cp-border); border-radius: 7px; padding: 7px 10px; margin-bottom: 6px;
+  cursor: pointer; font-size: 13px; display: flex; justify-content: space-between; gap: 8px; align-items: center;
+}
+.clist li:hover { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+.clist li.sel { border-color: var(--cp-accent); background: var(--cp-accent-soft); font-weight: 600; }
+.clist li .nm { flex: 1; }
+
+table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 10px 0 4px; }
+th, td { border: 1px solid var(--cp-border); padding: 6px 9px; text-align: left; vertical-align: top; }
+th { background: var(--cp-surface-soft); font-weight: 650; font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--cp-text-muted); }
+
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; margin: 10px 0 0; }
+.legend .li { display: flex; align-items: center; gap: 6px; }
+.legend .sw { width: 26px; height: 12px; border-radius: 2px; }
+
+.note { font-size: 12.5px; color: var(--cp-text-muted); }
+a { color: var(--cp-link); }
+.foot { margin-top: 34px; border-top: 1px solid var(--cp-border); padding-top: 16px; font-size: 12.5px; color: var(--cp-text-muted); }
+.tally { font-size: 13px; margin: 10px 0 0; }
+.tally b { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Ethical Tech CoLab &middot; DUMBO rail-noise programme &middot; Interactive artifact 2 of 3</div>
+  <h1>Provenance-tagged 3D model of two East River rail crossings</h1>
+  <p class="sub">A navigable three-dimensional model of the Manhattan and Williamsburg Bridge rail carriage, from whole-crossing context down to individual fastener components &mdash; in which <strong>every element is colour-coded and outlined by how well it is actually known</strong>, and nothing can be displayed without declaring its evidentiary basis. Companion to <a href="../VISUAL-MODEL-FRAMEWORK.md">VISUAL-MODEL-FRAMEWORK.md</a>.</p>
+</header>
+
+<div class="warnbar" id="warnbar">
+  <b>Read this before you look at anything.</b>
+  Not one element of this model is <span class="badge b-neutral">MEASURED</span> or <span class="badge b-doc">DOCUMENTED</span>
+  in its three-dimensional position. <b>Zero.</b>
+  The geometry you are about to navigate is inferred from photographs, from published narrative descriptions,
+  and from general engineering practice. It is dimensionally schematic. It is <b>not a survey, not a record drawing,
+  and not fit to size a component from.</b>
+  Its purpose is to make the shape of the evidence gap legible, not to represent the bridges accurately.
+  Press <b>Hide INFERRED</b> and <b>Hide ASSUMED</b> together and the frame goes empty. That empty frame is the finding.
+</div>
+
+<div class="premise">
+  <p><strong>Why this looks like a drawing and not a photograph.</strong> A photorealistic render of geometry that nobody has measured
+  would communicate a confidence the evidence cannot support &mdash; the exact failure mode this programme has already had to correct five times.
+  The renderer here is deliberately schematic: flat shading, visible edges, and a line style that encodes provenance.
+  <span class="mono">Solid outline</span> = documented position. <span class="mono">Dashed</span> = inferred. <span class="mono">Dotted</span> = assumed.
+  You can see the epistemic status of every surface from across the room.</p>
+  <p><strong>Two fields, not one.</strong> Following <a href="../VISUAL-MODEL-FRAMEWORK.md">Document 4 &sect;5.4</a>, each component carries
+  <em>Geometry Provenance</em> (how the shape and position are known) separately from <em>Verification State</em>
+  (how thoroughly the underlying source was read). A component can rest on a source rated 5/5 and still have
+  <span class="badge b-asm">ASSUMED</span> geometry, because the source describes the element without locating it.
+  That combination is the single most common condition in this model, and collapsing the two fields into one would hide it.</p>
+</div>
+
+<div class="toolbar">
+  <div class="tgroup">
+    <span class="tlab">Structure</span>
+    <div class="trow" id="bridgeBtns"></div>
+  </div>
+  <div class="tgroup">
+    <span class="tlab">Scale of review</span>
+    <div class="trow" id="tierBtns"></div>
+  </div>
+  <div class="tgroup">
+    <span class="tlab">Provenance filter</span>
+    <div class="trow" id="filtBtns"></div>
+  </div>
+  <div class="tgroup">
+    <span class="tlab">View</span>
+    <div class="trow" id="viewBtns"></div>
+  </div>
+  <div class="tgroup">
+    <span class="tlab">Overlays</span>
+    <div class="trow" id="ovBtns"></div>
+  </div>
+</div>
+
+<div class="grid2">
+  <div>
+    <div class="stage">
+      <canvas id="gl"></canvas>
+      <div class="hud tl" id="hudTier"></div>
+      <div class="hud tr" id="hudCam"></div>
+      <div class="hud bl" id="hudScale"><div id="scalebar"></div></div>
+      <div class="hud br">drag orbit &middot; shift-drag pan &middot; wheel zoom &middot; click select</div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <p class="tally" id="tally"></p>
+  </div>
+
+  <div>
+    <div class="panel" id="inspector"></div>
+    <div class="panel" style="margin-top:14px">
+      <h3>Components at this scale</h3>
+      <ul class="clist" id="clist"></ul>
+    </div>
+  </div>
+</div>
+
+<h2>What the callouts mark</h2>
+<p class="note">Callouts are anchored to three-dimensional positions and follow the camera. They are placed at the points where the
+acoustic argument in <a href="../IDEA-CONCEPT.md">Document 1</a> and <a href="../WILLIAMSBURG-COMPARATOR.md">Document 3</a> actually
+turns &mdash; not at the points that are visually interesting. Each states what is at stake and what is not known.</p>
+<div id="calloutTable"></div>
+
+<h2>The evidence behind each element</h2>
+<div id="srcTable"></div>
+
+<h2>What would move an element up the ladder</h2>
+<div id="upTable"></div>
+
+<div class="foot">
+  <p><b>Provenance of this artifact.</b> Built for the Ethical Tech CoLab DUMBO rail-noise programme.
+  Renderer is hand-written: no external libraries, no network requests, no build step, no telemetry.
+  The choice not to use a general-purpose 3D engine was deliberate &mdash; a schematic renderer that cannot produce a convincing
+  photograph cannot accidentally imply a survey.
+  Sources, ratings and the verification vocabulary are defined in
+  <a href="../VISUAL-MODEL-FRAMEWORK.md">VISUAL-MODEL-FRAMEWORK.md</a>.
+  Sibling artifacts: <a href="section-problem.html">section-problem.html</a> (2D sections) and
+  <a href="acoustic-demo.html">acoustic-demo.html</a> (measured level demonstration).</p>
+  <p><b>Licence.</b> CC BY 4.0, consistent with the repository. Reuse freely with attribution; reuse the numbers only with their caveats attached.</p>
+</div>
+
+</div>
+<script>
+/* ============================================================================
+   PART A -- minimal 3D math and a schematic painter's-algorithm renderer.
+   No dependencies. Right-handed, Y up. World units are FEET throughout.
+   ========================================================================= */
+
+const V = {
+  sub: (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]],
+  add: (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]],
+  scale: (a, s) => [a[0] * s, a[1] * s, a[2] * s],
+  dot: (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2],
+  cross: (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]],
+  len: a => Math.hypot(a[0], a[1], a[2]),
+  norm: a => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; }
+};
+
+function matMul(a, b) {
+  const o = new Float64Array(16);
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+    let s = 0;
+    for (let k = 0; k < 4; k++) s += a[r * 4 + k] * b[k * 4 + c];
+    o[r * 4 + c] = s;
+  }
+  return o;
+}
+
+function matLookAt(eye, target, up) {
+  const f = V.norm(V.sub(target, eye));
+  let s = V.cross(f, up);
+  if (V.len(s) < 1e-6) s = V.cross(f, [0, 0, 1]);
+  s = V.norm(s);
+  const u = V.cross(s, f);
+  return new Float64Array([
+    s[0], s[1], s[2], -V.dot(s, eye),
+    u[0], u[1], u[2], -V.dot(u, eye),
+    -f[0], -f[1], -f[2], V.dot(f, eye),
+    0, 0, 0, 1
+  ]);
+}
+
+function matPerspective(fovDeg, aspect, near, far) {
+  const t = 1 / Math.tan((fovDeg * Math.PI / 180) / 2);
+  return new Float64Array([
+    t / aspect, 0, 0, 0,
+    0, t, 0, 0,
+    0, 0, (far + near) / (near - far), (2 * far * near) / (near - far),
+    0, 0, -1, 0
+  ]);
+}
+
+function xform(m, p) {
+  return [
+    m[0] * p[0] + m[1] * p[1] + m[2] * p[2] + m[3],
+    m[4] * p[0] + m[5] * p[1] + m[6] * p[2] + m[7],
+    m[8] * p[0] + m[9] * p[1] + m[10] * p[2] + m[11],
+    m[12] * p[0] + m[13] * p[1] + m[14] * p[2] + m[15]
+  ];
+}
+
+/* -- primitive builders: each returns {verts:[[x,y,z]...], faces:[[i,i,i,i]...]} -- */
+
+function boxGeom(cx, cy, cz, w, h, d) {
+  const x0 = cx - w / 2, x1 = cx + w / 2;
+  const y0 = cy - h / 2, y1 = cy + h / 2;
+  const z0 = cz - d / 2, z1 = cz + d / 2;
+  return {
+    verts: [
+      [x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0],
+      [x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]
+    ],
+    faces: [[0, 3, 2, 1], [4, 5, 6, 7], [0, 1, 5, 4], [3, 7, 6, 2], [0, 4, 7, 3], [1, 2, 6, 5]]
+  };
+}
+
+/* A box swept between two arbitrary endpoints -- used for diagonals, cables,
+   suspenders, bolts. Cross-section is square of side 2r, which is a schematic
+   stand-in and is exactly why these elements are never better than INFERRED. */
+function strutGeom(p0, p1, r) {
+  const ax = V.sub(p1, p0);
+  const L = V.len(ax);
+  if (L < 1e-9) return { verts: [], faces: [] };
+  const f = V.scale(ax, 1 / L);
+  let up = Math.abs(f[1]) > 0.95 ? [1, 0, 0] : [0, 1, 0];
+  const s = V.norm(V.cross(f, up));
+  const u = V.cross(s, f);
+  const verts = [];
+  for (const t of [0, 1]) {
+    const c = t === 0 ? p0 : p1;
+    for (const [a, b] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
+      verts.push(V.add(c, V.add(V.scale(s, a * r), V.scale(u, b * r))));
+    }
+  }
+  return {
+    verts,
+    faces: [[0, 3, 2, 1], [4, 5, 6, 7], [0, 1, 5, 4], [1, 2, 6, 5], [2, 3, 7, 6], [3, 0, 4, 7]]
+  };
+}
+
+/* Extruded I-section along Z -- rails, stringers, floor beams, chords. */
+function iBeamGeom(cx, cy, z0, z1, bf, tf, dw, tw) {
+  const parts = [];
+  const zc = (z0 + z1) / 2, dz = Math.abs(z1 - z0);
+  parts.push(boxGeom(cx, cy + dw / 2 - tf / 2, zc, bf, tf, dz));
+  parts.push(boxGeom(cx, cy - dw / 2 + tf / 2, zc, bf, tf, dz));
+  parts.push(boxGeom(cx, cy, zc, tw, dw - 2 * tf, dz));
+  return mergeGeom(parts);
+}
+
+/* Running-rail profile: head, web, base. Deliberately three stacked boxes and
+   not a real 115RE contour -- the contour is not sourced for either bridge. */
+function railGeom(cx, railTop, z0, z1) {
+  const zc = (z0 + z1) / 2, dz = Math.abs(z1 - z0);
+  return mergeGeom([
+    boxGeom(cx, railTop - 0.083, zc, 0.24, 0.166, dz),
+    boxGeom(cx, railTop - 0.36, zc, 0.06, 0.39, dz),
+    boxGeom(cx, railTop - 0.59, zc, 0.46, 0.075, dz)
+  ]);
+}
+
+function mergeGeom(list) {
+  const verts = [], faces = [];
+  for (const g of list) {
+    const off = verts.length;
+    for (const v of g.verts) verts.push(v);
+    for (const f of g.faces) faces.push(f.map(i => i + off));
+  }
+  return { verts, faces };
+}
+
+/* ---------------------------------------------------------------------------
+   Camera: spherical orbit around a target, with pan.
+   ------------------------------------------------------------------------ */
+const cam = { az: -0.62, el: 0.30, dist: 300, target: [0, 0, 0], fov: 42 };
+
+function camEye() {
+  const ce = Math.cos(cam.el), se = Math.sin(cam.el);
+  return [
+    cam.target[0] + cam.dist * ce * Math.sin(cam.az),
+    cam.target[1] + cam.dist * se,
+    cam.target[2] + cam.dist * ce * Math.cos(cam.az)
+  ];
+}
+
+/* ---------------------------------------------------------------------------
+   Renderer
+   ------------------------------------------------------------------------ */
+const cvs = document.getElementById('gl');
+const ctx = cvs.getContext('2d');
+let DPR = 1, CW = 0, CH = 0;
+
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  const r = cvs.getBoundingClientRect();
+  CW = Math.max(320, Math.round(r.width));
+  CH = Math.max(240, Math.round(r.height));
+  cvs.width = Math.round(CW * DPR);
+  cvs.height = Math.round(CH * DPR);
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+
+const DASH = { DOCUMENTED: [], MEASURED: [], INFERRED: [7, 5], ASSUMED: [1.5, 3.5] };
+
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+function rgbaOf(hexOrVar, alpha) {
+  let c = hexOrVar.startsWith('--') ? cssVar(hexOrVar) : hexOrVar;
+  if (c.startsWith('#')) {
+    if (c.length === 4) c = '#' + c[1] + c[1] + c[2] + c[2] + c[3] + c[3];
+    const r = parseInt(c.slice(1, 3), 16), g = parseInt(c.slice(3, 5), 16), b = parseInt(c.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+  return c;
+}
+
+/* Screen-space signed area -- used both for backface culling and for the
+   point-in-polygon hit test, so picking always agrees with what is drawn. */
+function area2(pts) {
+  let a = 0;
+  for (let i = 0; i < pts.length; i++) {
+    const p = pts[i], q = pts[(i + 1) % pts.length];
+    a += p[0] * q[1] - q[0] * p[1];
+  }
+  return a / 2;
+}
+
+function pointInPoly(pts, x, y) {
+  let inside = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const xi = pts[i][0], yi = pts[i][1], xj = pts[j][0], yj = pts[j][1];
+    if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / ((yj - yi) || 1e-9) + xi)) inside = !inside;
+  }
+  return inside;
+}
+
+let lastFrame = { faces: [], mvp: null, view: null };
+
+function project(mvp, p) {
+  const c = xform(mvp, p);
+  if (c[3] <= 1e-6) return null;
+  return [(c[0] / c[3] * 0.5 + 0.5) * CW, (1 - (c[1] / c[3] * 0.5 + 0.5)) * CH, c[3]];
+}
+
+function render() {
+  resize();
+  const eye = camEye();
+  const view = matLookAt(eye, cam.target, [0, 1, 0]);
+  const near = Math.max(cam.dist / 900, 0.004);
+  const proj = matPerspective(cam.fov, CW / CH, near, cam.dist * 40 + 6000);
+  const mvp = matMul(proj, view);
+  lastFrame = { faces: [], mvp, view, eye };
+
+  ctx.clearRect(0, 0, CW, CH);
+  ctx.fillStyle = cssVar('--cp-canvas') || '#eee';
+  ctx.fillRect(0, 0, CW, CH);
+
+  const comps = visibleComponents();
+  const bucket = [];
+
+  for (const c of comps) {
+    const base = STATE_STYLE[c.gp];
+    /* Context elements (water, shore) are drawn recessively. They exist to give
+       the model a datum and a receiving ground, not to be looked at. */
+    const style = c.ctxOnly ? { col: base.col, fill: base.fill * 0.32, fillSel: base.fillSel * 0.4, dim: true } : base;
+    for (const g of c._geom) {
+      const sv = g.verts.map(v => project(mvp, v));
+      for (const f of g.faces) {
+        let ok = true;
+        const pts = [];
+        for (const i of f) { if (!sv[i]) { ok = false; break; } pts.push(sv[i]); }
+        if (!ok) continue;
+        const a = area2(pts);
+        if (Math.abs(a) < 0.35) continue;
+        let depth = 0;
+        for (const i of f) depth += sv[i][2];
+        depth /= f.length;
+        bucket.push({ pts, depth, comp: c, style, back: a > 0 });
+      }
+    }
+  }
+
+  bucket.sort((p, q) => q.depth - p.depth);
+
+  const selId = state.selected;
+  for (const f of bucket) {
+    const c = f.comp;
+    const isSel = c.id === selId;
+    const shade = f.back ? 0.55 : 1;
+    ctx.beginPath();
+    ctx.moveTo(f.pts[0][0], f.pts[0][1]);
+    for (let i = 1; i < f.pts.length; i++) ctx.lineTo(f.pts[i][0], f.pts[i][1]);
+    ctx.closePath();
+    ctx.fillStyle = rgbaOf(f.style.col, (isSel ? f.style.fillSel : f.style.fill) * shade);
+    ctx.fill();
+    ctx.setLineDash(DASH[c.gp] || []);
+    ctx.lineWidth = isSel ? 2.1 : (f.back ? 0.5 : 0.95);
+    ctx.strokeStyle = rgbaOf(f.style.col, isSel ? 1 : (f.style.dim ? 0.22 : (f.back ? 0.35 : 0.8)));
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  lastFrame.faces = bucket;
+
+  if (state.overlay.sight) drawSightlines(mvp);
+  if (state.overlay.callouts) drawCallouts(mvp);
+  drawScaleBar(mvp);
+  updateHud(eye);
+}
+
+
+/* ============================================================================
+   PART B -- the model. Every component declares its own evidentiary basis.
+   Geometry Provenance (gp) is SEPARATE from Verification State (vs):
+     gp = how the shape and 3D position are known
+     vs = how thoroughly the underlying source was actually read
+   ========================================================================= */
+
+const STATE_STYLE = {
+  MEASURED:   { col: '--cp-success', fill: 0.34, fillSel: 0.62, rank: 0 },
+  DOCUMENTED: { col: '--cp-success', fill: 0.30, fillSel: 0.58, rank: 1 },
+  INFERRED:   { col: '--cp-warning', fill: 0.20, fillSel: 0.48, rank: 2 },
+  ASSUMED:    { col: '--cp-danger',  fill: 0.11, fillSel: 0.38, rank: 3 }
+};
+
+const GP_DEF = {
+  MEASURED:   'Position and dimension taken from an instrumented survey of this structure.',
+  DOCUMENTED: 'Position and dimension stated numerically in a located, credible source.',
+  INFERRED:   'Shape or arrangement derived from photographs, narrative description, or the stated behaviour of the structure. Not dimensioned by any source.',
+  ASSUMED:    'Drawn from general engineering practice because no source consulted addresses this element on this structure at all.'
+};
+
+const VS_DEF = {
+  VERIFIED:    'Primary source obtained and read in full.',
+  SNIPPET:     'Only an abstract, search result, or partial view was obtained.',
+  UNVERIFIED:  'Asserted by a source that was not itself checked against a primary record.'
+};
+
+const SRC = {
+  aisc: { t: 'Haight, R. and Patel, V., "Rehabilitation of the Williamsburg Bridge", AISC / NSBA Steel Bridge Conference, 2005', r: 5,
+          n: 'Rubric exception declared in Document 3 &sect;0.2: a conference paper rated 5/5 because its second author is NYCDOT Director of East River Bridges writing about work he directed.' },
+  mta:  { t: 'MTA doc 138061, appendix, memoranda of 18 Jan 2024 and 10 Jun 2022 (Konstantellis, Director of Environmental Services, MTA C&amp;D)', r: 5,
+          n: 'The only systematic agency acoustic survey of DUMBO rail noise in the public record. Acoustic values only &mdash; it contains no geometry.' },
+  feis: { t: 'Brooklyn Bridge Park FEIS (2005), site OPS-1, John and Adams Streets', r: 4,
+          n: 'Source of the cleanest rail-versus-road split in the corpus: Leq 77 dBA from trains against 63 dBA from vehicular traffic.' },
+  haer: { t: 'HAER photographic documentation and public photography of both crossings', r: 3,
+          n: 'Establishes that elements exist and roughly where. Supplies no scale, no datum and no dimension. Everything resting on it is INFERRED at best.' },
+  tert: { t: 'Tertiary encyclopaedic and popular engineering descriptions of the Manhattan Bridge', r: 1,
+          n: 'Rubric 1/5. Used only for headline envelope figures, never for anything load-bearing to the argument.' },
+  prac: { t: 'General North American transit track engineering practice', r: 2,
+          n: 'Not a statement about either bridge. Present so the model has something to draw; everything resting on it is ASSUMED by definition.' }
+};
+
+const TIERS = [
+  { id: 'T0', name: 'Context',   sub: 'whole crossing',    ext: 2400, note: 'The crossing in its setting, with the DUMBO receptors that recorded the measured levels.' },
+  { id: 'T1', name: 'Bay',       sub: 'structural system', ext: 170,  note: 'One structural bay in cross-section: trusses, floor system, roadways and the track zones they carry.' },
+  { id: 'T2', name: 'Track',     sub: 'rail assembly',     ext: 26,   note: 'The running rails and everything between them and the steel: stringers, bearers, joints, contact rail.' },
+  { id: 'T3', name: 'Fastener',  sub: 'rail seat detail',  ext: 2.2,  note: 'A single rail seat. Nothing at this scale is sourced for either bridge. Every element here is ASSUMED.' }
+];
+
+/* -- helpers ------------------------------------------------------------- */
+function C(o) { return o; }
+function repeatZ(fn, n, step, z0) {
+  const parts = [];
+  for (let i = 0; i < n; i++) parts.push(fn(z0 + i * step, i));
+  return mergeGeom(parts);
+}
+function parabolaCable(x, yTop, ySag, z0, z1, r, segs) {
+  const parts = [];
+  const mid = (z0 + z1) / 2, half = (z1 - z0) / 2;
+  const yAt = z => { const t = (z - mid) / half; return ySag + (yTop - ySag) * t * t; };
+  for (let i = 0; i < segs; i++) {
+    const za = z0 + (z1 - z0) * i / segs, zb = z0 + (z1 - z0) * (i + 1) / segs;
+    parts.push(strutGeom([x, yAt(za), za], [x, yAt(zb), zb], r));
+  }
+  return mergeGeom(parts);
+}
+
+/* ===========================================================================
+   WILLIAMSBURG BRIDGE
+   Two subway tracks CENTRAL, inside a 67 ft wide by ~40 ft deep stiffening
+   truss. This is the geometric fact that separates it from the Manhattan
+   Bridge, where the tracks are OUTBOARD and cantilevered.
+   ======================================================================== */
+
+const WB_DECK = 135, WB_TW = 67, WB_TD = 40, WB_SPAN = 1600;
+
+const WB = [
+  /* ---------- T0 ---------- */
+  C({ id: 'wb-cable', tier: 'T0', label: 'Main cables (4)', gp: 'INFERRED', vs: 'VERIFIED', src: 'aisc',
+    dim: 'Each of 7,696 bright steel wires; carried approximately 135 ft above mean high water',
+    gpNote: 'The source states the wire count and the height above mean high water. It does not state the cable spacing, the tower-top coordinates or the sag, so the curve drawn here is a parabola of convenience.',
+    ac: 'Acoustically inert in itself. Present because it fixes the deck elevation, which sets the propagation distance to every receptor.',
+    geom: () => mergeGeom([-WB_TW / 2 - 3, -WB_TW / 2 + 3, WB_TW / 2 - 3, WB_TW / 2 + 3].map(
+      x => parabolaCable(x, WB_DECK + 190, WB_DECK + 26, -WB_SPAN / 2, WB_SPAN / 2, 1.1, 26))) }),
+
+  C({ id: 'wb-tower', tier: 'T0', label: 'Main towers (2)', gp: 'INFERRED', vs: 'VERIFIED', src: 'aisc',
+    gpNote: 'The stiffening truss is stated to be pinned at each main tower, which locates the towers longitudinally but gives no tower dimension whatsoever.',
+    ac: 'Marks the pinned support condition. Where a continuous structure is interrupted, the structure-borne transmission path is interrupted with it.',
+    geom: () => mergeGeom([-1, 1].flatMap(s => [-1, 1].map(t =>
+      boxGeom(t * (WB_TW / 2 + 4), (WB_DECK + 200) / 2, s * WB_SPAN / 2, 9, WB_DECK + 200, 14))).concat(
+      [-1, 1].map(s => boxGeom(0, WB_DECK + 196, s * WB_SPAN / 2, WB_TW + 20, 7, 10)))) }),
+
+  C({ id: 'wb-truss0', tier: 'T0', label: 'Stiffening truss envelope', gp: 'DOCUMENTED', vs: 'VERIFIED', src: 'aisc',
+    dim: '67 ft wide, approximately 40 ft deep, pinned at each main tower',
+    gpNote: 'Both stated dimensions describe the ENVELOPE. They locate nothing inside it. Every member drawn within this box at higher tiers is therefore INFERRED at best.',
+    ac: 'The 67 by 40 ft box is the whole difference between the two crossings: at Williamsburg the trains run inside it, at Manhattan they hang outside it.',
+    geom: () => mergeGeom([
+      boxGeom(0, WB_DECK - WB_TD / 2, 0, WB_TW, 1.6, WB_SPAN),
+      boxGeom(0, WB_DECK + WB_TD / 2, 0, WB_TW, 1.6, WB_SPAN),
+      boxGeom(-WB_TW / 2, WB_DECK, 0, 1.6, WB_TD, WB_SPAN),
+      boxGeom(WB_TW / 2, WB_DECK, 0, 1.6, WB_TD, WB_SPAN)]) }),
+
+  C({ id: 'wb-water', tier: 'T0', label: 'East River (datum plane)', gp: 'ASSUMED', vs: 'UNVERIFIED', src: 'prac', ctxOnly: true,
+    gpNote: 'A flat plane at y = 0 standing in for mean high water. Drawn only so the deck elevation has something to be measured from.',
+    ac: 'Water is an acoustically hard, near-perfectly reflecting surface. Its presence under the span is a real propagation factor that no source in this corpus has quantified.',
+    geom: () => boxGeom(0, -1.2, 0, 460, 2, WB_SPAN * 1.12) }),
+
+  /* ---------- T1 ---------- */
+  C({ id: 'wb-chord', tier: 'T1', label: 'Truss chords, top and bottom', gp: 'INFERRED', vs: 'VERIFIED', src: 'aisc',
+    gpNote: 'Chord presence follows from the truss being a truss. No source consulted gives a chord section, a panel length or a member size.',
+    ac: 'The bottom chord is the lowest large steel surface on the structure and faces the receptors directly. Its radiating area is a first-order term that nobody has measured.',
+    geom: () => mergeGeom([-1, 1].flatMap(s => [
+      iBeamGeom(s * WB_TW / 2, WB_DECK + WB_TD / 2, -60, 60, 2.6, 0.28, 2.6, 0.22),
+      iBeamGeom(s * WB_TW / 2, WB_DECK - WB_TD / 2, -60, 60, 2.6, 0.28, 2.6, 0.22)])) }),
+
+  C({ id: 'wb-web', tier: 'T1', label: 'Truss web members', gp: 'INFERRED', vs: 'SNIPPET', src: 'haer',
+    gpNote: 'Diagonal-and-vertical arrangement read off photographs. Panel length of 30 ft is a drawing convenience, not a measurement.',
+    ac: 'Web members conduct vibration from the floor system into the chords. The number of joints in that path affects damping, and the joints have never been counted for acoustic purposes.',
+    geom: () => mergeGeom([-1, 1].flatMap(s => {
+      const out = [];
+      for (let i = -2; i <= 1; i++) {
+        const za = i * 30, zb = za + 30;
+        out.push(strutGeom([s * WB_TW / 2, WB_DECK - WB_TD / 2, za], [s * WB_TW / 2, WB_DECK + WB_TD / 2, zb], 0.7));
+        out.push(strutGeom([s * WB_TW / 2, WB_DECK + WB_TD / 2, zb], [s * WB_TW / 2, WB_DECK - WB_TD / 2, zb + 30], 0.7));
+        out.push(boxGeom(s * WB_TW / 2, WB_DECK, zb, 1.2, WB_TD, 1.2));
+      }
+      return out;
+    })) }),
+
+  C({ id: 'wb-floor', tier: 'T1', label: 'Floor beams', gp: 'INFERRED', vs: 'VERIFIED', src: 'aisc',
+    gpNote: 'The rehabilitation is described as replacing floor system elements, which establishes that floor beams exist. Spacing and depth drawn here are conveniences.',
+    ac: 'The floor beam is the junction where track-borne vibration crosses into the main structure. It is the single most important interface in the model and the least documented.',
+    geom: () => repeatZ(z => iBeamGeom(0, WB_DECK - WB_TD / 2 + 3.4, z - 0.7, z + 0.7, WB_TW, 0.4, 4.4, 0.3), 5, 30, -60) }),
+
+  C({ id: 'wb-rwy', tier: 'T1', label: 'Roadway decks, north and south', gp: 'DOCUMENTED', vs: 'VERIFIED', src: 'aisc',
+    dim: 'Closed-rib orthotropic decks, four traffic lanes each side',
+    gpNote: 'Deck type and lane count are stated. Deck elevation, width and rib geometry are not, so the plates drawn here are positioned by inference.',
+    ac: 'An orthotropic deck is a large, thin, continuously welded steel plate: an efficient radiator. It also screens the track from the receptor, so its net acoustic sign is genuinely unknown.',
+    geom: () => mergeGeom([-1, 1].map(s => boxGeom(s * (WB_TW / 2 + 15), WB_DECK + 3, 0, 30, 0.9, 120))) }),
+
+  C({ id: 'wb-tzone', tier: 'T1', label: 'Subway tracks J1 and J2 (central)', gp: 'DOCUMENTED', vs: 'VERIFIED', src: 'aisc',
+    dim: 'Two tracks, designated CL.TRK J1 and CL.TRK J2, centrally located within the stiffening truss',
+    gpNote: 'The centrality and the designations are documented. The track centreline offsets, the gauge on this structure and the rail-head elevation are not stated anywhere consulted.',
+    ac: 'Central tracks are flanked by their own roadway decks and truss. Compared with the Manhattan Bridge the receptor has more structure in the way, which is the comparator hypothesis in one sentence.',
+    geom: () => mergeGeom([-7.5, 7.5].map(x => boxGeom(x, WB_DECK - WB_TD / 2 + 7.2, 0, 8.5, 0.5, 120))) }),
+
+  C({ id: 'wb-strc', tier: 'T1', label: 'Track stringers and stringer columns', gp: 'DOCUMENTED', vs: 'VERIFIED', src: 'aisc',
+    dim: 'Track stringers, stringer columns and stringer bracing are named as replaced elements',
+    gpNote: 'The source names these elements. It gives no size, no spacing and no elevation for any of them. Naming is not locating.',
+    ac: 'Stringer columns lift the track above the floor system, adding a resonant element between wheel and structure. A raised, columned track is a different acoustic object from a track sitting on the deck.',
+    geom: () => mergeGeom([-7.5, 7.5].flatMap(x => [
+      iBeamGeom(x - 2.4, WB_DECK - WB_TD / 2 + 6.2, -60, 60, 1.1, 0.16, 1.6, 0.12),
+      iBeamGeom(x + 2.4, WB_DECK - WB_TD / 2 + 6.2, -60, 60, 1.1, 0.16, 1.6, 0.12),
+      repeatZ(z => mergeGeom([
+        boxGeom(x - 2.4, WB_DECK - WB_TD / 2 + 4.6, z, 0.9, 2.6, 0.9),
+        boxGeom(x + 2.4, WB_DECK - WB_TD / 2 + 4.6, z, 0.9, 2.6, 0.9)]), 5, 30, -60)])) }),
+
+  C({ id: 'wb-plat', tier: 'T1', label: 'Traveling maintenance platforms (2)', gp: 'DOCUMENTED', vs: 'VERIFIED', src: 'aisc',
+    dim: '119 ft long by 17 ft wide',
+    gpNote: 'One of only two numerically dimensioned elements anywhere in this model. Its travel path and parked position are not stated.',
+    ac: 'Directly relevant to Document 2 Part 7: access is the binding constraint on any intervention. A platform that already reaches the underside is an existing answer to the hardest delivery question.',
+    geom: () => mergeGeom([-1, 1].map(s => boxGeom(s * (WB_TW / 2 + 6), WB_DECK - WB_TD / 2 - 3.5, 0, 17, 1.1, 119))) }),
+
+  C({ id: 'wb-walk', tier: 'T1', label: 'North footwalk and south walkway', gp: 'DOCUMENTED', vs: 'VERIFIED', src: 'aisc',
+    dim: 'A north footwalk and a south pedestrian walkway are both named',
+    gpNote: 'Presence documented, position inferred. The walkway matters because it is the only publicly reachable observation position on the structure.',
+    ac: 'This is where a two-site survey could actually stand. Document 3 Method 11 depends on it, and the Domino FEIS already recorded Leq 82.5 dB(A) on this walkway.',
+    geom: () => mergeGeom([-1, 1].map(s => boxGeom(s * (WB_TW / 2 + 31), WB_DECK + 3.4, 0, 8, 0.5, 120))) })
+];
+
+/* ===========================================================================
+   MANHATTAN BRIDGE
+   Four tracks in two OUTBOARD pairs, carried outside the stiffening truss.
+   Headline envelope figures are tertiary (rubric 1/5) and are used for nothing
+   except giving the model a size.
+   ======================================================================== */
+
+const MB_DECK = 125, MB_W = 120, MB_SPAN = 1480, MB_TWR = 350, MB_TD = 24;
+
+const MB = [
+  /* ---------- T0 ---------- */
+  C({ id: 'mb-cable', tier: 'T0', label: 'Main cables (4)', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'tert',
+    dim: 'Four main cables (tertiary, rubric 1/5)',
+    gpNote: 'Count only, from a rubric 1/5 source. Spacing, diameter and sag are all drawing conveniences.',
+    ac: 'Not a radiator of consequence. Included so the deck elevation and the propagation geometry to DUMBO are visible.',
+    geom: () => mergeGeom([-MB_W / 2 + 6, -MB_W / 2 + 16, MB_W / 2 - 16, MB_W / 2 - 6].map(
+      x => parabolaCable(x, MB_DECK + MB_TWR - 40, MB_DECK + 22, -MB_SPAN / 2, MB_SPAN / 2, 1.3, 26))) }),
+
+  C({ id: 'mb-tower', tier: 'T0', label: 'Main towers (2)', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'tert',
+    dim: 'Towers approximately 350 ft; main span 1,480 ft (tertiary, rubric 1/5)',
+    gpNote: 'Height and span are the only figures available and they come from a rubric 1/5 source. No leg spacing, no section, no strut elevation.',
+    ac: 'Included for envelope only.',
+    geom: () => mergeGeom([-1, 1].flatMap(s => [-1, 1].map(t =>
+      boxGeom(t * (MB_W / 2 - 11), (MB_DECK + MB_TWR - 40) / 2, s * MB_SPAN / 2, 11, MB_DECK + MB_TWR - 40, 16))).concat(
+      [-1, 1].map(s => boxGeom(0, MB_DECK + MB_TWR - 44, s * MB_SPAN / 2, MB_W - 12, 8, 12)))) }),
+
+  C({ id: 'mb-deck0', tier: 'T0', label: 'Deck and stiffening truss envelope', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'tert',
+    dim: 'Deck approximately 120 ft wide; lightly-webbed Warren stiffening truss (tertiary, rubric 1/5)',
+    gpNote: 'This is the Manhattan Bridge equivalent of the Williamsburg 67 by 40 ft figure, and it is four rubric points weaker. Truss depth is not stated by any source consulted; the value drawn is invented.',
+    ac: '"Lightly webbed" is the whole problem in two words: less steel means less stiffness, more deflection under a train, and a structure that moves more. Nobody consulted has measured what it radiates.',
+    geom: () => mergeGeom([
+      boxGeom(0, MB_DECK, 0, MB_W, 2.6, MB_SPAN),
+      boxGeom(-MB_W / 2 + 26, MB_DECK - MB_TD, 0, 3.2, 3.2, MB_SPAN),
+      boxGeom(MB_W / 2 - 26, MB_DECK - MB_TD, 0, 3.2, 3.2, MB_SPAN),
+      boxGeom(-MB_W / 2 + 26, MB_DECK - 3, 0, 3.2, 3.2, MB_SPAN),
+      boxGeom(MB_W / 2 - 26, MB_DECK - 3, 0, 3.2, 3.2, MB_SPAN)]) }),
+
+  C({ id: 'mb-susp', tier: 'T0', label: 'Suspender cables', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'tert',
+    dim: '1,400 suspender cables (tertiary, rubric 1/5)',
+    gpNote: 'A total count with no spacing. The 40 ft spacing drawn here is arithmetic on an unsourced assumption, not a fact.',
+    ac: 'Suspenders are a structure-borne path from deck to cable. Whether any usable energy travels it has never been tested on this bridge.',
+    geom: () => {
+      const parts = [], mid = 0, half = MB_SPAN / 2;
+      for (let z = -half + 40; z < half; z += 40) {
+        const t = z / half, yTop = MB_DECK + 22 + (MB_TWR - 62) * t * t;
+        for (const x of [-MB_W / 2 + 6, -MB_W / 2 + 16, MB_W / 2 - 16, MB_W / 2 - 6])
+          parts.push(strutGeom([x, MB_DECK, z], [x, yTop, z], 0.32));
+      }
+      return mergeGeom(parts);
+    } }),
+
+  C({ id: 'mb-trk0', tier: 'T0', label: 'Four tracks, two outboard pairs', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'tert',
+    dim: 'Four tracks arranged in two outboard pairs (tertiary, rubric 1/5)',
+    gpNote: 'The outboard arrangement is the single most consequential geometric claim in this model and it rests on a rubric 1/5 source. Confirming it against a record drawing is Document 4 Q32.',
+    ac: 'Outboard tracks have almost no structure between them and a receptor standing below and to the side. This is the proposed mechanism for DUMBO being louder than the Williamsburg case, and it is a hypothesis, not a result.',
+    geom: () => mergeGeom([-1, 1].flatMap(s => [-1, 1].map(k =>
+      boxGeom(s * (MB_W / 2 - 12) + k * 7, MB_DECK - 6, 0, 8.5, 0.6, MB_SPAN)))) }),
+
+  C({ id: 'mb-water', tier: 'T0', label: 'East River (datum plane)', gp: 'ASSUMED', vs: 'UNVERIFIED', src: 'prac', ctxOnly: true,
+    gpNote: 'A flat plane at y = 0 standing in for mean high water.',
+    ac: 'Hard reflecting surface beneath the span. Never quantified in this corpus.',
+    geom: () => boxGeom(0, -1.2, -140, 460, 2, MB_SPAN * 1.12) }),
+
+  C({ id: 'mb-shore', tier: 'T0', label: 'DUMBO shoreline (schematic)', gp: 'ASSUMED', vs: 'UNVERIFIED', src: 'prac', ctxOnly: true,
+    gpNote: 'A block standing in for the Brooklyn shore. Positioned to carry the receptor markers; it is not survey data and matches no real coastline.',
+    ac: 'The receiving ground. Hard, built-up and reflective, which the corpus notes but has never modelled.',
+    geom: () => boxGeom(0, 7, MB_SPAN / 2 + 330, 620, 14, 620) }),
+
+  C({ id: 'mb-recept', tier: 'T0', label: 'Measured receptor markers (4)', gp: 'ASSUMED', vs: 'VERIFIED', src: 'mta',
+    dim: 'Dog run Leq 87.50 / peak 98.90 &middot; Library Leq 84.65 / peak 98.10 &middot; Archway Leq 81.33 / peak 91.80 &middot; Front and Pine peak 94.4 against 68.2 background',
+    gpNote: 'The two fields separate completely here, and this component is the clearest illustration of why the schema needs both. The LEVELS are measured by the MTA at rubric 5/5 and read in full. The POSITIONS are placed by hand for legibility and are worth nothing. These are markers sized to be visible at this zoom, not buildings. Do not read a distance off this model.',
+    ac: 'These are the numbers the whole programme exists to explain. An average Leq of 84.65 dB(A) at a public library, and 87.50 dB(A) at a park dog run, against a City threshold that calls anything above 80 dBA "clearly unacceptable" for that receptor class.',
+    geom: () => mergeGeom([[-150, 300], [-40, 190], [80, 350], [190, 130]].map(
+      ([x, dz]) => mergeGeom([
+        boxGeom(x, 45, MB_SPAN / 2 + dz, 26, 62, 26),
+        boxGeom(x, 82, MB_SPAN / 2 + dz, 48, 12, 48)]))) }),
+
+  /* ---------- T1 ---------- */
+  C({ id: 'mb-warren', tier: 'T1', label: 'Warren stiffening truss, both sides', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'tert',
+    gpNote: 'Truss type named by a rubric 1/5 source; every member size, panel length and chord elevation drawn here is invented.',
+    ac: 'The stiffening truss is the main structure-borne route between the track and everything else. Its damping has never been measured on this bridge, which is Document 2 Method 6.',
+    geom: () => mergeGeom([-1, 1].flatMap(s => {
+      const x = s * (MB_W / 2 - 26), out = [
+        iBeamGeom(x, MB_DECK - 2, -60, 60, 2.2, 0.26, 2.2, 0.2),
+        iBeamGeom(x, MB_DECK - MB_TD, -60, 60, 2.2, 0.26, 2.2, 0.2)];
+      for (let i = -2; i <= 1; i++) {
+        out.push(strutGeom([x, MB_DECK - MB_TD, i * 30], [x, MB_DECK - 2, i * 30 + 30], 0.55));
+        out.push(strutGeom([x, MB_DECK - 2, i * 30 + 30], [x, MB_DECK - MB_TD, i * 30 + 60], 0.55));
+      }
+      return out;
+    })) }),
+
+  C({ id: 'mb-cant', tier: 'T1', label: 'Outboard cantilever framing', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'haer',
+    gpNote: 'The most acoustically decisive element in this model and the least evidenced. That the outboard tracks are carried on framing projecting beyond the truss follows from the outboard arrangement plus photographs. No source consulted gives its depth, spacing, section or connection detail.',
+    ac: 'A cantilever is a compliant support. It deflects more under a given axle load than a member framed between trusses, and its tip is the point closest to the receptor. If one element deserves the first instrumented measurement, this is it.',
+    geom: () => repeatZ(z => mergeGeom([-1, 1].map(s => mergeGeom([
+      boxGeom(s * (MB_W / 2 - 13), MB_DECK - 4.6, z, 28, 1.5, 2.2),
+      strutGeom([s * (MB_W / 2 - 26), MB_DECK - MB_TD + 2, z], [s * (MB_W / 2 - 2), MB_DECK - 5.4, z], 0.75)
+    ]))), 5, 30, -60) }),
+
+  C({ id: 'mb-floor', tier: 'T1', label: 'Floor system and cross girders', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'haer',
+    gpNote: 'Presence is certain because the deck has to be carried by something. Depth, spacing and connection are entirely drawn.',
+    ac: 'The underside surface facing the receptors. Every citywide 3D dataset is aerial, so this is precisely the face that sits in the deck optical shadow and has never been captured.',
+    geom: () => repeatZ(z => iBeamGeom(0, MB_DECK - 4, z - 0.8, z + 0.8, MB_W - 44, 0.45, 5, 0.32), 5, 30, -60) }),
+
+  C({ id: 'mb-rwyU', tier: 'T1', label: 'Upper roadway deck', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'tert',
+    gpNote: 'Presence of an upper roadway is not seriously in doubt; its width, elevation and construction are not stated by any source consulted.',
+    ac: 'Screens the track from above, which is irrelevant to a receptor standing below. Included so the section is not misleading by omission.',
+    geom: () => boxGeom(0, MB_DECK + 1.4, 0, MB_W - 50, 1, 120) }),
+
+  C({ id: 'mb-rwyL', tier: 'T1', label: 'Lower roadway decks', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'tert',
+    gpNote: 'Inferred from the bridge being a two-level structure. No dimension available.',
+    ac: 'Adds vehicular noise to the same receptors. The Brooklyn Bridge Park FEIS separated the two: Leq 77 dBA from trains against 63 dBA from road traffic at John and Adams Streets.',
+    geom: () => mergeGeom([-1, 1].map(s => boxGeom(s * (MB_W / 2 - 34), MB_DECK - 10.5, 0, 22, 0.9, 120))) }),
+
+  C({ id: 'mb-tzone', tier: 'T1', label: 'Outboard track pairs (B/D and N/Q)', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'tert',
+    gpNote: 'Two tracks each side, carried outside the truss line. Centreline offsets, gauge on this structure and rail-head elevation are stated by nothing.',
+    ac: 'Four tracks running roughly 20 hours a day. At 56 Adams Street the MTA logged 520 trains in 11 hours: a train roughly every 76 seconds, each producing an excursion of up to about 48 dB above baseline.',
+    geom: () => mergeGeom([-1, 1].flatMap(s => [-1, 1].map(k =>
+      boxGeom(s * (MB_W / 2 - 13) + k * 7, MB_DECK - 3.2, 0, 8.5, 0.6, 120)))) }),
+
+  C({ id: 'mb-noise', tier: 'T1', label: 'Existing noise treatment (absent)', gp: 'ASSUMED', vs: 'UNVERIFIED', src: 'prac',
+    gpNote: 'Drawn as an empty volume where a barrier or an underside treatment would sit. No source consulted records any acoustic treatment on this structure, so this element represents a hypothesis about a void, not an object.',
+    ac: 'Document 2 finding 2 matters here: acoustic short circuits were EXCLUDED because the authors dismissed the under-bridge zone as "free of residential development". In DUMBO that zone IS the residential area. The sign of that intervention inverts for this site.',
+    geom: () => mergeGeom([-1, 1].map(s => boxGeom(s * (MB_W / 2 - 8), MB_DECK - 12, 0, 1.2, 14, 120))) })
+];
+
+/* ===========================================================================
+   T2 and T3 -- generated for both structures from the same template, because
+   NEITHER structure has a located source at these scales. That the two are
+   identical is not a modelling shortcut; it is an accurate representation of
+   the state of the evidence.
+   ======================================================================== */
+
+const GAUGE = 4.708;
+
+function trackTier(pfx) {
+  return [
+    C({ id: pfx + '-rail', tier: 'T2', label: 'Running rails (pair)', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'prac',
+      gpNote: 'Standard gauge of 4 ft 8.5 in is near-certain for NYCT and is still an inference here, because no source consulted states the gauge ON THIS STRUCTURE. The rail section drawn is three stacked boxes, not a real 115RE contour.',
+      ac: 'The rail is the primary radiator above roughly 500 Hz and the origin of the impact the MTA meter was set to catch. Its dynamic behaviour depends on the support beneath it, which is the next element down and is entirely unknown.',
+      geom: () => mergeGeom([-1, 1].map(s => railGeom(s * GAUGE / 2, 0, -13, 13))) }),
+
+    C({ id: pfx + '-joint', tier: 'T2', label: 'Rail joint and joint bars', gp: 'INFERRED', vs: 'VERIFIED', src: 'mta',
+      dim: 'Meter set to fast response "due to indications that the noise impact is caused by sudden impact with a track element"',
+      gpNote: 'The MTA sentence is the strongest diagnostic statement in the entire public record, and it still does not say WHICH element. Drawing a bolted joint here is a plausible reading of "sudden impact", not a documented identification.',
+      ac: 'If the dominant source is a discrete discontinuity rather than continuous roughness, the whole remedy changes: welding a joint is cheap and local, damping a whole structure is neither. Resolving this is Method 1 and it is the programme prerequisite.',
+      geom: () => mergeGeom([-1, 1].flatMap(s => [
+        boxGeom(s * GAUGE / 2 - 0.16, -0.36, 0, 0.09, 0.5, 2.0),
+        boxGeom(s * GAUGE / 2 + 0.16, -0.36, 0, 0.09, 0.5, 2.0),
+        boxGeom(s * GAUGE / 2, -0.02, 0, 0.26, 0.02, 0.09)])) }),
+
+    C({ id: pfx + '-bearer', tier: 'T2', label: 'Timber bearers / ties', gp: 'ASSUMED', vs: 'UNVERIFIED', src: 'prac',
+      gpNote: 'No source consulted states whether either structure uses timber bearers, direct fixation, or a mixture. Spacing of 24 in is general practice and nothing more.',
+      ac: 'Bearer spacing sets the pinned-pinned resonance of the rail, which controls where in the spectrum the rail radiates hardest. Without it, no prediction of spectral shape is possible.',
+      geom: () => repeatZ(z => boxGeom(0, -0.96, z, 8.5, 0.58, 0.66), 11, 2.0, -10) }),
+
+    C({ id: pfx + '-guard', tier: 'T2', label: 'Guard / restraining rails', gp: 'ASSUMED', vs: 'UNVERIFIED', src: 'prac',
+      gpNote: 'Common on elevated structures. Whether either bridge carries them, and to what pattern, is unrecorded in everything consulted.',
+      ac: 'A guard rail adds steel mass coupled to the same bearers and can act as an additional radiator or, if damped, as an absorber. Neither has been tested here.',
+      geom: () => mergeGeom([-1, 1].map(s => boxGeom(s * (GAUGE / 2 - 0.62), -0.34, 0, 0.2, 0.62, 26))) }),
+
+    C({ id: pfx + '-contact', tier: 'T2', label: 'Contact rail and protection board', gp: 'ASSUMED', vs: 'UNVERIFIED', src: 'prac',
+      gpNote: 'A third-rail system is certain on NYCT; its position, height and cover detail on these structures are not documented in any source consulted.',
+      ac: 'Not a significant radiator, but it occupies the space where an under-track absorptive treatment would have to go. Access conflicts of this kind are what Document 2 Part 7 identifies as the binding constraint.',
+      geom: () => mergeGeom([
+        boxGeom(GAUGE / 2 + 2.1, -0.5, 0, 0.28, 0.42, 26),
+        boxGeom(GAUGE / 2 + 2.1, -0.18, 0, 0.75, 0.1, 26)]) }),
+
+    C({ id: pfx + '-strg2', tier: 'T2', label: 'Supporting stringer', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'prac',
+      gpNote: 'Something carries the bearers. On Williamsburg the source names track stringers; on Manhattan nothing is named at all. Size and spacing are drawn.',
+      ac: 'The stringer is where the track assembly hands its load to the bridge. Every mitigation that works by decoupling has to act somewhere between the rail head and this member.',
+      geom: () => mergeGeom([-1, 1].map(s => iBeamGeom(s * 2.4, -2.3, -13, 13, 1.1, 0.14, 1.6, 0.11))) }),
+
+    /* ---------- T3 ---------- */
+    C({ id: pfx + '-plate', tier: 'T3', label: 'Tie plate / baseplate', gp: 'ASSUMED', vs: 'UNVERIFIED', src: 'prac',
+      gpNote: 'No fastening specification for either structure was located anywhere in this programme. This is Document 1 Q2, still open.',
+      ac: 'The plate spreads load and sets the seat area. It is drawn only so the assembly is complete; its real geometry is unknown.',
+      geom: () => boxGeom(0, -0.68, 0, 1.5, 0.075, 0.75) }),
+
+    C({ id: pfx + '-pad', tier: 'T3', label: 'Resilient pad', gp: 'ASSUMED', vs: 'UNVERIFIED', src: 'prac',
+      gpNote: 'The MTA credits resilient fasteners with 3 to 5 dBA in one section of its own report and 6 to 8 dBA in another. That documented self-contradiction is about PERFORMANCE. This element is about GEOMETRY, and there is no geometry for it at all.',
+      ac: 'The pad is the mitigation. And here is the trap the framework exists to catch: complete geometry for this pad would still not tell you its dynamic stiffness, its damping or its preload, which are the only three properties that determine what it does acoustically.',
+      geom: () => boxGeom(0, -0.735, 0, 1.5, 0.035, 0.75) }),
+
+    C({ id: pfx + '-clip', tier: 'T3', label: 'Rail clips (4)', gp: 'ASSUMED', vs: 'UNVERIFIED', src: 'prac',
+      gpNote: 'Drawn as a generic elastic clip. Which clip, at what toe load, on what pattern, is unknown for both structures.',
+      ac: 'Clip toe load sets the rail-to-support coupling. Change it and you change the decay rate along the rail, which changes how much rail radiates per axle. It is a number, not a shape, and no shape will reveal it.',
+      geom: () => mergeGeom([-1, 1].flatMap(s => [-1, 1].map(t =>
+        strutGeom([s * 0.33, -0.62, t * 0.26], [s * 0.55, -0.55, t * 0.26], 0.05)))) }),
+
+    C({ id: pfx + '-bolt', tier: 'T3', label: 'Anchor bolts (4)', gp: 'ASSUMED', vs: 'UNVERIFIED', src: 'prac',
+      gpNote: 'Four bolts on a rectangular pattern, drawn from practice. Nothing about the real anchorage on either structure is recorded.',
+      ac: 'Preload here determines whether the interface is a rigid joint or a lossy one. A loosened anchorage is both a maintenance defect and an acoustic event source, and no inspection record consulted reports on them acoustically.',
+      geom: () => mergeGeom([-1, 1].flatMap(s => [-1, 1].map(t =>
+        mergeGeom([
+          strutGeom([s * 0.62, -0.78, t * 0.28], [s * 0.62, -0.55, t * 0.28], 0.038),
+          boxGeom(s * 0.62, -0.585, t * 0.28, 0.13, 0.05, 0.13)])))) }),
+
+    C({ id: pfx + '-rail3', tier: 'T3', label: 'Rail foot at the seat', gp: 'INFERRED', vs: 'UNVERIFIED', src: 'prac',
+      gpNote: 'The rail is shown at the seat to give the fastener something to hold. Same three-box stand-in as at T2.',
+      ac: 'This 6-inch length of interface is where every proposed material intervention in Document 2 Track B would have to act.',
+      geom: () => railGeom(0, 0, -0.55, 0.55) }),
+
+    C({ id: pfx + '-bear3', tier: 'T3', label: 'Bearer top at the seat', gp: 'ASSUMED', vs: 'UNVERIFIED', src: 'prac',
+      gpNote: 'Support surface, drawn from practice.',
+      ac: 'Whatever sits between rail foot and this surface is the entire available design space for decoupling at the source.',
+      geom: () => boxGeom(0, -0.965, 0, 2.4, 0.42, 1.1) })
+  ];
+}
+
+const MODEL = {
+  MB: { name: 'Manhattan Bridge', short: 'Manhattan', comps: MB.concat(trackTier('mb')) },
+  WB: { name: 'Williamsburg Bridge', short: 'Williamsburg', comps: WB.concat(trackTier('wb')) }
+};
+
+
+/* ============================================================================
+   PART C -- callouts, overlays, UI wiring.
+   ========================================================================= */
+
+const state = {
+  bridge: 'MB',
+  tier: 'T0',
+  selected: null,
+  hide: { DOCUMENTED: false, INFERRED: false, ASSUMED: false },
+  overlay: { callouts: true, sight: true }
+};
+
+/* Callouts are placed where the ACOUSTIC argument turns, not where the model
+   is visually interesting. Each says what is at stake and what is not known. */
+const CALLOUTS = {
+  'MB:T0': [
+    { p: [-(MB_W / 2 - 13), MB_DECK - 6, -160], t: 'Outboard track pair', d: 'Nothing between train and receptor', sev: 'hi' },
+    { p: [0, MB_DECK - 30, 300], t: 'Underside', d: 'The face that points at DUMBO. Never captured: every citywide 3D dataset is aerial.', sev: 'hi' },
+    { p: [-40, 88, MB_SPAN / 2 + 190], t: 'Adams Street Library', d: 'Leq 84.65 dB(A), peak 98.10. City calls >80 "clearly unacceptable" here.', sev: 'hi' },
+    { p: [80, 88, MB_SPAN / 2 + 350], t: 'Dog run, Brooklyn Bridge Park', d: 'Leq 87.50 dB(A), peak 98.90, baseline 65.0', sev: 'hi' },
+    { p: [-150, 88, MB_SPAN / 2 + 300], t: 'DUMBO Archway', d: 'Leq 81.33 dB(A) over an already-elevated 68.9 baseline', sev: 'md' },
+    { p: [190, 88, MB_SPAN / 2 + 130], t: 'Front and Pine Street', d: '94.4 dB(A) peak against 68.2 background. Meter on FAST: impact, not roar.', sev: 'hi' },
+    { p: [0, 0, -300], t: 'Water surface', d: 'Hard reflector under the whole span. Unquantified anywhere in this corpus.', sev: 'lo' }
+  ],
+  'MB:T1': [
+    { p: [-(MB_W / 2 - 8), MB_DECK - 5.4, 0], t: 'Cantilever tip', d: 'Most compliant support, closest point to receptor, zero located dimensions. First place to instrument.', sev: 'hi' },
+    { p: [0, MB_DECK - 4, 30], t: 'Floor system underside', d: 'Large flat radiating surface in the deck optical shadow', sev: 'hi' },
+    { p: [-(MB_W / 2 - 26), MB_DECK - MB_TD, -30], t: 'Truss bottom chord', d: '"Lightly webbed" Warren. Damping never measured on this bridge.', sev: 'md' },
+    { p: [-(MB_W / 2 - 8), MB_DECK - 12, 60], t: 'Where a barrier would go', d: 'And where Document 2 finding 2 says the sign may invert for a residential underside', sev: 'md' },
+    { p: [(MB_W / 2 - 34), MB_DECK - 10.5, -45], t: 'Lower roadway', d: 'FEIS separated them: rail 77 dBA, road 63 dBA at John and Adams', sev: 'lo' }
+  ],
+  'WB:T0': [
+    { p: [0, WB_DECK, -300], t: 'Tracks are INSIDE the truss', d: 'The one documented geometric contrast with the Manhattan Bridge', sev: 'hi' },
+    { p: [WB_TW / 2, WB_DECK - WB_TD / 2, 200], t: '67 ft wide, ~40 ft deep', d: 'One of only two dimensioned figures in this entire model', sev: 'md' },
+    { p: [WB_TW / 2 + 31, WB_DECK + 3.4, -420], t: 'Public walkway', d: 'Domino FEIS recorded Leq 82.5 dB(A) here. The only standable observation post.', sev: 'hi' },
+    { p: [0, WB_DECK + 196, WB_SPAN / 2], t: 'Truss pinned at tower', d: 'Structure-borne path interrupted here', sev: 'lo' }
+  ],
+  'WB:T1': [
+    { p: [0, WB_DECK - WB_TD / 2 + 7.2, 0], t: 'Central tracks J1 / J2', d: 'Flanked by roadway decks and truss on both sides', sev: 'hi' },
+    { p: [-7.5, WB_DECK - WB_TD / 2 + 4.6, 30], t: 'Stringer columns', d: 'Track raised on columns: a resonant element between wheel and structure', sev: 'hi' },
+    { p: [WB_TW / 2 + 6, WB_DECK - WB_TD / 2 - 3.5, -40], t: 'Traveling platform, 119 x 17 ft', d: 'An existing answer to the access problem Document 2 calls binding', sev: 'md' },
+    { p: [WB_TW / 2 + 15, WB_DECK + 3, 45], t: 'Orthotropic deck', d: 'Thin welded plate: efficient radiator, and also a screen. Net sign unknown.', sev: 'md' }
+  ],
+  'MB:T2': [], 'WB:T2': [], 'MB:T3': [], 'WB:T3': []
+};
+const T2_CO = [
+  { p: [GAUGE / 2, 0, 0], t: 'Rail head', d: 'Primary radiator above ~500 Hz', sev: 'hi' },
+  { p: [-GAUGE / 2, -0.36, 0], t: 'Bolted joint', d: 'MTA set the meter to FAST "due to indications that the noise impact is caused by sudden impact with a track element"', sev: 'hi' },
+  { p: [0, -0.96, -4], t: 'Bearer spacing', d: 'Sets rail pinned-pinned resonance. Unknown for both bridges.', sev: 'hi' },
+  { p: [GAUGE / 2 + 2.1, -0.5, 8], t: 'Contact rail', d: 'Occupies the space an under-track treatment would need', sev: 'md' },
+  { p: [2.4, -2.3, -8], t: 'Stringer', d: 'Where the track hands its load to the bridge', sev: 'md' }
+];
+const T3_CO = [
+  { p: [0, -0.735, 0], t: 'Resilient pad', d: 'Geometry will NOT give you stiffness, damping or preload. Those three decide everything.', sev: 'hi' },
+  { p: [0.55, -0.55, 0.26], t: 'Clip toe load', d: 'A number, not a shape. No model of any resolution reveals it.', sev: 'hi' },
+  { p: [0.62, -0.6, -0.28], t: 'Anchor preload', d: 'Rigid joint or lossy joint. Nobody has inspected these acoustically.', sev: 'md' },
+  { p: [0, -0.68, 0], t: 'Fastening specification', d: 'Document 1 Q2. Never located for either structure. This whole tier is a placeholder.', sev: 'hi' }
+];
+CALLOUTS['MB:T2'] = T2_CO; CALLOUTS['WB:T2'] = T2_CO;
+CALLOUTS['MB:T3'] = T3_CO; CALLOUTS['WB:T3'] = T3_CO;
+
+/* -- component access ----------------------------------------------------- */
+function allComponents() { return MODEL[state.bridge].comps; }
+function tierComponents() { return allComponents().filter(c => c.tier === state.tier); }
+function visibleComponents() {
+  return tierComponents().filter(c => {
+    if (state.hide[c.gp]) return false;
+    if (!c._geom) { const g = c.geom(); c._geom = Array.isArray(g) ? g : [g]; }
+    return true;
+  });
+}
+
+/* -- overlays ------------------------------------------------------------- */
+const SEV_COL = { hi: '--cp-danger', md: '--cp-warning', lo: '--cp-text-muted' };
+
+function drawCallouts(mvp) {
+  const list = (CALLOUTS[state.bridge + ':' + state.tier] || []);
+  const items = [];
+  ctx.font = '700 11.5px "Segoe UI", sans-serif';
+  for (const co of list) {
+    const s = project(mvp, co.p);
+    if (!s) continue;
+    if (s[0] < -240 || s[0] > CW + 240 || s[1] < -240 || s[1] > CH + 240) continue;
+    const w = Math.min(214, Math.max(118, ctx.measureText(co.t).width + 22));
+    const lines = wrapText(co.d, w - 14, '11px "Segoe UI", sans-serif');
+    items.push({ co, s, w, lines, h: 19 + lines.length * 13 + 7, right: s[0] >= CW * 0.5 });
+  }
+
+  /* Labels are packed into two margin columns so the centre of the frame stays
+     readable. Long leaders are preferable to a model buried under its own notes. */
+  for (const side of [false, true]) {
+    const grp = items.filter(it => it.right === side).sort((a, b) => a.s[1] - b.s[1]);
+    const total = grp.reduce((n, it) => n + it.h + 7, 0) - 7;
+    let y = total > CH - 12 ? 6 : null;
+    for (const it of grp) {
+      it.x = side ? CW - it.w - 12 : 12;
+      if (y === null) {
+        it.y = Math.max(6, Math.min(CH - it.h - 6, it.s[1] - 26));
+        y = it.y;
+      } else {
+        it.y = y;
+      }
+      y = it.y + it.h + 7;
+    }
+    // second pass: resolve any downward collisions, then clamp inside the frame
+    for (let i = 1; i < grp.length; i++) {
+      if (grp[i].y < grp[i - 1].y + grp[i - 1].h + 7) grp[i].y = grp[i - 1].y + grp[i - 1].h + 7;
+    }
+    let over = grp.length ? (grp[grp.length - 1].y + grp[grp.length - 1].h) - (CH - 6) : 0;
+    if (over > 0) for (const it of grp) it.y = Math.max(6, it.y - over);
+  }
+
+  for (const it of items) {
+    const { co, s, w, h, lines } = it;
+    const col = cssVar(SEV_COL[co.sev] || '--cp-text-muted');
+    const lx = it.x, ly = it.y;
+
+    ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(s[0], s[1]);
+    ctx.lineTo(it.right ? lx : lx + w, ly + h / 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.beginPath(); ctx.arc(s[0], s[1], 4.2, 0, Math.PI * 2);
+    ctx.fillStyle = col; ctx.fill();
+    ctx.beginPath(); ctx.arc(s[0], s[1], 8, 0, Math.PI * 2);
+    ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.stroke();
+
+    ctx.fillStyle = cssVar('--cp-panel-strong') || '#fff';
+    roundRect(lx, ly, w, h, 5); ctx.fill();
+    ctx.strokeStyle = col; ctx.lineWidth = 1.2;
+    roundRect(lx, ly, w, h, 5); ctx.stroke();
+
+    ctx.fillStyle = col;
+    ctx.font = '700 11.5px "Segoe UI", sans-serif';
+    ctx.fillText(co.t, lx + 7, ly + 14);
+    ctx.fillStyle = cssVar('--cp-text-muted') || '#666';
+    ctx.font = '11px "Segoe UI", sans-serif';
+    lines.forEach((L, i) => ctx.fillText(L, lx + 7, ly + 28 + i * 13));
+  }
+}
+
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function wrapText(t, maxw, font) {
+  ctx.font = font;
+  const words = String(t).split(/\s+/), out = [];
+  let line = '';
+  for (const w of words) {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxw && line) { out.push(line); line = w; }
+    else line = test;
+  }
+  if (line) out.push(line);
+  return out.slice(0, 5);
+}
+
+/* Sightlines: straight line-of-sight from a source point to a receptor point.
+   Geometric only. They carry NO propagation model, no attenuation, no
+   diffraction. They mark what a receptor can see, which is the necessary
+   condition for a barrier argument and nowhere near a sufficient one. */
+function drawSightlines(mvp) {
+  let pairs = [];
+  if (state.tier === 'T0' && state.bridge === 'MB') {
+    pairs = [[-150, 300], [-40, 190], [80, 350], [190, 130]].map(
+      ([x, dz]) => [[x < 0 ? -(MB_W / 2 - 13) : (MB_W / 2 - 13), MB_DECK - 6, MB_SPAN / 2 - 120], [x, 82, MB_SPAN / 2 + dz]]);
+  } else if (state.tier === 'T1') {
+    const isMB = state.bridge === 'MB';
+    const sx = isMB ? -(MB_W / 2 - 13) : -7.5;
+    const sy = isMB ? MB_DECK - 6 : WB_DECK - WB_TD / 2 + 7.2;
+    pairs = [[[sx, sy, 0], [sx - 150, (isMB ? MB_DECK : WB_DECK) - 118, 40]],
+             [[sx, sy, -30], [sx - 90, (isMB ? MB_DECK : WB_DECK) - 118, -70]]];
+  }
+  if (!pairs.length) return;
+  ctx.setLineDash([9, 6]);
+  ctx.lineWidth = 1.3;
+  ctx.strokeStyle = rgbaOf('--cp-accent', 0.62);
+  for (const [a, b] of pairs) {
+    const pa = project(mvp, a), pb = project(mvp, b);
+    if (!pa || !pb) continue;
+    ctx.beginPath(); ctx.moveTo(pa[0], pa[1]); ctx.lineTo(pb[0], pb[1]); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+}
+
+/* Scale bar: measures a world length at the camera target depth, so the number
+   is honest for objects near the centre of the frame and optimistic for
+   anything nearer than that. */
+function drawScaleBar(mvp) {
+  const t = cam.target;
+  const eye = camEye();
+  let right = V.norm(V.cross(V.norm(V.sub(t, eye)), [0, 1, 0]));
+  const a = project(mvp, t), b = project(mvp, V.add(t, right));
+  const el = document.getElementById('scalebar');
+  if (!a || !b) { el.textContent = ''; return; }
+  const pxPerFt = Math.abs(b[0] - a[0]) || 1;
+  const targetPx = 130;
+  let ft = targetPx / pxPerFt;
+  const pow = Math.pow(10, Math.floor(Math.log10(ft)));
+  const nice = [1, 2, 5, 10].map(m => m * pow).filter(v => v >= ft * 0.35);
+  ft = nice[0] || pow;
+  const px = ft * pxPerFt;
+  const lab = ft >= 1 ? ft.toLocaleString() + ' ft' : (ft * 12).toFixed(ft * 12 < 1 ? 2 : 1) + ' in';
+  el.innerHTML = '<span class="bar" style="width:' + Math.round(px) + 'px"></span><b>' + lab + '</b>' +
+    '<span style="opacity:.7">&nbsp;1 px &asymp; ' + (1 / pxPerFt < 1 ? (12 / pxPerFt).toFixed(2) + ' in' : (1 / pxPerFt).toFixed(1) + ' ft') + '</span>';
+}
+
+function updateHud(eye) {
+  const T = TIERS.find(t => t.id === state.tier);
+  const vis = visibleComponents().length, tot = tierComponents().length;
+  document.getElementById('hudTier').innerHTML =
+    '<span class="big">' + T.id + ' &middot; ' + T.name + '</span>' +
+    MODEL[state.bridge].name + ' &mdash; ' + T.sub + '<br>' +
+    '<b>' + vis + '</b> of <b>' + tot + '</b> components shown' +
+    (vis === 0 ? ' &mdash; <b style="color:var(--cp-danger)">the frame is empty. That is the finding.</b>' : '');
+  document.getElementById('hudCam').innerHTML =
+    'eye <b>' + eye.map(v => Math.round(v)).join(', ') + '</b> ft<br>' +
+    'dist <b>' + (cam.dist < 10 ? cam.dist.toFixed(2) : Math.round(cam.dist)) + '</b> ft &middot; fov ' + cam.fov + '&deg;';
+}
+
+/* -- camera framing ------------------------------------------------------- */
+function frameTier(animate) {
+  const deck = state.bridge === 'MB' ? MB_DECK : WB_DECK;
+  const F = {
+    T0: { target: [0, deck * 0.5, state.bridge === 'MB' ? 420 : 0], dist: state.bridge === 'MB' ? 1950 : 2100, az: -0.62, el: 0.24 },
+    T1: { target: [0, deck - 8, 0], dist: 235, az: -0.72, el: 0.20 },
+    T2: { target: [0, -1.0, 0], dist: 27, az: -0.78, el: 0.30 },
+    T3: { target: [0, -0.62, 0], dist: 3.1, az: -0.85, el: 0.34 }
+  }[state.tier];
+  const from = { target: cam.target.slice(), dist: cam.dist, az: cam.az, el: cam.el };
+  if (!animate) { Object.assign(cam, { target: F.target.slice(), dist: F.dist, az: F.az, el: F.el }); render(); return; }
+  const t0 = performance.now(), dur = 480;
+  const logA = Math.log(from.dist), logB = Math.log(F.dist);
+  function step(now) {
+    const k = Math.min(1, (now - t0) / dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    cam.target = from.target.map((v, i) => v + (F.target[i] - v) * e);
+    cam.dist = Math.exp(logA + (logB - logA) * e);
+    cam.az = from.az + (F.az - from.az) * e;
+    cam.el = from.el + (F.el - from.el) * e;
+    render();
+    if (k < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* -- interaction ---------------------------------------------------------- */
+let drag = null;
+cvs.addEventListener('pointerdown', e => {
+  cvs.setPointerCapture(e.pointerId);
+  drag = { x: e.clientX, y: e.clientY, pan: e.shiftKey, moved: 0 };
+  cvs.classList.add('drag');
+});
+cvs.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  drag.x = e.clientX; drag.y = e.clientY;
+  drag.moved += Math.abs(dx) + Math.abs(dy);
+  if (drag.pan) {
+    const eye = camEye();
+    const fwd = V.norm(V.sub(cam.target, eye));
+    const right = V.norm(V.cross(fwd, [0, 1, 0]));
+    const up = V.cross(right, fwd);
+    const k = cam.dist * 0.0018;
+    cam.target = V.add(cam.target, V.add(V.scale(right, -dx * k), V.scale(up, dy * k)));
+  } else {
+    cam.az -= dx * 0.007;
+    cam.el = Math.max(-1.45, Math.min(1.45, cam.el + dy * 0.007));
+  }
+  render();
+});
+cvs.addEventListener('pointerup', e => {
+  cvs.classList.remove('drag');
+  if (drag && drag.moved < 5) pick(e);
+  drag = null;
+});
+cvs.addEventListener('pointercancel', () => { drag = null; cvs.classList.remove('drag'); });
+cvs.addEventListener('wheel', e => {
+  e.preventDefault();
+  cam.dist = Math.max(0.35, Math.min(9000, cam.dist * Math.exp(e.deltaY * 0.0012)));
+  render();
+}, { passive: false });
+
+function pick(e) {
+  const r = cvs.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  for (let i = lastFrame.faces.length - 1; i >= 0; i--) {
+    const f = lastFrame.faces[i];
+    if (pointInPoly(f.pts, x, y)) { select(f.comp.id); return; }
+  }
+  select(null);
+}
+
+function select(id) {
+  state.selected = id;
+  renderInspector();
+  buildList();
+  render();
+}
+
+/* -- UI ------------------------------------------------------------------- */
+function mkBtn(label, on, fn, cls) {
+  const b = document.createElement('button');
+  b.className = 'btn ' + (cls || '') + (on ? ' on' : '');
+  b.innerHTML = label;
+  b.addEventListener('click', fn);
+  return b;
+}
+
+function buildToolbar() {
+  const bb = document.getElementById('bridgeBtns'); bb.innerHTML = '';
+  for (const k of ['MB', 'WB'])
+    bb.appendChild(mkBtn(MODEL[k].short, state.bridge === k, () => {
+      state.bridge = k; state.selected = null; buildToolbar(); buildList(); renderInspector(); frameTier(false); redrawTables();
+    }));
+
+  const tb = document.getElementById('tierBtns'); tb.innerHTML = '';
+  for (const T of TIERS)
+    tb.appendChild(mkBtn('<span class="tn">' + T.id + '</span>' + T.name, state.tier === T.id, () => {
+      state.tier = T.id; state.selected = null; buildToolbar(); buildList(); renderInspector(); frameTier(true); redrawTables();
+    }, 'tier'));
+
+  const fb = document.getElementById('filtBtns'); fb.innerHTML = '';
+  for (const k of ['DOCUMENTED', 'INFERRED', 'ASSUMED'])
+    fb.appendChild(mkBtn((state.hide[k] ? 'Show ' : 'Hide ') + k, false, () => {
+      state.hide[k] = !state.hide[k]; buildToolbar(); buildList(); render();
+    }, state.hide[k] ? 'off' : ''));
+
+  const vb = document.getElementById('viewBtns'); vb.innerHTML = '';
+  const views = { 'Section': [0, 0.03], 'Elevation': [-Math.PI / 2, 0.03], 'Plan': [0, 1.44], 'Iso': [-0.72, 0.28], 'Under': [-0.7, -0.55] };
+  for (const [n, [az, el]] of Object.entries(views))
+    vb.appendChild(mkBtn(n, false, () => { cam.az = az; cam.el = el; render(); }));
+  vb.appendChild(mkBtn('Reframe', false, () => frameTier(true)));
+
+  const ob = document.getElementById('ovBtns'); ob.innerHTML = '';
+  ob.appendChild(mkBtn('Callouts', state.overlay.callouts, () => { state.overlay.callouts = !state.overlay.callouts; buildToolbar(); render(); }));
+  ob.appendChild(mkBtn('Sightlines', state.overlay.sight, () => { state.overlay.sight = !state.overlay.sight; buildToolbar(); render(); }));
+}
+
+const BADGE = { MEASURED: 'b-doc', DOCUMENTED: 'b-doc', INFERRED: 'b-inf', ASSUMED: 'b-asm' };
+
+function buildList() {
+  const ul = document.getElementById('clist'); ul.innerHTML = '';
+  for (const c of tierComponents()) {
+    const li = document.createElement('li');
+    if (c.id === state.selected) li.className = 'sel';
+    if (state.hide[c.gp]) li.style.opacity = '.35';
+    li.innerHTML = '<span class="nm">' + c.label + '</span><span class="badge ' + BADGE[c.gp] + '">' + c.gp + '</span>';
+    li.addEventListener('click', () => select(c.id));
+    ul.appendChild(li);
+  }
+  const t = tierComponents();
+  const n = k => t.filter(c => c.gp === k).length;
+  document.getElementById('tally').innerHTML =
+    'At <b>' + state.tier + '</b> on the <b>' + MODEL[state.bridge].name + '</b>: ' +
+    '<span class="badge b-neutral">MEASURED ' + n('MEASURED') + '</span> ' +
+    '<span class="badge b-doc">DOCUMENTED ' + n('DOCUMENTED') + '</span> ' +
+    '<span class="badge b-inf">INFERRED ' + n('INFERRED') + '</span> ' +
+    '<span class="badge b-asm">ASSUMED ' + n('ASSUMED') + '</span> ' +
+    '&mdash; of <b>' + t.length + '</b>. Across all four scales and both structures: ' +
+    '<b>' + Object.values(MODEL).flatMap(m => m.comps).filter(c => c.gp === 'MEASURED').length + '</b> measured elements.';
+}
+
+function renderInspector() {
+  const el = document.getElementById('inspector');
+  const c = allComponents().find(x => x.id === state.selected);
+  if (!c) {
+    const T = TIERS.find(t => t.id === state.tier);
+    el.innerHTML = '<h3>' + T.id + ' &mdash; ' + T.name + '</h3><p class="note">' + T.note + '</p>' +
+      '<p class="note">Click any surface in the model, or any row in the list below, to see what is actually known about it.</p>';
+    return;
+  }
+  const s = SRC[c.src];
+  el.innerHTML =
+    '<h3>' + c.label + '</h3>' +
+    '<p><span class="badge ' + BADGE[c.gp] + '">' + c.gp + '</span> ' +
+    '<span class="badge b-neutral">' + c.vs + '</span> ' +
+    '<span class="badge b-neutral">source ' + s.r + '/5</span></p>' +
+    '<dl class="kv">' +
+    '<dt>Geometry provenance</dt><dd>' + GP_DEF[c.gp] + '</dd>' +
+    '<dt>Verification state</dt><dd>' + VS_DEF[c.vs] + '</dd>' +
+    (c.dim ? '<dt>What the source actually states</dt><dd>' + c.dim + '</dd>' : '') +
+    '<dt>What this geometry does and does not support</dt><dd>' + c.gpNote + '</dd>' +
+    '<dt>Why it matters acoustically</dt><dd>' + c.ac + '</dd>' +
+    '<dt>Source</dt><dd>' + s.t + '<br><span class="note">' + s.n + '</span></dd>' +
+    '</dl>' +
+    (c.gp === 'ASSUMED' ? '<p class="note"><b style="color:var(--cp-danger)">No dimension is shown for this element,</b> and none will be. Annotating an assumed shape with a number is how a placeholder becomes a specification.</p>' : '');
+}
+
+function buildLegend() {
+  const el = document.getElementById('legend');
+  const rows = [['DOCUMENTED', 'solid', '--cp-success'], ['INFERRED', 'dashed', '--cp-warning'], ['ASSUMED', 'dotted', '--cp-danger']];
+  el.innerHTML = rows.map(([k, d, v]) =>
+    '<span class="li"><span class="sw" style="background:color-mix(in srgb,var(' + v + ') 26%,transparent);border:1.5px ' + d + ' var(' + v + ')"></span>' +
+    '<b>' + k + '</b> &mdash; ' + d + ' outline</span>').join('') +
+    '<span class="li" style="color:var(--cp-text-muted)">No element in this model is MEASURED.</span>';
+}
+
+/* -- tables --------------------------------------------------------------- */
+function redrawTables() {
+  const co = CALLOUTS[state.bridge + ':' + state.tier] || [];
+  document.getElementById('calloutTable').innerHTML =
+    '<table><tr><th>Callout</th><th>What is at stake</th><th>Weight</th></tr>' +
+    (co.length ? co.map(c => '<tr><td><b>' + c.t + '</b></td><td>' + c.d + '</td><td>' +
+      ({ hi: 'decisive', md: 'contributing', lo: 'context' })[c.sev] + '</td></tr>').join('')
+      : '<tr><td colspan="3">No callouts defined at this scale.</td></tr>') + '</table>';
+
+  const used = [...new Set(tierComponents().map(c => c.src))];
+  document.getElementById('srcTable').innerHTML =
+    '<table><tr><th>Source</th><th>Rating</th><th>What it can and cannot carry</th><th>Elements at this scale</th></tr>' +
+    used.map(k => {
+      const s = SRC[k], n = tierComponents().filter(c => c.src === k).length;
+      return '<tr><td>' + s.t + '</td><td><b>' + s.r + '/5</b></td><td>' + s.n + '</td><td><b>' + n + '</b></td></tr>';
+    }).join('') + '</table>';
+
+  document.getElementById('upTable').innerHTML =
+    '<table><tr><th>Element class</th><th>Current</th><th>What would raise it</th><th>Method</th></tr>' +
+    [['Manhattan Bridge structural section', 'INFERRED (rubric 1/5)', 'NYCDOT record drawings obtained under FOIL, giving truss depth, panel length and cantilever framing', 'Document 4 Method 15 / Q32'],
+     ['Williamsburg member positions inside the 67 x 40 ft envelope', 'INFERRED', 'Record drawings, or photogrammetry from the public walkway, which is legally reachable today', 'Document 4 Method 16 / Q33'],
+     ['Track gauge, centreline offset, rail-head elevation', 'INFERRED / ASSUMED', 'A single dimensioned track plan for either structure. None has been located.', 'Document 1 Q2'],
+     ['Fastening specification (all T3)', 'ASSUMED', 'The maintenance specification. Even then, geometry alone still will not give stiffness, damping or preload.', 'Document 1 Q2 + material property register'],
+     ['Underside surfaces', 'INFERRED', 'Ground-based or platform-mounted capture. Every citywide dataset is aerial and cannot see this face.', 'Document 4 Method 16'],
+     ['Which element actually makes the impact', 'Not modelled', 'Instrumented source apportionment on the structure. This is the programme prerequisite and it has not been done.', 'Document 1 Method 1'],
+     ['Dynamic stiffness, damping, preload of every interface', 'Absent entirely', 'A material and interface property register. No amount of geometric detail substitutes for it.', 'Document 4 Part 11 item 15']
+    ].map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td></tr>').join('') + '</table>';
+}
+
+/* -- boot ----------------------------------------------------------------- */
+window.addEventListener('resize', render);
+const mq = window.matchMedia('(prefers-color-scheme: dark)');
+if (mq.addEventListener) mq.addEventListener('change', render);
+buildToolbar(); buildList(); renderInspector(); buildLegend(); redrawTables();
+frameTier(false);
+
+</script>
+</body>
+</html>
