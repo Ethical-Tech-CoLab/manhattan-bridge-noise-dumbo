@@ -1,15 +1,17 @@
-# Establishing train frequency over the Manhattan Bridge
+# Establishing train frequency over the Manhattan Bridge, and who is under it
 
-Two scripts that answer a question this programme has been asserting an answer
-to without ever deriving it: **how many trains actually cross the Manhattan Bridge, and when?**
+Four scripts that answer two questions this programme had been asserting answers
+to without ever deriving them: how many trains actually cross the Manhattan
+Bridge and when, and **how many people are underneath to hear them.**
 
 | Script | Answers | Cost |
 |---|---|---|
 | `bridge_schedule.py` | What is scheduled, by hour and day type | One 5 MB download, about a minute |
 | `bridge_realtime.py` | What actually ran | Polls; a week takes a week |
-| `build_dashboard_data.py` | Per-event data for the interactive dashboard | Seconds, after the download |
+| `build_dashboard_data.py` | Per-event train data for the interactive dashboard | Seconds, after the download |
+| `build_pedestrian_data.py` | **How many people are underneath, and when** | Four API pulls, about a minute |
 
-Neither needs an API key, an account, or a payment method. Both use only the
+None needs an API key, an account, or a payment method. All use only the
 Python standard library except `bridge_realtime.py`, which needs
 `pip install gtfs-realtime-bindings protobuf`.
 
@@ -223,11 +225,52 @@ on a weekday morning, when the train rate is at its 24-hour maximum - **67 cross
 carrying commuters. The original framing could not see that case, because it
 was only looking at the park.
 
-**What is verified and what is not.** The train rates are 5/5 `VERIFIED`. The
-*presence* of people is 1/5 `UNVERIFIED`: no pedestrian count has been taken
-anywhere in this corridor, by this programme or, so far as it has found, by
-anyone. The phase argument is therefore a statement about which question to
-ask, not an exposure estimate. **No exposure estimate should be built until the denominator is counted.**
+#### That replacement is also withdrawn
+
+The paragraph immediately above was written before any pedestrian data existed.
+It is now measurable, and it is wrong.
+
+> **The worst case is not the park.** It is the corridor on a weekday morning,
+> when the train rate is at its 24-hour maximum.
+
+**That is withdrawn.** The 08:00 hour does carry the most trains - 67. It
+carries **46% of the corridor's daily maximum number of people**. Multiply the
+two and it scores **50 out of 100** on the exposure index. The actual maximum is
+**14:00**, with about 3,780 people present against 62 crossings.
+
+| Day type | Trains peak | People peak | Exposure peak | Index at 08:00 | Index at 13:00 |
+|---|---|---|---|---|---|
+| Weekday | 08:00 | 13:00 | **14:00** | 50 | 97 |
+| Saturday | 13:00 | 13:00 | **13:00** | 23 | 100 |
+| Sunday | 13:00 | 14:00 | **15:00** | 19 | 100 |
+
+**This programme has now made the same error twice, in opposite directions.**
+The first framing optimised on attendance alone and concluded the concern was
+the park on a weekend afternoon. The correction optimised on train rate alone
+and concluded it was the corridor on a weekday morning.
+**Exposure is the product, and the product peaks in between**
+- in the early afternoon, on every day of the week.
+
+All three day types peak within two hours of each other despite carrying very
+different train rates. The reason is that
+**train rate is nearly flat from 07:00 to 19:00**
+while presence changes by a factor of four inside the same window.
+Where people are matters more than where trains are, and only one of those two
+had ever been measured.
+
+The index is deliberately **relative** - each day type scaled to its own
+maximum. No absolute person-event figure is published, because presence here is
+a lower bound covering only subway-delivered transients, and multiplying a lower
+bound by a train count produces a number that looks authoritative and is not.
+
+**What is verified and what is not.** The train rates are 5/5 `VERIFIED`.
+Presence is 2/5, up from the 1/5 this section carried until the denominator work
+below was done.
+**No pedestrian has been counted directly anywhere in this corridor.**
+What changed is that arrival rate is now derivable
+from fare data, so the exposure index is a statement about shape rather than a
+guess. An absolute exposure figure still cannot be published, because dwell time
+is unmeasured and residents are not in the accumulation at all.
 
 There is also a resolution here of the premise correction above. York St is an
 `F` train station and no train crossing this bridge stops there, so it is
@@ -357,7 +400,187 @@ written as a challenge rather than a claim.
 
 ---
 
-## Usage
+## Counting the denominator
+
+`build_pedestrian_data.py` answers a question the train work could not:
+**how many people are actually under the bridge, and when.**
+
+It does not answer it completely. It closes one half of the problem and names
+the other half precisely.
+
+### The direction trap
+
+The obvious move is to pull turnstile data at York St and High St. That
+measures **the wrong direction**, and nothing in the data says so.
+
+MTA's own column definition for the hourly ridership feed, quoted verbatim:
+
+> Total number of riders that **entered** a subway complex via OMNY or
+> MetroCard at the specific hour and for that specific fare type.
+
+Entries are people *leaving* the corridor on foot-to-subway. The question was
+about people *arriving*. Over a whole day the two roughly balance, so a daily
+total would have looked fine. **By hour they are close to opposite** - at a
+residential station, entries peak when residents leave and exits peak when they
+return. Using entries as a proxy for arrivals produces a curve with the peak in
+the wrong place.
+
+The fix is the **Origin-Destination Ridership Estimate**, a separate MTA feed
+that carries an inferred destination for each trip. Summed over all origins with
+destination York St or High St, it gives arrivals by hour and day of week.
+
+### Four sources, none of which counts a pedestrian
+
+| Source | Host | Dataset | Gives | Rating |
+|---|---|---|---|---|
+| MTA Subway Hourly Ridership: Beginning 2025 | `data.ny.gov` | `5wq4-mkjj` | Entries, hourly, observed | 5/5 `VERIFIED` |
+| MTA Subway Origin-Destination Ridership Estimate: Beginning 2026 | `data.ny.gov` | `28vm-gjqr` | Arrivals, hourly by day of week, **inferred** | 4/5 `VERIFIED` |
+| Brooklyn Bridge Automated Pedestrian Counts | `data.cityofnewyork.us` | `6fi9-q3ta` | Walkway flow, hourly, **directional** | 4/5 `VERIFIED` |
+| PLUTO tax lots | `data.cityofnewyork.us` | `64uk-42ks` | Residential units | 5/5 `VERIFIED` |
+
+**None needs an API key.** All four were pulled with `urllib` and no
+credentials. The Census API, by contrast, now refuses key-less requests with
+`Missing Key`, which is why resident counts come from tax lots rather than ACS.
+
+### What it found
+
+Typical day, corridor total for both stations, EU 2002/49/EC periods:
+
+| Day type | Period | Arrive by subway | Enter subway | Walkway to Brooklyn | Walkway to Manhattan |
+|---|---|---|---|---|---|
+| Weekday | Daytime | 18,074 | 16,401 | 7,147 | 6,605 |
+| Weekday | Evening | 2,877 | 4,692 | 462 | 492 |
+| Weekday | Night | 1,379 | 848 | 63 | 74 |
+| Saturday | Daytime | 16,105 | 13,956 | 10,895 | 10,176 |
+| Saturday | Evening | 2,615 | 4,320 | 875 | 751 |
+| Saturday | Night | 1,106 | 1,046 | 68 | 108 |
+| Sunday | Daytime | 14,551 | 12,106 | 8,886 | 8,008 |
+| Sunday | Evening | 2,066 | 4,068 | 639 | 567 |
+| Sunday | Night | 816 | 778 | 55 | 83 |
+
+Subway figures are May 2026.
+**Walkway figures are 2019, because the counter died in 2019**
+and no live pedestrian counter exists anywhere near DUMBO. Of the
+ten pedestrian-capable sensors NYC DOT currently operates, the nearest is at
+Willis Avenue in the Bronx. The Brooklyn Bridge and Manhattan Bridge counters
+that are still live are **bicycle-only** - including one named "Manhattan Bridge
+Ped Path", which counts bikes.
+
+### The corridor fills in the morning and empties in the evening
+
+Net flow, arrivals minus entries, weekday:
+
+| Hour | 06 | 07 | 08 | 09 | 10 | 12 | 14 | 16 | 18 | 20 | 22 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Net | +374 | +511 | +546 | **+800** | +590 | +183 | -14 | -332 | -454 | **-590** | -303 |
+
+That is the signature of a **destination** district, not a dormitory. A purely
+residential neighbourhood would show the opposite.
+**The people under the bridge during the busiest train hours are**
+**disproportionately not the people who live there.**
+They are workers and visitors, and they are the population least
+likely to appear at a community board meeting.
+
+### A cross-check that was not designed in
+
+Over a full day, arrivals and entries at the same two stations should balance.
+They do:
+
+| Day type | Arrivals (inferred) | Entries (observed) | Closure error |
+|---|---|---|---|
+| Weekday | 22,330 | 21,942 | +1.77% |
+| Saturday | 19,827 | 19,322 | +2.61% |
+| Sunday | 17,433 | 16,952 | +2.84% |
+
+Two datasets built by entirely different methods - one counting fare
+transactions, one inferring destinations from return swipes - agree to within
+3% at the level of two station complexes.
+
+**They are not fully independent.** The origin-destination estimate is scaled to
+match total system ridership. But that scaling is system-wide, not per-station,
+so agreement at this level is still informative. The residual is carried through
+as the uncertainty band on the accumulation curve in the dashboard, rather than
+being discarded.
+
+The walkway figures were checked the same way: the typical-day profile implies
+6,013,344 pedestrians in 2019 against a published annual sum of 6,011,174, a
+0.04% difference attributable to rounding.
+
+### Residents
+
+| Study area | Lots | Homes | Residents |
+|---|---|---|---|
+| DUMBO and Vinegar Hill | 231 | 6,314 | 9,875-13,360 |
+| Affected corridor | 376 | 10,128 | 15,840-21,431 |
+| Wide catchment | 822 | 20,279 | 31,716-42,910 |
+
+**Homes are a tax fact. Residents are an assumption** - units multiplied by 92%
+occupancy and a household size of 1.7 to 2.3, reported as a range for that
+reason and rated 2/5.
+
+The boxes are stated as explicit coordinates in the script rather than borrowed
+from a census geography, because **no census geography matches this corridor**.
+DUMBO is not its own Neighborhood Tabulation Area; it sits inside `BK0202
+Downtown Brooklyn-DUMBO-Boerum Hill`, an area of about 2.2 square kilometres.
+Using that NTA would have overstated the affected population several times over
+while appearing more official.
+
+The "DUMBO and Vinegar Hill" box includes **Farragut Houses**, which sits
+directly under the bridge approach. That is deliberate. It is public housing,
+it is the closest large residential population to the structure, and any
+framing that treats this as a question about loft conversions and a park has
+already excluded the people most exposed.
+
+### Little's Law, half solved
+
+The number of people present in an area is `L = lambda * W` - arrival rate
+multiplied by mean dwell time.
+
+**This work produces lambda. It does not produce W.** A commuter walking from
+York St to an office on Water St is exposed for four minutes. A family on the
+Brooklyn Bridge Park lawn is exposed for three hours. Both count once in the
+arrival figures.
+
+Until dwell time is measured, the accumulation curve is
+**a lower bound on transient presence, not a headcount**,
+and it omits, in rough order of size:
+
+- **Residents**, who are present whether or not they touch a turnstile. Almost
+  certainly the largest omission, and the population whose exposure is
+  continuous rather than episodic.
+- **Walkway arrivals** - about 7,700 toward Brooklyn on a typical weekday in
+  2019. Unknown today.
+- **Every other mode** - the ferry at Fulton Ferry Landing, the B25 and B67, Citi
+  Bike, private car, the Brooklyn Heights stair.
+- **Mode-swapping.** Anyone who arrives by subway and leaves on foot over the
+  bridge is counted arriving and never leaving. The small closure error suggests
+  these flows roughly cancel. It does not prove it.
+
+### Where this section is likely to be wrong
+
+**The origin-destination hour is probably the origin hour, not the arrival hour.**
+MTA's column description says only "the hour of the day in which the
+subway trips occurred". If it is the entry hour, every arrival figure is
+timestamped 10-25 minutes early, which shifts the accumulation curve left by
+part of an hour. This has not been confirmed with MTA.
+
+**Not everyone who arrives at High St is going to DUMBO.** High St also serves
+Brooklyn Heights, and no allocation has been attempted. The same is true of
+York St and Vinegar Hill. Arrivals are attributed to the corridor in full,
+which overstates it.
+
+**The walkway counter was on the Manhattan approach**, not the Brooklyn end.
+Pedestrians who turned back mid-span are counted as heading to Brooklyn.
+
+**2019 predates the 2021 promenade reconfiguration** that moved cyclists off the
+walkway onto the roadway. Pedestrian volumes and behaviour will have changed in
+ways the 2019 figures cannot show.
+
+**One month is not a year.** May 2026 was chosen because it is the most recent
+month present in both MTA feeds. Seasonality in a corridor with this much
+tourist traffic is likely to be large and is not characterised.
+
+---
 
 ```bash
 # What is scheduled. No dependencies beyond the standard library.
@@ -370,6 +593,14 @@ python bridge_realtime.py --once
 # What actually ran, over a week. Resumable - re-running with the same
 # --out file reloads and continues.
 python bridge_realtime.py --poll 30 --out bridge_week.csv
+
+# Who is underneath. Four public datasets, no API key, no dependencies
+# beyond the standard library. Writes pedestrian-data.json and injects
+# it into the dashboard.
+python build_pedestrian_data.py
+
+# Per-event train data for the dashboard.
+python build_dashboard_data.py
 ```
 
 A 30 s poll against an 85-300 s headway samples every train several times

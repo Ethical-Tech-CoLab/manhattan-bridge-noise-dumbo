@@ -46,6 +46,11 @@
   --cp-band-eve: rgba(177, 31, 75, 0.09);
   --cp-band-night: rgba(70, 90, 140, 0.13);
   --cp-grid: rgba(0, 0, 0, 0.09);
+  --cp-flow-in: #16794a;
+  --cp-flow-out: #c1502e;
+  --cp-flow-walk: #2f6bb0;
+  --cp-presence: #b11f4b;
+  --cp-presence-fill: rgba(177, 31, 75, 0.16);
 }
 html[data-theme="dark"] {
   color-scheme: dark;
@@ -80,6 +85,11 @@ html[data-theme="dark"] {
   --cp-band-eve: rgba(253, 142, 161, 0.10);
   --cp-band-night: rgba(120, 150, 220, 0.14);
   --cp-grid: rgba(255, 255, 255, 0.10);
+  --cp-flow-in: #5ec98a;
+  --cp-flow-out: #e07a5f;
+  --cp-flow-walk: #7ba7e0;
+  --cp-presence: #fd8ea1;
+  --cp-presence-fill: rgba(253, 142, 161, 0.20);
 }
 
 * { box-sizing: border-box; }
@@ -190,11 +200,13 @@ li { margin-bottom: 5px; }
 <body>
 <div class="wrap">
 
-<h1>Manhattan Bridge &mdash; traversal frequency, direction and overlap</h1>
+<h1>Manhattan Bridge &mdash; traversal frequency, direction, overlap and who is underneath</h1>
 <p class="sub">
-  Every B, D, N and Q crossing, by hour, by direction, by route &mdash; from the MTA's own published schedule.
+  Every B, D, N and Q crossing, by hour, by direction, by route &mdash; from the MTA's own published schedule
+  &mdash; set against the first estimate of how many people are in the corridor to hear them.
   Feed <code id="feedver">&mdash;</code>. Periods follow the EU Environmental Noise Directive 2002/49/EC default
   day / evening / night split. <span class="tag v">Verified 5/5</span>
+  Pedestrian figures are derived from four public datasets and are weaker &mdash; see the ratings on those panels.
 </p>
 
 <div class="card">
@@ -326,17 +338,150 @@ li { margin-bottom: 5px; }
     carrying commuters. The original framing could not see that case, because it was only looking at the park.</p>
   </div>
 
+  <h3 style="margin-top:22px">That replacement is also withdrawn <span class="tag d">Second correction</span></h3>
+  <p>The paragraph immediately above was written before any pedestrian data existed. It is now measurable,
+  and it is wrong.</p>
+  <div class="note bad">
+    <p><em>"The worst case is not the park. It is the corridor on a weekday morning, when the train rate is
+    at its 24-hour maximum."</em></p>
+    <p style="margin-bottom:0"><strong>That is withdrawn.</strong> The 08:00 hour does carry the most trains.
+    It carries roughly <span id="am1">&mdash;</span> of the people. Multiply the two and the weekday
+    08:00 hour scores <strong id="am2">&mdash;</strong> of the daily maximum. The actual maximum is
+    <strong id="am3">&mdash;</strong>.</p>
+  </div>
+  <p><strong>The programme has now made the same error twice, in opposite directions.</strong>
+  The first framing optimised on attendance alone and concluded the concern was the park on a weekend
+  afternoon. The correction optimised on train rate alone and concluded it was the corridor on a weekday
+  morning. <strong>Exposure is the product, and the product peaks in between &mdash; in the early
+  afternoon, on every day of the week.</strong></p>
+  <p>Weekday, Saturday and Sunday all peak within an hour of each other despite carrying very different
+  train rates, because presence varies more across the day than train rate does. Train rate is nearly flat
+  from 07:00 to 19:00; presence changes by a factor of four inside the same window.
+  <strong>Where people are matters more than where trains are, and only one of those two had ever been
+  measured.</strong></p>
+  <table id="exposureTable"></table>
+  <p class="foot" style="margin-top:10px">The index is <em>relative</em> &mdash; each day type scaled to its
+  own maximum. <strong>No absolute person-event figure is published here</strong>, because presence is a
+  lower bound covering only subway-delivered transients, and multiplying a lower bound by a train count
+  would produce a number that looks authoritative and is not.</p>
+
   <p class="foot"><strong>What is verified and what is not.</strong> The train rates in this panel are
-  <span class="tag v">5/5</span> &mdash; MTA's own feed, reproducible. The <em>presence</em> of people
-  is <span class="tag u">1/5</span>: no pedestrian count has been taken anywhere in this corridor,
-  by this programme or, so far as it has found, by anyone. The phase argument is therefore a statement about
-  which question to ask, not an exposure estimate. <strong>No exposure estimate should be built until the
-  denominator is counted.</strong></p>
+  <span class="tag v">5/5</span> &mdash; MTA's own feed, reproducible. Presence is
+  <span class="tag u">2/5</span>, and that is an improvement on the <span class="tag u">1/5</span> this
+  panel carried until the denominator work below was done. <strong>It is still true that no pedestrian has
+  been counted directly anywhere in this corridor.</strong> What has changed is that arrival rate is now
+  measurable from fare data, so the exposure index above is a statement about shape rather than a guess.
+  <strong>An absolute exposure figure still cannot be published</strong>, because dwell time is unmeasured
+  and residents are not in the accumulation at all.</p>
 
   <p class="foot" style="margin-top:12px">There is also a resolution here of an earlier correction.
   York St is an <code>F</code> train station on the Rutgers Street Tunnel and no train that crosses this
   bridge stops there &mdash; so it is useless as a place to <em>measure</em> the source. It is nonetheless
   the pedestrian gateway to the affected corridor. <strong>It matters as a receptor origin, not as a source.</strong></p>
+</div>
+
+<div class="card">
+  <h2>The denominator, partly counted <span class="tag d">New</span></h2>
+  <p class="hint">
+    The panel above says no pedestrian count exists. That was true of <em>direct</em> counts and it is still true.
+    But two MTA datasets and one city dataset can be made to answer a narrower question:
+    <strong>how many people arrive in this corridor, and when.</strong>
+    Figures are a typical day for the selected day type. Subway <code id="pedMonth">&mdash;</code>,
+    walkway <code id="pedWalkYr">&mdash;</code>.
+  </p>
+  <div class="cards3" id="flowCards"></div>
+  <p class="hint" style="margin-top:14px;margin-bottom:0">
+    <strong>Arrivals and entries are different measurements, not two views of one.</strong>
+    Entries are observed &mdash; a tap or a swipe, counted by a turnstile.
+    Arrivals are <em>inferred</em> from where riders next re-enter the system.
+    The first is the corridor emptying; the second is it filling.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Flow in, flow out, and what accumulates</h2>
+  <p class="hint">
+    Top: arrivals above the axis, entries below, by hour. Bottom: the running difference &mdash; the
+    <strong>subway-delivered population still in the corridor</strong> &mdash; with the train rate over it.
+    Where the two are both high is where exposure is concentrated.
+  </p>
+  <svg id="flowChart" viewBox="0 0 1120 300" role="img" aria-label="Hourly arrivals and entries"></svg>
+  <div class="legend" id="flowLegend"></div>
+  <svg id="presChart" viewBox="0 0 1120 300" role="img" aria-label="Accumulated presence against train rate"></svg>
+  <div class="legend" id="presLegend"></div>
+
+  <div class="note">
+    <p><strong>The corridor fills in the morning and empties in the evening.</strong>
+    Net flow is <span id="netTxt">&mdash;</span>.
+    That is the signature of a <em>destination</em> district, not a dormitory. A purely residential
+    neighbourhood would show the opposite &mdash; residents leaving at 08:00 and returning at 18:00.</p>
+    <p style="margin-bottom:0">This matters for who is being exposed.
+    <strong>The people under the bridge during the busiest train hours are disproportionately not the
+    people who live there.</strong> They are workers and visitors, and they are the population least
+    likely to appear at a community board meeting.</p>
+  </div>
+
+  <h3 style="margin-top:22px">How much of this can be trusted</h3>
+  <table id="closureTable"></table>
+  <p class="foot" style="margin-top:10px">
+    Over a full day, arrivals and entries at the same two stations should balance. They do, to
+    <strong id="closureTxt">&mdash;</strong>. The two are not fully independent &mdash; the
+    origin-destination estimate is scaled to match total system ridership &mdash; but that scaling is
+    system-wide, so agreement at the level of two station complexes is still informative.
+    <strong>The residual is carried through as the uncertainty on the accumulation curve.</strong>
+  </p>
+</div>
+
+<div class="card">
+  <h2>Residents, and the part of the denominator that is still missing</h2>
+  <div class="two">
+    <div>
+      <h3>Who lives here</h3>
+      <p class="hint">Residential units from tax-lot records, inside three explicitly stated boxes.
+      Units are a tax fact. The people inside them are an assumption.</p>
+      <table id="residentTable"></table>
+    </div>
+    <div>
+      <h3>Little&rsquo;s Law, half solved</h3>
+      <p>The number of people present in an area is
+      <span class="mono">L = &lambda;W</span> &mdash; the arrival rate multiplied by how long each
+      person stays.</p>
+      <p><strong>This page now has &lambda;. It does not have W.</strong>
+      A commuter crossing from York St to an office on Water St is exposed for four minutes.
+      A family on the Brooklyn Bridge Park lawn is exposed for three hours. Both count once
+      in the arrival figures.</p>
+      <p style="margin-bottom:0">Until dwell time is measured, the accumulation curve below is the
+      best available and it is <strong>a lower bound on transient presence</strong>, not a count of
+      people present.</p>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <p><strong>What the accumulation curve leaves out, in rough order of size.</strong></p>
+    <ul style="margin-bottom:0">
+      <li><strong>Residents</strong> &mdash; between <span id="resTxt">&mdash;</span> people who are present
+      whether or not they touch a turnstile. This is almost certainly the largest single omission, and it is
+      the population whose exposure is continuous rather than episodic.</li>
+      <li><strong>Walkway arrivals</strong> &mdash; the Brooklyn Bridge discharged
+      <span id="walkTxt">&mdash;</span> pedestrians toward Brooklyn on a typical day in 2019.
+      <strong>That counter has been dead since 2019</strong>, so the current figure is unknown, and 2019 also
+      predates the 2021 reconfiguration that moved cyclists off the promenade.</li>
+      <li><strong>Every other mode</strong> &mdash; ferry at Fulton Ferry Landing, the B25 and B67 buses,
+      Citi Bike, private car, and the Brooklyn Heights stair. None is counted here.</li>
+      <li><strong>Mode-swapping</strong> &mdash; anyone who arrives by subway and leaves on foot over the
+      bridge is counted arriving and never leaving. The small daily closure error suggests these flows roughly
+      cancel; it does not prove it.</li>
+    </ul>
+  </div>
+
+  <p class="foot"><strong>Ratings.</strong>
+  Entries <span class="tag v">5/5</span> &mdash; observed fare transactions, MTA's own feed.
+  Arrivals <span class="tag d">4/5</span> &mdash; MTA's own feed, but destinations are inferred from return
+  swipes, not observed. Walkway counts <span class="tag d">4/5</span> &mdash; observed and directional, but
+  seven years stale. Residential units <span class="tag v">5/5</span> &mdash; tax records.
+  Residents <span class="tag u">2/5</span> &mdash; units multiplied by an assumed occupancy and household
+  size, reported as a range for that reason. Dwell time <span class="tag u">1/5</span> &mdash; not measured
+  by anyone, anywhere in this corridor.</p>
 </div>
 
 <div class="card">
@@ -346,10 +491,12 @@ li { margin-bottom: 5px; }
     <li><strong>Non-revenue moves are in no public feed.</strong> Work trains, put-ins and lay-ups cross this bridge and make noise &mdash; in some cases more, since work equipment is not built for ride quality. Every figure here undercounts acoustic events by an unknown amount.</li>
     <li><strong>The chokepoint is not the bridge.</strong> Grand St and Canal St are near the crossing, not on it. For <em>rate</em> and <em>headway</em> the travel-time offset cancels exactly. For deciding whether two specific trains overlap, it does not &mdash; and it has never been measured.</li>
     <li><strong>No decibel value on this page.</strong> This is a count of events, not a level. What one event sounds like is <a href="acoustic-demo.html">acoustic-demo.html</a>, and that page is synthesised, not recorded.</li>
-    <li><strong>Nobody has been counted.</strong> Every statement about who is present is unmeasured.</li>
+    <li><strong>Nobody has been counted directly.</strong> The denominator panels above infer presence from fare transactions and tax lots. <strong>Not one person has been observed standing in this corridor.</strong> Arrival rate is not presence, and presence is not exposure.</li>
+    <li><strong>Dwell time is the missing half.</strong> Without it, the accumulation curve cannot be turned into a number of people present, and no person-event or person-decibel figure can honestly be published.</li>
   </ul>
   <p class="foot" style="margin-top:14px">
-    Regenerate the underlying data with <code>python data-collection/build_dashboard_data.py</code>.
+    Regenerate the train data with <code>python data-collection/build_dashboard_data.py</code> and the
+    pedestrian data with <code>python data-collection/build_pedestrian_data.py</code>.
     Settle the overlap question with <code>python data-collection/bridge_realtime.py --poll 30</code>
     run for one week &mdash; that is Method 26, and it is free.
   </p>
@@ -364,7 +511,9 @@ const PERIODS = [
   { key: "day",     name: "Daytime", from: 7,  to: 19, hours: 12, band: "--cp-band-day" },
   { key: "evening", name: "Evening", from: 19, to: 23, hours: 4,  band: "--cp-band-eve" },
   { key: "night",   name: "Night",   from: 23, to: 7,  hours: 8,  band: "--cp-band-night" }
-];
+];/*PEDDATA*/
+const PED = {"generated_for":"Manhattan Bridge / DUMBO rail-noise study","reference_month":"2026-05","walkway_year":2019,"periods":[{"name":"Daytime","start":7,"end":19},{"name":"Evening","start":19,"end":23},{"name":"Night","start":23,"end":7}],"stations":{"235":{"name":"York St (F)","lat":40.701397,"lon":-73.98675,"role":"DUMBO / Vinegar Hill; the eastern gateway"},"173":{"name":"High St (A,C)","lat":40.699337,"lon":-73.99053,"role":"Brooklyn Bridge Park north end; the western gateway"}},"sources":{"entries":{"id":"5wq4-mkjj","host":"data.ny.gov","title":"MTA Subway Hourly Ridership: Beginning 2025","measures":"entries only"},"arrivals":{"id":"28vm-gjqr","host":"data.ny.gov","title":"MTA Subway Origin-Destination Ridership Estimate: Beginning 2026","measures":"inferred destinations"},"walkway":{"id":"6fi9-q3ta","host":"data.cityofnewyork.us","title":"Brooklyn Bridge Automated Pedestrian Counts Demonstration Project","measures":"directional hourly counts, ended 2019"},"pluto":{"id":"64uk-42ks","host":"data.cityofnewyork.us","title":"Primary Land Use Tax Lot Output (PLUTO)","measures":"residential units"}},"entries_by_station":{"235":{"Weekday":[49.8,21.1,7.0,5.1,9.4,46.4,154.3,434.0,754.2,506.5,363.1,425.5,533.7,619.5,698.1,864.0,1056.2,1543.5,1339.3,867.5,763.2,635.6,390.7,199.8],"Saturday":[132.4,49.6,22.8,15.8,11.8,18.0,55.2,90.8,150.2,246.0,385.4,590.8,811.0,1006.2,1153.4,1255.0,1290.6,1235.6,975.4,806.2,703.2,654.2,431.8,330.2],"Sunday":[140.4,63.8,23.6,17.2,12.2,19.6,39.2,70.6,111.2,180.8,300.8,522.0,702.4,875.4,961.6,1057.8,1117.2,1084.0,869.0,744.0,715.6,534.4,371.2,163.6]},"173":{"Weekday":[37.5,12.3,4.2,3.5,4.5,20.7,122.1,412.3,816.3,521.4,312.1,335.4,388.1,438.4,559.7,674.2,871.7,1057.6,876.6,612.9,569.6,522.0,330.9,150.1],"Saturday":[96.0,32.2,18.8,6.0,7.0,8.0,37.4,57.8,118.4,190.4,209.2,335.8,406.6,502.6,564.0,616.2,661.2,573.6,529.8,488.8,462.6,441.4,332.2,204.4],"Sunday":[74.2,32.0,15.6,5.2,7.6,8.2,24.8,49.0,70.2,112.6,181.0,264.8,366.0,430.2,503.0,548.6,626.4,580.0,521.8,436.0,464.0,517.2,285.2,131.0]}},"arrivals_by_station":{"235":{"Weekday":[38.8,15.3,9.1,16.4,62.2,158.5,363.6,750.9,1237.4,1083.5,742.2,659.0,628.1,650.2,704.2,806.1,902.6,1137.1,956.6,614.4,405.8,329.1,232.2,112.5],"Saturday":[118.4,50.7,27.3,21.6,40.0,72.4,153.7,291.5,481.7,787.2,1019.2,1152.7,1137.1,1106.5,1050.6,957.8,873.3,788.1,727.2,578.5,408.1,303.9,265.7,186.1],"Sunday":[108.9,49.8,26.2,22.0,30.4,85.3,114.7,189.4,376.3,646.4,898.5,994.5,980.9,999.0,978.0,893.7,784.7,694.2,615.7,462.1,302.0,224.9,161.2,76.6]},"173":{"Weekday":[28.9,12.1,6.9,7.5,34.3,134.7,286.7,606.4,878.9,744.0,522.8,477.5,476.6,494.5,540.0,611.0,693.9,965.3,804.8,496.8,337.1,275.1,186.7,91.7],"Saturday":[70.3,28.0,16.4,6.7,19.4,54.1,102.9,191.3,243.5,388.7,515.5,584.2,602.1,572.9,570.0,537.7,548.0,501.0,477.2,367.4,277.1,208.4,206.2,138.3],"Sunday":[64.7,35.4,17.5,9.3,18.9,29.2,66.8,113.0,219.9,312.9,459.8,518.3,567.1,573.6,599.0,604.3,558.9,520.3,452.6,383.6,242.4,167.8,122.1,60.3]}},"entries_hourly":{"Weekday":[87.3,33.5,11.2,8.6,13.9,67.1,276.4,846.2,1570.5,1027.9,675.3,760.9,921.8,1057.9,1257.8,1538.2,1928.0,2601.1,2215.8,1480.4,1332.8,1157.6,721.6,349.9],"Saturday":[228.4,81.8,41.6,21.8,18.8,26.0,92.6,148.6,268.6,436.4,594.6,926.6,1217.6,1508.8,1717.4,1871.2,1951.8,1809.2,1505.2,1295.0,1165.8,1095.6,764.0,534.6],"Sunday":[214.6,95.8,39.2,22.4,19.8,27.8,64.0,119.6,181.4,293.4,481.8,786.8,1068.4,1305.6,1464.6,1606.4,1743.6,1664.0,1390.8,1180.0,1179.6,1051.6,656.4,294.6]},"arrivals_hourly":{"Weekday":[67.7,27.4,16.0,23.9,96.5,293.2,650.3,1357.3,2116.3,1827.5,1265.0,1136.5,1104.7,1144.6,1244.1,1417.2,1596.5,2102.4,1761.4,1111.2,742.9,604.1,418.9,204.2],"Saturday":[188.7,78.7,43.7,28.3,59.4,126.5,256.6,482.8,725.2,1175.9,1534.7,1736.9,1739.2,1679.4,1620.7,1495.5,1421.4,1289.1,1204.3,945.8,685.2,512.3,471.9,324.4],"Sunday":[173.6,85.2,43.6,31.3,49.4,114.4,181.5,302.4,596.3,959.2,1358.3,1512.7,1548.0,1572.6,1577.0,1498.0,1343.6,1214.5,1068.3,845.7,544.4,392.8,283.4,136.8]},"walkway_hourly":{"total":{"Weekday":[5.8,1.6,0.9,0.4,0.4,16.3,96.2,206.1,330.3,544.9,1021.8,1426.5,1548.7,1589.3,1637.6,1678.8,1590.9,1232.6,944.4,619.1,277.0,36.0,21.8,15.6],"Saturday":[17.1,3.3,1.6,0.8,0.4,18.6,89.9,210.0,372.1,773.0,1470.5,2053.8,2303.6,2445.8,2565.8,2708.2,2552.8,2072.8,1542.6,1069.5,461.9,51.9,42.2,44.2],"Sunday":[25.7,5.2,1.3,1.0,0.6,17.4,73.5,178.3,320.4,694.3,1282.6,1713.8,1906.9,1980.8,2040.2,2128.4,2013.3,1533.5,1101.1,771.8,367.0,46.3,20.8,12.8]},"to_brooklyn":{"Weekday":[3.2,1.0,0.7,0.3,0.3,5.7,46.9,114.5,197.7,253.5,455.3,726.9,845.1,882.5,899.3,895.3,840.3,606.0,430.6,294.5,144.8,14.9,8.1,5.3],"Saturday":[7.5,1.5,1.1,0.5,0.2,5.6,41.4,111.5,175.5,313.5,623.3,971.1,1165.5,1285.0,1375.4,1472.8,1419.2,1139.1,843.0,588.6,256.4,18.4,11.1,10.5],"Sunday":[8.4,2.5,0.9,0.7,0.6,5.4,32.9,83.6,136.9,275.1,536.4,837.5,1008.0,1092.1,1126.5,1190.5,1119.1,873.6,606.0,409.1,203.3,19.0,7.2,3.6]},"to_manhattan":{"Weekday":[2.6,0.5,0.3,0.1,0.1,10.7,49.3,91.5,132.6,291.5,566.6,699.5,703.6,706.8,738.3,783.5,750.7,626.6,513.8,324.6,132.2,21.0,13.7,10.3],"Saturday":[9.6,1.8,0.5,0.3,0.2,13.0,48.5,98.5,196.5,459.5,847.2,1082.8,1138.1,1160.8,1190.4,1235.3,1133.6,933.7,699.5,480.9,205.5,33.5,31.1,33.7],"Sunday":[17.3,2.7,0.5,0.3,0.1,12.0,40.6,94.7,183.5,419.3,746.2,876.2,898.8,888.6,913.7,937.9,894.2,659.9,495.0,362.7,163.8,27.3,13.6,9.2]}},"entries_periods":{"Weekday":{"Daytime":16401.3,"Evening":4692.5,"Night":847.9},"Saturday":{"Daytime":13956.0,"Evening":4320.4,"Night":1045.6},"Sunday":{"Daytime":12106.4,"Evening":4067.6,"Night":778.2}},"arrivals_periods":{"Weekday":{"Daytime":18073.5,"Evening":2877.1,"Night":1379.4},"Saturday":{"Daytime":16105.1,"Evening":2615.2,"Night":1106.3},"Sunday":{"Daytime":14550.8,"Evening":2066.2,"Night":815.7}},"walkway_periods":{"total":{"Weekday":{"Daytime":13751.8,"Evening":953.9,"Night":137.2},"Saturday":{"Daytime":21071.0,"Evening":1625.5,"Night":175.9},"Sunday":{"Daytime":16893.6,"Evening":1205.9,"Night":137.5}},"to_brooklyn":{"Weekday":{"Daytime":7146.9,"Evening":462.3,"Night":63.3},"Saturday":{"Daytime":10895.1,"Evening":874.6,"Night":68.3},"Sunday":{"Daytime":8885.5,"Evening":638.6,"Night":54.9}},"to_manhattan":{"Weekday":{"Daytime":6604.9,"Evening":491.5,"Night":73.8},"Saturday":{"Daytime":10175.9,"Evening":750.9,"Night":107.6},"Sunday":{"Daytime":8008.1,"Evening":567.3,"Night":82.7}}},"entries_periods_by_station":{"235":{"Weekday":{"Daytime":9137.5,"Evening":2657.1,"Night":492.9},"Saturday":{"Daytime":9190.4,"Evening":2595.4,"Night":635.8},"Sunday":{"Daytime":7852.8,"Evening":2365.2,"Night":479.6}},"173":{"Weekday":{"Daytime":7263.8,"Evening":2035.4,"Night":355.0},"Saturday":{"Daytime":4765.6,"Evening":1725.0,"Night":409.8},"Sunday":{"Daytime":4253.6,"Evening":1702.4,"Night":298.6}}},"arrivals_periods_by_station":{"235":{"Weekday":{"Daytime":10257.7,"Evening":1581.4,"Night":776.5},"Saturday":{"Daytime":10372.9,"Evening":1556.1,"Night":670.3},"Sunday":{"Daytime":9051.2,"Evening":1150.2,"Night":513.7}},"173":{"Weekday":{"Daytime":7815.8,"Evening":1295.7,"Night":602.9},"Saturday":{"Daytime":5732.1,"Evening":1059.1,"Night":436.0},"Sunday":{"Daytime":5499.6,"Evening":916.0,"Night":302.0}}},"residents":{"core":{"label":"DUMBO and Vinegar Hill","note":"Water to the BQE. Includes Farragut Houses, directly under the bridge approach","bbox":{"lat":[40.6995,40.7045],"lon":[-73.9955,-73.982]},"lots":231,"units_res":6314,"units_total":6849,"residents_low":9875,"residents_high":13360},"corridor":{"label":"Affected corridor","note":"York St station to the Brooklyn Bridge Park water entrance","bbox":{"lat":[40.698,40.706],"lon":[-74.0005,-73.98]},"lots":376,"units_res":10128,"units_total":10714,"residents_low":15840,"residents_high":21431},"wide":{"label":"Wide catchment","note":"Adds the Brooklyn Heights and Downtown Brooklyn edges","bbox":{"lat":[40.695,40.709],"lon":[-74.005,-73.975]},"lots":822,"units_res":20279,"units_total":21118,"residents_low":31716,"residents_high":42910}},"occupancy":{"rate":0.92,"hh_low":1.7,"hh_high":2.3}};
+/*PEDDATA*/
 const ROUTE_VAR = { B: "--cp-route-b", D: "--cp-route-d", N: "--cp-route-n", Q: "--cp-route-q" };
 
 const state = { svc: "Weekday", dir: "both", model: "poisson", win: 6 };
@@ -591,16 +740,265 @@ function renderTables() {
         let d = 0; for (const [, , , s] of wk) if (periodOf(Math.floor(s/3600)%24) === "day") d++;
         return Math.round(100 * d / wk.length) + "% of the weekday total";
       })() + ".", "in phase"],
-    ["Commuters and workers", "Weekday morning and evening peaks", "Peak pedestrian flow through the corridor coincides with the 24-hour maximum train rate. <strong>Fully in phase.</strong>", "in phase"],
+    ["Commuters and workers", "Weekday morning and evening peaks", "Peak commuter <em>flow</em> coincides with the maximum train rate &mdash; but flow is not presence. At 08:00 the corridor holds under half the people it holds at 14:00. <strong>In phase on arrivals, out of phase on presence.</strong>", "mixed"],
     ["Park visitors and tourists", "Weekend afternoons", "The one population for which the original finding holds &mdash; heaviest attendance against the lowest daytime train rate.", "out of phase"]
   ];
   document.getElementById("phaseTable").innerHTML =
     `<tr><th>Population</th><th>Peak presence</th><th>Relationship to train rate</th><th>Phase</th></tr>` +
     pm.map(([a, b, c, d]) => `<tr><td><strong>${a}</strong></td><td>${b}</td><td>${c}</td>
-      <td><span class="tag ${d === "in phase" ? "u" : "n"}">${d}</span></td></tr>`).join("");
+      <td><span class="tag ${d === "in phase" ? "u" : d === "mixed" ? "d" : "n"}">${d}</span></td></tr>`).join("");
+
+  renderExposure();
 }
 
-function renderAll() { renderCards(); renderChart(); renderGap(); renderTables(); }
+/* ---- exposure index -------------------------------------------------------
+   presence x train rate, per hour, scaled to each day type's own maximum.
+   Deliberately an INDEX. Presence is a lower bound covering only
+   subway-delivered transients, so the absolute product would be a lower
+   bound dressed as a measurement.
+--------------------------------------------------------------------------- */
+function exposureFor(svc) {
+  if (!PED) return null;
+  const tr = Array.from({ length: 24 }, () => 0);
+  for (const [, , , s] of (DATA.events[svc] || [])) tr[Math.floor(s / 3600) % 24]++;
+  const arr = PED.arrivals_hourly[svc], ent = PED.entries_hourly[svc];
+  let c = 0;
+  const cum = arr.map((v, i) => (c += v - ent[i]));
+  const base = Math.min(0, ...cum);
+  const pres = cum.map(v => v - base);
+  const prod = pres.map((p, h) => p * tr[h]);
+  const mx = Math.max(...prod);
+  return { tr, pres, prod, mx, peakHr: prod.indexOf(mx), index: prod.map(v => 100 * v / mx) };
+}
+
+function renderExposure() {
+  if (!PED) return;
+  const rows = ["Weekday", "Saturday", "Sunday"].map(svc => {
+    const E = exposureFor(svc);
+    const trPk = E.tr.indexOf(Math.max(...E.tr));
+    const prPk = E.pres.indexOf(Math.max(...E.pres));
+    return `<tr><td>${svc}${svc === state.svc ? " <span class=\"tag n\">shown</span>" : ""}</td>
+      <td class="n">${String(trPk).padStart(2,"0")}:00</td>
+      <td class="n">${String(prPk).padStart(2,"0")}:00</td>
+      <td class="n"><strong>${String(E.peakHr).padStart(2,"0")}:00</strong></td>
+      <td class="n">${E.index[8].toFixed(0)}</td>
+      <td class="n">${E.index[13].toFixed(0)}</td></tr>`;
+  }).join("");
+  document.getElementById("exposureTable").innerHTML =
+    `<tr><th>Day type</th><th class="n">Trains peak</th><th class="n">People peak</th>
+     <th class="n">Exposure peak</th><th class="n">Index at 08:00</th><th class="n">Index at 13:00</th></tr>` + rows;
+
+  const W = exposureFor("Weekday");
+  document.getElementById("am1").textContent =
+    Math.round(100 * W.pres[8] / Math.max(...W.pres)) + "% of its daily maximum";
+  document.getElementById("am2").textContent = W.index[8].toFixed(0) + " out of 100";
+  document.getElementById("am3").textContent =
+    String(W.peakHr).padStart(2, "0") + ":00, with " + Math.round(W.pres[W.peakHr]).toLocaleString() +
+    " people present against " + W.tr[W.peakHr] + " crossings";
+}
+
+/* ---- pedestrian denominator ---------------------------------------------
+   Four sources, none of which counts a pedestrian directly:
+     arrivals  - MTA origin-destination estimate. Destination INFERRED.
+     entries   - MTA hourly ridership. Fare transactions. Observed.
+     walkway   - NYC DOT Brooklyn Bridge counter. Observed, directional, DEAD 2019.
+     residents - PLUTO tax lots. Units observed; occupancy assumed.
+   The accumulation curve is the running difference between arrivals and
+   entries. It is a lower bound on transient presence, not a headcount.
+--------------------------------------------------------------------------- */
+function pedSeries() {
+  if (!PED) return null;
+  const svc = state.svc;
+  const arr = PED.arrivals_hourly[svc], ent = PED.entries_hourly[svc];
+  const wbk = PED.walkway_hourly.to_brooklyn[svc], wmn = PED.walkway_hourly.to_manhattan[svc];
+  const net = arr.map((v, i) => v - ent[i]);
+  let c = 0;
+  const cum = net.map(v => (c += v));
+  const closure = c;
+  const base = Math.min(0, ...cum);
+  const pres = cum.map(v => v - base);
+  const totA = arr.reduce((a, b) => a + b, 0), totE = ent.reduce((a, b) => a + b, 0);
+  return { arr, ent, wbk, wmn, net, pres, closure, totA, totE,
+           peak: Math.max(...pres), peakHr: pres.indexOf(Math.max(...pres)) };
+}
+
+function renderFlowCards(S) {
+  const svc = state.svc;
+  const cards = PERIODS.map(p => {
+    const nm = p.name;
+    const a = PED.arrivals_periods[svc][nm], e = PED.entries_periods[svc][nm];
+    const wb = PED.walkway_periods.to_brooklyn[svc][nm];
+    const wm = PED.walkway_periods.to_manhattan[svc][nm];
+    const net = a - e;
+    return `<div class="pcard">
+      <div class="ph"><span class="pname">${nm}</span>
+        <span class="pspan">${String(p.from).padStart(2,"0")}:00&ndash;${String(p.to).padStart(2,"0")}:00 &middot; ${p.hours}h</span></div>
+      <div class="big">${Math.round(a).toLocaleString()} <span class="bigu">arrive by subway</span></div>
+      <dl>
+        <dt>Arrivals per hour</dt><dd>${(a / p.hours).toFixed(0)}</dd>
+        <dt>Entries (leaving)</dt><dd>${Math.round(e).toLocaleString()}</dd>
+        <dt>Net into corridor</dt><dd>${net >= 0 ? "+" : ""}${Math.round(net).toLocaleString()}</dd>
+        <dt>Walkway to Brooklyn</dt><dd>${Math.round(wb).toLocaleString()}</dd>
+        <dt>Walkway to Manhattan</dt><dd>${Math.round(wm).toLocaleString()}</dd>
+      </dl></div>`;
+  }).join("");
+  document.getElementById("flowCards").innerHTML = cards;
+}
+
+function renderFlowChart(S) {
+  const W = 1120, H = 300, ml = 52, mr = 14, mt = 16, mb = 34;
+  const pw = W - ml - mr, ph = H - mt - mb, bw = pw / 24;
+  const mx = Math.max(10, ...S.arr, ...S.ent) * 1.12;
+  const mid = mt + ph / 2;
+  const up = v => mid - (v / mx) * (ph / 2);
+  const dn = v => mid + (v / mx) * (ph / 2);
+  let s = "";
+  for (const p of PERIODS) {
+    const segs = p.key === "night" ? [[0, 7], [23, 24]] : [[p.from, p.to]];
+    for (const [a, b] of segs)
+      s += `<rect x="${ml + a * bw}" y="${mt}" width="${(b - a) * bw}" height="${ph}" fill="${cssv(p.band)}"/>`;
+  }
+  const step = mx > 2000 ? 1000 : mx > 800 ? 500 : 200;
+  for (let v = 0; v <= mx; v += step) {
+    s += `<line class="gl" x1="${ml}" y1="${up(v)}" x2="${W - mr}" y2="${up(v)}"/>`;
+    s += `<text class="axis" x="${ml - 7}" y="${up(v) + 3.5}" text-anchor="end">${v.toLocaleString()}</text>`;
+    if (v > 0) {
+      s += `<line class="gl" x1="${ml}" y1="${dn(v)}" x2="${W - mr}" y2="${dn(v)}"/>`;
+      s += `<text class="axis" x="${ml - 7}" y="${dn(v) + 3.5}" text-anchor="end">${v.toLocaleString()}</text>`;
+    }
+  }
+  for (let h = 0; h < 24; h++) {
+    const a = S.arr[h], e = S.ent[h], wb = S.wbk[h];
+    s += `<rect x="${ml + h * bw + bw * 0.12}" y="${up(a)}" width="${bw * 0.36}" height="${Math.max(0, mid - up(a))}"
+           fill="${cssv("--cp-flow-in")}"><title>${String(h).padStart(2,"0")}:00 &mdash; ${a.toFixed(0)} arrive by subway</title></rect>`;
+    s += `<rect x="${ml + h * bw + bw * 0.52}" y="${mid}" width="${bw * 0.36}" height="${Math.max(0, dn(e) - mid)}"
+           fill="${cssv("--cp-flow-out")}"><title>${String(h).padStart(2,"0")}:00 &mdash; ${e.toFixed(0)} enter the subway</title></rect>`;
+    if (wb > 0) {
+      s += `<rect x="${ml + h * bw + bw * 0.12}" y="${up(a + wb)}" width="${bw * 0.36}" height="${Math.max(0, up(a) - up(a + wb))}"
+             fill="${cssv("--cp-flow-walk")}" opacity="0.75"><title>${String(h).padStart(2,"0")}:00 &mdash; ${wb.toFixed(0)} off the Brooklyn Bridge walkway (2019)</title></rect>`;
+    }
+    if (h % 2 === 0)
+      s += `<text class="axis" x="${ml + h * bw + bw / 2}" y="${H - mb + 15}" text-anchor="middle">${String(h).padStart(2,"0")}</text>`;
+  }
+  s += `<line x1="${ml}" y1="${mid}" x2="${W - mr}" y2="${mid}" stroke="${cssv("--cp-border-strong")}" stroke-width="1.2"/>`;
+  s += `<text class="axis-t" x="${ml + 6}" y="${mt + 12}">arriving</text>`;
+  s += `<text class="axis-t" x="${ml + 6}" y="${mt + ph - 4}">leaving</text>`;
+  document.getElementById("flowChart").innerHTML = s;
+  document.getElementById("flowLegend").innerHTML =
+    `<span><i class="sw" style="background:${cssv("--cp-flow-in")}"></i>arrive by subway (inferred)</span>` +
+    `<span><i class="sw" style="background:${cssv("--cp-flow-walk")}"></i>off the bridge walkway toward Brooklyn (2019)</span>` +
+    `<span><i class="sw" style="background:${cssv("--cp-flow-out")}"></i>enter the subway (observed)</span>`;
+}
+
+function renderPresChart(S) {
+  const bars = hourly();
+  const W = 1120, H = 300, ml = 52, mr = 52, mt = 18, mb = 34;
+  const pw = W - ml - mr, ph = H - mt - mb, bw = pw / 24;
+  const mx = Math.max(100, S.peak) * 1.15;
+  const tmax = Math.max(10, ...bars.map(b => b.total)) * 1.15;
+  const y = v => mt + ph - (v / mx) * ph;
+  const yt = v => mt + ph - (v / tmax) * ph;
+  let s = "";
+  for (const p of PERIODS) {
+    const segs = p.key === "night" ? [[0, 7], [23, 24]] : [[p.from, p.to]];
+    for (const [a, b] of segs)
+      s += `<rect x="${ml + a * bw}" y="${mt}" width="${(b - a) * bw}" height="${ph}" fill="${cssv(p.band)}"/>`;
+  }
+  const step = mx > 3000 ? 1000 : mx > 1200 ? 500 : 200;
+  for (let v = 0; v <= mx; v += step) {
+    s += `<line class="gl" x1="${ml}" y1="${y(v)}" x2="${W - mr}" y2="${y(v)}"/>`;
+    s += `<text class="axis" x="${ml - 7}" y="${y(v) + 3.5}" text-anchor="end">${v.toLocaleString()}</text>`;
+  }
+  const cx = h => ml + h * bw + bw / 2;
+  // uncertainty band from the daily closure residual
+  const band = Math.abs(S.closure);
+  if (band > 1) {
+    const top = S.pres.map((v, h) => `${cx(h)},${y(v + band / 2)}`).join(" ");
+    const bot = S.pres.map((v, h) => `${cx(h)},${y(Math.max(0, v - band / 2))}`).reverse().join(" ");
+    s += `<polygon points="${top} ${bot}" fill="${cssv("--cp-presence-fill")}" stroke="none"/>`;
+  }
+  const area = `${cx(0)},${y(0)} ` + S.pres.map((v, h) => `${cx(h)},${y(v)}`).join(" ") + ` ${cx(23)},${y(0)}`;
+  s += `<polygon points="${area}" fill="${cssv("--cp-presence-fill")}" stroke="none"/>`;
+  s += `<polyline points="${S.pres.map((v, h) => `${cx(h)},${y(v)}`).join(" ")}" fill="none"
+         stroke="${cssv("--cp-presence")}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  S.pres.forEach((v, h) => {
+    s += `<circle cx="${cx(h)}" cy="${y(v)}" r="2.6" fill="${cssv("--cp-presence")}">
+           <title>${String(h).padStart(2,"0")}:00 &mdash; about ${Math.round(v).toLocaleString()} subway-delivered people still in the corridor, plus or minus ${Math.round(band/2)}</title></circle>`;
+  });
+  s += `<polyline points="${bars.map((b, h) => `${cx(h)},${yt(b.total)}`).join(" ")}" fill="none"
+         stroke="${cssv("--cp-route-d")}" stroke-width="2" stroke-dasharray="5 3"/>`;
+  for (let v = 0; v <= tmax; v += 20) {
+    s += `<text class="axis" x="${W - mr + 7}" y="${yt(v) + 3.5}" text-anchor="start">${v}</text>`;
+  }
+  for (let h = 0; h < 24; h += 2)
+    s += `<text class="axis" x="${cx(h)}" y="${H - mb + 15}" text-anchor="middle">${String(h).padStart(2,"0")}</text>`;
+  s += `<text class="axis" x="${ml - 7}" y="${mt + 4}" text-anchor="end">people</text>`;
+  s += `<text class="axis" x="${W - mr + 7}" y="${mt + 4}" text-anchor="start">trains</text>`;
+  document.getElementById("presChart").innerHTML = s;
+  document.getElementById("presLegend").innerHTML =
+    `<span><i class="sw" style="background:${cssv("--cp-presence")}"></i>subway-delivered people still in the corridor (left axis)</span>` +
+    `<span><i class="sw" style="background:${cssv("--cp-route-d")}"></i>train crossings per hour (right axis)</span>` +
+    `<span><i class="sw" style="background:${cssv("--cp-presence-fill")}"></i>uncertainty from daily closure error</span>`;
+}
+
+function renderPedTables(S) {
+  const rows = ["Weekday", "Saturday", "Sunday"].map(d => {
+    const a = PED.arrivals_hourly[d].reduce((x, y) => x + y, 0);
+    const e = PED.entries_hourly[d].reduce((x, y) => x + y, 0);
+    const pc = (a - e) / e * 100;
+    return `<tr><td>${d}${d === state.svc ? " <span class=\"tag n\">shown</span>" : ""}</td>
+      <td class="n">${Math.round(a).toLocaleString()}</td>
+      <td class="n">${Math.round(e).toLocaleString()}</td>
+      <td class="n">${pc >= 0 ? "+" : ""}${pc.toFixed(2)}%</td></tr>`;
+  }).join("");
+  document.getElementById("closureTable").innerHTML =
+    `<tr><th>Day type</th><th class="n">Arrivals (inferred)</th><th class="n">Entries (observed)</th><th class="n">Closure error</th></tr>` + rows;
+
+  const R = PED.residents;
+  document.getElementById("residentTable").innerHTML =
+    `<tr><th>Study area</th><th class="n">Lots</th><th class="n">Homes</th><th class="n">Residents</th></tr>` +
+    Object.keys(R).map(k => {
+      const r = R[k];
+      return `<tr><td>${r.label}<br><span class="foot">${r.note}</span></td>
+        <td class="n">${r.lots.toLocaleString()}</td>
+        <td class="n">${r.units_res.toLocaleString()}</td>
+        <td class="n">${r.residents_low.toLocaleString()}&ndash;${r.residents_high.toLocaleString()}</td></tr>`;
+    }).join("");
+
+  const corr = R.corridor || R[Object.keys(R)[0]];
+  document.getElementById("resTxt").textContent =
+    corr.residents_low.toLocaleString() + " and " + corr.residents_high.toLocaleString();
+  const wbTot = PED.walkway_hourly.to_brooklyn[state.svc].reduce((a, b) => a + b, 0);
+  document.getElementById("walkTxt").textContent = Math.round(wbTot).toLocaleString();
+
+  const closePc = (S.totA - S.totE) / S.totE * 100;
+  document.getElementById("closureTxt").textContent =
+    "within " + Math.abs(closePc).toFixed(1) + "% on " + state.svc.toLowerCase() +
+    "s (" + Math.round(Math.abs(S.closure)).toLocaleString() + " people out of " +
+    Math.round(S.totE).toLocaleString() + ")";
+
+  const maxNet = Math.max(...S.net), minNet = Math.min(...S.net);
+  const fillHr = S.net.indexOf(maxNet), drainHr = S.net.indexOf(minNet);
+  document.getElementById("netTxt").textContent =
+    "at its most positive at " + String(fillHr).padStart(2, "0") + ":00 (+" +
+    Math.round(maxNet).toLocaleString() + " people that hour) and its most negative at " +
+    String(drainHr).padStart(2, "0") + ":00 (" + Math.round(minNet).toLocaleString() +
+    "), with accumulation peaking at about " + Math.round(S.peak).toLocaleString() +
+    " people around " + String(S.peakHr).padStart(2, "0") + ":00";
+}
+
+function renderPed() {
+  if (!PED) return;
+  const S = pedSeries();
+  document.getElementById("pedMonth").textContent = PED.reference_month;
+  document.getElementById("pedWalkYr").textContent = PED.walkway_year;
+  renderFlowCards(S);
+  renderFlowChart(S);
+  renderPresChart(S);
+  renderPedTables(S);
+}
+
+function renderAll() { renderCards(); renderChart(); renderGap(); renderTables(); renderPed(); }
 
 function seg(id, opts, key, after) {
   const el = document.getElementById(id);
