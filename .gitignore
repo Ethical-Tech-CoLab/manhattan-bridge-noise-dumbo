@@ -15,3 +15,8 @@ desktop.ini
 # Retrieved source caches (large; re-retrievable via Part 14 citations)
 sources/cache/
 *.pdf.txt
+
+# Collected data (re-derivable by re-running data-collection/ scripts)
+data-collection/*.csv
+__pycache__/
+*.pyc

@@ -54,6 +54,12 @@ This is a **mechanism**, not a motive. Nobody decided to ignore elevated rail no
 
 The MTA never published how long a train event lasts — but it published enough to determine it. Solving the session energy balance for the three public outdoor measurements gives equivalent event durations of **5.70, 6.28 and 7.25 seconds**: three sessions, different days, different places, baselines 21 dB apart, agreeing to within **1.04 dB of event energy**. Run the same arithmetic on the *indoor* rows and it breaks — which is independent corroboration that the indoor and outdoor datasets are not describing the same thing. See [`IDEA-CONCEPT.md` §1.7](IDEA-CONCEPT.md) for the derivation and its weaknesses, and [`visual-review/acoustic-demo.html`](visual-review/acoustic-demo.html) to hear it.
 
+### And one dataset built here rather than found
+
+**How often does a train actually cross?** Every acoustic argument in this repository depends on that number, and until now it was taken from three short MTA sessions. It is derivable exactly, for every hour of every day type, from the MTA's own published feed — free, no API key, in about a minute. **1,073 traversals on a weekday, 667 on a Saturday, 651 on a Sunday**, peaking at **67 per hour — a 54-second headway — at 08:00**. See [`data-collection/`](data-collection/README.md) for the full table, two working scripts, and the four traps that each silently produce a wrong answer.
+
+It also produced a **challenge to §1.7**: the MTA's own noise sessions counted 28–42 trains per hour against a scheduled 53–67. If the discrepancy is because simultaneous passages on a four-track crossing were heard and counted as single events, then `N` in the §1.7 denominator is an undercount and the derived durations are overestimates.
+
 ## Documents
 
 | Document | Asks |
@@ -81,6 +87,17 @@ Three self-contained HTML files. **No build step, no server, no network access, 
 | **[`visual-review/section-problem.html`](visual-review/section-problem.html)** | **The 2D provenance-tagged section.** Every component of the Manhattan Bridge track zone, colour-coded and dash-coded by how well it is known, with the source rubric attached to each. | Turn off the `DOCUMENTED` filter and watch most of the drawing disappear. |
 | **[`visual-review/model-3d.html`](visual-review/model-3d.html)** | **The navigable 3D model.** Both bridges, four zoom tiers from the whole crossing down to a single rail fastener, with anchored callouts, click-to-inspect components, and a live scale bar. | The tier ladder: **T0 Context → T1 Bay → T2 Track → T3 Fastener.** Then turn every provenance filter off. |
 | **[`visual-review/acoustic-demo.html`](visual-review/acoustic-demo.html)** | **The audible level demonstration.** Hear a train approach, pass and depart at the correct decibel difference against each receptor's measured background, with live A-weighted meters and CEQR threshold marks. Then run it **continuously at the measured headway**, with a logging-meter strip chart and a running energy average that converges on the published session `Leq`. | Select **Brooklyn Bridge Park dog run**, play one pass-by, and read the difference number. Then start continuous running at 20× and watch the running `Leq` settle onto 87.50. Then read why the event duration on that page is derived rather than published, and why that convergence is a closed loop rather than evidence. |
+
+## Data collection
+
+**[`data-collection/`](data-collection/README.md)** — two runnable scripts that establish how often trains actually cross the bridge, from the MTA's own GTFS feeds. **No API key, no account, no payment method.**
+
+| Script | Answers | Cost |
+|---|---|---|
+| **[`bridge_schedule.py`](data-collection/bridge_schedule.py)** | What is scheduled, by hour and day type | One 5 MB download, about a minute. Standard library only. |
+| **[`bridge_realtime.py`](data-collection/bridge_realtime.py)** | What actually ran | Polls and de-duplicates; a week takes a week. Needs `gtfs-realtime-bindings`. |
+
+Both are verified working against the live feeds. [`data-collection/README.md`](data-collection/README.md) carries the full hourly density table, why **Google Maps is the wrong source** for this (it is downstream of the same MTA feed, and its Terms of Service prohibit the bulk extraction a frequency census requires), and **four traps that each silently produce a plausible wrong number** — including one that undercounted a live test by 3× with no error message.
 
 ### The 3D model, in more detail
 
@@ -365,6 +382,7 @@ An honest audit, because a research programme that only publishes its outputs mi
 | 23 | Read the Reddit and community comment threads, logged in | 6 | **Desk, hours, free** | **Not started, and Document 6 explicitly did not do this.** Automated access returned HTTP 403. If a usable resident recording exists anywhere, this is where it is. |
 | 24 | Contact the named community actors and Brooklyn CB2 | 6 | Correspondence | **Not started.** Carries a standing ethical condition — see Document 6, Method 24. |
 | 25 | Interrogate the SONYC corpus by acoustic similarity rather than by label | 6 | Desk to research collaboration | **Not started.** 150M+ clips already collected and published. If elevated rail is in there unlabelled, retrieving it would produce the largest such corpus in existence from data that already exists. |
+| 26 | **The traversal census** — poll MTA GTFS-realtime for one week and compare actual bridge traversals against schedule | — | **Desk, free, one week unattended** | **Tooling built and verified; the week has not been run.** [`data-collection/bridge_realtime.py`](data-collection/bridge_realtime.py). Settles whether the MTA's noise-session train counts are trains or audible events — which decides whether `IDEA-CONCEPT.md` §1.7 overestimates event duration. |
 
 **On Method 19.** [`visual-review/model-3d.html`](visual-review/model-3d.html) establishes the schema in a working artifact rather than a proposal, which was the method's stated purpose. **It is not the L1 model.** The specification called for 2017 LiDAR, the NYC 3D Model and OpenStreetMap assembled in QGIS and CloudCompare and exported as `IFC` with `Pset_ResearchProvenance` populated. None of that survey data is in the file — the geometry is hand-authored from photographs, historical accounts and engineering convention, which is exactly why the model contains zero `MEASURED` elements and goes empty when the filters are switched off. **Method 19 remains open.** What has been demonstrated is that the tagging discipline is implementable and legible; what has not been demonstrated is that it survives contact with real survey data.
 
@@ -418,15 +436,17 @@ It is the only method here that could be completed in an afternoon by anyone rea
 
 **Interactive artifacts — three, all self-contained and dependency-free.** [`section-problem.html`](visual-review/section-problem.html) (2D provenance-tagged section), [`model-3d.html`](visual-review/model-3d.html) (navigable four-tier 3D model of both bridges), [`acoustic-demo.html`](visual-review/acoustic-demo.html) (audible level demonstration with derived event durations). The 3D model contains **zero measured elements**; the audio demo is **synthesised, not recorded**. Both say so in their own interfaces.
 
+**[`data-collection/`](data-collection/README.md) — two scripts, both verified running against the live MTA feeds.** The schedule figures they produce are 5/5 `VERIFIED` — read directly from MTA's own published feed and reproducible from scratch by anyone. The three interpretive findings in that directory's README are rated lower and marked as such, and the third is written as a challenge to this repository's own §1.7 rather than as a claim.
+
 None is peer-reviewed. Novelty claims are provisional; measured facts are solid. **Each document's own red-team Part is the best guide to how much to trust it** — `IDEA-CONCEPT.md` Part 13, `PRECEDENT-AND-MATERIALS.md` Part 11, `WILLIAMSBURG-COMPARATOR.md` Part 9, `VISUAL-MODEL-FRAMEWORK.md` Part 11. The audio demo carries its own seven-item list of where it is likely to be wrong.
 
-**No option in any document is recommended for procurement.** **No measurement has been taken and no survey has been made.** Of the twenty-five methods specified across the six documents, **none has been executed** — see *[What has not been done](#what-has-not-been-done)*. Everything here is a statement about documents, with the exception of the two NYC Open Data queries in Document 6, which are statements about a dataset.
+**No option in any document is recommended for procurement.** **No measurement has been taken and no survey has been made.** Of the twenty-six methods specified across the six documents, **none has been executed** — see *[What has not been done](#what-has-not-been-done)*. Everything here is a statement about documents, with two exceptions: the NYC Open Data queries in Document 6, and the GTFS traversal figures in [`data-collection/`](data-collection/README.md), which are statements about datasets.
 
 ## Contributing
 
 This is a working research repository. Useful contributions, roughly in order of value:
 
-- **Executing any of Methods 0–25** — several cost an email, a form, or an afternoon, and none has been done. **Method 21 costs a database query.**
+- **Executing any of Methods 0–26** — several cost an email, a form, or an afternoon, and none has been done. **Method 21 costs a database query. Method 26 costs leaving a script running for a week.**
 - Answering any of **Q1–Q50** with sourced evidence. **Q42 — whether elevated rapid transit is federally *preempted* from local noise regulation or merely *unregulated* — is the highest-value open question in the programme, and one competent lawyer could settle it in a day.**
 - **Posting a recording.** If you have ever recorded a train crossing the Manhattan Bridge from Brooklyn Bridge Park, DUMBO or the Williamsburg Bridge walkway, that recording is more useful to this programme than anything in it. See [`FIELD-CAPTURE-PROTOCOL.md`](FIELD-CAPTURE-PROTOCOL.md) for what makes one usable — the bar is far lower than most people assume, because **spectral shape and event timing survive an uncalibrated phone.**
 - **Falsifying** any "not found" claim — five have already failed across the first two documents, and the prior on others failing is not low
