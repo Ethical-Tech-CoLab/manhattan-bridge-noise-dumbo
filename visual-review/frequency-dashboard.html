@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manhattan Bridge - traversal frequency, direction and overlap</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+  --cp-route-b: #c26a1e;
+  --cp-route-d: #8a4a12;
+  --cp-route-n: #a8901a;
+  --cp-route-q: #6f5e10;
+  --cp-band-day: rgba(245, 158, 11, 0.10);
+  --cp-band-eve: rgba(177, 31, 75, 0.09);
+  --cp-band-night: rgba(70, 90, 140, 0.13);
+  --cp-grid: rgba(0, 0, 0, 0.09);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+  --cp-route-b: #e8a05a;
+  --cp-route-d: #c9762e;
+  --cp-route-n: #e0cc5a;
+  --cp-route-q: #b3a02e;
+  --cp-band-day: rgba(251, 191, 36, 0.10);
+  --cp-band-eve: rgba(253, 142, 161, 0.10);
+  --cp-band-night: rgba(120, 150, 220, 0.14);
+  --cp-grid: rgba(255, 255, 255, 0.10);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 72px; }
+h1 { font-size: 1.6rem; margin: 0 0 6px; letter-spacing: -0.01em; }
+h2 { font-size: 1.12rem; margin: 0 0 4px; letter-spacing: -0.01em; }
+h3 { font-size: 0.95rem; margin: 0 0 8px; }
+p { margin: 0 0 10px; }
+.sub { color: var(--cp-text-muted); font-size: 0.9rem; margin-bottom: 18px; }
+code, .mono { font-family: Consolas, "Courier New", Courier, monospace; }
+
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.card > h2 + .hint { margin-top: 0; }
+.hint { color: var(--cp-text-muted); font-size: 0.86rem; margin: 0 0 14px; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+.ctl { display: flex; flex-direction: column; gap: 6px; }
+.ctl > label {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--cp-text-soft); font-weight: 600;
+}
+.seg { display: flex; border: 1px solid var(--cp-border-strong); border-radius: 0.625rem; overflow: hidden; }
+.seg button {
+  font: inherit; font-size: 0.85rem; padding: 6px 13px; cursor: pointer;
+  background: var(--cp-surface); color: var(--cp-text); border: 0;
+  border-right: 1px solid var(--cp-border);
+}
+.seg button:last-child { border-right: 0; }
+.seg button:hover { background: var(--cp-surface-soft); }
+.seg button[aria-pressed="true"] { background: var(--cp-accent); color: var(--cp-accent-fg); }
+input[type=range] { width: 190px; accent-color: var(--cp-accent); }
+.rv { font-size: 0.85rem; color: var(--cp-text-muted); }
+.rv b { color: var(--cp-text); font-family: Consolas, "Courier New", Courier, monospace; }
+
+.cards3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media (max-width: 860px) { .cards3 { grid-template-columns: 1fr; } }
+.pcard {
+  border: 1px solid var(--cp-border); border-radius: 16px; padding: 14px 16px;
+  background: var(--cp-bg-elevated);
+}
+.pcard .ph { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.pcard .pname { font-weight: 700; font-size: 1rem; }
+.pcard .pspan { font-size: 0.76rem; color: var(--cp-text-muted); font-family: Consolas, monospace; }
+.pcard .big { font-size: 2.0rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin-top: 6px; }
+.pcard .bigu { font-size: 0.8rem; font-weight: 500; color: var(--cp-text-muted); }
+.pcard dl { margin: 10px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; font-size: 0.85rem; }
+.pcard dt { color: var(--cp-text-muted); }
+.pcard dd { margin: 0; text-align: right; font-family: Consolas, monospace; }
+
+table { border-collapse: collapse; width: 100%; font-size: 0.87rem; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--cp-border); }
+th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cp-text-soft); font-weight: 600; }
+td.n, th.n { text-align: right; font-family: Consolas, monospace; }
+tr:last-child td { border-bottom: 0; }
+
+.tag {
+  display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 2px 8px; border-radius: 999px; vertical-align: middle;
+}
+.tag.v { background: var(--cp-success); color: var(--cp-accent-fg); }
+.tag.d { background: var(--cp-warning); color: #241a00; }
+.tag.u { background: var(--cp-danger); color: var(--cp-accent-fg); }
+.tag.n { background: var(--cp-surface-soft); color: var(--cp-text-muted); border: 1px solid var(--cp-border); }
+
+.note {
+  border-left: 3px solid var(--cp-accent); background: var(--cp-accent-soft);
+  padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 14px 0;
+}
+.note.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,0.09); }
+.note.bad { border-left-color: var(--cp-danger); background: rgba(220,38,38,0.08); }
+.note p:last-child { margin-bottom: 0; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.82rem; color: var(--cp-text-muted); margin-top: 10px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 13px; height: 13px; border-radius: 3px; display: inline-block; }
+
+svg { display: block; width: 100%; height: auto; }
+.axis { font-size: 10px; fill: var(--cp-text-muted); font-family: Consolas, monospace; }
+.axis-t { font-size: 10.5px; fill: var(--cp-text-soft); }
+.gl { stroke: var(--cp-grid); stroke-width: 1; }
+
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 860px) { .two { grid-template-columns: 1fr; } }
+ul { margin: 0 0 10px; padding-left: 20px; }
+li { margin-bottom: 5px; }
+.foot { color: var(--cp-text-muted); font-size: 0.82rem; }
+.kbd {
+  font-family: Consolas, monospace; font-size: 0.85em; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); border-radius: 5px; padding: 1px 5px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Manhattan Bridge &mdash; traversal frequency, direction and overlap</h1>
+<p class="sub">
+  Every B, D, N and Q crossing, by hour, by direction, by route &mdash; from the MTA's own published schedule.
+  Feed <code id="feedver">&mdash;</code>. Periods follow the EU Environmental Noise Directive 2002/49/EC default
+  day / evening / night split. <span class="tag v">Verified 5/5</span>
+</p>
+
+<div class="card">
+  <div class="controls">
+    <div class="ctl">
+      <label>Day type</label>
+      <div class="seg" id="svcSeg"></div>
+    </div>
+    <div class="ctl">
+      <label>Direction</label>
+      <div class="seg" id="dirSeg"></div>
+    </div>
+    <div class="ctl">
+      <label>Overlap model</label>
+      <div class="seg" id="modSeg"></div>
+    </div>
+    <div class="ctl">
+      <label>Coincidence window</label>
+      <input type="range" id="winR" min="1" max="45" step="1" value="6">
+      <div class="rv">Two crossings within <b id="winV">6 s</b> are heard as one</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+<div class="cards3" id="pcards"></div>
+<p class="hint" style="margin-top:14px;margin-bottom:0">
+  A period mean hides a great deal. The night figure averages a 12-per-hour floor at 02:00 with the
+  06:00 ramp; the hourly range shows the spread, and the chart below shows the shape.
+  <strong>Acoustic events/hr is a bracket, not a measurement</strong> &mdash; see the overlap panel for why
+  it cannot be narrowed from this data.
+</p>
+<div class="note warn" style="margin-bottom:0">
+  <p><strong>One consequence of using the standard periods.</strong> The night period runs to 07:00, so the
+  <strong>06:00 hour sits inside it &mdash; and on a weekday that hour carries 42 crossings</strong>, more than
+  triple the 12-per-hour floor at 02:00. Under the <code>L</code><sub>den</sub> convention the night period
+  carries a <strong>+10 dB penalty</strong> and the evening <strong>+5 dB</strong>, on the reasoning that the same
+  sound does more harm at those hours. That makes 06:00&ndash;07:00 the single most heavily weighted busy hour
+  of the day, and it is invisible in any framing that starts the day at 06:00.</p>
+  <p class="foot" style="margin-bottom:0">Period boundaries <span class="tag v">5/5</span> &mdash; quoted from
+  Directive 2002/49/EC Annex I: <em>"the day is 12 hours, the evening four hours and the night eight hours&hellip;
+  the default values are 07.00 to 19.00, 19.00 to 23.00 and 23.00 to 07.00 local time."</em>
+  The +5/+10 weightings <span class="tag d">3/5</span> are the Directive's standard <code>L</code><sub>den</sub>
+  formula, read from secondary summaries rather than the formula image in the source PDF.
+  <strong>No penalty is applied to any number on this page</strong> &mdash; this is a count of events, not a level.</p>
+</div>
+</div>
+
+<div class="card">
+  <h2>Traversals per hour</h2>
+  <p class="hint">
+    Stacked by route. Shaded bands are the three noise periods. The line is estimated
+    <em>distinct acoustic events</em> under the selected overlap model &mdash; where it sits below the bars,
+    trains are merging into single audible events.
+  </p>
+  <svg id="chart" viewBox="0 0 1120 380" role="img" aria-label="Traversals per hour by route"></svg>
+  <div class="legend" id="chartLegend"></div>
+</div>
+
+<div class="two">
+  <div class="card">
+    <h2>Direction split</h2>
+    <p class="hint">Northbound = toward Manhattan. Southbound = toward Brooklyn. Both cross the same four tracks over the same ground.</p>
+    <table id="dirTable"></table>
+  </div>
+  <div class="card">
+    <h2>Route mix</h2>
+    <p class="hint">Weekend composition is not the weekday mix attenuated.</p>
+    <table id="routeTable"></table>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Where the overlap question breaks <span class="tag u">Unverifiable from schedule</span></h2>
+  <p class="hint">This panel exists to stop you trusting the number above it.</p>
+
+  <div class="note bad">
+    <p><strong>Every scheduled departure in this feed falls on an exact :00 or :30 second.</strong>
+    Across <span id="qN">&mdash;</span> weekday traversals there are exactly <strong>two</strong> distinct
+    sub-minute values. The schedule is quantised to 30 seconds.</p>
+    <p>So the true gap between two crossings is never recorded as 1 s, or 4 s, or 12 s. It is recorded as
+    0 s or 30 s. <strong>Counting coincidences in the schedule measures the scheduler's rounding, not the railway.</strong></p>
+  </div>
+
+  <svg id="gapChart" viewBox="0 0 1120 190" role="img" aria-label="Gap histogram showing 30-second quantisation"></svg>
+  <p class="hint" style="margin-top:10px">
+    Gaps between consecutive crossings, as written in the feed. Note the total absence of any value
+    between 0 and 30 seconds &mdash; the entire range in which two trains would actually merge acoustically.
+  </p>
+
+  <h3 style="margin-top:22px">What can honestly be said instead</h3>
+  <p>Since the schedule cannot locate the answer, the dashboard brackets it with two models that
+  can be justified without it:</p>
+  <table id="modelTable"></table>
+  <p class="hint" style="margin-top:12px">
+    <strong>Regular</strong> assumes perfectly even spacing &mdash; the least merging physically possible, so the
+    <em>most</em> events. <strong>Poisson</strong> assumes maximum disorder; the superposition of four
+    semi-independent track streams tends toward Poisson (Palm&ndash;Khintchine), which makes it a defensible
+    ceiling on merging and therefore a floor on events. Real operation lies between.
+    <strong>Schedule-as-written</strong> is shown only to demonstrate that it is noise: drag the
+    coincidence window from 1 s to 29 s and watch it refuse to move at all, then jump the instant
+    you cross 30 s. That is the rounding, not the railway.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Does the corridor change the park finding? <span class="tag d">Partly withdrawn</span></h2>
+
+  <p>An earlier version of this programme published the following:</p>
+  <div class="note warn">
+    <p><em>"Peak park use and peak train frequency are out of phase. Brooklyn Bridge Park is most heavily
+    used on weekend afternoons. That is when bridge traffic is at its lowest daytime value &mdash; 34&ndash;36 per
+    hour on a Saturday against 57&ndash;66 per hour on a weekday afternoon."</em></p>
+  </div>
+
+  <p><strong>The arithmetic is right and the conclusion is too narrow. That generalisation is withdrawn.</strong>
+  It silently assumed one receptor population &mdash; park visitors &mdash; and then spoke as if it were the
+  affected population.</p>
+
+  <p>Widen the receptor to the corridor that is actually affected, from the York St station down to the
+  water entrance to Brooklyn Bridge Park, and there is no single phase relationship, because there is no
+  single population:</p>
+
+  <table id="phaseTable"></table>
+
+  <div class="note">
+    <p><strong>The worst case is not the park.</strong> It is the corridor on a weekday morning, when the
+    train rate is at its 24-hour maximum &mdash; <span id="peakTxt">&mdash;</span> &mdash; and the corridor is
+    carrying commuters. The original framing could not see that case, because it was only looking at the park.</p>
+  </div>
+
+  <p class="foot"><strong>What is verified and what is not.</strong> The train rates in this panel are
+  <span class="tag v">5/5</span> &mdash; MTA's own feed, reproducible. The <em>presence</em> of people
+  is <span class="tag u">1/5</span>: no pedestrian count has been taken anywhere in this corridor,
+  by this programme or, so far as it has found, by anyone. The phase argument is therefore a statement about
+  which question to ask, not an exposure estimate. <strong>No exposure estimate should be built until the
+  denominator is counted.</strong></p>
+
+  <p class="foot" style="margin-top:12px">There is also a resolution here of an earlier correction.
+  York St is an <code>F</code> train station on the Rutgers Street Tunnel and no train that crosses this
+  bridge stops there &mdash; so it is useless as a place to <em>measure</em> the source. It is nonetheless
+  the pedestrian gateway to the affected corridor. <strong>It matters as a receptor origin, not as a source.</strong></p>
+</div>
+
+<div class="card">
+  <h2>What this dashboard cannot tell you</h2>
+  <ul>
+    <li><strong>Schedule is not service.</strong> Delays, reroutes, planned weekend work and incidents all move the real number.</li>
+    <li><strong>Non-revenue moves are in no public feed.</strong> Work trains, put-ins and lay-ups cross this bridge and make noise &mdash; in some cases more, since work equipment is not built for ride quality. Every figure here undercounts acoustic events by an unknown amount.</li>
+    <li><strong>The chokepoint is not the bridge.</strong> Grand St and Canal St are near the crossing, not on it. For <em>rate</em> and <em>headway</em> the travel-time offset cancels exactly. For deciding whether two specific trains overlap, it does not &mdash; and it has never been measured.</li>
+    <li><strong>No decibel value on this page.</strong> This is a count of events, not a level. What one event sounds like is <a href="acoustic-demo.html">acoustic-demo.html</a>, and that page is synthesised, not recorded.</li>
+    <li><strong>Nobody has been counted.</strong> Every statement about who is present is unmeasured.</li>
+  </ul>
+  <p class="foot" style="margin-top:14px">
+    Regenerate the underlying data with <code>python data-collection/build_dashboard_data.py</code>.
+    Settle the overlap question with <code>python data-collection/bridge_realtime.py --poll 30</code>
+    run for one week &mdash; that is Method 26, and it is free.
+  </p>
+</div>
+
+</div>
+
+<script>
+/*DATA*/const DATA={"routes":["B","D","N","Q"],"directions":["north","south"],"chokepoints":["Grand St (B/D)","Canal St (N/Q)"],"feed_version":"20260731-149-st-hostos","events":{"Weekday":[[3,1,1,120],[1,0,0,180],[3,0,1,360],[1,1,0,480],[3,1,1,780],[1,0,0,1170],[3,0,1,1230],[3,1,1,1260],[1,1,0,1410],[1,0,0,1950],[3,1,1,2100],[1,1,0,2280],[3,0,1,2430],[1,0,0,2760],[3,1,1,3000],[1,1,0,3150],[3,0,1,3630],[1,0,0,3780],[3,1,1,4020],[1,1,0,4350],[3,0,1,4830],[1,0,0,4980],[3,1,1,5220],[1,1,0,5550],[3,0,1,6030],[1,0,0,6180],[3,1,1,6420],[1,1,0,6750],[3,0,1,7230],[1,0,0,7380],[3,1,1,7620],[1,1,0,7950],[3,0,1,8430],[1,0,0,8580],[3,1,1,8820],[1,1,0,9150],[3,0,1,9630],[1,0,0,9780],[3,1,1,10020],[1,1,0,10350],[3,0,1,10830],[1,0,0,10980],[3,1,1,11220],[1,1,0,11550],[3,0,1,12030],[1,0,0,12180],[3,1,1,12420],[1,1,0,12750],[3,0,1,13230],[1,0,0,13380],[3,1,1,13620],[1,1,0,13950],[3,0,1,14430],[1,0,0,14580],[3,1,1,14820],[1,1,0,15150],[3,0,1,15630],[1,0,0,15780],[3,1,1,16020],[1,1,0,16350],[3,0,1,16830],[1,0,0,16980],[3,1,1,17220],[1,1,0,17550],[3,0,1,18030],[1,0,0,18210],[3,1,1,18420],[1,1,0,18750],[3,0,1,19260],[1,0,0,19410],[3,1,1,19650],[1,1,0,20010],[3,0,1,20100],[1,0,0,20610],[3,1,1,20670],[3,0,1,21090],[1,1,0,21210],[3,1,1,21270],[1,0,0,21450],[2,1,1,21660],[2,0,1,21690],[3,0,1,21810],[1,1,0,21930],[3,1,1,21990],[2,0,1,22080],[1,0,0,22230],[3,0,1,22470],[0,1,0,22500],[2,1,1,22560],[2,0,1,22830],[3,1,1,22830],[1,0,0,22980],[1,1,0,22980],[3,0,1,23070],[0,1,0,23100],[0,0,0,23310],[2,0,1,23310],[2,1,1,23340],[3,1,1,23460],[1,0,0,23490],[3,0,1,23580],[0,1,0,23640],[1,1,0,23760],[2,0,1,23790],[2,1,1,23880],[0,0,0,23910],[3,1,1,24060],[1,0,0,24090],[3,0,1,24180],[0,1,0,24240],[2,0,1,24390],[1,1,0,24420],[0,0,0,24450],[2,1,1,24480],[1,0,0,24660],[3,1,1,24690],[3,0,1,24750],[0,1,0,24930],[0,0,0,24990],[2,0,1,24990],[2,1,1,25050],[1,1,0,25200],[1,0,0,25230],[3,1,1,25290],[3,0,1,25350],[0,1,0,25470],[0,0,0,25530],[2,0,1,25560],[1,1,0,25710],[2,1,1,25740],[1,0,0,25800],[3,0,1,25860],[3,1,1,25890],[0,0,0,26040],[0,1,0,26070],[2,0,1,26100],[1,0,0,26250],[1,1,0,26280],[2,1,1,26280],[3,0,1,26370],[3,1,1,26400],[0,0,0,26520],[2,0,1,26520],[1,1,0,26550],[0,1,0,26670],[1,0,0,26670],[3,0,1,26820],[3,1,1,26850],[2,1,1,26970],[0,0,0,27000],[2,0,1,27000],[1,1,0,27120],[1,0,0,27240],[3,0,1,27270],[0,1,0,27330],[3,1,1,27330],[2,0,1,27450],[0,0,0,27510],[1,1,0,27570],[2,1,1,27600],[3,0,1,27720],[3,1,1,27780],[1,0,0,27810],[2,0,1,27870],[0,1,0,27930],[0,0,0,28050],[1,1,0,28140],[1,0,0,28200],[2,1,1,28200],[3,0,1,28200],[2,0,1,28320],[3,1,1,28320],[0,0,0,28410],[0,1,0,28530],[1,0,0,28560],[3,0,1,28620],[1,1,0,28740],[2,0,1,28740],[3,1,1,28770],[0,0,0,28830],[2,1,1,28920],[1,0,0,28980],[3,0,1,28980],[0,1,0,29100],[2,0,1,29130],[0,0,0,29220],[3,1,1,29280],[1,0,0,29340],[3,0,1,29340],[1,1,0,29370],[0,0,0,29490],[2,1,1,29490],[2,0,1,29550],[0,1,0,29700],[1,0,0,29700],[3,0,1,29700],[3,1,1,29820],[2,0,1,29910],[0,0,0,29940],[1,1,0,29940],[2,1,1,30030],[1,0,0,30060],[3,0,1,30120],[3,1,1,30150],[0,1,0,30300],[0,0,0,30300],[2,0,1,30300],[1,0,0,30450],[3,0,1,30480],[1,1,0,30510],[3,1,1,30600],[0,0,0,30630],[2,0,1,30660],[2,1,1,30780],[0,1,0,30810],[1,0,0,30840],[3,0,1,30840],[3,1,1,30900],[2,0,1,30930],[1,1,0,30990],[0,0,0,31020],[2,0,1,31080],[3,0,1,31200],[1,0,0,31230],[3,1,1,31290],[0,0,0,31350],[2,1,1,31410],[0,1,0,31440],[3,0,1,31440],[1,0,0,31500],[1,1,0,31560],[2,0,1,31620],[3,1,1,31710],[0,0,0,31800],[2,1,1,31860],[0,1,0,31890],[3,0,1,31920],[1,0,0,32010],[3,1,1,32040],[1,1,0,32070],[2,0,1,32100],[2,1,1,32220],[0,0,0,32250],[3,0,1,32340],[3,1,1,32340],[1,1,0,32370],[1,0,0,32460],[0,1,0,32490],[2,0,1,32550],[0,0,0,32580],[2,1,1,32610],[3,1,1,32730],[1,1,0,32760],[3,0,1,32790],[2,1,1,32850],[2,0,1,32880],[0,1,0,32970],[2,1,1,33000],[1,0,0,33030],[3,1,1,33120],[0,0,0,33150],[1,1,0,33150],[3,0,1,33270],[1,0,0,33330],[3,1,1,33360],[2,0,1,33420],[2,1,1,33480],[0,1,0,33510],[1,1,0,33630],[0,0,0,33690],[3,1,1,33780],[1,0,0,33840],[3,0,1,33840],[0,1,0,33930],[2,0,1,33930],[1,1,0,34020],[2,1,1,34050],[0,0,0,34110],[3,0,1,34200],[3,1,1,34200],[1,0,0,34260],[2,0,1,34350],[1,1,0,34380],[0,1,0,34500],[3,0,1,34560],[2,1,1,34590],[0,0,0,34680],[3,1,1,34710],[2,0,1,34740],[1,1,0,34770],[2,1,1,34830],[1,0,0,34860],[0,1,0,34890],[3,1,1,34980],[3,0,1,35010],[1,1,0,35160],[0,0,0,35190],[2,0,1,35190],[2,1,1,35190],[0,1,0,35280],[2,1,1,35310],[1,0,0,35400],[3,0,1,35460],[1,1,0,35550],[3,1,1,35550],[0,0,0,35580],[0,1,0,35700],[2,0,1,35790],[1,1,0,35910],[2,1,1,35970],[3,0,1,35970],[1,0,0,36000],[3,1,1,36090],[0,0,0,36120],[1,1,0,36180],[0,1,0,36300],[3,0,1,36330],[2,0,1,36450],[2,1,1,36450],[0,0,0,36540],[3,1,1,36600],[1,0,0,36660],[1,1,0,36690],[0,1,0,36810],[3,0,1,36870],[2,0,1,36990],[0,0,0,37050],[2,1,1,37050],[1,0,0,37170],[3,1,1,37170],[1,1,0,37200],[0,1,0,37320],[3,0,1,37410],[2,0,1,37530],[3,1,1,37530],[0,0,0,37560],[1,1,0,37650],[2,1,1,37650],[1,0,0,37680],[0,1,0,37770],[3,0,1,37920],[3,1,1,38010],[0,0,0,38040],[2,0,1,38040],[1,1,0,38100],[1,0,0,38160],[2,1,1,38160],[0,1,0,38220],[1,0,0,38490],[3,0,1,38490],[3,1,1,38490],[1,1,0,38610],[2,0,1,38640],[2,1,1,38640],[0,0,0,38670],[0,1,0,38730],[1,0,0,38880],[2,1,1,38910],[3,0,1,38910],[3,1,1,39030],[1,1,0,39060],[2,0,1,39060],[0,0,0,39150],[0,1,0,39180],[3,0,1,39300],[1,0,0,39330],[2,1,1,39360],[0,0,0,39480],[3,1,1,39480],[1,1,0,39570],[2,0,1,39630],[0,1,0,39690],[1,0,0,39750],[3,0,1,39780],[3,1,1,39930],[0,0,0,39960],[1,1,0,40020],[2,0,1,40020],[2,1,1,40110],[0,1,0,40140],[1,0,0,40200],[3,0,1,40260],[0,0,0,40410],[2,0,1,40410],[3,1,1,40410],[1,1,0,40530],[1,0,0,40530],[0,1,0,40650],[2,1,1,40650],[1,0,0,40800],[3,0,1,40800],[3,1,1,40890],[1,1,0,40920],[0,0,0,40950],[2,0,1,40980],[0,1,0,41100],[1,0,0,41130],[0,0,0,41250],[2,0,1,41250],[2,1,1,41250],[3,0,1,41370],[3,1,1,41370],[1,1,0,41460],[1,0,0,41520],[0,1,0,41610],[3,0,1,41700],[2,0,1,41820],[2,1,1,41820],[0,0,0,41850],[3,1,1,41940],[1,1,0,41970],[1,0,0,41970],[0,1,0,42090],[3,0,1,42120],[2,0,1,42270],[3,1,1,42270],[0,0,0,42330],[1,1,0,42450],[1,0,0,42450],[2,1,1,42480],[0,1,0,42570],[3,0,1,42660],[2,0,1,42780],[3,1,1,42780],[0,0,0,42840],[1,1,0,42900],[1,0,0,42960],[0,1,0,43020],[2,1,1,43020],[3,0,1,43170],[2,0,1,43290],[3,1,1,43290],[0,0,0,43350],[1,1,0,43410],[1,0,0,43500],[0,1,0,43530],[2,1,1,43560],[3,0,1,43680],[3,1,1,43770],[0,0,0,43800],[2,0,1,43830],[1,1,0,43860],[2,1,1,43890],[1,0,0,43950],[0,1,0,43980],[3,0,1,44100],[3,1,1,44220],[0,0,0,44280],[2,0,1,44280],[2,1,1,44340],[1,1,0,44370],[1,0,0,44400],[0,1,0,44490],[3,0,1,44580],[3,1,1,44730],[0,0,0,44790],[1,1,0,44820],[2,0,1,44820],[2,1,1,44850],[0,1,0,44940],[1,0,0,44940],[3,0,1,45030],[3,1,1,45180],[0,0,0,45240],[2,0,1,45240],[1,1,0,45330],[2,1,1,45390],[1,0,0,45420],[0,1,0,45480],[3,0,1,45510],[2,0,1,45660],[0,0,0,45690],[3,1,1,45690],[1,1,0,45810],[1,0,0,45900],[0,1,0,45930],[2,1,1,45960],[3,0,1,45990],[3,1,1,46110],[0,0,0,46170],[2,1,1,46260],[2,0,1,46320],[1,1,0,46410],[1,0,0,46440],[3,0,1,46470],[0,1,0,46530],[3,1,1,46590],[0,0,0,46680],[2,0,1,46710],[2,1,1,46710],[1,1,0,46860],[3,0,1,46950],[0,1,0,46980],[1,0,0,46980],[3,1,1,47070],[2,0,1,47100],[0,0,0,47190],[2,1,1,47220],[1,1,0,47250],[1,0,0,47340],[0,1,0,47370],[3,0,1,47430],[3,1,1,47580],[0,0,0,47640],[2,0,1,47640],[1,1,0,47700],[2,1,1,47790],[0,1,0,47820],[1,0,0,47820],[3,0,1,47910],[2,0,1,48030],[0,0,0,48060],[3,1,1,48090],[1,1,0,48180],[1,0,0,48180],[2,1,1,48300],[0,1,0,48330],[3,0,1,48360],[0,0,0,48480],[1,0,0,48570],[3,1,1,48570],[1,1,0,48600],[2,1,1,48690],[2,0,1,48720],[0,1,0,48780],[3,0,1,48840],[0,0,0,49020],[3,1,1,49050],[2,0,1,49080],[1,1,0,49140],[1,0,0,49200],[2,1,1,49200],[0,1,0,49260],[3,0,1,49320],[2,0,1,49470],[0,0,0,49500],[3,1,1,49530],[1,1,0,49620],[2,1,1,49710],[0,1,0,49740],[1,0,0,49740],[3,0,1,49800],[2,0,1,49950],[3,1,1,49980],[0,0,0,50010],[1,1,0,50130],[1,0,0,50220],[2,1,1,50220],[0,1,0,50250],[3,0,1,50280],[2,0,1,50430],[0,0,0,50460],[3,1,1,50490],[1,1,0,50580],[0,1,0,50700],[1,0,0,50700],[2,1,1,50700],[3,0,1,50760],[0,0,0,50940],[3,1,1,50970],[1,1,0,51090],[2,0,1,51090],[2,1,1,51090],[0,1,0,51210],[1,0,0,51210],[3,0,1,51240],[0,0,0,51390],[3,1,1,51450],[2,0,1,51480],[1,1,0,51540],[2,1,1,51600],[1,0,0,51630],[0,1,0,51690],[3,0,1,51690],[0,0,0,51840],[2,0,1,51870],[3,1,1,51930],[1,1,0,52020],[1,0,0,52080],[2,1,1,52080],[0,1,0,52170],[3,0,1,52170],[0,0,0,52350],[2,0,1,52350],[3,1,1,52380],[1,1,0,52440],[1,0,0,52470],[0,1,0,52560],[2,1,1,52590],[3,0,1,52650],[1,0,0,52800],[0,0,0,52890],[3,1,1,52890],[1,1,0,52980],[2,0,1,52980],[2,1,1,53100],[3,0,1,53100],[0,1,0,53130],[0,0,0,53280],[2,0,1,53340],[3,1,1,53370],[1,1,0,53460],[1,0,0,53460],[2,1,1,53460],[3,0,1,53580],[0,1,0,53610],[0,0,0,53760],[2,1,1,53790],[2,0,1,53850],[3,1,1,53910],[1,1,0,53970],[1,0,0,53970],[3,0,1,54030],[0,1,0,54090],[0,0,0,54210],[1,1,0,54300],[2,0,1,54330],[3,1,1,54330],[1,0,0,54450],[2,1,1,54450],[0,1,0,54540],[3,0,1,54630],[0,0,0,54750],[3,1,1,54780],[2,0,1,54810],[1,1,0,54900],[3,0,1,54930],[2,1,1,54960],[1,0,0,55020],[0,1,0,55050],[0,0,0,55200],[1,1,0,55290],[3,1,1,55290],[2,0,1,55350],[2,1,1,55470],[3,0,1,55470],[0,1,0,55530],[1,0,0,55530],[0,0,0,55650],[3,1,1,55740],[2,0,1,55830],[1,1,0,55860],[2,1,1,55860],[3,0,1,55950],[0,1,0,56040],[1,0,0,56040],[0,0,0,56160],[3,1,1,56280],[1,1,0,56370],[3,0,1,56370],[1,0,0,56400],[2,1,1,56430],[2,0,1,56520],[0,1,0,56610],[0,0,0,56610],[3,1,1,56760],[2,0,1,56790],[1,1,0,56880],[1,0,0,56910],[2,1,1,56910],[3,0,1,56910],[0,1,0,57000],[0,0,0,57030],[3,1,1,57210],[2,0,1,57270],[2,1,1,57330],[1,0,0,57390],[3,0,1,57390],[1,1,0,57480],[0,0,0,57510],[0,1,0,57600],[2,1,1,57630],[3,1,1,57750],[3,0,1,57840],[1,1,0,57870],[1,0,0,57900],[0,1,0,57990],[0,0,0,58020],[2,0,1,58050],[3,1,1,58110],[2,1,1,58230],[3,0,1,58260],[1,1,0,58380],[2,0,1,58380],[1,0,0,58470],[0,1,0,58500],[3,1,1,58620],[0,0,0,58680],[2,0,1,58710],[2,1,1,58740],[3,0,1,58830],[1,1,0,58890],[1,0,0,58890],[0,1,0,59010],[2,0,1,59040],[3,1,1,59070],[1,1,0,59190],[2,0,1,59220],[0,0,0,59280],[2,1,1,59280],[0,1,0,59370],[3,0,1,59400],[1,0,0,59490],[3,1,1,59490],[2,1,1,59610],[2,0,1,59700],[0,0,0,59760],[1,1,0,59760],[2,1,1,59850],[0,1,0,59880],[3,0,1,59880],[1,0,0,59970],[2,0,1,60060],[3,1,1,60120],[0,0,0,60180],[3,0,1,60270],[0,1,0,60390],[2,0,1,60390],[1,1,0,60480],[1,0,0,60510],[2,1,1,60540],[0,0,0,60600],[3,0,1,60780],[3,1,1,60780],[1,1,0,60840],[1,0,0,60870],[0,1,0,60960],[2,0,1,60960],[1,1,0,61050],[3,1,1,61050],[0,0,0,61170],[2,1,1,61170],[3,1,1,61260],[1,0,0,61290],[3,0,1,61350],[2,1,1,61380],[1,1,0,61500],[2,0,1,61500],[0,1,0,61620],[1,0,0,61650],[2,1,1,61680],[0,0,0,61770],[3,1,1,61800],[3,0,1,61860],[1,1,0,61920],[2,0,1,61950],[0,1,0,62040],[2,1,1,62070],[1,0,0,62100],[1,1,0,62190],[3,0,1,62190],[2,0,1,62310],[3,1,1,62370],[0,0,0,62400],[1,0,0,62520],[1,1,0,62550],[2,0,1,62610],[0,1,0,62670],[2,1,1,62670],[3,0,1,62730],[3,1,1,62790],[1,1,0,62940],[1,0,0,62940],[0,1,0,63060],[0,0,0,63060],[2,1,1,63060],[3,0,1,63150],[3,1,1,63180],[2,0,1,63240],[2,1,1,63300],[1,1,0,63390],[3,0,1,63420],[1,0,0,63450],[0,1,0,63510],[3,1,1,63570],[2,0,1,63630],[0,0,0,63660],[2,1,1,63720],[0,1,0,63750],[3,0,1,63750],[3,1,1,63840],[1,0,0,63900],[0,1,0,63990],[3,0,1,64080],[1,1,0,64110],[2,0,1,64200],[3,1,1,64200],[0,0,0,64230],[2,1,1,64320],[1,0,0,64350],[1,1,0,64440],[3,0,1,64440],[0,1,0,64560],[2,0,1,64590],[0,0,0,64680],[0,1,0,64710],[3,1,1,64710],[2,1,1,64770],[1,0,0,64800],[3,0,1,64830],[1,1,0,64860],[2,0,1,65010],[3,1,1,65070],[0,1,0,65160],[1,1,0,65250],[3,0,1,65250],[1,0,0,65310],[2,1,1,65340],[0,0,0,65430],[2,1,1,65460],[2,0,1,65580],[3,1,1,65580],[1,1,0,65640],[3,0,1,65760],[0,1,0,65790],[1,0,0,65820],[2,1,1,65850],[0,0,0,65940],[3,1,1,66030],[2,0,1,66150],[0,1,0,66210],[2,1,1,66210],[3,0,1,66210],[3,1,1,66330],[1,1,0,66360],[1,0,0,66360],[0,0,0,66510],[2,0,1,66540],[1,1,0,66600],[3,0,1,66660],[2,1,1,66690],[0,1,0,66720],[1,0,0,66810],[3,1,1,66810],[3,0,1,66990],[3,1,1,66990],[0,0,0,67110],[2,0,1,67110],[2,1,1,67110],[1,0,0,67230],[1,1,0,67260],[0,1,0,67380],[3,0,1,67380],[3,1,1,67380],[1,0,0,67560],[1,1,0,67650],[2,0,1,67680],[0,0,0,67710],[2,1,1,67710],[0,1,0,67800],[3,0,1,67830],[3,1,1,67830],[1,1,0,68010],[1,0,0,68010],[3,0,1,68100],[3,1,1,68100],[2,0,1,68220],[2,1,1,68220],[0,0,0,68310],[1,1,0,68370],[2,1,1,68460],[0,1,0,68490],[3,0,1,68550],[3,1,1,68610],[1,0,0,68640],[2,0,1,68760],[3,0,1,68850],[0,1,0,68880],[2,1,1,68940],[0,0,0,68970],[1,1,0,69090],[3,1,1,69150],[1,0,0,69180],[3,0,1,69360],[2,1,1,69420],[2,0,1,69450],[0,0,0,69540],[3,1,1,69540],[1,1,0,69570],[0,1,0,69690],[3,0,1,69720],[1,0,0,69750],[3,1,1,69810],[2,1,1,69930],[0,0,0,69960],[1,1,0,70080],[3,0,1,70080],[0,1,0,70200],[2,0,1,70200],[1,0,0,70230],[3,1,1,70290],[1,1,0,70470],[3,0,1,70470],[2,1,1,70530],[0,0,0,70590],[3,1,1,70620],[1,0,0,70770],[0,1,0,70830],[2,1,1,70830],[2,0,1,70860],[3,1,1,70950],[1,1,0,70980],[3,0,1,70980],[0,0,0,71160],[0,1,0,71190],[2,1,1,71310],[1,0,0,71340],[3,0,1,71400],[3,1,1,71430],[2,0,1,71550],[1,1,0,71640],[1,0,0,71730],[0,1,0,71790],[2,1,1,71790],[0,0,0,71820],[3,1,1,71910],[3,0,1,71940],[3,0,1,72120],[1,0,0,72180],[3,1,1,72240],[2,0,1,72270],[1,1,0,72330],[0,0,0,72360],[2,1,1,72390],[0,1,0,72450],[3,0,1,72570],[3,1,1,72630],[1,0,0,72660],[1,1,0,72780],[0,0,0,72840],[2,1,1,72870],[3,0,1,72960],[0,1,0,73050],[3,1,1,73110],[2,0,1,73140],[1,0,0,73200],[1,1,0,73260],[3,0,1,73320],[0,0,0,73440],[2,1,1,73470],[3,1,1,73590],[1,0,0,73680],[0,1,0,73710],[2,0,1,73770],[1,1,0,73800],[3,0,1,73860],[3,1,1,73920],[1,0,0,74010],[1,1,0,74130],[0,0,0,74160],[0,1,0,74250],[3,0,1,74280],[3,1,1,74370],[2,0,1,74400],[2,1,1,74490],[1,0,0,74610],[1,1,0,74640],[0,0,0,74760],[0,1,0,74760],[3,1,1,74820],[3,0,1,74880],[1,1,0,75000],[2,0,1,75150],[3,1,1,75210],[1,0,0,75270],[3,0,1,75270],[2,1,1,75330],[0,0,0,75390],[0,1,0,75390],[1,1,0,75570],[3,1,1,75630],[3,0,1,75690],[1,0,0,75840],[2,1,1,75870],[0,1,0,75990],[0,0,0,76020],[2,0,1,76050],[3,1,1,76080],[1,1,0,76110],[3,0,1,76170],[1,0,0,76350],[3,1,1,76440],[0,0,0,76560],[2,1,1,76560],[0,1,0,76590],[3,0,1,76650],[1,1,0,76710],[2,0,1,76740],[3,1,1,76920],[1,0,0,76950],[3,0,1,77010],[0,0,0,77160],[0,1,0,77160],[1,1,0,77280],[2,0,1,77310],[2,1,1,77400],[1,0,0,77490],[3,1,1,77520],[3,0,1,77580],[0,1,0,77760],[0,0,0,77820],[1,1,0,77880],[3,1,1,77910],[2,0,1,77970],[3,0,1,78090],[1,0,0,78240],[2,1,1,78270],[0,1,0,78360],[3,1,1,78420],[1,1,0,78510],[0,0,0,78540],[3,0,1,78630],[2,0,1,78750],[2,1,1,78810],[1,0,0,78900],[3,1,1,78930],[3,0,1,78990],[1,1,0,79080],[3,1,1,79290],[2,0,1,79470],[1,1,0,79500],[3,0,1,79590],[2,1,1,79620],[1,0,0,79740],[3,1,1,79860],[1,1,0,80010],[2,0,1,80070],[3,0,1,80190],[3,1,1,80310],[1,0,0,80400],[2,1,1,80430],[1,1,0,80580],[3,0,1,80790],[2,0,1,80940],[3,1,1,80940],[1,1,0,81090],[1,0,0,81090],[2,1,1,81240],[3,0,1,81390],[3,1,1,81540],[2,0,1,81720],[1,1,0,81750],[2,1,1,81840],[1,0,0,81870],[3,0,1,81990],[3,1,1,82140],[2,0,1,82350],[1,1,0,82380],[2,1,1,82500],[3,0,1,82530],[1,0,0,82620],[3,1,1,82740],[2,0,1,82800],[3,0,1,82920],[1,1,0,83130],[2,1,1,83160],[1,0,0,83340],[3,1,1,83400],[1,1,0,83820],[3,0,1,83820],[2,1,1,83910],[3,1,1,84030],[1,0,0,84090],[1,1,0,84570],[3,0,1,84600],[3,1,1,84720],[1,0,0,84870],[1,1,0,85290],[3,0,1,85320],[1,0,0,85710],[3,1,1,85740],[3,0,1,86040],[1,1,0,86070]],"Saturday":[[1,0,0,180],[1,1,0,270],[3,0,1,300],[3,1,1,630],[1,1,0,900],[1,0,0,960],[3,1,1,1140],[3,0,1,1260],[1,1,0,1650],[1,0,0,1800],[3,1,1,2100],[1,1,0,2280],[3,0,1,2460],[1,0,0,2580],[3,1,1,3000],[1,1,0,3150],[1,0,0,3240],[3,0,1,3660],[1,0,0,4020],[3,1,1,4020],[1,1,0,4320],[3,0,1,4860],[1,0,0,4980],[3,1,1,5220],[1,1,0,5520],[3,0,1,6060],[1,0,0,6180],[3,1,1,6420],[1,1,0,6720],[3,0,1,7260],[1,0,0,7380],[3,1,1,7620],[1,1,0,7920],[3,0,1,8460],[1,0,0,8580],[3,1,1,8820],[1,1,0,9120],[3,0,1,9660],[1,0,0,9780],[3,1,1,10020],[1,1,0,10320],[3,0,1,10860],[1,0,0,10980],[3,1,1,11220],[1,1,0,11520],[3,0,1,12060],[1,0,0,12180],[3,1,1,12420],[1,1,0,12720],[3,0,1,13260],[1,0,0,13380],[3,1,1,13620],[1,1,0,13920],[3,0,1,14460],[1,0,0,14580],[3,1,1,14820],[1,1,0,15120],[3,0,1,15660],[1,0,0,15780],[3,1,1,16020],[1,1,0,16320],[3,0,1,16860],[1,0,0,16980],[3,1,1,17220],[1,1,0,17520],[3,0,1,18060],[1,0,0,18180],[3,1,1,18420],[1,1,0,18720],[3,0,1,19260],[1,0,0,19380],[3,1,1,19620],[1,1,0,19920],[3,0,1,20460],[1,0,0,20580],[3,1,1,20820],[1,1,0,21120],[3,0,1,21360],[2,0,1,21480],[2,1,1,21660],[1,0,0,21780],[3,1,1,21870],[2,0,1,21900],[3,0,1,22260],[1,1,0,22320],[2,1,1,22470],[3,1,1,22770],[2,0,1,22800],[1,0,0,23010],[3,0,1,23100],[2,1,1,23400],[1,1,0,23520],[3,1,1,23670],[3,0,1,23700],[2,0,1,23820],[1,0,0,24180],[2,1,1,24270],[3,1,1,24390],[3,0,1,24420],[1,1,0,24630],[2,0,1,24720],[2,1,1,24960],[3,0,1,25020],[3,1,1,25110],[1,0,0,25140],[1,1,0,25350],[2,0,1,25500],[3,0,1,25620],[2,1,1,25710],[1,0,0,25770],[3,1,1,25830],[1,1,0,26100],[2,0,1,26100],[3,0,1,26220],[3,1,1,26430],[1,0,0,26490],[2,1,1,26550],[3,0,1,26820],[1,1,0,26910],[2,0,1,26940],[3,1,1,27090],[1,0,0,27210],[2,1,1,27210],[3,0,1,27420],[2,0,1,27660],[1,1,0,27720],[3,1,1,27720],[2,1,1,27900],[1,0,0,27930],[3,0,1,28020],[3,1,1,28320],[1,1,0,28350],[2,0,1,28380],[2,1,1,28620],[3,0,1,28620],[1,0,0,28710],[3,1,1,28920],[1,1,0,29070],[2,0,1,29100],[3,0,1,29220],[2,1,1,29340],[1,0,0,29370],[3,1,1,29520],[1,1,0,29700],[2,0,1,29700],[3,0,1,29820],[1,0,0,30090],[3,1,1,30120],[2,1,1,30240],[3,0,1,30420],[1,1,0,30510],[2,0,1,30540],[3,1,1,30720],[1,0,0,30810],[2,1,1,30840],[3,0,1,31020],[2,0,1,31260],[1,1,0,31320],[3,1,1,31320],[2,1,1,31500],[1,0,0,31530],[3,0,1,31620],[3,1,1,31920],[2,0,1,31980],[1,1,0,32010],[2,1,1,32220],[3,0,1,32220],[1,0,0,32340],[3,1,1,32520],[1,1,0,32670],[2,0,1,32700],[3,0,1,32820],[2,1,1,32940],[1,0,0,32970],[3,1,1,33120],[1,1,0,33300],[2,0,1,33300],[3,0,1,33420],[2,1,1,33660],[1,0,0,33690],[3,1,1,33780],[3,0,1,34020],[1,1,0,34110],[2,0,1,34140],[3,1,1,34320],[1,0,0,34410],[2,1,1,34440],[3,0,1,34620],[2,0,1,34860],[1,1,0,34920],[3,1,1,34920],[2,1,1,35100],[1,0,0,35130],[3,0,1,35220],[3,1,1,35460],[1,1,0,35550],[2,0,1,35580],[2,1,1,35820],[3,0,1,35820],[1,0,0,35910],[3,1,1,36180],[1,1,0,36270],[2,0,1,36300],[3,0,1,36420],[2,1,1,36540],[1,0,0,36570],[3,1,1,36720],[1,1,0,36900],[2,0,1,36900],[3,0,1,37020],[1,0,0,37290],[3,1,1,37320],[2,1,1,37440],[3,0,1,37620],[1,1,0,37710],[2,0,1,37740],[3,1,1,37920],[1,0,0,38010],[2,1,1,38040],[3,0,1,38220],[2,0,1,38400],[1,1,0,38430],[3,1,1,38580],[1,0,0,38670],[2,1,1,38700],[3,0,1,38760],[2,0,1,39060],[3,1,1,39120],[1,1,0,39210],[3,0,1,39240],[2,1,1,39420],[1,0,0,39450],[2,0,1,39720],[3,1,1,39720],[3,0,1,39840],[1,1,0,39870],[1,0,0,40110],[2,1,1,40140],[3,0,1,40200],[3,1,1,40320],[1,1,0,40500],[2,0,1,40560],[3,0,1,40680],[2,1,1,40860],[1,0,0,40890],[3,1,1,40980],[3,0,1,41160],[2,0,1,41280],[1,1,0,41310],[3,1,1,41520],[1,0,0,41550],[2,1,1,41640],[3,0,1,41640],[2,0,1,42060],[3,1,1,42060],[1,1,0,42090],[3,0,1,42240],[2,1,1,42300],[1,0,0,42330],[3,1,1,42540],[3,0,1,42600],[2,0,1,42720],[1,1,0,42750],[1,0,0,42990],[3,1,1,43020],[3,0,1,43080],[2,1,1,43140],[2,0,1,43440],[1,1,0,43470],[3,0,1,43560],[3,1,1,43620],[2,1,1,43740],[1,0,0,43770],[3,1,1,43980],[3,0,1,44040],[1,1,0,44100],[2,0,1,44220],[3,1,1,44460],[1,0,0,44490],[2,1,1,44580],[3,0,1,44640],[2,0,1,44880],[3,1,1,44940],[1,1,0,44970],[3,0,1,45000],[2,1,1,45180],[1,0,0,45210],[3,1,1,45420],[3,0,1,45480],[2,0,1,45600],[1,1,0,45630],[1,0,0,45870],[2,1,1,45900],[3,0,1,45960],[3,1,1,46020],[2,0,1,46320],[3,1,1,46380],[3,0,1,46440],[1,1,0,46470],[2,1,1,46620],[1,0,0,46650],[3,1,1,46860],[2,0,1,46920],[3,0,1,47040],[1,1,0,47070],[1,0,0,47310],[3,1,1,47340],[3,0,1,47400],[2,1,1,47460],[1,1,0,47700],[2,0,1,47760],[3,1,1,47820],[3,0,1,47880],[2,1,1,48060],[1,0,0,48090],[3,0,1,48360],[3,1,1,48420],[2,0,1,48480],[1,1,0,48510],[1,0,0,48750],[3,1,1,48780],[3,0,1,48840],[2,1,1,48900],[2,0,1,49260],[3,1,1,49260],[1,1,0,49290],[3,0,1,49440],[2,1,1,49500],[1,0,0,49530],[3,1,1,49740],[3,0,1,49800],[2,0,1,49920],[1,1,0,49950],[1,0,0,50190],[3,1,1,50220],[3,0,1,50280],[2,1,1,50340],[2,0,1,50640],[1,1,0,50670],[3,0,1,50760],[3,1,1,50820],[2,1,1,50940],[1,0,0,50970],[3,1,1,51180],[3,0,1,51240],[1,1,0,51300],[2,0,1,51420],[3,1,1,51660],[1,0,0,51690],[2,1,1,51780],[3,0,1,51840],[2,0,1,52080],[3,1,1,52140],[1,1,0,52170],[3,0,1,52200],[2,1,1,52380],[1,0,0,52410],[3,1,1,52620],[3,0,1,52680],[2,0,1,52800],[1,1,0,52830],[1,0,0,53070],[2,1,1,53100],[3,0,1,53160],[3,1,1,53220],[2,0,1,53520],[3,1,1,53580],[3,0,1,53640],[1,1,0,53670],[2,1,1,53820],[1,0,0,53850],[3,1,1,54060],[2,0,1,54120],[3,0,1,54240],[1,1,0,54270],[1,0,0,54510],[3,1,1,54540],[3,0,1,54600],[2,1,1,54660],[1,1,0,54870],[2,0,1,54960],[3,1,1,55020],[3,0,1,55080],[2,1,1,55260],[1,0,0,55290],[3,0,1,55560],[3,1,1,55620],[2,0,1,55680],[1,1,0,55710],[1,0,0,55950],[3,1,1,55980],[3,0,1,56040],[2,1,1,56100],[2,0,1,56460],[3,1,1,56460],[1,1,0,56490],[3,0,1,56640],[2,1,1,56700],[1,0,0,56730],[3,1,1,56940],[3,0,1,57000],[2,0,1,57120],[1,1,0,57150],[1,0,0,57390],[3,1,1,57420],[3,0,1,57480],[2,1,1,57540],[2,0,1,57840],[1,1,0,57870],[3,0,1,57960],[3,1,1,58020],[2,1,1,58140],[1,0,0,58170],[3,1,1,58380],[3,0,1,58440],[1,1,0,58500],[2,0,1,58620],[3,1,1,58860],[1,0,0,58890],[2,1,1,58980],[3,0,1,59040],[2,0,1,59280],[3,1,1,59340],[1,1,0,59370],[3,0,1,59400],[2,1,1,59580],[1,0,0,59610],[3,1,1,59820],[3,0,1,59880],[2,0,1,60000],[1,1,0,60030],[1,0,0,60270],[2,1,1,60300],[3,0,1,60360],[3,1,1,60420],[2,0,1,60720],[3,1,1,60780],[3,0,1,60840],[1,1,0,60870],[2,1,1,61020],[1,0,0,61050],[3,1,1,61260],[2,0,1,61320],[3,0,1,61440],[1,1,0,61470],[1,0,0,61710],[3,1,1,61740],[3,0,1,61800],[2,1,1,61860],[1,1,0,62070],[2,0,1,62160],[3,1,1,62220],[3,0,1,62280],[2,1,1,62460],[1,0,0,62490],[3,0,1,62760],[3,1,1,62820],[2,0,1,62880],[1,1,0,62910],[1,0,0,63150],[3,1,1,63180],[3,0,1,63240],[2,1,1,63300],[2,0,1,63660],[3,1,1,63660],[1,1,0,63690],[3,0,1,63840],[2,1,1,63900],[1,0,0,63930],[3,1,1,64140],[3,0,1,64200],[1,1,0,64350],[2,0,1,64380],[1,0,0,64590],[3,1,1,64620],[3,0,1,64680],[2,1,1,64740],[2,0,1,65040],[1,1,0,65070],[3,0,1,65160],[3,1,1,65220],[2,1,1,65340],[1,0,0,65370],[3,1,1,65580],[3,0,1,65640],[1,1,0,65700],[2,0,1,65820],[3,1,1,66060],[1,0,0,66090],[2,1,1,66180],[3,0,1,66240],[2,0,1,66420],[3,0,1,66540],[3,1,1,66540],[1,1,0,66570],[2,1,1,66780],[1,0,0,66810],[3,0,1,67020],[3,1,1,67020],[1,1,0,67230],[2,0,1,67260],[2,1,1,67500],[3,0,1,67500],[1,0,0,67590],[3,1,1,67620],[2,0,1,67920],[3,1,1,67980],[3,0,1,68040],[1,1,0,68070],[2,1,1,68220],[1,0,0,68250],[3,0,1,68400],[3,1,1,68460],[1,1,0,68670],[2,0,1,68700],[3,0,1,68940],[3,1,1,68940],[1,0,0,69030],[2,1,1,69060],[1,1,0,69270],[2,0,1,69300],[3,0,1,69420],[3,1,1,69420],[2,1,1,69660],[1,0,0,69690],[3,0,1,69900],[3,1,1,70020],[2,0,1,70140],[1,1,0,70170],[1,0,0,70350],[3,1,1,70380],[3,0,1,70440],[2,1,1,70500],[2,0,1,70680],[3,0,1,70800],[3,1,1,70860],[1,1,0,70890],[2,1,1,71100],[1,0,0,71130],[3,0,1,71340],[3,1,1,71340],[1,1,0,71550],[2,0,1,71580],[3,0,1,71820],[3,1,1,71820],[1,0,0,71910],[2,1,1,71940],[2,0,1,72180],[1,1,0,72270],[3,0,1,72300],[3,1,1,72420],[2,1,1,72540],[1,0,0,72570],[3,1,1,72780],[3,0,1,72840],[1,1,0,72900],[2,0,1,73020],[3,0,1,73200],[3,1,1,73260],[1,0,0,73290],[2,1,1,73380],[2,0,1,73620],[1,1,0,73680],[3,0,1,73740],[3,1,1,73740],[2,1,1,73980],[1,0,0,74010],[3,0,1,74220],[3,1,1,74220],[2,0,1,74400],[1,1,0,74430],[1,0,0,74670],[2,1,1,74700],[3,0,1,74820],[3,1,1,74820],[2,0,1,75180],[3,1,1,75180],[1,1,0,75270],[3,0,1,75360],[1,0,0,75450],[2,1,1,75450],[3,1,1,75660],[2,0,1,75840],[1,1,0,75870],[3,0,1,75960],[3,1,1,76140],[1,0,0,76170],[2,1,1,76260],[2,0,1,76440],[1,1,0,76470],[3,0,1,76560],[3,1,1,76620],[1,0,0,76890],[2,1,1,76890],[3,0,1,77160],[3,1,1,77220],[2,0,1,77340],[1,1,0,77370],[3,1,1,77580],[1,0,0,77610],[2,1,1,77700],[3,0,1,77760],[1,1,0,78000],[2,0,1,78000],[3,1,1,78180],[1,0,0,78270],[2,1,1,78300],[3,0,1,78360],[1,1,0,78750],[2,0,1,78780],[3,1,1,78900],[3,0,1,78960],[2,1,1,79020],[1,0,0,79050],[2,0,1,79350],[3,1,1,79380],[1,1,0,79530],[3,0,1,79560],[2,1,1,79740],[1,0,0,79770],[3,1,1,79980],[2,0,1,80040],[1,1,0,80100],[3,0,1,80160],[2,1,1,80460],[1,0,0,80490],[3,1,1,80580],[3,0,1,80790],[2,0,1,80880],[1,1,0,80910],[2,1,1,81180],[1,0,0,81210],[3,1,1,81300],[3,0,1,81450],[2,0,1,81600],[1,1,0,81630],[3,1,1,81780],[2,1,1,81900],[1,0,0,81930],[3,0,1,82020],[2,0,1,82230],[1,1,0,82320],[3,1,1,82380],[2,1,1,82620],[3,0,1,82620],[1,0,0,82710],[3,1,1,82980],[1,1,0,83130],[3,0,1,83220],[2,1,1,83280],[1,0,0,83310],[3,1,1,83580],[1,1,0,83730],[3,0,1,83940],[3,1,1,84150],[1,0,0,84210],[1,1,0,84510],[3,0,1,84660],[3,1,1,84900],[1,0,0,84990],[1,1,0,85230],[3,0,1,85260],[3,1,1,85590],[1,0,0,85710],[1,1,0,85950],[3,0,1,85980],[3,1,1,86310]],"Sunday":[[3,0,1,300],[3,1,1,300],[1,0,0,420],[1,1,0,450],[1,1,0,900],[3,1,1,1140],[3,0,1,1260],[1,0,0,1380],[1,1,0,1680],[3,1,1,2100],[1,0,0,2160],[1,1,0,2310],[3,0,1,2460],[1,0,0,2880],[3,1,1,3000],[1,1,0,3120],[3,0,1,3660],[1,0,0,3780],[3,1,1,4020],[1,1,0,4320],[3,0,1,4860],[1,0,0,4980],[3,1,1,5220],[1,1,0,5520],[3,0,1,6060],[1,0,0,6180],[3,1,1,6420],[1,1,0,6720],[3,0,1,7260],[1,0,0,7380],[3,1,1,7620],[1,1,0,7920],[3,0,1,8460],[1,0,0,8580],[3,1,1,8820],[1,1,0,9120],[3,0,1,9660],[1,0,0,9780],[3,1,1,10020],[1,1,0,10320],[3,0,1,10860],[1,0,0,10980],[3,1,1,11220],[1,1,0,11520],[3,0,1,12060],[1,0,0,12180],[3,1,1,12420],[1,1,0,12720],[3,0,1,13260],[1,0,0,13380],[3,1,1,13620],[1,1,0,13920],[3,0,1,14460],[1,0,0,14580],[3,1,1,14820],[1,1,0,15120],[3,0,1,15660],[1,0,0,15780],[3,1,1,16020],[1,1,0,16320],[3,0,1,16860],[1,0,0,16980],[3,1,1,17220],[1,1,0,17520],[3,0,1,18060],[1,0,0,18180],[3,1,1,18420],[1,1,0,18720],[3,0,1,19260],[1,0,0,19380],[3,1,1,19620],[1,1,0,19920],[3,0,1,20460],[1,0,0,20580],[3,1,1,20820],[1,1,0,21120],[2,0,1,21480],[2,1,1,21660],[3,0,1,21660],[1,0,0,21750],[2,0,1,21840],[3,1,1,22020],[1,1,0,22320],[2,1,1,22440],[1,0,0,22620],[2,0,1,22740],[3,0,1,22860],[3,1,1,23040],[2,1,1,23340],[1,1,0,23520],[1,0,0,23700],[2,0,1,23820],[3,1,1,23880],[3,0,1,23940],[2,1,1,24210],[2,0,1,24630],[3,0,1,24750],[3,1,1,24840],[1,1,0,24960],[2,1,1,24960],[1,0,0,25050],[1,1,0,25440],[3,0,1,25470],[2,0,1,25590],[2,1,1,25650],[3,1,1,25740],[1,0,0,25860],[2,0,1,26130],[1,1,0,26160],[3,0,1,26220],[2,1,1,26400],[1,0,0,26490],[3,1,1,26640],[2,0,1,26850],[1,1,0,26880],[3,0,1,26970],[2,1,1,27120],[1,0,0,27210],[3,1,1,27420],[1,1,0,27600],[2,0,1,27600],[3,0,1,27720],[2,1,1,27840],[1,0,0,27930],[3,1,1,28140],[2,0,1,28290],[1,1,0,28320],[3,0,1,28410],[2,1,1,28560],[1,0,0,28650],[3,1,1,28860],[2,0,1,29010],[1,1,0,29040],[3,0,1,29130],[2,1,1,29280],[1,0,0,29370],[3,1,1,29700],[2,0,1,29730],[1,1,0,29820],[3,0,1,29850],[2,1,1,30000],[1,0,0,30090],[3,1,1,30360],[3,0,1,30450],[1,1,0,30510],[2,0,1,30600],[2,1,1,30720],[1,0,0,30870],[3,0,1,31050],[3,1,1,31140],[1,1,0,31260],[2,0,1,31260],[2,1,1,31470],[1,0,0,31530],[3,0,1,31650],[3,1,1,31770],[1,1,0,31950],[2,0,1,32040],[2,1,1,32190],[3,0,1,32250],[1,0,0,32370],[3,1,1,32490],[1,1,0,32670],[2,0,1,32730],[3,0,1,32850],[2,1,1,32910],[1,0,0,33000],[3,1,1,33090],[1,1,0,33390],[3,0,1,33450],[1,0,0,33540],[2,0,1,33630],[2,1,1,33630],[3,1,1,33810],[3,0,1,34050],[1,1,0,34110],[2,0,1,34170],[3,1,1,34380],[1,0,0,34440],[2,1,1,34500],[3,0,1,34650],[1,1,0,34800],[2,0,1,34860],[3,1,1,34890],[2,1,1,35100],[1,0,0,35130],[3,0,1,35250],[3,1,1,35490],[1,1,0,35610],[2,0,1,35610],[2,1,1,35820],[3,0,1,35850],[1,0,0,35970],[3,1,1,36090],[1,1,0,36270],[2,0,1,36330],[3,0,1,36450],[2,1,1,36540],[1,0,0,36570],[3,1,1,36690],[2,0,1,36930],[1,1,0,36990],[3,0,1,37050],[2,1,1,37200],[1,0,0,37290],[3,1,1,37290],[3,0,1,37620],[1,1,0,37710],[2,0,1,37770],[3,1,1,37830],[2,1,1,37980],[1,0,0,38040],[3,0,1,38220],[1,1,0,38430],[2,0,1,38490],[3,1,1,38550],[2,1,1,38700],[3,0,1,38760],[1,0,0,38880],[3,1,1,39120],[2,0,1,39150],[1,1,0,39240],[3,0,1,39240],[2,1,1,39420],[1,0,0,39450],[3,1,1,39720],[3,0,1,39840],[1,1,0,39870],[2,0,1,39960],[2,1,1,40140],[3,0,1,40200],[3,1,1,40260],[1,0,0,40320],[1,1,0,40530],[2,0,1,40560],[3,0,1,40680],[2,1,1,40860],[1,0,0,40890],[3,1,1,40980],[3,0,1,41160],[1,1,0,41310],[2,0,1,41340],[3,1,1,41520],[2,1,1,41640],[3,0,1,41640],[1,0,0,41760],[2,0,1,42060],[3,1,1,42060],[1,1,0,42090],[3,0,1,42240],[2,1,1,42300],[1,0,0,42360],[3,1,1,42540],[3,0,1,42600],[1,1,0,42750],[2,0,1,42780],[3,1,1,43020],[3,0,1,43080],[2,1,1,43140],[1,0,0,43200],[2,0,1,43440],[1,1,0,43470],[3,0,1,43560],[3,1,1,43620],[2,1,1,43740],[1,0,0,43770],[3,1,1,43980],[3,0,1,44040],[1,1,0,44130],[2,0,1,44220],[3,1,1,44460],[1,0,0,44490],[2,1,1,44580],[3,0,1,44640],[2,0,1,44880],[3,1,1,44940],[1,1,0,44970],[3,0,1,45000],[2,1,1,45180],[1,0,0,45210],[3,1,1,45420],[3,0,1,45480],[1,1,0,45630],[2,0,1,45660],[1,0,0,45840],[2,1,1,45900],[3,0,1,45960],[3,1,1,46020],[2,0,1,46320],[3,1,1,46380],[3,0,1,46440],[1,1,0,46470],[2,1,1,46620],[1,0,0,46650],[3,1,1,46860],[3,0,1,47040],[1,1,0,47070],[2,0,1,47130],[3,1,1,47340],[3,0,1,47400],[2,1,1,47460],[1,0,0,47520],[1,1,0,47670],[2,0,1,47700],[3,1,1,47820],[3,0,1,47880],[2,1,1,48060],[1,0,0,48090],[3,0,1,48360],[3,1,1,48420],[1,1,0,48510],[2,0,1,48540],[3,1,1,48780],[3,0,1,48840],[2,1,1,48900],[1,0,0,48930],[2,0,1,49260],[3,1,1,49260],[1,1,0,49290],[3,0,1,49440],[2,1,1,49500],[1,0,0,49530],[3,1,1,49740],[3,0,1,49800],[1,1,0,49950],[2,0,1,49980],[3,1,1,50220],[3,0,1,50280],[2,1,1,50340],[1,0,0,50370],[2,0,1,50640],[1,1,0,50670],[3,0,1,50760],[3,1,1,50820],[2,1,1,50940],[1,0,0,50970],[3,1,1,51180],[3,0,1,51240],[1,1,0,51330],[2,0,1,51420],[3,1,1,51660],[1,0,0,51690],[2,1,1,51780],[3,0,1,51840],[2,0,1,52080],[3,1,1,52140],[1,1,0,52200],[3,0,1,52200],[2,1,1,52380],[1,0,0,52410],[3,1,1,52620],[3,0,1,52680],[1,1,0,52830],[2,0,1,52860],[2,1,1,53100],[3,0,1,53160],[3,1,1,53220],[1,0,0,53250],[2,0,1,53520],[3,1,1,53580],[3,0,1,53640],[1,1,0,53670],[2,1,1,53820],[1,0,0,53850],[3,1,1,54060],[3,0,1,54240],[1,1,0,54270],[2,0,1,54330],[3,1,1,54540],[3,0,1,54600],[2,1,1,54660],[1,0,0,54690],[1,1,0,54930],[2,0,1,54960],[3,1,1,55020],[3,0,1,55080],[2,1,1,55260],[1,0,0,55290],[3,0,1,55560],[3,1,1,55620],[1,1,0,55710],[2,0,1,55740],[3,1,1,55980],[3,0,1,56040],[2,1,1,56100],[1,0,0,56130],[2,0,1,56460],[3,1,1,56460],[1,1,0,56490],[3,0,1,56640],[2,1,1,56700],[1,0,0,56760],[3,1,1,56940],[3,0,1,57000],[1,1,0,57150],[2,0,1,57180],[3,1,1,57420],[3,0,1,57480],[2,1,1,57540],[1,0,0,57570],[2,0,1,57840],[1,1,0,57870],[3,0,1,57960],[3,1,1,58020],[2,1,1,58140],[1,0,0,58170],[3,1,1,58380],[3,0,1,58440],[1,1,0,58530],[2,0,1,58620],[3,1,1,58860],[1,0,0,58890],[2,1,1,58980],[3,0,1,59040],[2,0,1,59280],[3,1,1,59340],[1,1,0,59400],[3,0,1,59400],[2,1,1,59580],[1,0,0,59610],[3,1,1,59820],[3,0,1,59880],[1,1,0,60030],[2,0,1,60060],[2,1,1,60300],[3,0,1,60360],[3,1,1,60420],[1,0,0,60450],[2,0,1,60720],[3,1,1,60780],[3,0,1,60840],[1,1,0,60870],[2,1,1,61020],[1,0,0,61050],[3,1,1,61260],[3,0,1,61440],[1,1,0,61470],[2,0,1,61530],[3,1,1,61740],[3,0,1,61800],[2,1,1,61860],[1,0,0,61890],[1,1,0,62130],[2,0,1,62160],[3,1,1,62220],[3,0,1,62280],[2,1,1,62460],[1,0,0,62490],[3,0,1,62760],[3,1,1,62820],[1,1,0,62910],[2,0,1,62940],[3,1,1,63180],[3,0,1,63240],[2,1,1,63300],[1,0,0,63330],[2,0,1,63660],[3,1,1,63660],[1,1,0,63690],[3,0,1,63840],[2,1,1,63900],[1,0,0,63960],[3,1,1,64140],[3,0,1,64200],[1,1,0,64350],[2,0,1,64380],[3,1,1,64620],[3,0,1,64680],[2,1,1,64740],[1,0,0,64770],[2,0,1,65040],[1,1,0,65070],[3,0,1,65160],[3,1,1,65220],[2,1,1,65340],[1,0,0,65370],[3,1,1,65580],[3,0,1,65640],[1,1,0,65730],[2,0,1,65820],[3,1,1,66060],[1,0,0,66090],[2,1,1,66180],[3,0,1,66240],[2,0,1,66420],[3,0,1,66540],[3,1,1,66540],[1,1,0,66600],[2,1,1,66780],[1,0,0,66840],[3,0,1,67020],[3,1,1,67020],[1,1,0,67230],[2,0,1,67260],[2,1,1,67500],[3,0,1,67500],[1,0,0,67620],[3,1,1,67680],[2,0,1,67920],[3,1,1,67980],[3,0,1,68040],[1,1,0,68070],[2,1,1,68190],[1,0,0,68250],[3,0,1,68400],[3,1,1,68460],[1,1,0,68670],[2,0,1,68700],[3,0,1,68940],[3,1,1,68940],[2,1,1,69030],[1,0,0,69120],[2,0,1,69300],[3,0,1,69420],[3,1,1,69420],[1,1,0,69510],[2,1,1,69630],[1,0,0,69690],[3,1,1,69900],[3,0,1,70020],[1,1,0,70110],[2,0,1,70140],[2,1,1,70350],[1,0,0,70410],[3,1,1,70500],[3,0,1,70620],[2,0,1,70860],[3,1,1,70860],[1,1,0,70950],[2,1,1,71070],[1,0,0,71130],[3,0,1,71220],[3,1,1,71340],[1,1,0,71550],[2,0,1,71580],[2,1,1,71790],[3,0,1,71820],[1,0,0,71940],[3,1,1,71940],[1,1,0,72270],[2,0,1,72300],[3,0,1,72420],[3,1,1,72420],[2,1,1,72540],[1,0,0,72570],[2,0,1,72900],[1,1,0,72960],[3,0,1,73020],[3,1,1,73020],[2,1,1,73230],[1,0,0,73290],[3,0,1,73620],[3,1,1,73620],[1,1,0,73710],[2,0,1,73740],[2,1,1,73950],[1,0,0,74010],[3,0,1,74220],[3,1,1,74220],[1,1,0,74430],[2,0,1,74460],[2,1,1,74670],[1,0,0,74730],[3,0,1,74820],[3,1,1,74850],[1,1,0,75150],[2,0,1,75180],[2,1,1,75420],[3,0,1,75420],[1,0,0,75540],[3,1,1,75540],[1,1,0,75870],[2,0,1,75900],[3,0,1,76020],[3,1,1,76020],[1,0,0,76170],[2,1,1,76170],[1,1,0,76560],[2,0,1,76620],[3,1,1,76620],[3,0,1,76740],[1,0,0,76890],[2,1,1,76890],[3,1,1,77220],[1,1,0,77310],[2,0,1,77340],[3,0,1,77460],[1,0,0,77610],[2,1,1,77610],[3,1,1,77820],[1,1,0,78030],[2,0,1,78060],[3,0,1,78180],[2,1,1,78300],[1,0,0,78330],[3,1,1,78540],[1,1,0,78750],[2,0,1,78780],[3,0,1,78900],[2,1,1,79020],[1,0,0,79050],[3,1,1,79140],[2,0,1,79410],[1,1,0,79470],[3,0,1,79620],[3,1,1,79710],[1,0,0,79740],[2,1,1,79830],[2,0,1,80160],[1,1,0,80190],[3,0,1,80340],[3,1,1,80430],[1,0,0,80460],[2,1,1,80550],[1,1,0,80940],[2,0,1,80940],[1,0,0,80970],[3,0,1,81060],[3,1,1,81150],[2,1,1,81270],[1,0,0,81540],[1,1,0,81660],[2,0,1,81660],[3,0,1,81780],[3,1,1,81870],[2,1,1,81990],[2,0,1,82230],[1,0,0,82320],[1,1,0,82350],[3,0,1,82500],[3,1,1,82590],[2,1,1,82710],[1,0,0,82920],[1,1,0,83040],[2,1,1,83280],[3,0,1,83400],[3,1,1,83400],[1,0,0,83640],[1,1,0,83760],[3,1,1,84030],[3,0,1,84300],[1,1,0,84480],[1,0,0,84510],[3,1,1,84900],[1,1,0,85200],[3,0,1,85200],[1,0,0,85320],[3,1,1,85800],[3,0,1,85860],[1,1,0,85950],[1,0,0,86010]]}};/*DATA*/
+
+const PERIODS = [
+  { key: "day",     name: "Daytime", from: 7,  to: 19, hours: 12, band: "--cp-band-day" },
+  { key: "evening", name: "Evening", from: 19, to: 23, hours: 4,  band: "--cp-band-eve" },
+  { key: "night",   name: "Night",   from: 23, to: 7,  hours: 8,  band: "--cp-band-night" }
+];
+const ROUTE_VAR = { B: "--cp-route-b", D: "--cp-route-d", N: "--cp-route-n", Q: "--cp-route-q" };
+
+const state = { svc: "Weekday", dir: "both", model: "poisson", win: 6 };
+
+const cssv = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const periodOf = (h) => (h >= 7 && h < 19) ? "day" : (h >= 19 && h < 23) ? "evening" : "night";
+const hhmm = (s) => String(Math.floor(s / 3600) % 24).padStart(2, "0") + ":" + String(Math.floor(s / 60) % 60).padStart(2, "0");
+
+function events() {
+  const all = DATA.events[state.svc] || [];
+  if (state.dir === "both") return all;
+  const want = state.dir === "north" ? 0 : 1;
+  return all.filter(e => e[1] === want);
+}
+
+/* ---- overlap models ------------------------------------------------------
+   Given N trains in an hour and a coincidence window w, how many DISTINCT
+   audible events result?
+     regular  - perfectly even spacing. Merging only if headway <= w.
+     poisson  - maximal disorder. Expected clusters = N * exp(-lambda*w).
+     schedule - literally cluster the times in the feed. Included only to
+                show that 30-second quantisation makes it meaningless.
+--------------------------------------------------------------------------- */
+function distinctEvents(times, n, w) {
+  if (n === 0) return 0;
+  if (state.model === "regular") {
+    const headway = 3600 / n;
+    return headway <= w ? 1 : n;
+  }
+  if (state.model === "poisson") {
+    return n * Math.exp(-(n / 3600) * w);
+  }
+  const t = times.slice().sort((a, b) => a - b);
+  let c = 1;
+  for (let i = 1; i < t.length; i++) if (t[i] - t[i - 1] > w) c++;
+  return c;
+}
+
+function hourly() {
+  const ev = events();
+  const bars = Array.from({ length: 24 }, () => ({ B: 0, D: 0, N: 0, Q: 0, total: 0, times: [] }));
+  for (const [ri, , , s] of ev) {
+    const h = Math.floor(s / 3600) % 24;
+    bars[h][DATA.routes[ri]]++;
+    bars[h].total++;
+    bars[h].times.push(s);
+  }
+  for (let h = 0; h < 24; h++) bars[h].events = distinctEvents(bars[h].times, bars[h].total, state.win);
+  return bars;
+}
+
+function periodStats() {
+  const ev = events();
+  const out = {};
+  for (const p of PERIODS) out[p.key] = { trains: 0, times: [], north: 0, south: 0 };
+  for (const [, di, , s] of ev) {
+    const k = periodOf(Math.floor(s / 3600) % 24);
+    out[k].trains++;
+    out[k].times.push(s);
+    out[k][di === 0 ? "north" : "south"]++;
+  }
+  for (const p of PERIODS) {
+    const o = out[p.key];
+    o.rate = o.trains / p.hours;
+    o.headway = o.rate > 0 ? 3600 / o.rate : 0;
+    o.eventsHr = distinctEvents(o.times, o.rate, state.win);
+    o.regular = (3600 / o.rate <= state.win) ? 1 : o.rate;
+    o.poisson = o.rate * Math.exp(-(o.rate / 3600) * state.win);
+  }
+  return out;
+}
+
+/* ---- rendering ---------------------------------------------------------- */
+function renderCards() {
+  const ps = periodStats();
+  const bars = hourly();
+  document.getElementById("pcards").innerHTML = PERIODS.map(p => {
+    const o = ps[p.key];
+    const lo = Math.min(o.poisson, o.regular), hi = Math.max(o.poisson, o.regular);
+    const merged = o.rate > 0 ? (1 - lo / o.rate) * 100 : 0;
+    const hrs = [];
+    for (let h = 0; h < 24; h++) if (periodOf(h) === p.key) hrs.push(bars[h].total);
+    return `<div class="pcard">
+      <div class="ph"><span class="pname">${p.name}</span>
+        <span class="pspan">${String(p.from).padStart(2,"0")}:00&ndash;${String(p.to).padStart(2,"0")}:00 &middot; ${p.hours}h</span></div>
+      <div class="big">${o.rate.toFixed(1)} <span class="bigu">trains/hr, mean</span></div>
+      <dl>
+        <dt>Hourly range</dt><dd>${Math.min(...hrs)}&ndash;${Math.max(...hrs)}</dd>
+        <dt>Acoustic events/hr</dt><dd>${lo.toFixed(1)}&ndash;${hi.toFixed(1)}</dd>
+        <dt>Merging, at most</dt><dd>${merged.toFixed(1)}%</dd>
+        <dt>Mean headway</dt><dd>${o.headway.toFixed(0)} s</dd>
+        <dt>Trains in period</dt><dd>${o.trains}</dd>
+        <dt>North / south</dt><dd>${o.north} / ${o.south}</dd>
+      </dl></div>`;
+  }).join("");
+}
+
+function renderChart() {
+  const bars = hourly();
+  const W = 1120, H = 380, ml = 44, mr = 14, mt = 16, mb = 34;
+  const pw = W - ml - mr, ph = H - mt - mb;
+  const max = Math.max(10, ...bars.map(b => b.total)) * 1.12;
+  const y = v => mt + ph - (v / max) * ph;
+  const bw = pw / 24;
+  let s = "";
+
+  for (const p of PERIODS) {
+    const segs = p.key === "night" ? [[0, 7], [23, 24]] : [[p.from, p.to]];
+    for (const [a, b] of segs)
+      s += `<rect x="${ml + a * bw}" y="${mt}" width="${(b - a) * bw}" height="${ph}" fill="${cssv(p.band)}"/>`;
+    const [la, lb] = segs[0];
+    s += `<text class="axis-t" x="${ml + ((la + lb) / 2) * bw}" y="${mt + 12}" text-anchor="middle">${p.name}</text>`;
+  }
+
+  const step = max > 60 ? 20 : 10;
+  for (let v = 0; v <= max; v += step) {
+    s += `<line class="gl" x1="${ml}" y1="${y(v)}" x2="${W - mr}" y2="${y(v)}"/>`;
+    s += `<text class="axis" x="${ml - 7}" y="${y(v) + 3.5}" text-anchor="end">${v}</text>`;
+  }
+
+  bars.forEach((b, h) => {
+    let acc = 0;
+    for (const r of DATA.routes) {
+      const v = b[r];
+      if (!v) continue;
+      const yt = y(acc + v), yb = y(acc);
+      s += `<rect x="${ml + h * bw + bw * 0.16}" y="${yt}" width="${bw * 0.68}" height="${Math.max(0, yb - yt)}"
+             fill="${cssv(ROUTE_VAR[r])}"><title>${String(h).padStart(2,"0")}:00 &mdash; ${r} ${v} trains (hour total ${b.total})</title></rect>`;
+      acc += v;
+    }
+    if (h % 2 === 0)
+      s += `<text class="axis" x="${ml + h * bw + bw / 2}" y="${H - mb + 15}" text-anchor="middle">${String(h).padStart(2,"0")}</text>`;
+  });
+
+  const pts = bars.map((b, h) => `${ml + h * bw + bw / 2},${y(b.events)}`).join(" ");
+  s += `<polyline points="${pts}" fill="none" stroke="${cssv("--cp-accent")}" stroke-width="2.2"
+         stroke-linejoin="round" stroke-dasharray="1 0"/>`;
+  bars.forEach((b, h) => {
+    s += `<circle cx="${ml + h * bw + bw / 2}" cy="${y(b.events)}" r="2.6" fill="${cssv("--cp-accent")}">
+           <title>${String(h).padStart(2,"0")}:00 &mdash; ${b.events.toFixed(1)} distinct acoustic events from ${b.total} trains</title></circle>`;
+  });
+  s += `<text class="axis" x="${ml - 7}" y="${mt + 4}" text-anchor="end">trains</text>`;
+  document.getElementById("chart").innerHTML = s;
+
+  document.getElementById("chartLegend").innerHTML =
+    DATA.routes.map(r => `<span><i class="sw" style="background:${cssv(ROUTE_VAR[r])}"></i>${r} train</span>`).join("") +
+    `<span><i class="sw" style="background:${cssv("--cp-accent")}"></i>distinct acoustic events (${state.model})</span>`;
+}
+
+function renderGap() {
+  const all = (DATA.events[state.svc] || []).map(e => e[3]).sort((a, b) => a - b);
+  const gaps = [];
+  for (let i = 1; i < all.length; i++) gaps.push(all[i] - all[i - 1]);
+  const bins = new Map();
+  for (const g of gaps) { const b = Math.min(g, 300); bins.set(b, (bins.get(b) || 0) + 1); }
+  const keys = [...bins.keys()].sort((a, b) => a - b).slice(0, 11);
+  const max = Math.max(...keys.map(k => bins.get(k)));
+  const W = 1120, H = 190, ml = 44, mr = 14, mt = 14, mb = 40;
+  const pw = W - ml - mr, ph = H - mt - mb, bw = pw / keys.length;
+  let s = "";
+  s += `<rect x="${ml}" y="${mt}" width="${bw}" height="${ph}" fill="${cssv("--cp-highlight")}"/>`;
+  s += `<text class="axis-t" x="${ml + bw / 2}" y="${mt + 12}" text-anchor="middle">simultaneous</text>`;
+  keys.forEach((k, i) => {
+    const v = bins.get(k), h = (v / max) * (ph - 22);
+    s += `<rect x="${ml + i * bw + bw * 0.18}" y="${mt + ph - h}" width="${bw * 0.64}" height="${h}"
+           fill="${cssv(k === 0 ? "--cp-accent" : "--cp-border-strong")}"><title>${k} s gap: ${v} pairs</title></rect>`;
+    s += `<text class="axis" x="${ml + i * bw + bw / 2}" y="${mt + ph - h - 5}" text-anchor="middle">${v}</text>`;
+    s += `<text class="axis" x="${ml + i * bw + bw / 2}" y="${H - mb + 16}" text-anchor="middle">${k}s</text>`;
+  });
+  s += `<text class="axis" x="${W / 2}" y="${H - 6}" text-anchor="middle">gap between consecutive crossings, as written in the feed</text>`;
+  document.getElementById("gapChart").innerHTML = s;
+
+  const wk = (DATA.events.Weekday || []).length;
+  document.getElementById("qN").textContent = wk.toLocaleString();
+}
+
+function renderTables() {
+  const ps = periodStats();
+
+  document.getElementById("dirTable").innerHTML =
+    `<tr><th>Period</th><th class="n">North</th><th class="n">South</th><th class="n">Total</th><th class="n">Per hour</th></tr>` +
+    PERIODS.map(p => { const o = ps[p.key];
+      return `<tr><td>${p.name}</td><td class="n">${o.north}</td><td class="n">${o.south}</td>
+              <td class="n">${o.trains}</td><td class="n">${o.rate.toFixed(1)}</td></tr>`; }).join("");
+
+  const ev = events(), rc = {};
+  for (const r of DATA.routes) rc[r] = 0;
+  for (const [ri] of ev) rc[DATA.routes[ri]]++;
+  const tot = ev.length || 1;
+  document.getElementById("routeTable").innerHTML =
+    `<tr><th>Route</th><th class="n">Trains</th><th class="n">Share</th></tr>` +
+    DATA.routes.map(r => `<tr><td><i class="sw" style="background:${cssv(ROUTE_VAR[r])};margin-right:7px"></i>${r}</td>
+      <td class="n">${rc[r]}</td><td class="n">${(100 * rc[r] / tot).toFixed(1)}%</td></tr>`).join("") +
+    `<tr><td><strong>Total</strong></td><td class="n"><strong>${ev.length}</strong></td><td class="n">&mdash;</td></tr>`;
+
+  const saved = state.model;
+  const rows = PERIODS.map(p => {
+    const o = ps[p.key], out = {};
+    for (const m of ["regular", "poisson", "schedule"]) {
+      state.model = m;
+      out[m] = m === "schedule"
+        ? distinctEvents(o.times, o.rate, state.win) / p.hours
+        : distinctEvents(o.times, o.rate, state.win);
+    }
+    return `<tr><td>${p.name}</td><td class="n">${o.rate.toFixed(1)}</td>
+      <td class="n">${out.regular.toFixed(1)}</td><td class="n">${out.poisson.toFixed(1)}</td>
+      <td class="n">${out.schedule.toFixed(1)}</td></tr>`;
+  }).join("");
+  state.model = saved;
+  document.getElementById("modelTable").innerHTML =
+    `<tr><th>Period</th><th class="n">Trains/hr</th><th class="n">Regular<br><span style="font-weight:400;text-transform:none">most events</span></th>
+     <th class="n">Poisson<br><span style="font-weight:400;text-transform:none">fewest events</span></th>
+     <th class="n">Schedule<br><span style="font-weight:400;text-transform:none">meaningless</span></th></tr>` + rows;
+
+  const wk = DATA.events.Weekday || [];
+  const hrs = Array.from({ length: 24 }, () => 0);
+  for (const [, , , s] of wk) hrs[Math.floor(s / 3600) % 24]++;
+  const peak = hrs.indexOf(Math.max(...hrs));
+  document.getElementById("peakTxt").textContent =
+    `${Math.max(...hrs)} crossings between ${String(peak).padStart(2,"0")}:00 and ${String(peak+1).padStart(2,"0")}:00, a ${(3600/Math.max(...hrs)).toFixed(0)}-second headway`;
+
+  const pm = [
+    ["Residents", "Present at every hour", "Exposure tracks traversals directly. Weekday is worst, and the daytime period alone carries " + (() => {
+        let d = 0; for (const [, , , s] of wk) if (periodOf(Math.floor(s/3600)%24) === "day") d++;
+        return Math.round(100 * d / wk.length) + "% of the weekday total";
+      })() + ".", "in phase"],
+    ["Commuters and workers", "Weekday morning and evening peaks", "Peak pedestrian flow through the corridor coincides with the 24-hour maximum train rate. <strong>Fully in phase.</strong>", "in phase"],
+    ["Park visitors and tourists", "Weekend afternoons", "The one population for which the original finding holds &mdash; heaviest attendance against the lowest daytime train rate.", "out of phase"]
+  ];
+  document.getElementById("phaseTable").innerHTML =
+    `<tr><th>Population</th><th>Peak presence</th><th>Relationship to train rate</th><th>Phase</th></tr>` +
+    pm.map(([a, b, c, d]) => `<tr><td><strong>${a}</strong></td><td>${b}</td><td>${c}</td>
+      <td><span class="tag ${d === "in phase" ? "u" : "n"}">${d}</span></td></tr>`).join("");
+}
+
+function renderAll() { renderCards(); renderChart(); renderGap(); renderTables(); }
+
+function seg(id, opts, key, after) {
+  const el = document.getElementById(id);
+  el.innerHTML = opts.map(o => `<button data-v="${o.v}" aria-pressed="${state[key] === o.v}">${o.l}</button>`).join("");
+  el.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    state[key] = b.dataset.v;
+    el.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === state[key])));
+    (after || renderAll)();
+  }));
+}
+
+document.getElementById("feedver").textContent = DATA.feed_version || "(unknown)";
+seg("svcSeg", [{ v: "Weekday", l: "Weekday" }, { v: "Saturday", l: "Saturday" }, { v: "Sunday", l: "Sunday" }], "svc");
+seg("dirSeg", [{ v: "both", l: "Both" }, { v: "north", l: "Northbound" }, { v: "south", l: "Southbound" }], "dir");
+seg("modSeg", [{ v: "regular", l: "Regular" }, { v: "poisson", l: "Poisson" }, { v: "schedule", l: "Schedule" }], "model");
+const wr = document.getElementById("winR");
+wr.addEventListener("input", () => {
+  state.win = +wr.value;
+  document.getElementById("winV").textContent = state.win + " s";
+  renderAll();
+});
+document.getElementById("winV").textContent = state.win + " s";
+renderAll();
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
+</script>
+</body>
+</html>

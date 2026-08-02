@@ -20,3 +20,8 @@ sources/cache/
 data-collection/*.csv
 __pycache__/
 *.pyc
+
+# Local test tooling (Playwright, used to verify the HTML artifacts)
+node_modules/
+package.json
+package-lock.json
