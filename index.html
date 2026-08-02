@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Silencing the Span &mdash; Manhattan Bridge rail noise in DUMBO</title>
+<meta name="description" content="An open research programme on rail noise from the NYC Subway crossing the Manhattan Bridge into DUMBO, Brooklyn. Seven documents, five interactive artifacts, five runnable scripts.">
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--cp-bg); color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px; line-height: 1.62;
+}
+.page { max-width: 1120px; margin: 0 auto; padding: 34px 22px 80px; }
+code, .mono { font-family: Consolas, "Courier New", Courier, monospace; font-size: 0.9em; }
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+header.top { padding: 26px 0 8px; }
+h1 { font-size: 40px; line-height: 1.15; margin: 0 0 6px; letter-spacing: -0.02em; }
+.tagline { font-size: 19px; color: var(--cp-text-muted); margin: 0 0 18px; max-width: 70ch; }
+.lede { font-size: 17px; max-width: 74ch; }
+h2 { font-size: 25px; margin: 0 0 14px; letter-spacing: -0.01em; }
+h3 { font-size: 17px; margin: 22px 0 8px; }
+.card {
+  background: var(--cp-surface); border: 1px solid var(--cp-border);
+  border-radius: 16px; padding: 24px 26px; margin: 20px 0;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.card > :last-child { margin-bottom: 0; }
+.badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 22px; }
+.badge {
+  font-size: 12.5px; font-weight: 650; padding: 4px 11px; border-radius: 999px;
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+}
+.badge.hot { background: var(--cp-accent-soft); border-color: var(--cp-accent); color: var(--cp-accent); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(285px, 1fr)); gap: 16px; }
+.tile {
+  display: block; border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 16px 18px; background: var(--cp-surface-soft); color: inherit;
+  transition: border-color 0.12s, background 0.12s;
+}
+.tile:hover { border-color: var(--cp-accent); background: var(--cp-accent-soft); text-decoration: none; }
+.tile .t { font-weight: 700; font-size: 16px; color: var(--cp-accent); margin-bottom: 5px; }
+.tile .d { font-size: 14px; color: var(--cp-text-muted); line-height: 1.5; }
+.tile .look { font-size: 13px; color: var(--cp-text-soft); margin-top: 9px;
+  border-top: 1px solid var(--cp-border); padding-top: 8px; }
+.tile .look b { color: var(--cp-text); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 12px 0; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--cp-border); vertical-align: top; }
+th { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--cp-text-muted); font-weight: 650; }
+.note {
+  border-left: 3px solid var(--cp-border-strong); padding: 12px 16px; margin: 16px 0;
+  background: var(--cp-surface-soft); border-radius: 0 0.625rem 0.625rem 0; font-size: 15px;
+}
+.note.bad { border-left-color: var(--cp-danger); }
+.note.warn { border-left-color: var(--cp-warning); }
+.note.good { border-left-color: var(--cp-success); }
+.note > :last-child { margin-bottom: 0; }
+.tag {
+  display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 7px;
+  border-radius: 999px; vertical-align: 1.5px; margin-left: 3px; white-space: nowrap;
+}
+.tag.v { background: rgba(22,163,74,0.16); color: var(--cp-success); }
+.tag.d { background: rgba(245,158,11,0.18); color: var(--cp-warning); }
+.tag.u { background: rgba(220,38,38,0.14); color: var(--cp-danger); }
+nav.toc { font-size: 14.5px; }
+nav.toc a { display: inline-block; margin-right: 16px; padding: 3px 0; }
+.foot { font-size: 13.5px; color: var(--cp-text-soft); border-top: 1px solid var(--cp-border);
+  padding-top: 16px; margin-top: 30px; }
+ol li, ul li { margin-bottom: 7px; }
+.big { font-size: 34px; font-weight: 700; line-height: 1.1; color: var(--cp-accent);
+  font-variant-numeric: tabular-nums; }
+.statrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+.statrow .s { border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 13px 15px; background: var(--cp-surface-soft); }
+.statrow .s .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--cp-text-muted); font-weight: 650; }
+@media (max-width: 640px) { h1 { font-size: 30px; } .page { padding: 20px 14px 60px; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="top">
+  <h1>Silencing the Span</h1>
+  <p class="tagline">
+    An open research programme on the noise made by B, D, N and Q trains crossing the
+    Manhattan Bridge into DUMBO, Brooklyn &mdash; and on what would have to be true before anyone
+    could responsibly propose a fix.
+  </p>
+  <div class="badges">
+    <span class="badge hot">7 documents</span>
+    <span class="badge hot">5 interactive artifacts</span>
+    <span class="badge hot">5 runnable scripts</span>
+    <span class="badge">32 methods specified</span>
+    <span class="badge">2 executed, 1 partially</span>
+    <span class="badge">51 open questions</span>
+    <span class="badge">3 published claims withdrawn</span>
+  </div>
+  <nav class="toc">
+    <a href="#start">Where to start</a>
+    <a href="#artifacts">Interactive artifacts</a>
+    <a href="#findings">What has been found</a>
+    <a href="#documents">Documents</a>
+    <a href="#data">Data and code</a>
+    <a href="#discipline">How to read this</a>
+    <a href="#gaps">What is missing</a>
+    <a href="#help">How to help</a>
+  </nav>
+</header>
+
+<div class="card">
+  <h2>The problem, in four numbers</h2>
+  <div class="statrow">
+    <div class="s"><div class="k">MTA-measured peak, Brooklyn Bridge Park</div><div class="big">98.9</div>dB(A) average maximum</div>
+    <div class="s"><div class="k">Weekday crossings, busiest hour</div><div class="big">67</div>a train every 54 seconds</div>
+    <div class="s"><div class="k">People living in the affected corridor</div><div class="big">15.8k</div>to 21.4k, from tax lots</div>
+    <div class="s"><div class="k">Rail noise complaints NYC 311 can accept</div><div class="big">0</div>there is no category</div>
+  </div>
+  <p style="margin-top:18px">
+    The first two are the MTA's own figures and are the most reliable numbers here. The third is
+    derived from public tax-lot data. <strong>The fourth is the finding this programme did not expect
+    to make.</strong>
+  </p>
+</div>
+
+<div class="card" id="start">
+  <h2>Where to start</h2>
+  <p class="lede">
+    Three different readers want three different things.
+  </p>
+  <div class="tiles">
+    <a class="tile" href="visual-review/acoustic-demo.html">
+      <div class="t">I want to hear it &rarr;</div>
+      <div class="d">The acoustic demonstration. A train approaching, passing and departing at the
+      correct decibel difference against each receptor's measured background &mdash; then running
+      continuously at the real headway.</div>
+      <div class="look">Start with <b>Brooklyn Bridge Park dog run</b>, one pass-by, then switch to
+      continuous at 20&times; speed.</div>
+    </a>
+    <a class="tile" href="README.md">
+      <div class="t">I want the argument &rarr;</div>
+      <div class="d">The repository README. Headline findings, the full document index, the method
+      register with its honest status column, and a section titled &ldquo;what has not been
+      done&rdquo; that is longer than most projects' results sections.</div>
+      <div class="look">Read <b>Three headline findings</b>, then <b>What has not been done</b>.</div>
+    </a>
+    <a class="tile" href="visual-review/frequency-dashboard.html">
+      <div class="t">I want the data &rarr;</div>
+      <div class="d">The frequency and exposure dashboard. Every crossing by hour, route and
+      direction; how many people are underneath; how long they stay; and three of this programme's
+      own withdrawn claims, printed on the page.</div>
+      <div class="look">Drag the coincidence window from 1&nbsp;s to 29&nbsp;s. <b>The answer does not
+      move.</b> That is a finding about the feed, not the railway.</div>
+    </a>
+  </div>
+</div>
+
+<div class="card" id="artifacts">
+  <h2>The five interactive artifacts</h2>
+  <p>
+    Each is a <strong>single self-contained HTML file</strong>. No build step, no server, no network
+    access, no dependencies, no tracking. Download and double-click, or clone and open. Each applies
+    the same provenance discipline to a different medium.
+  </p>
+  <div class="tiles">
+    <a class="tile" href="visual-review/agent-model.html">
+      <div class="t">Agentic population model</div>
+      <div class="d">Groups &mdash; not individuals &mdash; enter DUMBO at persona-specific gateways,
+      follow scenario itineraries, contend for capacity, and accumulate a noise dose along their
+      actual path. Deterministic, seeded, with a full event log.</div>
+      <div class="look">The first panel: the <b>same itinerary started ninety seconds apart gets a
+      different dose</b>. Then the rejected-propagation panel, which is a negative result and the most
+      important thing on the page.</div>
+    </a>
+    <a class="tile" href="visual-review/frequency-dashboard.html">
+      <div class="t">Frequency and exposure dashboard</div>
+      <div class="d">Traversals by hour, route and direction across day, evening and night periods;
+      pedestrian arrivals, departures, walkway flow and residents; and a four-cohort presence model
+      that publishes its own non-identifiability.</div>
+      <div class="look">The cohort card. The worker and visitor ranges <b>overlap</b>, and that
+      overlap is the finding.</div>
+    </a>
+    <a class="tile" href="visual-review/acoustic-demo.html">
+      <div class="t">Acoustic demonstration</div>
+      <div class="d">Web Audio synthesis pinned to the MTA measurements. Six receptors, single
+      pass-by or continuous running at the measured headway, A-weighted meters, CEQR threshold marks
+      and a running energy average.</div>
+      <div class="look">Watch the running <b>L<sub>eq</sub></b> settle onto 87.50 &mdash; then read
+      why that convergence is a closed loop and not evidence.</div>
+    </a>
+    <a class="tile" href="visual-review/model-3d.html">
+      <div class="t">Navigable 3D model</div>
+      <div class="d">Both bridges, four zoom tiers from the whole crossing down to a single rail
+      fastener, with anchored callouts, click-to-inspect components and a live scale bar that reads
+      in inches at the finest tier.</div>
+      <div class="look">Turn <b>every provenance filter off</b>. The viewport goes completely empty,
+      and the display says so. That is the state of public knowledge.</div>
+    </a>
+    <a class="tile" href="visual-review/section-problem.html">
+      <div class="t">Provenance-tagged section</div>
+      <div class="d">The 2D cross-section of the Manhattan Bridge track zone, every component
+      colour-coded and dash-coded by how well it is known, with the source rubric attached.</div>
+      <div class="look">Turn off the <b>DOCUMENTED</b> filter and watch most of the drawing
+      disappear.</div>
+    </a>
+  </div>
+  <div class="note">
+    <strong>A warning that applies to all five.</strong> The 3D model contains
+    <strong>zero measured elements</strong>. The audio is <strong>synthesised, not recorded</strong>.
+    The agent model's itineraries are <strong>invented</strong>. These are instruments for reasoning
+    about a problem, not evidence about it, and each one says so in its own interface rather than
+    in a footnote somewhere else.
+  </div>
+</div>
+
+<div class="card" id="findings">
+  <h2>What has actually been found</h2>
+
+  <h3>1. The problem is documented and then abandoned</h3>
+  <p>
+    The MTA measured the noise, in DUMBO, at named addresses, and published the levels. The levels
+    are high. Nothing followed. The measurement exists and the response does not, and the gap between
+    those two facts is where this programme lives.
+  </p>
+
+  <h3>2. Three instruments for recording city noise, and no rail category in any of them</h3>
+  <p>
+    NYC 311 has a complaint descriptor for ice cream trucks and one for &ldquo;other animals&rdquo;.
+    It has none for trains. Neither does SONYC, NYU's 150-million-clip urban sound corpus, whose
+    authors state in print that they built their taxonomy from the NYC noise code &mdash; which is
+    where the absence originates.
+  </p>
+  <div class="note bad">
+    Within 500&nbsp;m of the park where the MTA measured <strong>87.50 dB(A)</strong>, residents filed
+    <strong>4,055</strong> noise complaints since 2020 and <strong>not one of them can be about the
+    train.</strong> That circle produced 117 complaints about ice cream trucks and 95 about barking
+    dogs. <em>The dogs at the dog run are complainable. The trains over it are not.</em>
+  </div>
+  <p>
+    This is a mechanism rather than a motive, which makes it testable, and it yields the first remedy
+    in the programme that a resident could act on this month: amending a taxonomy is a far smaller
+    ask than solving the noise.
+  </p>
+
+  <h3>3. Exposure peaks in the early afternoon &mdash; and this programme got that wrong twice first</h3>
+  <p>
+    Exposure is people multiplied by events. Optimising on attendance alone pointed to the weekend
+    afternoon. Optimising on train rate alone pointed to the weekday morning.
+    <strong>Both were published here and both are withdrawn.</strong> Train rate is nearly flat from
+    07:00 to 19:00 while the number of people underneath changes by a factor of four, so the product
+    peaks between the two: <strong>14:00 on a weekday</strong>, 13:00 Saturday, 15:00 Sunday.
+  </p>
+
+  <h3>4. A population's composition cannot be recovered from its departure curve</h3>
+  <p>
+    A four-cohort model pins <em>total</em> non-resident presence to about &plusmn;10%. The
+    <em>split</em> between workers and visitors inside that total swings by more than half again
+    across thousands of parameter sets that fit the data equally well.
+    <strong>A departure curve carries no job titles</strong> &mdash; someone present for eight hours
+    looks identical whether they came to work or came for the day. On a Saturday the model is
+    explicitly degenerate and says so in its own output.
+  </p>
+
+  <h3>5. Distance does not order the measurements</h3>
+  <div class="note bad">
+    The DUMBO Archway sits <strong>directly underneath the structure</strong> and is the
+    <strong>quietest</strong> of the four MTA sites. Brooklyn Bridge Park's Main Street section,
+    several hundred metres away across open water, is the <strong>loudest</strong> &mdash; exceeding a
+    line-source prediction fitted to the near sites by about <strong>17&nbsp;dB</strong>.
+    <p>
+      <strong>The design consequence is direct.</strong> Under-deck treatment &mdash; the intervention
+      most often proposed, and the first item in the November 2025 residents' petition &mdash; would be
+      applied <em>where the measured problem is smallest</em>. That is cheap to test: one afternoon,
+      a meter and a tape measure.
+    </p>
+  </div>
+
+  <h3>6. And one model that was deleted before publication rather than after</h3>
+  <p>
+    Fitting a propagation model to the near sites gave agreement with ideal line-source spreading to
+    within <strong>0.15&nbsp;dB</strong>, which looked like a real result. A sensitivity test killed
+    it: jitter the eye-digitised positions by &plusmn;10&nbsp;m and the fitted decay exponent ranges
+    from <strong>0.7 to 22.3</strong> &mdash; from no decay at all to steeper than a point source.
+    The data cannot constrain a propagation model and the agreement is coincidence. It is recorded on
+    the agent-model page as a finding, because the near-miss is more instructive than the model would
+    have been.
+  </p>
+</div>
+
+<div class="card" id="documents">
+  <h2>The seven documents</h2>
+  <table>
+    <thead><tr><th>Document</th><th>The question it asks</th><th>Scope</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><a href="IDEA-CONCEPT.md"><strong>IDEA-CONCEPT.md</strong></a></td>
+        <td><strong>What is the problem?</strong> Defines it from agency evidence, establishes who is
+        responsible under what law, and derives the questions nobody has asked of this site. Includes
+        &sect;1.7, the only result calculated here rather than retrieved.</td>
+        <td>Q1&ndash;Q13, Methods 0&ndash;5</td>
+      </tr>
+      <tr>
+        <td><a href="PRECEDENT-AND-MATERIALS.md"><strong>PRECEDENT-AND-MATERIALS.md</strong></a></td>
+        <td><strong>What has the world already built?</strong> Elevated-transit noise mitigation
+        precedent from Japan, China, Sweden, Germany, Hong Kong, Australia and Chicago, plus materials
+        and robotics to 2026 &mdash; and what actually transfers to a 1909 suspension bridge.</td>
+        <td>Q14&ndash;Q22, Methods 6&ndash;10</td>
+      </tr>
+      <tr>
+        <td><a href="WILLIAMSBURG-COMPARATOR.md"><strong>WILLIAMSBURG-COMPARATOR.md</strong></a></td>
+        <td><strong>There is a second bridge with the same owner, operator, rolling stock and statute.
+        What does it already tell us?</strong> A two-site comparative survey of the public outdoor
+        space beneath both East River subway bridges.</td>
+        <td>Q23&ndash;Q31, Methods 11&ndash;14</td>
+      </tr>
+      <tr>
+        <td><a href="VISUAL-MODEL-FRAMEWORK.md"><strong>VISUAL-MODEL-FRAMEWORK.md</strong></a></td>
+        <td><strong>Every argument above is about a cross-section nobody has drawn.</strong> Can that
+        drawing be built from open data and open tools &mdash; and can it be made to admit what it
+        does not know?</td>
+        <td>Q32&ndash;Q41, Methods 15&ndash;20</td>
+      </tr>
+      <tr>
+        <td><a href="FIELD-CAPTURE-PROTOCOL.md"><strong>FIELD-CAPTURE-PROTOCOL.md</strong></a></td>
+        <td><strong>Every acoustic claim beyond the published levels is invented. Can a consumer phone
+        fix that this month?</strong> A capture protocol targeting the four things the MTA's
+        five-number table discarded, all of which survive an uncalibrated recording chain.</td>
+        <td>Captures C1&ndash;C5</td>
+      </tr>
+      <tr>
+        <td><a href="COMMUNITY-EVIDENCE-AUDIT.md"><strong>COMMUNITY-EVIDENCE-AUDIT.md</strong></a></td>
+        <td><strong>Residents have complained since 2008. What have they recorded, and why can nobody
+        find it?</strong> Finds no recording &mdash; and finds the structural reason why the city's
+        instruments cannot represent the problem.</td>
+        <td>Q42&ndash;Q51, Methods 21&ndash;25, 31</td>
+      </tr>
+      <tr>
+        <td><a href="data-collection/README.md"><strong>data-collection/README.md</strong></a></td>
+        <td><strong>How many trains, how many people, and for how long?</strong> Five runnable scripts,
+        four traps that each silently produce a plausible wrong number, and the cohort model that
+        establishes its own non-identifiability.</td>
+        <td>Methods 26&ndash;29</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card" id="data">
+  <h2>Data and code</h2>
+  <p>
+    Five Python scripts. <strong>No API key, no account, no payment method</strong>, and everything but
+    the realtime poller uses only the standard library.
+  </p>
+  <table>
+    <thead><tr><th>Script</th><th>Answers</th><th>Cost</th></tr></thead>
+    <tbody>
+      <tr><td><a href="data-collection/bridge_schedule.py"><code>bridge_schedule.py</code></a></td>
+        <td>What is scheduled, by hour and day type</td><td>One 5&nbsp;MB download, about a minute</td></tr>
+      <tr><td><a href="data-collection/bridge_realtime.py"><code>bridge_realtime.py</code></a></td>
+        <td>What actually ran</td><td>Polls and de-duplicates; a week takes a week</td></tr>
+      <tr><td><a href="data-collection/build_dashboard_data.py"><code>build_dashboard_data.py</code></a></td>
+        <td>Per-event train data for the dashboard</td><td>Seconds</td></tr>
+      <tr><td><a href="data-collection/build_pedestrian_data.py"><code>build_pedestrian_data.py</code></a></td>
+        <td>How many people arrive in the corridor, and when</td><td>Four API pulls, about a minute</td></tr>
+      <tr><td><a href="data-collection/build_cohort_model.py"><code>build_cohort_model.py</code></a></td>
+        <td>How long they stay &mdash; and how badly that is identified</td><td>About six minutes of arithmetic</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The generated data is committed alongside the scripts so that the artifacts can be audited without
+    re-running anything: <a href="data-collection/dashboard-data.json"><code>dashboard-data.json</code></a>,
+    <a href="data-collection/pedestrian-data.json"><code>pedestrian-data.json</code></a> and
+    <a href="data-collection/cohort-data.json"><code>cohort-data.json</code></a>.
+  </p>
+  <div class="note warn">
+    <strong>The most dangerous single fact in the data work.</strong> MTA hourly ridership counts
+    <em>entries</em> &mdash; people <em>leaving</em> the corridor. Over a whole day entries and
+    arrivals roughly balance, so a daily total looks correct. <strong>By hour they are close to
+    opposite.</strong> Building an exposure curve on entries would have put the peak in the wrong
+    place while looking more rigorous than anything preceding it.
+  </div>
+</div>
+
+<div class="card" id="discipline">
+  <h2>How to read anything in here</h2>
+  <p>
+    This programme has failed adversarial review five times, always the same way:
+    <strong>over-claiming from abstract-level reading.</strong> The conventions below exist because of
+    those failures, not in anticipation of them.
+  </p>
+  <ul>
+    <li><strong>Every quantitative claim carries a &ldquo;locus&rdquo;</strong> &mdash; the exact
+    passage it rests on, quoted. If a claim has no locus it is an inference and is labelled as one.</li>
+    <li><strong>Every source is rated 1&ndash;5 and marked</strong>
+    <span class="tag v">VERIFIED</span> <span class="tag d">SNIPPET</span>
+    <span class="tag u">UNVERIFIED</span>. A 5/5 is a primary agency measurement read in full. A 1/5
+    is a search-engine snippet.</li>
+    <li><strong>Errors are corrected in place, not deleted.</strong> The wrong claim is quoted as a
+    blockquote and followed by the words <em>&ldquo;That is withdrawn&rdquo;</em>. The dashboard
+    carries three of them. A repository that silently edits its mistakes is asking to be trusted about
+    the ones it has not found yet.</li>
+    <li><strong>Every document ends with &ldquo;where this document is likely to be wrong.&rdquo;</strong>
+    Those sections are the best guide to how much weight any of it will bear.</li>
+    <li><strong>Synthetic is labelled synthetic, on the artifact itself.</strong> Not in a footnote,
+    not in a README somewhere else &mdash; in the interface, where someone screenshotting it will
+    capture the caveat along with the picture.</li>
+  </ul>
+</div>
+
+<div class="card" id="gaps">
+  <h2>What is missing, stated plainly</h2>
+  <div class="note bad">
+    <strong>Nobody from this programme has stood in Brooklyn Bridge Park with an instrument.</strong>
+    Thirty-two methods are specified. Two have been executed and one partially. Everything else here
+    is a statement about documents and datasets.
+  </div>
+  <p>The four cheapest things that would move this the furthest, in order:</p>
+  <ol>
+    <li><strong>Method 21 &mdash; the taxonomy-blindness test.</strong> A database query against an API
+    already used here, testing whether elevated-adjacent census tracts show different 311 complaint
+    patterns. An afternoon. Free. <em>Publishable whichever way it comes out.</em></li>
+    <li><strong>Method 31 &mdash; the decay transect.</strong> Walk outward from the bridge with a
+    meter and establish where the affected zone ends. Nobody has ever done this, and that boundary
+    sizes the denominator for every exposure figure in the repository. One afternoon.</li>
+    <li><strong>Method 28 &mdash; measure dwell time.</strong> A timed cordon count with a clicker.
+    Presence is arrival rate multiplied by dwell; only the arrival rate has been measured, and the
+    cohort model proved that no amount of further arithmetic will supply the rest.</li>
+    <li><strong>Q42 &mdash; is this preempted or merely unregulated?</strong> If elevated rapid transit
+    is <em>not</em> federally preempted from local noise regulation, then the City could regulate it
+    and has chosen not to &mdash; which inverts the entire advocacy strategy from seeking a federal
+    waiver to amending a municipal form. <strong>One competent lawyer, one day.</strong> The
+    highest-value open question in the programme.</li>
+  </ol>
+</div>
+
+<div class="card" id="help">
+  <h2>How to help</h2>
+  <p>
+    In rough order of value. The full list is in the
+    <a href="README.md#contributing">README's contributing section</a>.
+  </p>
+  <ul>
+    <li><strong>Post a recording.</strong> If you have ever recorded a train crossing the Manhattan
+    Bridge from Brooklyn Bridge Park, DUMBO or the Williamsburg Bridge walkway, that recording is more
+    useful to this programme than anything currently in it. The bar is far lower than people assume:
+    <strong>spectral shape and event timing survive an uncalibrated phone</strong>, which is what
+    <a href="FIELD-CAPTURE-PROTOCOL.md">FIELD-CAPTURE-PROTOCOL.md</a> is about.</li>
+    <li><strong>Falsify a &ldquo;not found&rdquo; claim.</strong> Five have already failed. The prior
+    on others failing is not low.</li>
+    <li><strong>Execute any method.</strong> Several cost an email, a form, or an afternoon.</li>
+    <li><strong>Challenge the arithmetic.</strong> The event-duration derivation, the cohort
+    identifiability result and the propagation rejection are all arithmetic, and each is either right
+    or wrong. None has been reviewed by anyone.</li>
+    <li><strong>Reclassify a component's provenance.</strong> Anyone with structural knowledge of
+    riveted lattice trusses will find misclassifications in the 3D model, and finding them is the
+    point of publishing the classification.</li>
+  </ul>
+  <div class="note good">
+    <strong>One standing condition.</strong> The people who live under this bridge have been asking
+    for help since 2008. Any contact with them must offer something before it asks for anything, must
+    not represent this programme as more established than it is, and must make clear that its central
+    artifacts are <strong>synthetic</strong>. Over-claiming to a community in that position would be a
+    different and worse kind of error than the ones already made here.
+  </div>
+</div>
+
+<p class="foot">
+  <strong>Silencing the Span: Defining the Manhattan Bridge Rail-Noise Problem in DUMBO for a
+  Design-Build Intervention.</strong> Ethical Tech CoLab, 2026.
+  Research content released under <a href="LICENSE">CC BY 4.0</a>.
+  Not peer-reviewed. No option in any document is recommended for procurement.
+  <br><br>
+  <a href="README.md">Repository README</a> &middot;
+  <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo">GitHub</a> &middot;
+  <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues">Open issues</a>
+</p>
+
+</div>
+</body>
+</html>

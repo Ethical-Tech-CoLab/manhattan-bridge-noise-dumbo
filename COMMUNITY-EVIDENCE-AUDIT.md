@@ -402,6 +402,30 @@ That is not a small point. This programme's working physical model is that the b
 
 So even a perfect crowd-sourced recording would have been systematically incomplete in the one dimension this programme most needs. It is an argument for accelerometry — the S23+ has an accelerometer, and while it is a poor one, a **simultaneous accelerometer and audio recording placed in contact with bridge steel or a park railing** would establish whether the two are correlated at pass-by. That costs nothing and nobody appears to have done it. **Method 21b, folded into Method 21.**
 
+### 3.5 Direct field observation by the author of this repository
+
+Everything above is somebody else's testimony, retrieved. This section is the repository's own, and it is recorded here rather than in a methods document because it is **evidence of exactly the same kind and quality as everything else in Part 3** — an unaided human report, unlogged, uninstrumented, made by someone with an interest in the answer. It is rated the same way testimony is rated and it is not upgraded for being ours.
+
+Rated **2/5 `UNVERIFIED`** — first-hand, repeated over many occasions, no instrument, no log, no date, no position, and made by a party who is not disinterested.
+
+> The walk from the York Street F station down to the water and into Brooklyn Bridge Park is loud for its whole length. It stays loud along the waterfront and continues south past the Manhattan Bridge on the path. It does not improve until you are a considerable distance from the bridge.
+
+Two things in that observation are worth separating, because one is new and one is not.
+
+**What is not new: the level.** No number is claimed and none should be inferred. The MTA's instrumented sessions already establish the levels at four points and are rated 5/5.
+
+**What is new: the extent.** This is a claim about **where the affected zone ends**, and it is the only statement in this repository, from any source, that addresses that question at all. Every measured point in the record — the Archway, Adams Street Library, Front and Pine Street, the Main Street park section — sits within a few hundred metres of the structure. **Nothing has ever been measured at the edge of the affected zone, because nobody has established where the edge is.**
+
+That matters because it is the parameter that sizes the denominator. The corridor boxes used in [`data-collection/README.md`](data-collection/README.md) to count residents were drawn from judgement, not from an isopleth. If the affected zone extends materially further south along the Brooklyn Bridge Park path than those boxes assume, the resident and visitor counts are **understated**, and understated in the direction that flatters the case being argued — which is the direction this programme is required to be most suspicious of.
+
+It also independently corroborates the anomaly found while building the agent model: the site furthest from the structure with clear line of sight across open water is the *loudest* of the four measured, not the quietest. Distance does not order the measurements. An observation that the noise "does not improve until you are quite far away" is consistent with that and inconsistent with a simple distance-decay picture. **Neither is evidence for the other. Two weak signals pointing the same way are still two weak signals**, and the reason to record it is that a linear transect with a meter would settle it in one afternoon. **Q51, Method 31.**
+
+**On the health remark.** A guest of the author, on first exposure, described the noise as a material risk to mental health and wellbeing. That reaction is recorded because first-exposure reactions are precisely what acclimatised residents can no longer supply — Kerrigan's observation in 3.2 says so directly — and because it is the kind of statement this programme is most likely to over-read.
+
+So it is bounded here explicitly. The WHO Environmental Noise Guidelines for the European Region rate the evidence for **annoyance** from transportation noise as of moderate quality and recommend against exposures above the guideline values on that basis; annoyance is a recognised health-relevant outcome in its own right. The evidence linking transportation noise to **depression and anxiety** is rated by the same guidelines as of **very low quality**. Rated **3/5 `SNIPPET`** — the guideline's structure and the direction of its ratings are read from secondary summaries, not from the full document.
+
+**Therefore:** this repository may say that residents and visitors report the noise as highly annoying, and that annoyance is a recognised outcome with a defensible evidence base. It may **not** say, and must not be quoted as saying, that the Manhattan Bridge causes depression, anxiety or psychiatric harm. Upgrading a guest's remark into a clinical claim would be the same over-reading failure this programme has already committed five times, in a new and more damaging place — because a health over-claim, once found to be unsupported, discredits the measured acoustic work alongside it.
+
 ---
 
 ## Part 4 — What this changes
@@ -448,6 +472,8 @@ Continuing the series. Q1–Q41 are in Documents 1–4.
 
 **Q50.** Where did the complaints actually go? 311 cannot receive them. The MTA's § 1204-a report was triggered by an elected official's letter and references contact "since 2022." **The complaint record exists inside the MTA and inside council offices, and it is not public.** What is its volume, and what is its distribution over time?
 
+**Q51.** **Where does the affected zone end?** Every level in the record — all four MTA sites — sits within a few hundred metres of the structure, and the corridor boxes used to count residents were drawn from judgement rather than from an isopleth. Nothing has ever been measured at the boundary, because no boundary has ever been established. This is the parameter that sizes the denominator, and getting it wrong in the generous direction would inflate every exposure figure this programme produces. **A single linear transect settles it.** See 3.5 and Method 31.
+
 ---
 
 ## Part 6 — New methods
@@ -476,6 +502,18 @@ Katy Gaul-Stigge (petition author), Doreen Gallo (DUMBO Neighborhood Alliance), 
 
 Two stages. First, from the released spatial metadata, determine whether any sensor was ever within acoustic range of an elevated structure — answerable from public data alone. If yes, second: retrieve candidate clips by acoustic similarity rather than by label, using the same OpenL3 embeddings the project's own baseline uses. Contact the SONYC team at NYU regardless of the outcome, because the taxonomy finding in Part 2.3 is something they would want to know and they are the people best placed to fix it.
 
+**Method 31 — The decay transect.** *Field. One afternoon. Free if a meter is borrowed. Answers Q51 and tests the anomaly in 3.5.*
+
+Walk a straight line outward from the structure and take a fixed-duration measurement at marked intervals — say every 25 m to 150 m, then every 50 m to 500 m — logging position by GPS and by tape where GPS is unreliable. Repeat on two bearings: one along the Brooklyn Bridge Park path heading south, which is the direction the field observation in 3.5 describes, and one inland through the street grid, where buildings should shield.
+
+**This is designed to be able to fail informatively.** Three outcomes and all three are worth having:
+
+1. Level falls monotonically with distance on both bearings. The field observation in 3.5 is habituation or salience bias, the corridor boxes are about right, and the programme has corrected one of its own claims at a cost of one afternoon.
+2. Level falls inland but not along the water. The waterfront path is an acoustically distinct receptor and the affected zone is far larger than assumed in one direction only — which is exactly what the 17 dB excess at the Main Street park site implies, arrived at independently.
+3. Level does not order by distance on either bearing. Then the geometry is being dominated by something the record does not contain — deck radiation over a broad area, reflection off the water, or the structure acting as a distributed rather than a line source — and **no distance-based mitigation argument in this programme survives without revision.**
+
+The equipment bar is low and the pitfalls are documented at length in [`FIELD-CAPTURE-PROTOCOL.md`](FIELD-CAPTURE-PROTOCOL.md) Part 4: use a windscreen, run the AGC bench test first, and record time-aligned so that pass-bys can be identified rather than averaged into the background. A relative transect is precisely the case where a phone's unknown fixed gain cancels, which is why this method is cheap.
+
 ---
 
 ## Part 7 — Where this document is likely to be wrong
@@ -501,6 +539,10 @@ Two stages. First, from the released spatial metadata, determine whether any sen
 **10. The convergence between the petition's five proposals and the engineering literature is presented as a check on the programme.** It is at least as likely that the resident read a news article about noise mitigation, or asked a search engine, in which case the two lists share a source and the convergence is not independent. **This is not a validation.** It is presented as one, mildly, and the reader should discount it accordingly.
 
 **11. Everything here is a search result.** Not a single claim in Parts 3 to 6 rests on anyone from this programme standing in Brooklyn Bridge Park. The programme's standing remains what it was: **a desk study that has not measured anything.** This document adds two directly-queried datasets to that, which is genuine progress, and it does not change the fundamental position.
+
+**12. Section 3.5 is our own testimony and we are not disinterested.** It is rated 2/5, the same as any other unaided report, and it is the only item in Part 3 whose author has an interest in the conclusion. It is included because excluding it would be worse — the observation is real, it bears directly on the denominator, and quietly acting on it without recording it would be the least honest option available. **A reader is entitled to discount it more heavily than the rest of Part 3, and should.**
+
+**13. The health framing in 3.5 is deliberately conservative and may be too conservative.** The WHO ratings are read from secondary summaries at 3/5, and guideline evidence ratings are not the whole literature. There may be stronger recent evidence on sleep disturbance and cardiovascular outcomes that this document does not reach. **Erring toward under-claiming on health is a deliberate choice**, made because a health over-claim that fails would discredit the acoustic work alongside it — but it is a choice, and it is not the same thing as being right.
 
 ---
 

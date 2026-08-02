@@ -1,8 +1,9 @@
 # Establishing train frequency over the Manhattan Bridge, and who is under it
 
-Four scripts that answer two questions this programme had been asserting answers
-to without ever deriving them: how many trains actually cross the Manhattan
-Bridge and when, and **how many people are underneath to hear them.**
+Five scripts that answer three questions this programme had been asserting
+answers to without ever deriving them: how many trains actually cross the
+Manhattan Bridge and when, **how many people are underneath to hear them**, and
+**how long each of them stays.**
 
 | Script | Answers | Cost |
 |---|---|---|
@@ -10,13 +11,15 @@ Bridge and when, and **how many people are underneath to hear them.**
 | `bridge_realtime.py` | What actually ran | Polls; a week takes a week |
 | `build_dashboard_data.py` | Per-event train data for the interactive dashboard | Seconds, after the download |
 | `build_pedestrian_data.py` | **How many people are underneath, and when** | Four API pulls, about a minute |
+| `build_cohort_model.py` | **How long they stay, and how badly that is identified** | About six minutes of arithmetic |
 
 None needs an API key, an account, or a payment method. All use only the
 Python standard library except `bridge_realtime.py`, which needs
 `pip install gtfs-realtime-bindings protobuf`.
 
-**Interactive view:**
+**Interactive views:**
 [`visual-review/frequency-dashboard.html`](../visual-review/frequency-dashboard.html)
+and [`visual-review/agent-model.html`](../visual-review/agent-model.html)
 
 ---
 
@@ -582,8 +585,194 @@ tourist traffic is likely to be large and is not characterised.
 
 ---
 
-```bash
-# What is scheduled. No dependencies beyond the standard library.
+## Who is actually here, hour by hour
+
+The pedestrian work above produces a **flow**. Exposure needs a **stock**. Those
+are different quantities and the gap between them is dwell time, which nobody
+has measured in DUMBO.
+
+`build_cohort_model.py` closes that gap by inference rather than measurement,
+and the honest headline is that it half succeeds. It recovers a defensible
+figure for *how many non-residents are present at a given hour*. It cannot
+recover *who they are*, and the reason it cannot is a permanent property of the
+data, not a limitation of the search.
+
+### The model
+
+Four cohorts, each with its own arrival profile and its own dwell
+distribution. Presence at hour `h` is the arrivals in every earlier hour
+multiplied by the probability that a person who arrived then has not yet left.
+
+| Cohort | Arrival shape | Dwell | Source of the dwell figure |
+| --- | --- | --- | --- |
+| Workers | Gaussian, fitted | 8.5 h, sd 1.6 | assumed working day |
+| Visitors | Gaussian, fitted | 2.31 h mean | Louisville waterfront survey, binned |
+| Transients | follows the arrival curve | 0.35 h | assumed pass-through |
+| Residents | present unless away | schedule, fitted | PLUTO units, corridor boxes |
+
+The visitor dwell distribution is not a guess. It is a published survey with
+seven duration bins, stratified by whether the respondent lived locally, and it
+is applied at a 45% out-of-town share. Its mean is 2.31 h. What it is not is a
+survey of Brooklyn.
+
+Residents come from the PLUTO tax-lot count established in the section above:
+**15,840 to 21,431 in the affected corridor, midpoint 18,636**. The corridor
+box deliberately includes Farragut Houses.
+
+### What it is fitted to
+
+The only observable is the MTA hourly **entries** series - people leaving the
+corridor through a turnstile. The model computes implied departures from its
+own cohort presence and compares. The fit is a coarse grid over ten parameters
+followed by two refinement passes.
+
+| Day | RMS fit error | Same, over the resident window | Cost of the visitor prior |
+| --- | --- | --- | --- |
+| Weekday | 0.186 | 0.092 | +0.053 |
+| Saturday | 0.127 | 0.014 | +0.064 |
+| Sunday | 0.150 | 0.013 | +0.031 |
+
+Ten free parameters against twenty-four data points is a generous ratio. A
+good fit here is close to guaranteed and is therefore
+**not evidence that the cohort structure is right**. It is evidence only that
+the structure is capable of producing the observed curve, which is a much
+weaker statement.
+
+### The visitor prior, and what it costs
+
+An unconstrained fit pushed the visitor arrival peak to a narrow spike at
+19:00, which zeroed visitors during the day and let the long-dwell worker
+cohort absorb every daytime arrival. Saturday came out with
+**fifteen visitors**, which is absurd - a Saturday has more visitors than a
+Tuesday, not four hundred times fewer.
+
+Two constraints were declared:
+
+- visitor arrivals peak no later than **16:00**
+- the visitor arrival distribution has standard deviation of at least **2.0 h**
+
+Justification is the FEIS, which places peak park attendance in the early to
+mid Sunday afternoon. Saturday visitors moved from 15 to 2,153, Sunday from 9
+to 2,944.
+
+A declared prior that improves a result is exactly the kind of move this
+programme is supposed to distrust, so **the prior is priced**. The script also
+sweeps a strictly larger unconstrained grid and reports how much better the
+unconstrained best fit is. That difference is the third column above: between
++0.031 and +0.064 RMS. The prior costs almost nothing in fit and changes the
+answer by two orders of magnitude, which is the signature of a
+**flat likelihood surface** rather than of a prior overriding evidence.
+
+### The finding: cohort labels are not identifiable
+
+The script does not report a point estimate. It sweeps the parameter grid and
+collects **every** parameter set whose fit is within 10% of the best, then
+reports the range of outcomes across that admissible family.
+
+| Day | Admissible sets | Non-residents at 14:00 | of which workers | of which visitors |
+| --- | --- | --- | --- | --- |
+| Weekday | 9,248 | 6,029 to 7,338 | 3,629 to 5,490 | 1,460 to 2,313 |
+| Saturday | 2,791 | 5,775 to 6,516 | 3,462 to 4,374 | 1,881 to 2,330 |
+| Sunday | 11,590 | 5,932 to 6,820 | 2,619 to 3,911 | 2,541 to 3,137 |
+
+Read the columns against each other. The **total** is pinned to about plus or
+minus 10%. The **split inside it** swings by more than a factor of one and a
+half on a weekday, across parameter sets that fit the observed data equally
+well.
+
+The reason is not subtle once stated.
+**A departure curve carries no job titles.** Someone who is in the corridor for
+eight hours looks identical whether they came to work or came for the day. The
+only thing that distinguishes a worker from a visitor in this model is the
+*shape* of their arrival, and a smooth aggregate curve can be decomposed into
+two smooth components in a great many ways.
+
+A degeneracy test makes this concrete. It measures the share of fitted worker
+arrivals landing between 06:00 and 10:00 - if the "worker" cohort does not
+arrive in the morning, the label is not doing any work.
+
+| Day | Worker arrivals in the morning window | Verdict |
+| --- | --- | --- |
+| Weekday | 96% | label supported |
+| Saturday | **33%** | **DEGENERATE - do not read this as workers** |
+| Sunday | 63% | weak |
+
+Saturday's best fit puts the "worker" arrival standard deviation at 5.6 h,
+which is approaching uniform across the whole day. That parameter sits on the
+edge of its grid and wants to go further. It has not been chased, because
+chasing it would produce a smoother number that means even less: a cohort
+arriving uniformly across a day is not a cohort, it is a residual.
+
+**Consequence for anything downstream.** Total non-resident presence may be
+quoted. The worker/visitor split may not be quoted at all on a Saturday, and
+should be quoted only as a range on the other two days.
+
+### The other thing the curve is not
+
+Total presence, including residents, peaks in the evening on every day type -
+weekday 13:00, Saturday 09:00, Sunday 13:00 for the totals, but the shape is
+dominated by residents being at home. **That is not an exposure curve.**
+Residents at home are indoors, behind a facade, and the one indoor measurement
+in the record comes from a building whose occupants had already paid privately
+to isolate it.
+
+The non-resident curve peaks at 12:00 weekday, 14:00 Saturday, 15:00 Sunday,
+which is consistent with the exposure-index result in the section above and
+was arrived at by a completely different route.
+
+### Where this section is likely to be wrong
+
+**The dwell distribution is from Louisville, Kentucky.** It is real, published
+and stratified. It is also about a different park, in a different city, on a
+different river, with a different mix of tourists and no elevated railway over
+it. This is the largest single transfer in the model and it is load-bearing.
+
+**Ten parameters against twenty-four points.** The fit quality reported above
+is close to meaningless as validation. The identifiability sweep is the only
+part of this section that constitutes evidence about anything.
+
+**Entries are still entries.** The model is fitted to the same series whose
+direction trap is documented above. If the origin-destination hour is the entry
+hour rather than the arrival hour, every arrival is timestamped early and the
+fitted arrival Gaussians absorb the error silently.
+
+**Residents are a stock with no measured schedule.** The away-fraction, leave
+hour and return hour are all fitted, which means the resident cohort is the
+most flexible object in the model and will absorb misfit from everywhere else.
+
+**Nothing here is a headcount.** Presence is modelled. The word "modelled"
+should survive every act of quotation, and if it does not, this section has
+done net harm.
+
+---
+
+## Where the people go, not merely how many there are
+
+`../visual-review/agent-model.html` is the next term again. The cohort model
+supplies a duration; it has no position. Exposure is an integral of level along
+a path, so a duration without a path is still not exposure.
+
+The agent model is a demonstration of that mechanism and
+**not a measurement of DUMBO**. It carries its own weaknesses list on the page.
+Two results from building it are worth recording here because they bear on the
+data work:
+
+**A propagation model over the four MTA measurement points cannot be fitted.**
+The three near-bridge sites agree with ideal line-source spreading to within
+0.15 dB, which looks like a result and is not one: a Monte-Carlo test that
+jitters the digitised positions by plus or minus 10 m puts the fitted decay
+exponent anywhere between 0.7 and 22.3. The agreement is coincidence.
+
+**Distance does not order the measurements, and that is robust.** The DUMBO
+Archway sits directly under the structure and is the quietest of the four. The
+Brooklyn Bridge Park site several hundred metres away is the loudest, and
+exceeds a line-source prediction fitted to the near sites by about 17 dB. This
+survives any plausible correction to the positions. It matters because
+under-deck treatment - the intervention most often proposed, including in the
+November 2025 residents' petition - would be applied where the measured problem
+is smallest.
+
+---
 python bridge_schedule.py
 
 # What is running right now.
@@ -601,6 +790,12 @@ python build_pedestrian_data.py
 
 # Per-event train data for the dashboard.
 python build_dashboard_data.py
+
+# Who is here at each hour, and for how long. Fits four cohorts to the
+# observed departure curve, sweeps for identifiability, writes
+# cohort-data.json and injects it into the dashboard. Takes about six
+# minutes; --no-inject writes the JSON only.
+python build_cohort_model.py
 ```
 
 A 30 s poll against an 85-300 s headway samples every train several times

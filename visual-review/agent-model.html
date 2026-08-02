@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic population model &mdash; DUMBO rail noise</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+  --cp-grid: rgba(0, 0, 0, 0.09);
+  --cp-water: rgba(70, 120, 170, 0.16);
+  --cp-land: rgba(120, 140, 110, 0.07);
+  --cp-park: rgba(60, 140, 80, 0.13);
+  --cp-deck: #6d6459;
+  --cp-p-tourist: #1d7a8c;
+  --cp-p-family: #6b4fa8;
+  --cp-p-resident: #b8860b;
+  --cp-p-worker: #4a7d3f;
+  --cp-p-commuter: #a8552a;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+  --cp-grid: rgba(255, 255, 255, 0.10);
+  --cp-water: rgba(110, 160, 220, 0.16);
+  --cp-land: rgba(200, 210, 190, 0.05);
+  --cp-park: rgba(90, 200, 120, 0.11);
+  --cp-deck: #9c8f80;
+  --cp-p-tourist: #5cc2d4;
+  --cp-p-family: #ab8ee0;
+  --cp-p-resident: #e0b840;
+  --cp-p-worker: #8ecb7f;
+  --cp-p-commuter: #e0916a;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font: 15px/1.62 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.page { max-width: 1240px; margin: 0 auto; padding: 30px 22px 90px; }
+header.top { margin-bottom: 26px; }
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; letter-spacing: -0.01em; }
+.lede { color: var(--cp-text-muted); max-width: 82ch; margin: 0 0 6px; }
+h2 { font-size: 20px; margin: 0 0 12px; letter-spacing: -0.005em; }
+h3 { font-size: 15px; margin: 20px 0 8px; }
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 12px; padding-left: 22px; }
+li { margin-bottom: 6px; }
+code, .mono { font-family: Consolas, "Courier New", Courier, monospace; font-size: 13px; }
+pre {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  padding: 12px 14px;
+  overflow-x: auto;
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin: 0 0 12px;
+}
+a { color: var(--cp-link); }
+.hint { color: var(--cp-text-soft); font-size: 13px; }
+.sub {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--cp-text-muted); margin: 16px 0 7px; font-weight: 600;
+}
+.sub:first-child { margin-top: 0; }
+.controls {
+  display: flex; flex-wrap: wrap; gap: 16px 22px; align-items: flex-end;
+}
+.ctl { display: flex; flex-direction: column; gap: 5px; }
+.ctl > label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--cp-text-muted); font-weight: 600; }
+.seg { display: inline-flex; border: 1px solid var(--cp-border-strong); border-radius: 0.625rem; overflow: hidden; }
+.seg button {
+  font: inherit; font-size: 13px; padding: 6px 12px; border: 0; cursor: pointer;
+  background: var(--cp-surface); color: var(--cp-text); border-right: 1px solid var(--cp-border);
+}
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--cp-accent); color: var(--cp-accent-fg); }
+.seg button:hover:not([aria-pressed="true"]) { background: var(--cp-accent-soft); }
+input[type="number"], input[type="text"], select {
+  font: inherit; font-size: 13px; padding: 6px 9px; border-radius: 0.625rem;
+  border: 1px solid var(--cp-border-strong); background: var(--cp-surface); color: var(--cp-text);
+}
+input[type="range"] { width: 150px; accent-color: var(--cp-accent); }
+.btn {
+  font: inherit; font-size: 13px; font-weight: 600; padding: 7px 15px; cursor: pointer;
+  border-radius: 0.625rem; border: 1px solid var(--cp-accent);
+  background: var(--cp-accent); color: var(--cp-accent-fg);
+}
+.btn.ghost { background: var(--cp-surface); color: var(--cp-text); border-color: var(--cp-border-strong); }
+.btn:hover { background: var(--cp-accent-hover); border-color: var(--cp-accent-hover); color: var(--cp-accent-fg); }
+.grid2 { display: grid; grid-template-columns: 1.35fr 1fr; gap: 22px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media (max-width: 980px) { .grid2, .grid3, .grid4 { grid-template-columns: 1fr; } }
+.stat {
+  border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 10px 12px; background: var(--cp-surface-soft);
+}
+.stat .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--cp-text-muted); font-weight: 600; }
+.stat .v { font-size: 21px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.25; }
+.stat .u { font-size: 12px; color: var(--cp-text-soft); }
+canvas { width: 100%; height: auto; display: block; border-radius: 0.625rem; border: 1px solid var(--cp-border); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; margin-bottom: 12px; }
+th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--cp-border); vertical-align: top; }
+th { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cp-text-muted); font-weight: 600; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.note {
+  border-left: 3px solid var(--cp-border-strong); padding: 11px 15px; margin: 14px 0;
+  background: var(--cp-surface-soft); border-radius: 0 0.625rem 0.625rem 0; font-size: 14px;
+}
+.note.bad { border-left-color: var(--cp-danger); }
+.note.warn { border-left-color: var(--cp-warning); }
+.note.good { border-left-color: var(--cp-success); }
+.tag {
+  display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 7px;
+  border-radius: 999px; vertical-align: 1.5px; margin-left: 3px;
+}
+.tag.v { background: rgba(22,163,74,0.16); color: var(--cp-success); }
+.tag.d { background: rgba(245,158,11,0.18); color: var(--cp-warning); }
+.tag.u { background: rgba(220,38,38,0.14); color: var(--cp-danger); }
+.sw { display: inline-block; width: 11px; height: 11px; border-radius: 3px; vertical-align: -1px; margin-right: 4px; }
+.legend { font-size: 12.5px; color: var(--cp-text-muted); margin: 8px 0 0; }
+.log {
+  height: 250px; overflow-y: auto; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); border-radius: 0.625rem; padding: 9px 11px;
+  font-family: Consolas, "Courier New", Courier, monospace; font-size: 11.5px; line-height: 1.5;
+}
+.log div { white-space: pre; color: var(--cp-text-muted); }
+.log div b { color: var(--cp-text); font-weight: 600; }
+.foot { font-size: 12.5px; color: var(--cp-text-soft); border-top: 1px solid var(--cp-border); padding-top: 12px; margin-top: 16px; }
+.gl { stroke: var(--cp-grid); stroke-width: 1; }
+.axis { font-size: 10.5px; fill: var(--cp-text-muted); font-family: Consolas, monospace; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="top">
+  <h1>Agentic population model</h1>
+  <p class="lede">
+    Every noise figure in this repository is attached to a <em>place</em>. Every population figure is
+    attached to a <em>polygon</em>. Those two cannot honestly be multiplied together, because exposure
+    is neither &mdash; it is what accumulates along a path:
+    <span class="mono">dose = &int; noise(position(t)) dt</span>.
+    The cohort model supplies <span class="mono">dt</span> and has no
+    <span class="mono">position(t)</span> at all. This model is an attempt at the missing term.
+  </p>
+  <p class="lede">
+    It is a demonstration of <strong>mechanism</strong>, not a measurement of DUMBO. Nothing here is
+    evidence about how loud anywhere is. Read the two red panels before quoting any number off this
+    page.
+  </p>
+</header>
+
+<div class="card">
+  <h2>The finding this model was built to show</h2>
+  <p>
+    Two people can follow the <em>same itinerary</em>, leave <em>ninety seconds apart</em>, and receive
+    materially different noise doses &mdash; because whether you are on the waterfront path at the
+    moment a train crosses is a matter of timing, not of geography.
+  </p>
+  <p>
+    That is a <strong>race condition</strong> in the precise sense: the outcome depends on the
+    interleaving of two independent schedules, one of which (the trains) is published to the second and
+    the other of which (a person's walk) is not. A cohort model cannot represent it, because a cohort
+    has a duration but no clock position. Averaged over a long enough exposure the effect washes out.
+    Over a single visit &mdash; which is what a tourist has, and what the Louisville survey says lasts
+    about two hours &mdash; it does not.
+  </p>
+  <div class="grid2">
+    <div>
+      <div class="sub">Same plan, staggered starts</div>
+      <canvas id="raceCanvas" width="1120" height="300"></canvas>
+      <p class="legend" id="raceLegend"></p>
+    </div>
+    <div>
+      <div class="sub">Dose spread across start offsets</div>
+      <div id="raceChart"></div>
+      <p class="hint" id="raceTxt"></p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Run the model</h2>
+  <div class="controls">
+    <div class="ctl"><label for="seedIn">Seed</label>
+      <input type="number" id="seedIn" value="20260731" step="1" style="width:130px"></div>
+    <div class="ctl"><label>Day type</label><div class="seg" id="segDay"></div></div>
+    <div class="ctl"><label>Hour of day</label>
+      <input type="range" id="hourIn" min="6" max="23" step="1" value="14">
+      <span class="hint" id="hourTxt"></span></div>
+    <div class="ctl"><label for="popIn">Groups spawned</label>
+      <input type="number" id="popIn" value="600" min="20" max="1200" step="20" style="width:110px"></div>
+    <div class="ctl"><label>Policy rung</label><div class="seg" id="segRung"></div></div>
+    <div class="ctl"><label>&nbsp;</label>
+      <div style="display:flex;gap:8px">
+        <button class="btn" id="btnRun">Run</button>
+        <button class="btn ghost" id="btnStep">Step</button>
+        <button class="btn ghost" id="btnReset">Reset</button>
+      </div></div>
+    <div class="ctl"><label>Speed</label>
+      <input type="range" id="rateIn" min="1" max="60" step="1" value="20">
+      <span class="hint" id="rateTxt"></span></div>
+    <div class="ctl"><label>Overlays</label>
+      <div style="display:flex;gap:8px">
+        <button class="btn ghost" id="btnField">Noise field</button>
+        <button class="btn ghost" id="btnPaths">Paths</button>
+      </div></div>
+  </div>
+
+  <div class="grid2" style="margin-top:20px">
+    <div>
+      <canvas id="mapCanvas" width="1200" height="820"></canvas>
+      <p class="legend" id="mapLegend"></p>
+    </div>
+    <div>
+      <div class="sub">Run state</div>
+      <div class="grid2" id="stats"></div>
+      <div class="sub">Commons observer</div>
+      <p class="hint">
+        A standing agent with no vote. It reports externality on populations the simulation does not
+        contain, which is the only reason a model like this is worth building rather than merely
+        watching.
+      </p>
+      <div id="commons"></div>
+      <div class="sub">Event log <span class="hint" style="text-transform:none;letter-spacing:0">&mdash; the run is reconstructable from this alone</span></div>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Results of the last run</h2>
+  <div class="grid2">
+    <div>
+      <div class="sub">Dose distribution across groups</div>
+      <div id="doseChart"></div>
+      <p class="hint">
+        Each group's accumulated A-weighted sound exposure over its whole visit, converted to an
+        equivalent continuous level. The spread inside a single persona is the race condition; the
+        offset between personas is the itinerary.
+      </p>
+    </div>
+    <div>
+      <div class="sub">By persona</div>
+      <div id="personaTable"></div>
+    </div>
+  </div>
+  <div class="sub">By place &mdash; where the person-seconds actually accumulate</div>
+  <div id="placeTable"></div>
+</div>
+
+<div class="card">
+  <h2 id="noise">The noise field, and the propagation model that was rejected</h2>
+  <p>
+    The obvious way to give every point on the map a sound level is a propagation model: take the track
+    as a line source, attenuate with distance, done. That was tried first. It was rejected, and the
+    reason is worth more than the model would have been.
+  </p>
+  <div class="sub">What the MTA actually measured</div>
+  <div id="anchorTable"></div>
+  <div class="note bad">
+    <strong>Distance does not order these measurements.</strong>
+    The DUMBO Archway sits directly underneath the structure. Brooklyn Bridge Park's Main Street
+    section is a few hundred metres away. The park is <strong>7.1 dB louder</strong> on peak level. A
+    line-source model fitted to the near sites and extended to the park under-predicts the measured
+    level by roughly <span id="excessTxt">17</span>&nbsp;dB. For the park reading to be consistent
+    with simple distance decay, it would have to be about seven metres from the track centreline,
+    which is not a position that exists.
+  </div>
+  <div class="note warn">
+    <strong>And the fit that looked good was an artefact.</strong>
+    The three near-bridge sites do lie within 0.15 dB of ideal line-source spreading, which is a
+    seductive result. It is not a result. Their positions were digitised by eye from street addresses,
+    and a sensitivity test says that with only &plusmn;10&nbsp;m of position error the fitted decay
+    exponent ranges from about 0.7 to 22.3 &mdash; that is, from &ldquo;no decay at all&rdquo; to
+    &ldquo;steeper than a point source&rdquo;. The data cannot constrain a propagation model. The
+    apparent agreement is coincidence, and reporting it as a finding would have been exactly the
+    failure this programme has already committed five times.
+  </div>
+  <p>
+    So the field below carries <strong>no physics</strong>. It is inverse-distance interpolation
+    between the measured anchors, computed in the energy domain because energy is what adds, with the
+    train contribution switched by the published headway. It is a way of moving a plausible number
+    around a map so that timing and route can be studied. It is not a noise map of DUMBO and must
+    never be reproduced as one.
+  </p>
+  <div class="note good">
+    <strong>One design consequence survives all of this.</strong>
+    Whatever the mechanism, the quietest measured public space is the one directly under the deck and
+    the loudest is the open park with a clear line of sight to the structure across water. Under-deck
+    treatment &mdash; the intervention most often proposed, including in the 2025 residents' petition
+    &mdash; would therefore be applied where the measured problem is smallest. That is a testable and
+    consequential claim, and it is cheap to settle: one afternoon with a meter and a tape measure.
+  </div>
+</div>
+
+<div class="card">
+  <h2 id="schemas">Schemas</h2>
+  <p>
+    Four object types. They are printed here in full because the schema <em>is</em> the argument: it
+    fixes what the model can represent and, more importantly, what it cannot.
+  </p>
+  <div class="grid2">
+    <div>
+      <div class="sub">Place</div>
+      <pre id="schemaPlace"></pre>
+      <div class="sub">Persona</div>
+      <pre id="schemaPersona"></pre>
+    </div>
+    <div>
+      <div class="sub">Scenario &mdash; an itinerary archetype</div>
+      <pre id="schemaScenario"></pre>
+      <div class="sub">Group &mdash; the unit that actually moves</div>
+      <pre id="schemaGroup"></pre>
+    </div>
+  </div>
+  <div class="note">
+    <strong>The group, not the person, is the agent.</strong>
+    A family of four walks as one object: it chooses once, dwells once, and is exposed once. This is
+    why the model reports <em>groups spawned</em> and <em>people represented</em> as two different
+    numbers, and it is the single most consequential simplification on this page. It is defensible for
+    exposure &mdash; four people standing together receive the same level &mdash; and indefensible for
+    anything involving individual choice, which is why no such thing is modelled.
+  </div>
+  <div class="sub">The personas</div>
+  <div id="personaDefTable"></div>
+  <div class="sub">The itinerary archetypes</div>
+  <div id="scenarioDefTable"></div>
+  <div class="sub">The places</div>
+  <div id="placeDefTable"></div>
+</div>
+
+<div class="card">
+  <h2>How the engine works, and why it is built that way</h2>
+  <div class="grid2">
+    <div>
+      <h3>The tick has four phases</h3>
+      <pre>1. OPEN      the clock advances; arrivals spawn
+2. PERCEIVE  groups read visible state; no writes
+3. ACT       groups emit intents; buffered, not applied
+4. RESOLVE   engine applies intents in a fixed
+             order and writes the event log</pre>
+      <p>
+        A group may not observe another group's action from the same tick. Actions taken in tick
+        <span class="mono">n</span> become visible in tick <span class="mono">n+1</span>. This removes
+        order-dependence between agents, which is the precondition for the run being reproducible at
+        all.
+      </p>
+      <h3>Contention is resolved deterministically</h3>
+      <p>
+        Places have capacity. When more groups want a bench, a cafe table or a viewpoint than it holds,
+        the engine resolves intents in ascending
+        <span class="mono">group_id</span> &mdash; never arrival order, never insertion order, never
+        the order the array happens to be in. A group that loses is re-routed to another place of the
+        same kind that still has room, and emits
+        <span class="mono">place.contended</span>. If nothing of that kind has room it abandons the
+        slot and moves on.
+      </p>
+      <p class="hint">
+        This is the literal race condition, and it is deliberately made boring: a real one would be a
+        bug. The interesting race is the one against the train timetable, which no amount of careful
+        scheduling removes.
+      </p>
+    </div>
+    <div>
+      <h3>Every reasoning agent has a deterministic twin</h3>
+      <p>
+        Everything on this page is the twin. It makes the same <em>shape</em> of decisions as a
+        language-model agent would &mdash; pick a scenario, pick places matching it, re-plan when
+        blocked &mdash; with zero model calls, so the whole run is a pure function of the seed. A
+        model-backed variant is specified in the repository and is deliberately not shipped here: an
+        artifact that produces different answers on every load cannot be checked by a reader, and this
+        programme's entire method is that a reader can check it.
+      </p>
+      <h3>Capability is a ladder, not a flag</h3>
+      <div id="rungTable"></div>
+      <p class="hint">
+        Four separate policies rather than four options on one policy, so that what each layer adds can
+        be read off by running them against the same seed and diffing the result. Switching rung
+        re-runs from the same seed for exactly that reason.
+      </p>
+      <h3>Seeded and idempotent</h3>
+      <p>
+        The same seed, day type, hour, population and rung produce a byte-identical event log. Sub-seeds
+        are derived per group, so changing the population size does not reshuffle the groups that were
+        already there.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Where this model is likely to be wrong</h2>
+  <ol>
+    <li><strong>The noise field is interpolation, not propagation.</strong> Four measured points, no
+    physics between them, no buildings, no shielding, no reflection, no ground effect. A propagation
+    model was attempted and rejected as unconstrainable; interpolation is not an improvement on it, it
+    is an admission.</li>
+    <li><strong>The map is schematic.</strong> Positions were digitised by eye from addresses and
+    public maps. No survey, no GIS layer, no measured geometry. The sensitivity test in the noise
+    section applies to every distance on this page, not only to the anchors.</li>
+    <li><strong>Itinerary archetypes are invented.</strong> &ldquo;Quick photo stop&rdquo;, &ldquo;full
+    tour&rdquo;, &ldquo;tour and a meal&rdquo; and the rest are plausible and unmeasured. No
+    origin-destination survey of DUMBO pedestrians exists in this repository or, as far as the
+    community evidence audit could establish, anywhere public.</li>
+    <li><strong>Dwell distributions are transferred.</strong> The visitor figures come from a park in
+    Louisville, Kentucky. They are real, published and stratified by residency &mdash; and they are
+    about a different park in a different city on a different river.</li>
+    <li><strong>Group size is a distribution, not an observation.</strong> Nobody has counted party
+    sizes in DUMBO.</li>
+    <li><strong>Walking speed is uniform within a persona</strong> and does not slow in crowds, at
+    kerbs, at the Archway, or on the stairs from the Brooklyn Bridge walkway &mdash; all of which are
+    real and all of which would lengthen exposure.</li>
+    <li><strong>Indoor attenuation is a flat offset.</strong> Real facades vary by tens of decibels,
+    and the one indoor measurement in the record is from a building whose occupants had already paid
+    privately to isolate it.</li>
+    <li><strong>Nobody reacts to the noise.</strong> Groups do not leave early, cross the street, cut a
+    visit short or decline to come back. If the noise changes behaviour &mdash; and the resident
+    testimony in the community evidence audit says it does &mdash; then this model understates the harm
+    by construction, because avoidance is a cost that never appears as exposure.</li>
+    <li><strong>The population totals are inherited from the cohort model,</strong> and that model
+    cannot identify its own cohort labels. Errors there propagate here unchanged.</li>
+    <li><strong>Arrivals are a ramp, not the measured curve.</strong> The turnstile and
+    origin-destination work in this repository produced an hourly arrival profile for York St and High
+    St. This model does not use it: groups trickle in evenly over the first part of the run so that
+    every visit can finish inside it. That is a convenience of the demonstration, and it means the
+    <em>mix</em> of personas present at a given hour is shaped by assumption rather than by the data
+    that exists. Connecting the two is the single most obvious next piece of work.</li>
+    <li><strong>It has not been validated against anything.</strong> There is no observation of DUMBO
+    pedestrian movement to validate it against. Until there is, agreement between this model and any
+    other quantity in the repository is agreement between two assumptions.</li>
+  </ol>
+  <p class="foot"><strong>Ratings.</strong>
+  Measured sound levels <span class="tag v">5/5</span> &mdash; MTA's own instrumented sessions.
+  Train headway <span class="tag v">5/5</span> &mdash; MTA GTFS.
+  Anchor positions <span class="tag u">2/5</span> &mdash; digitised by eye.
+  Noise field between anchors <span class="tag u">1/5</span> &mdash; interpolation with no physics.
+  Itineraries, group sizes, walking speeds <span class="tag u">1/5</span> &mdash; invented.
+  Visitor dwell <span class="tag d">4/5</span> for Louisville, <span class="tag u">2/5</span> as a
+  transfer to Brooklyn.</p>
+</div>
+
+<p class="hint" style="text-align:center;margin-top:26px">
+  Part of the DUMBO rail-noise research programme.
+  <a href="frequency-dashboard.html">Frequency dashboard</a> &middot;
+  <a href="model-3d.html">3D model</a> &middot;
+  <a href="acoustic-demo.html">Acoustic demo</a> &middot;
+  <a href="../index.html">Overview</a>
+</p>
+
+</div>
+<script>
+/* ============================================================================
+   DETERMINISM
+   Everything below is a pure function of the seed. No Math.random anywhere,
+   no Date.now in any code path that affects state. The run is reproducible or
+   it is not evidence of anything.
+   ========================================================================= */
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+/* Sub-seeds are derived, not drawn, so that adding groups to a run does not
+   reshuffle the groups already in it. */
+function subSeed(base, salt) {
+  let h = base ^ 0x9E3779B9;
+  for (let i = 0; i < salt.length; i++) { h = Math.imul(h ^ salt.charCodeAt(i), 0x01000193); h |= 0; }
+  return h >>> 0;
+}
+const rnorm = r => { let u = 0, v = 0; while (!u) u = r(); while (!v) v = r();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+const pick = (r, arr) => arr[Math.min(arr.length - 1, Math.floor(r() * arr.length))];
+function weighted(r, entries) {
+  const tot = entries.reduce((s, e) => s + e[1], 0);
+  let x = r() * tot;
+  for (const e of entries) { x -= e[1]; if (x <= 0) return e[0]; }
+  return entries[entries.length - 1][0];
+}
+
+/* ============================================================================
+   GEOGRAPHY
+   Local east-north grid in metres, origin 40.7020 N, 73.9900 W.
+   EVERY position here was digitised by eye from street addresses and public
+   maps. None is surveyed. See the sensitivity note in the noise section: this
+   is the least reliable data on the page and it multiplies into everything.
+   ========================================================================= */
+const LAT0 = 40.7020, LON0 = -73.9900;
+const MX = 111320 * Math.cos(LAT0 * Math.PI / 180), MY = 110540;
+const g = (lat, lon) => [(lon - LON0) * MX, (lat - LAT0) * MY];
+
+/* Manhattan Bridge track centreline, Brooklyn anchorage to Brooklyn tower. */
+const BRIDGE = { a: g(40.7003, -73.9862), b: g(40.7069, -73.9903) };
+
+function perpDist(p, seg) {
+  const wx = p[0] - seg.a[0], wy = p[1] - seg.a[1];
+  const dx = seg.b[0] - seg.a[0], dy = seg.b[1] - seg.a[1];
+  const L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L;
+  const t = Math.max(0, Math.min(L, wx * ux + wy * uy));
+  return Math.hypot(wx - t * ux, wy - t * uy);
+}
+
+/* ----------------------------------------------------------------------------
+   MEASURED ACOUSTIC ANCHORS
+   Levels are MTA's own instrumented sessions, 5/5 VERIFIED, quoted from
+   MTA document 138061 as reproduced in IDEA-CONCEPT.md.
+   Positions are 2/5 and are mine.
+   -------------------------------------------------------------------------- */
+const ANCHORS = [
+  { id: "dogrun",   name: "Brooklyn Bridge Park, Main Street section",
+    pos: g(40.7042, -73.9930), leq: 87.50, lmax: 98.90, base: 65.0,
+    src: "MTA doc 138061, memo 18 Jan 2024" },
+  { id: "library",  name: "Adams Street Library",
+    pos: g(40.7027, -73.9878), leq: 84.65, lmax: 98.10, base: 48.1,
+    src: "MTA doc 138061, memo 18 Jan 2024" },
+  { id: "archway",  name: "DUMBO Archway",
+    pos: g(40.7036, -73.9887), leq: 81.33, lmax: 91.80, base: 68.9,
+    src: "MTA doc 138061, memo 18 Jan 2024" },
+  { id: "frontpine", name: "Front and Pine Street",
+    pos: g(40.7028, -73.9880), leq: null, lmax: 94.40, base: 68.2,
+    src: "MTA doc 138061, memo 10 Jun 2022" }
+];
+ANCHORS.forEach(a => { a.dist = perpDist(a.pos, BRIDGE); });
+
+/* Published headway from the GTFS analysis, seconds between crossings.
+   5/5 VERIFIED against the MTA static feed. */
+const HEADWAY = {
+  Weekday:  { day: 58,  evening: 75,  night: 203 },
+  Saturday: { day: 106, evening: 107, night: 229 },
+  Sunday:   { day: 107, evening: 113, night: 240 }
+};
+/* Equivalent time at peak level, from IDEA-CONCEPT.md section 1.7. The three
+   public outdoor sessions converge on 5.70 / 6.28 / 7.25 s. Their mean is used
+   because no site-specific value exists for most of this map. */
+const TE = 6.41;
+
+const dB2p = d => Math.pow(10, d / 10);
+const p2dB = p => 10 * Math.log10(Math.max(p, 1e-12));
+
+/* ----------------------------------------------------------------------------
+   THE NOISE FIELD
+   Inverse-distance interpolation between the measured anchors, in the ENERGY
+   domain because energy is what adds. There is no propagation physics here at
+   all, and that is a deliberate, documented choice: see the rejected-model
+   panel. Do not read this as a noise map.
+   -------------------------------------------------------------------------- */
+function fieldAt(x, y) {
+  let wsum = 0, base = 0, peak = 0;
+  for (const a of ANCHORS) {
+    const d = Math.max(6, Math.hypot(x - a.pos[0], y - a.pos[1]));
+    const w = 1 / (d * d);
+    wsum += w; base += w * dB2p(a.base); peak += w * dB2p(a.lmax);
+  }
+  return { base: base / wsum, peak: peak / wsum };
+}
+/* Instantaneous level at a position and a model time, given a train schedule.
+   The event envelope is a raised cosine of total width 2*TE centred on each
+   crossing, which is the same envelope shape the acoustic demo uses and is
+   itself an assumption that no measurement in this repository constrains. */
+function levelAt(x, y, t, headway) {
+  const f = fieldAt(x, y);
+  const phase = ((t % headway) + headway) % headway;
+  const off = Math.min(phase, headway - phase);
+  let p = f.base;
+  if (off < TE) {
+    const s = 0.5 * (1 + Math.cos(Math.PI * off / TE));
+    p += (f.peak - f.base) * s;
+  }
+  return p2dB(p);
+}
+
+/* ============================================================================
+   PLACES
+   kind drives which itinerary slots a place can fill. capacity is what creates
+   contention. indoor drives a flat facade attenuation, which is itself a crude
+   assumption flagged in the weaknesses list.
+   ========================================================================= */
+function P(id, name, kind, lat, lon, cap, dwellMu, dwellSd, indoor) {
+  return { id, name, kind, pos: g(lat, lon), capacity: cap,
+           dwell: { mu: dwellMu, sd: dwellSd }, indoor: !!indoor, occupancy: 0 };
+}
+const PLACES = [
+  /* transit gateways - ingress and egress */
+  P("york",     "York St (F)",                 "gateway", 40.7013, -73.9866,  900,  0,   0, false),
+  P("high",     "High St (A/C)",               "gateway", 40.6997, -73.9906,  900,  0,   0, false),
+  P("bbwalk",   "Brooklyn Bridge walkway exit","gateway", 40.6998, -73.9905,  900,  0,   0, false),
+  P("ferry",    "Fulton Ferry Landing",        "gateway", 40.7030, -73.9958,  300,  4,   2, false),
+  P("homes",    "DUMBO residences",            "residence",40.7028, -73.9880, 9999, 0,   0, true),
+  P("farragut", "Farragut Houses",             "residence",40.6992, -73.9840, 9999, 0,   0, true),
+  /* the things people come for */
+  P("washst",   "Washington St view",          "view",    40.7037, -73.9903,   60, 11,   6, false),
+  P("pebble",   "Pebble Beach",                "waterfront",40.7042,-73.9938,  220, 26,  15, false),
+  P("carousel", "Jane's Carousel",             "attraction",40.7033,-73.9954,  180, 32,  16, false),
+  P("mainpark", "Main Street Park lawn",       "waterfront",40.7040,-73.9945,  400, 44,  26, false),
+  P("pier1",    "Pier 1 lawn and promenade",   "waterfront",40.7008,-73.9975,  700, 51,  30, false),
+  P("archway",  "DUMBO Archway",               "attraction",40.7036,-73.9887,  200, 15,   9, false),
+  P("empire",   "Empire Stores",               "shop",    40.7029, -73.9945,  300, 34,  19, true),
+  P("waterst",  "Water Street shops",          "shop",    40.7033, -73.9900,  160, 22,  13, true),
+  P("frontst",  "Front Street shops",          "shop",    40.7024, -73.9885,  160, 20,  12, true),
+  P("timeout",  "Time Out Market",             "eatery",  40.7030, -73.9948,  350, 56,  24, true),
+  P("icecream", "Old Fulton eateries",         "eatery",  40.7032, -73.9960,  140, 41,  20, true),
+  P("cafe",     "Front Street cafes",          "eatery",  40.7025, -73.9882,  120, 38,  19, true),
+  P("offices",  "DUMBO offices",               "work",    40.7026, -73.9890, 9999, 0,    0, true)
+];
+const byId = Object.fromEntries(PLACES.map(p => [p.id, p]));
+PLACES.forEach(p => { const f = fieldAt(p.pos[0], p.pos[1]);
+  p.baseDB = p2dB(f.base); p.peakDB = p2dB(f.peak);
+  p.distBridge = perpDist(p.pos, BRIDGE); });
+
+/* Flat facade attenuation. Real facades vary by tens of dB. */
+const INDOOR_ATTEN = 13;
+
+/* ============================================================================
+   PERSONAS
+   ingress and egress are weighted over gateway places, which is the point the
+   user raised: a persona is defined as much by where it enters and leaves the
+   neighbourhood as by what it does inside it.
+   ========================================================================= */
+const PERSONAS = [
+  { id: "tourist_solo", label: "Tourist, solo or pair", v: "--cp-p-tourist",
+    group: [[1, 0.42], [2, 0.58]], pace: 1.28, dwellMul: 1.0,
+    ingress: [["york", 3], ["high", 2], ["bbwalk", 4], ["ferry", 1]],
+    egress:  [["york", 3], ["high", 2], ["bbwalk", 3], ["ferry", 2]],
+    scenarios: [["quick_pics", 4], ["full_tour", 3], ["tour_eat", 2], ["water", 2], ["shops", 1]] },
+  { id: "tourist_family", label: "Tourist family group", v: "--cp-p-family",
+    group: [[3, 0.34], [4, 0.40], [5, 0.18], [6, 0.08]], pace: 0.98, dwellMul: 1.35,
+    ingress: [["york", 3], ["high", 2], ["bbwalk", 4], ["ferry", 2]],
+    egress:  [["york", 3], ["high", 2], ["bbwalk", 3], ["ferry", 2]],
+    scenarios: [["quick_pics", 2], ["full_tour", 3], ["tour_eat", 4], ["water", 4], ["shops", 1]] },
+  { id: "local_resident", label: "Local resident", v: "--cp-p-resident",
+    group: [[1, 0.55], [2, 0.33], [3, 0.12]], pace: 1.42, dwellMul: 0.72,
+    ingress: [["homes", 6], ["farragut", 4]],
+    egress:  [["homes", 6], ["farragut", 4]],
+    scenarios: [["water", 3], ["shops", 3], ["tour_eat", 2], ["errand", 5]] },
+  { id: "worker", label: "Local worker", v: "--cp-p-worker",
+    group: [[1, 0.72], [2, 0.28]], pace: 1.45, dwellMul: 0.6,
+    ingress: [["york", 4], ["high", 3], ["ferry", 1]],
+    egress:  [["york", 4], ["high", 3], ["ferry", 1]],
+    scenarios: [["errand", 5], ["tour_eat", 3], ["water", 2]] },
+  { id: "commuter", label: "Passing commuter", v: "--cp-p-commuter",
+    group: [[1, 0.88], [2, 0.12]], pace: 1.55, dwellMul: 0.2,
+    ingress: [["york", 4], ["high", 4], ["bbwalk", 2]],
+    egress:  [["york", 4], ["high", 4], ["bbwalk", 2]],
+    scenarios: [["through", 10]] }
+];
+const personaById = Object.fromEntries(PERSONAS.map(p => [p.id, p]));
+
+/* ============================================================================
+   SCENARIOS - itinerary archetypes
+   A template is a list of slots. Each slot names a place KIND and a probability
+   of being included. The planner resolves kinds to specific places using the
+   persona's affinity and the place's current occupancy.
+   ========================================================================= */
+const SCENARIOS = [
+  { id: "quick_pics", label: "Quick visit, photograph the bridge",
+    slots: [["view", 1.0], ["attraction", 0.5]], dwellMul: 0.55 },
+  { id: "full_tour", label: "Full tour of the waterfront",
+    slots: [["view", 0.9], ["attraction", 0.8], ["waterfront", 1.0], ["waterfront", 0.7]], dwellMul: 1.0 },
+  { id: "tour_eat", label: "Tour and a meal",
+    slots: [["view", 0.7], ["waterfront", 0.8], ["eatery", 1.0], ["shop", 0.4]], dwellMul: 1.1 },
+  { id: "water", label: "Hang out by the water",
+    slots: [["waterfront", 1.0], ["waterfront", 0.45]], dwellMul: 1.45 },
+  { id: "shops", label: "Explore the shops",
+    slots: [["shop", 1.0], ["shop", 0.6], ["eatery", 0.5]], dwellMul: 0.95 },
+  { id: "errand", label: "Local errand or lunch break",
+    slots: [["eatery", 0.7], ["shop", 0.6]], dwellMul: 0.7 },
+  { id: "through", label: "Walking through, not stopping",
+    slots: [], dwellMul: 0 }
+];
+const scenarioById = Object.fromEntries(SCENARIOS.map(s => [s.id, s]));
+
+/* ============================================================================
+   THE CAPABILITY LADDER
+   Four separate policies, not four flags on one policy, so that what each layer
+   adds can be read off by diffing runs at the same seed.
+   ========================================================================= */
+const RUNGS = [
+  { id: "walker", label: "walker",
+    adds: "Baseline. Straight to a single destination and straight out again.",
+    teaches: "What does exposure look like with no itinerary at all? It is the null model the others have to beat." },
+  { id: "persona", label: "walker_with_persona",
+    adds: "Persona-specific ingress, egress, pace and scenario mix.",
+    teaches: "How much of the dose spread is explained by who someone is, rather than by when they happen to arrive?" },
+  { id: "group", label: "walker_with_group",
+    adds: "Party sizes, slower family pace, longer family dwell.",
+    teaches: "Does counting groups rather than people move the exposure totals, or only the headcount?" },
+  { id: "contend", label: "walker_with_contention",
+    adds: "Place capacity, deterministic contention, re-planning when blocked.",
+    teaches: "Does crowding push people into louder places? This is where the literal race condition enters." }
+];
+
+/* ============================================================================
+   ENGINE
+   ========================================================================= */
+const DT = 5;                 // seconds of model time per tick
+const state = {
+  seed: 20260731, day: "Weekday", hour: 14, pop: 600, rung: "contend",
+  running: false, t: 0, tick: 0, groups: [], log: [], seq: 0, counts: {},
+  spawnCursor: 0, showField: true, showPaths: false, rate: 20, done: false
+};
+
+function period(h) { return (h >= 23 || h < 7) ? "night" : (h >= 19 ? "evening" : "day"); }
+function headway() { return HEADWAY[state.day][period(state.hour)]; }
+
+function emit(type, actor, payload) {
+  state.seq++;
+  state.counts[type] = (state.counts[type] || 0) + 1;
+  const e = { seq: state.seq, tick: state.tick, t: state.t, type, actor,
+              payload, deterministic: true };
+  state.log.push(e);
+  // The log is a ring buffer for display. Anything a panel needs to COUNT is
+  // counted in state.counts as it happens, never recovered by filtering the
+  // log, because the log forgets and a counter does not.
+  if (state.log.length > 4000) state.log.splice(0, 2000);
+  return e;
+}
+
+/* --- planning ------------------------------------------------------------ */
+const CORRIDOR = PLACES.filter(p => ["archway", "waterst", "frontst", "washst"].includes(p.id));
+
+function planFor(gr, r) {
+  const sc = scenarioById[gr.scenario];
+  const rung = state.rung;
+  const out = [];
+  if (rung === "walker") {
+    // Null model: one destination, chosen without regard to persona or scenario.
+    const cands = PLACES.filter(p => ["waterfront", "attraction", "view", "shop", "eatery"].includes(p.kind));
+    out.push(pick(r, cands).id);
+    return out;
+  }
+  for (const [kind, prob] of sc.slots) {
+    if (r() > prob) continue;
+    let cands = PLACES.filter(p => p.kind === kind);
+    if (rung === "contend") {
+      const open = cands.filter(p => p.occupancy < p.capacity);
+      if (open.length) cands = open;
+    }
+    if (!cands.length) continue;
+    const chosen = pick(r, cands);
+    if (out[out.length - 1] !== chosen.id) out.push(chosen.id);
+  }
+  // Nobody teleports. A group whose itinerary resolved to nothing -- a commuter
+  // walking through, or a resident whose optional slots all failed their rolls --
+  // still crosses the neighbourhood on foot, and is still exposed while doing it.
+  // The "!" prefix marks a waypoint that is passed through without stopping, so
+  // it consumes no capacity and accrues no dwell.
+  if (!out.length) out.push("!" + pick(r, CORRIDOR).id);
+  return out;
+}
+
+function spawnGroup(i) {
+  const r = mulberry32(subSeed(state.seed, "g" + i + state.day + state.hour + state.rung));
+  const persona = state.rung === "walker"
+    ? personaById.tourist_solo
+    : personaById[weighted(r, personaMix())];
+  const size = state.rung === "walker" || state.rung === "persona"
+    ? 1 : weighted(r, persona.group);
+  const scenario = state.rung === "walker"
+    ? "full_tour" : weighted(r, persona.scenarios);
+  const inId = weighted(r, persona.ingress);
+  // Entering and leaving by the same door with nothing in between is not a
+  // visit, it is a rounding error. Resample rather than emit a zero-length one.
+  let outId = weighted(r, persona.egress), tries = 0;
+  while (outId === inId && persona.egress.length > 1 && tries++ < 8)
+    outId = weighted(r, persona.egress);
+  const gr = {
+    id: "grp_" + String(i).padStart(4, "0"), i,
+    persona: persona.id, size, scenario,
+    ingress: inId, egress: outId,
+    pace: (state.rung === "walker" ? 1.3 : persona.pace) * (1 + 0.09 * rnorm(r)),
+    dwellMul: (state.rung === "walker" ? 1 : persona.dwellMul) * scenarioById[scenario].dwellMul,
+    pos: byId[inId].pos.slice(), state: "travelling", plan: [], idx: 0,
+    dwellLeft: 0, energy: 0, secs: 0, peakDB: 0, trail: [], replans: 0,
+    startT: 0, r
+  };
+  gr.plan = planFor(gr, r);
+  gr.plan.push(outId);
+  return gr;
+}
+
+function personaMix() {
+  // Composition shifts across the day. Weekday mornings are commuters and
+  // workers; weekend afternoons are tourists. These weights are ASSUMED, and
+  // they are one of the invented inputs listed in the weaknesses panel.
+  const h = state.hour, wk = state.day === "Weekday";
+  const midday = Math.exp(-Math.pow(h - 14, 2) / 26);
+  const rush = wk ? Math.exp(-Math.pow(h - 8.5, 2) / 5) + Math.exp(-Math.pow(h - 18, 2) / 6) : 0.12;
+  const tour = (wk ? 0.7 : 1.5) * midday;
+  return [
+    ["tourist_solo",   3.0 * tour + 0.25],
+    ["tourist_family", (wk ? 1.1 : 2.6) * midday + 0.12],
+    ["local_resident", 1.5 + 0.5 * midday],
+    ["worker",         wk ? 1.4 + 2.2 * rush : 0.5],
+    ["commuter",       wk ? 1.0 + 4.0 * rush : 0.8]
+  ];
+}
+
+function target(gr) {
+  const id = gr.plan[Math.min(gr.idx, gr.plan.length - 1)];
+  const p = byId[id && id[0] === "!" ? id.slice(1) : id];
+  return p ? p.pos : null;
+}
+
+/* --- the four tick phases ------------------------------------------------ */
+function tickOnce() {
+  if (state.done) return;
+  state.tick++; state.t += DT;
+
+  // 1. OPEN -- spawn arrivals for this tick. Arrival is a Poisson-ish trickle
+  // spread over the first three quarters of the window so that everyone has
+  // time to complete a visit inside the run.
+  const spawnWindow = 2600;
+  const want = Math.min(state.pop, Math.floor(state.pop * Math.min(1, state.t / spawnWindow)));
+  while (state.spawnCursor < want) {
+    const gr = spawnGroup(state.spawnCursor);
+    gr.startT = state.t;
+    state.groups.push(gr);
+    emit("agent.registered", gr.id,
+         { persona: gr.persona, size: gr.size, scenario: gr.scenario,
+           ingress: gr.ingress, plan: gr.plan.join(">") });
+    state.spawnCursor++;
+  }
+
+  // 2. PERCEIVE + 3. ACT -- intents are buffered, never applied here. A group
+  // may not see another group's action from this same tick.
+  const intents = [];
+  for (const gr of state.groups) {
+    if (gr.state === "departed") continue;
+    if (gr.state === "dwelling") {
+      intents.push({ gr, kind: gr.dwellLeft - DT <= 0 ? "leave" : "stay" });
+      continue;
+    }
+    const tp = target(gr);
+    if (!tp) { intents.push({ gr, kind: "exit" }); continue; }
+    const dx = tp[0] - gr.pos[0], dy = tp[1] - gr.pos[1], d = Math.hypot(dx, dy);
+    if (d < gr.pace * DT) intents.push({ gr, kind: "arrive", place: gr.plan[gr.idx] });
+    else intents.push({ gr, kind: "move", dx: dx / d * gr.pace * DT, dy: dy / d * gr.pace * DT });
+  }
+
+  // 4. RESOLVE -- fixed order, never arrival order. This is what makes the run
+  // reproducible, and it is the deliberately boring resolution of the literal
+  // race condition.
+  intents.sort((a, b) => a.gr.id < b.gr.id ? -1 : a.gr.id > b.gr.id ? 1 : 0);
+  const hw = headway();
+  for (const it of intents) {
+    const gr = it.gr;
+    switch (it.kind) {
+      case "move": gr.pos[0] += it.dx; gr.pos[1] += it.dy; break;
+      case "stay": gr.dwellLeft -= DT; break;
+      case "leave": {
+        const p = byId[gr.plan[gr.idx]];
+        if (p) p.occupancy = Math.max(0, p.occupancy - gr.size);
+        emit("agent.departed_place", gr.id, { place: gr.plan[gr.idx] });
+        gr.state = "travelling"; gr.idx++;
+        break;
+      }
+      case "arrive": {
+        const raw = it.place, pass = raw[0] === "!";
+        const p = byId[pass ? raw.slice(1) : raw];
+        gr.pos = p.pos.slice();
+        if (gr.idx >= gr.plan.length - 1) {           // reached the exit gateway
+          gr.state = "departed";
+          emit("agent.drained", gr.id,
+               { secs: Math.round(gr.secs), leq: +doseLeq(gr).toFixed(1), replans: gr.replans });
+          break;
+        }
+        if (pass) {                                   // walked through, did not stop
+          emit("agent.passed_through", gr.id, { place: p.id });
+          gr.idx++;
+          break;
+        }
+        if (state.rung === "contend" && p.occupancy + gr.size > p.capacity) {
+          emit("place.contended", gr.id, { place: p.id, occupancy: p.occupancy, capacity: p.capacity });
+          gr.replans++;
+          const alt = PLACES.filter(q => q.kind === p.kind && q.occupancy + gr.size <= q.capacity);
+          if (alt.length) gr.plan[gr.idx] = pick(gr.r, alt).id;
+          else { gr.idx++; }                          // give up on this slot
+          break;
+        }
+        p.occupancy += gr.size;
+        p.visits++;
+        const mu = p.dwell.mu * gr.dwellMul;
+        gr.dwellLeft = Math.max(0, (mu + p.dwell.sd * gr.dwellMul * rnorm(gr.r)) * 60);
+        gr.state = "dwelling";
+        emit("agent.arrived", gr.id, { place: p.id, dwell_s: Math.round(gr.dwellLeft) });
+        break;
+      }
+      case "exit": gr.state = "departed"; break;
+    }
+  }
+
+  // Exposure accrues for everyone still present, wherever they are.
+  for (const gr of state.groups) {
+    if (gr.state === "departed") continue;
+    let db = levelAt(gr.pos[0], gr.pos[1], state.t, hw);
+    if (gr.state === "dwelling") {
+      const p = byId[gr.plan[gr.idx]];
+      if (p) { p.peopleSec += gr.size * DT; if (p.indoor) db -= INDOOR_ATTEN; }
+    }
+    gr.energy += dB2p(db) * DT; gr.secs += DT;
+    if (db > gr.peakDB) gr.peakDB = db;
+    if (state.showPaths && state.tick % 6 === 0) {
+      gr.trail.push([gr.pos[0], gr.pos[1]]);
+      if (gr.trail.length > 60) gr.trail.shift();
+    }
+  }
+
+  if (state.tick % Math.round(hw / DT) === 0)
+    emit("env.train_crossed", "environment", { headway_s: hw });
+
+  const active = state.groups.filter(gr => gr.state !== "departed").length;
+  if (state.spawnCursor >= state.pop && active === 0) {
+    state.done = true; state.running = false;
+    emit("run.completed", "system", { groups: state.groups.length, ticks: state.tick });
+  }
+}
+
+function doseLeq(gr) { return gr.secs > 0 ? p2dB(gr.energy / gr.secs) : 0; }
+
+/* ============================================================================
+   RENDERING
+   ========================================================================= */
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+const XS = PLACES.map(p => p.pos[0]).concat([BRIDGE.a[0], BRIDGE.b[0]]);
+const YS = PLACES.map(p => p.pos[1]).concat([BRIDGE.a[1], BRIDGE.b[1]]);
+const BB = { x0: Math.min(...XS) - 90, x1: Math.max(...XS) + 90,
+             y0: Math.min(...YS) - 90, y1: Math.max(...YS) + 90 };
+
+function makeProj(w, h) {
+  const s = Math.min(w / (BB.x1 - BB.x0), h / (BB.y1 - BB.y0));
+  const ox = (w - (BB.x1 - BB.x0) * s) / 2, oy = (h - (BB.y1 - BB.y0) * s) / 2;
+  return { s, ox, oy, h,
+           X: x => ox + (x - BB.x0) * s,
+           Y: y => h - oy - (y - BB.y0) * s,
+           iX: px => BB.x0 + (px - ox) / s,
+           iY: py => BB.y0 + (h - oy - py) / s };
+}
+
+let fieldCache = null;
+function buildField(pr, w, h) {
+  const step = 5, cw = Math.ceil(w / step), ch = Math.ceil(h / step);
+  const off = document.createElement("canvas");
+  off.width = cw; off.height = ch;
+  const ictx = off.getContext("2d"), img = ictx.createImageData(cw, ch);
+  const lo = 60, hi = 100;
+  for (let j = 0; j < ch; j++) for (let i = 0; i < cw; i++) {
+    const db = p2dB(fieldAt(pr.iX(i * step), pr.iY(j * step)).peak);
+    const u = Math.max(0, Math.min(1, (db - lo) / (hi - lo)));
+    const k = (j * cw + i) * 4;
+    img.data[k] = Math.round(40 + 200 * u);
+    img.data[k + 1] = Math.round(90 - 60 * u);
+    img.data[k + 2] = Math.round(130 - 90 * u);
+    img.data[k + 3] = Math.round(26 + 92 * u);
+  }
+  ictx.putImageData(img, 0, 0);
+  fieldCache = { canvas: off, step };
+}
+
+function drawMap() {
+  const cv = $("mapCanvas"), ctx = cv.getContext("2d");
+  const w = cv.width, h = cv.height, pr = makeProj(w, h);
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = cssv("--cp-surface-soft"); ctx.fillRect(0, 0, w, h);
+
+  if (state.showField) {
+    if (!fieldCache) buildField(pr, w, h);
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(fieldCache.canvas, 0, 0, w, h);
+  }
+
+  // the structure
+  ctx.strokeStyle = cssv("--cp-text-muted"); ctx.lineWidth = 14;
+  ctx.globalAlpha = 0.30; ctx.beginPath();
+  ctx.moveTo(pr.X(BRIDGE.a[0]), pr.Y(BRIDGE.a[1]));
+  ctx.lineTo(pr.X(BRIDGE.b[0]), pr.Y(BRIDGE.b[1])); ctx.stroke();
+  ctx.globalAlpha = 1; ctx.lineWidth = 2;
+  ctx.setLineDash([9, 6]); ctx.strokeStyle = cssv("--cp-text");
+  ctx.beginPath();
+  ctx.moveTo(pr.X(BRIDGE.a[0]), pr.Y(BRIDGE.a[1]));
+  ctx.lineTo(pr.X(BRIDGE.b[0]), pr.Y(BRIDGE.b[1])); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // trails
+  if (state.showPaths) {
+    ctx.lineWidth = 1;
+    for (const gr of state.groups) {
+      if (gr.state === "departed" || gr.trail.length < 2) continue;
+      ctx.strokeStyle = cssv(personaById[gr.persona].v); ctx.globalAlpha = 0.22;
+      ctx.beginPath(); ctx.moveTo(pr.X(gr.trail[0][0]), pr.Y(gr.trail[0][1]));
+      for (let i = 1; i < gr.trail.length; i++) ctx.lineTo(pr.X(gr.trail[i][0]), pr.Y(gr.trail[i][1]));
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // places
+  for (const p of PLACES) {
+    const x = pr.X(p.pos[0]), y = pr.Y(p.pos[1]);
+    const occ = p.capacity >= 9999 ? 0 : Math.min(1, p.occupancy / p.capacity);
+    ctx.beginPath(); ctx.arc(x, y, p.kind === "gateway" ? 9 : 7, 0, 6.2832);
+    ctx.fillStyle = p.kind === "gateway" ? cssv("--cp-accent")
+                  : p.kind === "residence" ? cssv("--cp-text-muted") : cssv("--cp-surface");
+    ctx.fill();
+    ctx.lineWidth = 1.6 + 2.4 * occ;
+    ctx.strokeStyle = occ > 0.85 ? cssv("--cp-danger") : cssv("--cp-border-strong");
+    ctx.stroke();
+    ctx.fillStyle = cssv("--cp-text-muted");
+    ctx.font = "10.5px Consolas, monospace";
+    ctx.fillText(p.name, x + 11, y + 3.5);
+  }
+
+  // groups
+  for (const gr of state.groups) {
+    if (gr.state === "departed") continue;
+    const x = pr.X(gr.pos[0]), y = pr.Y(gr.pos[1]);
+    ctx.beginPath();
+    ctx.arc(x, y, 2 + Math.min(4, Math.sqrt(gr.size) * 1.5), 0, 6.2832);
+    ctx.fillStyle = cssv(personaById[gr.persona].v);
+    ctx.globalAlpha = gr.state === "dwelling" ? 0.55 : 0.95;
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // anchors
+  for (const a of ANCHORS) {
+    const x = pr.X(a.pos[0]), y = pr.Y(a.pos[1]);
+    ctx.strokeStyle = cssv("--cp-text"); ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.moveTo(x - 6, y - 6); ctx.lineTo(x + 6, y + 6);
+    ctx.moveTo(x + 6, y - 6); ctx.lineTo(x - 6, y + 6); ctx.stroke();
+  }
+
+  // scale bar
+  const m = 200 * pr.s;
+  ctx.strokeStyle = cssv("--cp-text"); ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(20, h - 22); ctx.lineTo(20 + m, h - 22);
+  ctx.moveTo(20, h - 27); ctx.lineTo(20, h - 17);
+  ctx.moveTo(20 + m, h - 27); ctx.lineTo(20 + m, h - 17); ctx.stroke();
+  ctx.fillStyle = cssv("--cp-text-muted"); ctx.font = "11px Consolas, monospace";
+  ctx.fillText("200 m", 24 + m, h - 18);
+}
+
+function drawMapLegend() {
+  const sw = (v, t) => '<span class="sw" style="background:' + cssv(v) + '"></span>' + t;
+  $("mapLegend").innerHTML =
+    PERSONAS.map(p => sw(p.v, esc(p.label))).join(" &nbsp; ") +
+    ' &nbsp; <span class="mono">&times;</span> MTA measurement site' +
+    ' &nbsp; <span class="mono">- -</span> track centreline (digitised)' +
+    (state.showField ? " &nbsp; shading = interpolated peak level, 60&ndash;100 dB" : "");
+}
+
+/* ---- the race-condition panel ------------------------------------------- */
+const RACE_ROUTE = ["york", "washst", "pebble", "mainpark", "ferry"];
+const RACE_DWELL = [0, 240, 420, 900, 0];
+function raceSim(offset, hw) {
+  const step = 2; let t = offset, energy = 0, secs = 0, series = [], el = 0;
+  let pos = byId[RACE_ROUTE[0]].pos.slice();
+  const acc = () => { const db = levelAt(pos[0], pos[1], t, hw);
+    energy += dB2p(db) * step; secs += step; series.push([el, db]);
+    t += step; el += step; };
+  for (let i = 0; i < RACE_ROUTE.length; i++) {
+    const dest = byId[RACE_ROUTE[i]].pos;
+    let guard = 0;
+    while (guard++ < 3000) {
+      const dx = dest[0] - pos[0], dy = dest[1] - pos[1], d = Math.hypot(dx, dy);
+      if (d < 1.3 * step) { pos = dest.slice(); break; }
+      pos[0] += dx / d * 1.3 * step; pos[1] += dy / d * 1.3 * step; acc();
+    }
+    for (let s = 0; s < RACE_DWELL[i]; s += step) acc();
+  }
+  return { leq: p2dB(energy / Math.max(secs, 1)), secs, series };
+}
+
+function drawRace() {
+  const hw = headway();
+  const offs = [0, hw / 3, 2 * hw / 3];
+  const runs = offs.map(o => raceSim(o, hw));
+  const cv = $("raceCanvas"), ctx = cv.getContext("2d");
+  const w = cv.width, h = cv.height, pad = 40;
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = cssv("--cp-surface-soft"); ctx.fillRect(0, 0, w, h);
+  const maxT = Math.max(...runs.map(r => r.series[r.series.length - 1][0]));
+  const X = t => pad + (w - pad - 14) * t / maxT;
+  const Y = d => h - 26 - (h - 52) * (d - 55) / 50;
+  ctx.strokeStyle = cssv("--cp-grid"); ctx.lineWidth = 1;
+  ctx.fillStyle = cssv("--cp-text-muted"); ctx.font = "10px Consolas, monospace";
+  for (let d = 60; d <= 100; d += 10) {
+    ctx.beginPath(); ctx.moveTo(pad, Y(d)); ctx.lineTo(w - 14, Y(d)); ctx.stroke();
+    ctx.fillText(d, 8, Y(d) + 3);
+  }
+  const cols = ["--cp-p-tourist", "--cp-p-family", "--cp-p-worker"];
+  runs.forEach((r, i) => {
+    ctx.strokeStyle = cssv(cols[i]); ctx.lineWidth = 1.4; ctx.globalAlpha = 0.9;
+    ctx.beginPath();
+    r.series.forEach((s, k) => k ? ctx.lineTo(X(s[0]), Y(s[1])) : ctx.moveTo(X(s[0]), Y(s[1])));
+    ctx.stroke();
+  });
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = cssv("--cp-text-muted");
+  ctx.fillText("minutes into the visit", w / 2 - 60, h - 8);
+  for (let mm = 0; mm <= maxT / 60; mm += 5)
+    ctx.fillText(mm, X(mm * 60) - 4, h - 8);
+
+  $("raceLegend").innerHTML = runs.map((r, i) =>
+    '<span class="sw" style="background:' + cssv(cols[i]) + '"></span>start +' +
+    Math.round(offs[i]) + ' s &rarr; ' + r.leq.toFixed(2) + ' dB').join(" &nbsp; ");
+
+  // sweep across a full headway
+  const N = 41, pts = [];
+  for (let i = 0; i < N; i++) { const o = hw * i / (N - 1); pts.push([o, raceSim(o, hw).leq]); }
+  const lo = Math.min(...pts.map(p => p[1])), hi = Math.max(...pts.map(p => p[1]));
+  const W = 540, H = 210, P = 46;
+  const sx = o => P + (W - P - 12) * o / hw;
+  const sy = v => H - 30 - (H - 52) * (v - (lo - 0.15)) / ((hi + 0.15) - (lo - 0.15));
+  let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="' + H + '" role="img" aria-label="Dose versus start offset">';
+  for (let k = 0; k <= 4; k++) {
+    const v = lo - 0.15 + k * ((hi + 0.15) - (lo - 0.15)) / 4;
+    s += '<line class="gl" x1="' + P + '" y1="' + sy(v).toFixed(1) + '" x2="' + (W - 12) + '" y2="' + sy(v).toFixed(1) + '"/>';
+    s += '<text class="axis" x="4" y="' + (sy(v) + 3).toFixed(1) + '">' + v.toFixed(2) + '</text>';
+  }
+  s += '<polyline fill="none" stroke="' + cssv("--cp-accent") + '" stroke-width="2" points="' +
+       pts.map(p => sx(p[0]).toFixed(1) + "," + sy(p[1]).toFixed(1)).join(" ") + '"/>';
+  s += '<text class="axis" x="' + P + '" y="' + (H - 8) + '">0 s</text>';
+  s += '<text class="axis" x="' + (W - 60) + '" y="' + (H - 8) + '">' + hw + ' s (one headway)</text>';
+  s += "</svg>";
+  $("raceChart").innerHTML = s;
+  $("raceTxt").innerHTML =
+    "Identical route, identical dwells, identical walking speed. Only the <em>start time</em> differs, " +
+    "and only within a single " + hw + "-second headway. Dose ranges " + lo.toFixed(2) + " to " +
+    hi.toFixed(2) + " dB, a spread of <strong>" + (hi - lo).toFixed(2) + " dB</strong> " +
+    "over a " + Math.round(runs[0].secs / 60) + "-minute visit. " +
+    "The spread is small here because this itinerary is long enough to average over many trains. " +
+    "Shorten the visit and it grows: that is the whole mechanism, and it is why a two-hour tourist " +
+    "and a resident are not the same measurement problem.";
+}
+
+/* ---- run-state panels ---------------------------------------------------- */
+function drawStats() {
+  const active = state.groups.filter(gr => gr.state !== "departed");
+  const done = state.groups.filter(gr => gr.state === "departed");
+  const people = state.groups.reduce((s, gr) => s + gr.size, 0);
+  const hw = headway();
+  const cells = [
+    ["Model time", (state.t / 60).toFixed(1) + " min"],
+    ["Ticks", state.tick + " @ " + DT + " s"],
+    ["Groups spawned", state.spawnCursor + " / " + state.pop],
+    ["People represented", people],
+    ["Present now", active.length + " groups"],
+    ["Completed visits", done.length],
+    ["Headway", hw + " s (" + state.day + ", " + period(state.hour) + ")"],
+    ["Trains crossed", Math.floor(state.t / hw)],
+    ["Contention events", state.counts["place.contended"] || 0],
+    ["Events logged", state.seq]
+  ];
+  $("stats").innerHTML = cells.map(c =>
+    '<div class="stat"><div class="k">' + c[0] + '</div><div class="v">' + c[1] + "</div></div>").join("");
+}
+
+function drawCommons() {
+  const done = state.groups.filter(gr => gr.state === "departed" && gr.secs > 0);
+  const personSec = state.groups.reduce((s, gr) => s + gr.secs * gr.size, 0);
+  const over80 = state.groups.filter(gr => gr.peakDB >= 80).reduce((s, gr) => s + gr.size, 0);
+  const people = Math.max(1, state.groups.reduce((s, gr) => s + gr.size, 0));
+  const meanLeq = done.length ? p2dB(done.reduce((s, gr) => s + dB2p(doseLeq(gr)) * gr.size, 0)
+                                     / done.reduce((s, gr) => s + gr.size, 0)) : 0;
+  const rows = [
+    ["Person-hours of exposure accrued", (personSec / 3600).toFixed(1) + " h",
+     "The externality is a rate multiplied by a duration. Only this model produces the duration."],
+    ["People reaching 80 dB(A) peak", over80 + " of " + people +
+     " (" + (100 * over80 / people).toFixed(0) + "%)",
+     "80 dB(A) is the CEQR mobile-source screening threshold, not a health threshold."],
+    ["Energy-mean dose across completed visits", meanLeq ? meanLeq.toFixed(1) + " dB" : "&mdash;",
+     "Energy mean, so it is dominated by the loudest minutes and not by the typical one."],
+    ["Parties not at the table", "residents indoors, night workers, the 2019 walkway flow",
+     "None of these are agents here. The model under-counts them by construction, and saying so is the observer's only job."]
+  ];
+  $("commons").innerHTML = '<table><thead><tr><th>Measure</th><th>Value</th><th>What it does and does not mean</th></tr></thead><tbody>' +
+    rows.map(r => "<tr><td>" + r[0] + '</td><td class="mono">' + r[1] + "</td><td>" + r[2] + "</td></tr>").join("") +
+    "</tbody></table>";
+}
+
+function drawLog() {
+  const tail = state.log.slice(-90).reverse();
+  $("log").innerHTML = tail.map(e =>
+    "<div>" + String(e.seq).padStart(5, "0") + "  " + String(e.t).padStart(5, " ") + "s  " +
+    "<b>" + e.type + "</b>  " + e.actor + "  " +
+    esc(JSON.stringify(e.payload)) + "</div>").join("") ||
+    '<div>no events yet &mdash; press Run</div>';
+}
+
+/* ---- results ------------------------------------------------------------- */
+function drawDose() {
+  const done = state.groups.filter(gr => gr.state === "departed" && gr.secs > 0);
+  if (!done.length) { $("doseChart").innerHTML = '<p class="hint">No completed visits yet.</p>'; return; }
+  const vals = done.map(gr => ({ v: doseLeq(gr), p: gr.persona }));
+  const lo = Math.floor(Math.min(...vals.map(a => a.v)) - 0.5);
+  const hi = Math.ceil(Math.max(...vals.map(a => a.v)) + 0.5);
+  const NB = 24, bins = [];
+  for (let i = 0; i < NB; i++) bins.push(Object.fromEntries(PERSONAS.map(p => [p.id, 0])));
+  vals.forEach(a => {
+    const k = Math.max(0, Math.min(NB - 1, Math.floor((a.v - lo) / (hi - lo) * NB)));
+    bins[k][a.p]++;
+  });
+  const maxB = Math.max(...bins.map(b => Object.values(b).reduce((s, x) => s + x, 0)), 1);
+  const W = 540, H = 250, P = 40;
+  let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="' + H + '" role="img" aria-label="Dose histogram">';
+  for (let k = 0; k <= 4; k++) {
+    const y = H - 34 - (H - 56) * k / 4;
+    s += '<line class="gl" x1="' + P + '" y1="' + y.toFixed(1) + '" x2="' + (W - 10) + '" y2="' + y.toFixed(1) + '"/>';
+    s += '<text class="axis" x="6" y="' + (y + 3).toFixed(1) + '">' + Math.round(maxB * k / 4) + "</text>";
+  }
+  const bw = (W - P - 10) / NB;
+  bins.forEach((b, i) => {
+    let acc = 0;
+    PERSONAS.forEach(pn => {
+      const n = b[pn.id]; if (!n) return;
+      const y0 = H - 34 - (H - 56) * (acc + n) / maxB, y1 = H - 34 - (H - 56) * acc / maxB;
+      s += '<rect x="' + (P + i * bw + 0.6).toFixed(1) + '" y="' + y0.toFixed(1) +
+           '" width="' + (bw - 1.2).toFixed(1) + '" height="' + Math.max(0.6, y1 - y0).toFixed(1) +
+           '" fill="' + cssv(pn.v) + '" opacity="0.86"/>';
+      acc += n;
+    });
+  });
+  s += '<text class="axis" x="' + P + '" y="' + (H - 8) + '">' + lo + ' dB</text>';
+  s += '<text class="axis" x="' + (W - 54) + '" y="' + (H - 8) + '">' + hi + ' dB</text>';
+  s += "</svg>";
+  $("doseChart").innerHTML = s;
+}
+
+function drawPersonaTable() {
+  const done = state.groups.filter(gr => gr.state === "departed" && gr.secs > 0);
+  let s = '<table><thead><tr><th>Persona</th><th>Groups</th><th>People</th><th>Mean visit</th>' +
+          '<th>Dose L<span style="font-size:0.8em">eq</span></th><th>Spread</th></tr></thead><tbody>';
+  for (const pn of PERSONAS) {
+    const g2 = done.filter(gr => gr.persona === pn.id);
+    if (!g2.length) { s += "<tr><td>" + esc(pn.label) + '</td><td colspan="5" class="hint">none in this run</td></tr>'; continue; }
+    const ppl = g2.reduce((a, gr) => a + gr.size, 0);
+    const mins = g2.reduce((a, gr) => a + gr.secs, 0) / g2.length / 60;
+    const ds = g2.map(doseLeq);
+    const leq = p2dB(g2.reduce((a, gr) => a + dB2p(doseLeq(gr)), 0) / g2.length);
+    s += "<tr><td><span class='sw' style='background:" + cssv(pn.v) + "'></span>" + esc(pn.label) +
+         '</td><td class="mono">' + g2.length + '</td><td class="mono">' + ppl +
+         '</td><td class="mono">' + mins.toFixed(0) + ' min</td><td class="mono">' + leq.toFixed(1) +
+         '</td><td class="mono">' + (Math.max(...ds) - Math.min(...ds)).toFixed(1) + " dB</td></tr>";
+  }
+  s += "</tbody></table>";
+  $("personaTable").innerHTML = s;
+}
+
+function drawPlaceTable() {
+  const rows = PLACES.filter(p => p.visits > 0).sort((x, y) => y.peopleSec - x.peopleSec);
+  if (!rows.length) { $("placeTable").innerHTML = '<p class="hint">No arrivals yet.</p>'; return; }
+  let s = '<table><thead><tr><th>Place</th><th>Kind</th><th>Distance to track</th>' +
+          '<th>Peak level here</th><th>Visits</th><th>Person-hours</th><th>Share of dose energy</th></tr></thead><tbody>';
+  const en = p => p.peopleSec * dB2p(p.peakDB - (p.indoor ? INDOOR_ATTEN : 0));
+  const tot = rows.reduce((a, p) => a + en(p), 0);
+  for (const p of rows) {
+    s += "<tr><td>" + esc(p.name) + "</td><td>" + p.kind +
+         '</td><td class="mono">' + Math.round(p.distBridge) + ' m</td><td class="mono">' +
+         p.peakDB.toFixed(1) + (p.indoor ? " &minus;" + INDOOR_ATTEN : "") +
+         '</td><td class="mono">' + p.visits + '</td><td class="mono">' +
+         (p.peopleSec / 3600).toFixed(1) + '</td><td class="mono">' +
+         (100 * en(p) / Math.max(tot, 1e-9)).toFixed(1) + "%</td></tr>";
+  }
+  s += "</tbody></table>";
+  $("placeTable").innerHTML = s;
+}
+
+/* ---- static reference tables --------------------------------------------- */
+function drawAnchorTable() {
+  // Fitted line-source model on the three near sites, used only to show how far
+  // the fourth site is from it. It is not offered as a propagation model.
+  const near = ANCHORS.filter(a => a.id !== "dogrun");
+  const ref = near[0];
+  let num = 0, den = 0;
+  for (const a of near) {
+    if (a === ref) continue;
+    num += (ref.lmax - a.lmax); den += Math.log10(a.dist / ref.dist);
+  }
+  const k = den !== 0 ? num / den : 10;
+  const pred = d => ref.lmax - k * Math.log10(d / ref.dist);
+  const dog = ANCHORS.find(a => a.id === "dogrun");
+  const excess = dog.lmax - pred(dog.dist);
+  $("excessTxt").textContent = excess.toFixed(1);
+
+  let s = '<table><thead><tr><th>Site</th><th>Perpendicular distance</th><th>L<span style="font-size:0.8em">eq</span></th>' +
+          '<th>Avg L<span style="font-size:0.8em">max</span></th><th>Background</th>' +
+          '<th>Line-source prediction</th><th>Residual</th></tr></thead><tbody>';
+  for (const a of ANCHORS.slice().sort((x, y) => x.dist - y.dist)) {
+    const r = a.lmax - pred(a.dist);
+    s += "<tr><td>" + esc(a.name) + '</td><td class="mono">' + Math.round(a.dist) + ' m</td>' +
+         '<td class="mono">' + (a.leq === null ? "&mdash;" : a.leq.toFixed(2)) + '</td>' +
+         '<td class="mono">' + a.lmax.toFixed(2) + '</td><td class="mono">' + a.base.toFixed(1) + '</td>' +
+         '<td class="mono">' + pred(a.dist).toFixed(2) + '</td><td class="mono">' +
+         (r >= 0 ? "+" : "") + r.toFixed(2) + " dB</td></tr>";
+  }
+  s += "</tbody></table>" +
+       '<p class="hint">Levels are MTA\'s own instrumented sessions, rated 5/5 VERIFIED. ' +
+       'Positions are mine, digitised by eye from street addresses, rated 2/5. The fitted exponent ' +
+       'here is k&nbsp;=&nbsp;' + k.toFixed(1) + ', and the sensitivity test above is the reason that ' +
+       'number is reported and then discarded rather than used.</p>';
+  $("anchorTable").innerHTML = s;
+}
+
+function drawPersonaDefs() {
+  let s = '<table><thead><tr><th>Persona</th><th>Party size</th><th>Enters via</th><th>Leaves via</th>' +
+          '<th>Pace</th><th>Dwell multiplier</th><th>Scenario mix</th></tr></thead><tbody>';
+  for (const p of PERSONAS) {
+    const gs = p.group.map(e => e[0] + " (" + Math.round(e[1] * 100) + "%)").join(", ");
+    const wt = arr => { const t = arr.reduce((a, e) => a + e[1], 0);
+      return arr.map(e => (byId[e[0]] ? byId[e[0]].name : scenarioById[e[0]] ? scenarioById[e[0]].label : e[0]) +
+        " " + Math.round(100 * e[1] / t) + "%").join(", "); };
+    s += "<tr><td><span class='sw' style='background:" + cssv(p.v) + "'></span>" + esc(p.label) +
+         "</td><td>" + gs + "</td><td>" + wt(p.ingress) + "</td><td>" + wt(p.egress) +
+         '</td><td class="mono">' + p.pace.toFixed(2) + ' m/s</td><td class="mono">' +
+         p.dwellMul.toFixed(2) + "</td><td>" + wt(p.scenarios) + "</td></tr>";
+  }
+  s += "</tbody></table>";
+  $("personaDefTable").innerHTML = s;
+}
+
+function drawScenarioDefs() {
+  let s = '<table><thead><tr><th>Scenario</th><th>Itinerary slots</th><th>Dwell multiplier</th></tr></thead><tbody>';
+  for (const sc of SCENARIOS) {
+    const slots = sc.slots.length
+      ? sc.slots.map(x => x[0] + " (" + Math.round(x[1] * 100) + "%)").join(" &rarr; ")
+      : "<em>none &mdash; straight through</em>";
+    s += "<tr><td>" + esc(sc.label) + "</td><td>" + slots +
+         '</td><td class="mono">' + sc.dwellMul.toFixed(2) + "</td></tr>";
+  }
+  s += "</tbody></table>";
+  $("scenarioDefTable").innerHTML = s;
+}
+
+function drawPlaceDefs() {
+  let s = '<table><thead><tr><th>Place</th><th>Kind</th><th>Capacity</th><th>Mean dwell</th>' +
+          '<th>Indoor</th><th>Distance to track</th><th>Interpolated peak</th></tr></thead><tbody>';
+  for (const p of PLACES.slice().sort((a, b) => a.distBridge - b.distBridge)) {
+    s += "<tr><td>" + esc(p.name) + "</td><td>" + p.kind +
+         '</td><td class="mono">' + (p.capacity >= 9999 ? "&infin;" : p.capacity) +
+         '</td><td class="mono">' + (p.dwell.mu ? p.dwell.mu + " min" : "&mdash;") +
+         "</td><td>" + (p.indoor ? "yes, &minus;" + INDOOR_ATTEN + " dB" : "no") +
+         '</td><td class="mono">' + Math.round(p.distBridge) + ' m</td><td class="mono">' +
+         p.peakDB.toFixed(1) + " dB</td></tr>";
+  }
+  s += "</tbody></table>" +
+       '<p class="hint">Every position, capacity and dwell figure in this table was chosen by me. ' +
+       'None is measured. The dwell means are shaped to the Louisville distribution the cohort model ' +
+       'uses, which was itself transferred from another city.</p>';
+  $("placeDefTable").innerHTML = s;
+}
+
+function drawRungTable() {
+  let s = '<table><thead><tr><th>Rung</th><th>What it adds</th><th>What diffing it against the rung below teaches</th></tr></thead><tbody>';
+  for (const r of RUNGS)
+    s += '<tr><td class="mono">' + r.label + "</td><td>" + r.adds + "</td><td>" + r.teaches + "</td></tr>";
+  s += "</tbody></table>";
+  $("rungTable").innerHTML = s;
+}
+
+const SCHEMAS = {
+  schemaPlace:
+`Place {
+  id          string        stable identifier, used in the event log
+  name        string
+  kind        enum          gateway | residence | view | attraction |
+                            waterfront | shop | eatery | work
+  pos         [x, y]        metres east and north of 40.7020 N, 73.9900 W
+  capacity    int           people; the only source of contention
+  dwell       {mu, sd}      minutes, before persona and scenario multipliers
+  indoor      bool          applies a flat facade attenuation
+  occupancy   int           mutable, resolved once per tick in fixed order
+}`,
+  schemaPersona:
+`Persona {
+  id          string
+  group       [[size, p]]   party-size distribution, sampled per group
+  ingress     [[placeId,w]] where this persona ENTERS the neighbourhood
+  egress      [[placeId,w]] where it LEAVES, sampled independently
+  pace        m/s           free-walking speed, jittered per group
+  dwellMul    float         multiplies every dwell in the itinerary
+  scenarios   [[scenId,w]]  what this persona is here to do
+}`,
+  schemaScenario:
+`Scenario {
+  id          string
+  slots       [[kind, p]]   ordered itinerary template. Each slot names a
+                            place KIND and a probability of inclusion, so
+                            two groups with the same scenario rarely walk
+                            the same route.
+  dwellMul    float
+}`,
+  schemaGroup:
+`Group {                     THE AGENT IS THE GROUP, NOT THE PERSON.
+  id          string        grp_0000, ascending; also the resolution key
+  size        int           people travelling as one object
+  persona     Persona.id
+  scenario    Scenario.id
+  ingress     Place.id      sampled once at spawn
+  egress      Place.id      sampled once at spawn
+  plan        [Place.id]    resolved from the scenario at spawn, mutable
+                            only through contention re-planning
+  idx         int           position in the plan
+  state       enum          travelling | dwelling | departed
+  pos         [x, y]
+  dwellLeft   seconds
+  energy      Pa^2-seconds  the accumulated dose; the whole point
+  secs        seconds       exposure duration, so that energy/secs is Leq
+  peakDB      dB            highest instantaneous level encountered
+  r           PRNG          sub-seeded from (runSeed, group index)
+}`
+};
+
+/* ============================================================================
+   CONTROLS
+   ========================================================================= */
+function seg(el, opts, cur, cb) {
+  el.innerHTML = opts.map(o =>
+    '<button type="button" data-v="' + o[0] + '" aria-pressed="' + (o[0] === cur) + '">' +
+    o[1] + "</button>").join("");
+  el.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    [...el.querySelectorAll("button")].forEach(x => x.setAttribute("aria-pressed", x === b));
+    cb(b.dataset.v);
+  }));
+}
+
+function reset(keepLog) {
+  state.running = false; state.t = 0; state.tick = 0; state.groups = [];
+  state.spawnCursor = 0; state.seq = 0; state.done = false; state.counts = {};
+  if (!keepLog) state.log = [];
+  PLACES.forEach(p => { p.occupancy = 0; p.visits = 0; p.peopleSec = 0; });
+  emit("run.started", "system",
+       { seed: state.seed, day: state.day, hour: state.hour,
+         rung: state.rung, groups: state.pop, headway_s: headway(), dt_s: DT });
+  redrawAll();
+}
+
+function redrawAll() {
+  drawMap(); drawMapLegend(); drawStats(); drawCommons(); drawLog();
+  drawDose(); drawPersonaTable(); drawPlaceTable();
+}
+
+let raf = null;
+function loop() {
+  if (!state.running) { raf = null; return; }
+  for (let i = 0; i < state.rate && state.running; i++) tickOnce();
+  redrawAll();
+  if (!state.running) { $("btnRun").textContent = "Run"; }
+  raf = requestAnimationFrame(loop);
+}
+
+function wire() {
+  $("seedIn").addEventListener("change", e => {
+    state.seed = parseInt(e.target.value, 10) || 1; reset(); });
+  $("popIn").addEventListener("change", e => {
+    state.pop = Math.max(20, Math.min(1200, parseInt(e.target.value, 10) || 260)); reset(); });
+
+  seg($("segDay"), [["Weekday", "Weekday"], ["Saturday", "Saturday"], ["Sunday", "Sunday"]],
+      state.day, v => { state.day = v; reset(); drawRace(); });
+  seg($("segRung"), RUNGS.map(r => [r.id, r.label]), state.rung,
+      v => { state.rung = v; reset(); });
+
+  const hourTxt = () => {
+    const p = period(state.hour);
+    $("hourTxt").innerHTML = String(state.hour).padStart(2, "0") + ":00 &mdash; EU " + p +
+      " period, headway " + headway() + " s";
+  };
+  $("hourIn").addEventListener("input", e => {
+    state.hour = parseInt(e.target.value, 10); hourTxt(); reset(); drawRace(); });
+
+  const rateTxt = () => { $("rateTxt").textContent =
+    state.rate + " ticks/frame (" + (state.rate * DT) + " model-seconds per frame)"; };
+  $("rateIn").addEventListener("input", e => {
+    state.rate = parseInt(e.target.value, 10); rateTxt(); });
+
+  $("btnRun").addEventListener("click", () => {
+    if (state.done) reset();
+    state.running = !state.running;
+    $("btnRun").textContent = state.running ? "Pause" : "Run";
+    if (state.running && !raf) raf = requestAnimationFrame(loop);
+  });
+  $("btnStep").addEventListener("click", () => {
+    state.running = false; $("btnRun").textContent = "Run"; tickOnce(); redrawAll(); });
+  $("btnReset").addEventListener("click", () => {
+    state.running = false; $("btnRun").textContent = "Run"; reset(); });
+
+  const syncToggles = () => {
+    $("btnField").setAttribute("aria-pressed", state.showField);
+    $("btnPaths").setAttribute("aria-pressed", state.showPaths);
+    $("btnField").className = state.showField ? "btn" : "btn ghost";
+    $("btnPaths").className = state.showPaths ? "btn" : "btn ghost";
+  };
+  $("btnField").addEventListener("click", () => { state.showField = !state.showField; syncToggles(); drawMap(); drawMapLegend(); });
+  $("btnPaths").addEventListener("click", () => {
+    state.showPaths = !state.showPaths;
+    if (!state.showPaths) state.groups.forEach(gr => { gr.trail = []; });
+    syncToggles(); drawMap();
+  });
+
+  hourTxt(); rateTxt(); syncToggles();
+}
+
+function init() {
+  Object.entries(SCHEMAS).forEach(([id, txt]) => {
+    const el = $(id); if (el) el.textContent = txt;
+  });
+  drawAnchorTable(); drawPersonaDefs(); drawScenarioDefs(); drawPlaceDefs(); drawRungTable();
+  wire();
+  reset();
+  drawRace();
+}
+
+if (document.readyState === "loading")
+  document.addEventListener("DOMContentLoaded", init);
+else init();
+
+
+
+
+</script>
+</body>
+</html>
