@@ -156,7 +156,7 @@ Three cross-checks fell out of building it, and all three are worth more than th
 | **[`build_cohort_model.py`](data-collection/build_cohort_model.py)** | **How long they stay — and how badly that is identified** | About six minutes of arithmetic. Standard library only. |
 | **[`fetch_geodata.py`](data-collection/fetch_geodata.py)** | **What the corridor is shaped like** — surveyed building heights and the street, park, water and footway network | Two API pulls, about a minute. Standard library only. |
 
-All verified working against the live feeds. [`data-collection/README.md`](data-collection/README.md) carries the full hourly and per-period tables, why **Google Maps is the wrong source** for this (it is downstream of the same MTA feed, and its Terms of Service prohibit the bulk extraction a frequency census requires), and **four traps that each silently produce a plausible wrong number** — including one that undercounted a live test by 3× with no error message.
+All verified working against the live feeds. [`data-collection/README.md`](data-collection/README.md) carries the full hourly and per-period tables, why **Google Maps is the wrong source** for this (it is downstream of the same MTA feed, and its Terms of Service prohibit the bulk extraction a frequency census requires), and **seven traps that each silently produce a plausible wrong number** — including one that undercounted a live test by 3× with no error message, and one where a fitted chainage origin lands in the river and returns four buildings instead of seventy-six.
 
 ### The denominator, partly counted
 

@@ -79,6 +79,9 @@ from.
 
 ## Four traps, all of which silently produce a wrong number
 
+Three more, specific to the corridor geometry, are in
+[the geodata section below](#what-shape-of-space-they-are-standing-in).
+
 These are not hypothetical. Each one was hit while writing these scripts.
 
 **Trap 1 - `stop_name` is not unique.** "Grand St" is a B/D station in
