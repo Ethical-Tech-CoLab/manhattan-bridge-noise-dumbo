@@ -348,6 +348,17 @@ THEME_JS = """<script>
   })();
 </script>"""
 
+# A suspension bridge, inlined so that no page ever requests /favicon.ico.
+FAVICON = (
+    '<link rel="icon" href="data:image/svg+xml,'
+    "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'"
+    "%3E%3Crect width='32' height='32' rx='7' fill='%23b11f4b'/"
+    "%3E%3Cpath d='M3 22h26' stroke='%23fff' stroke-width='2.4' "
+    "stroke-linecap='round'/%3E%3Cpath d='M9 8v14M23 8v14' stroke='%23fff' "
+    "stroke-width='2' stroke-linecap='round'/%3E%3Cpath "
+    "d='M3 14L9 8Q16 17 23 8L29 14' stroke='%23fff' stroke-width='2' "
+    "fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\">")
+
 CSS = """
 :root {
   color-scheme: light;
@@ -617,7 +628,7 @@ def shell(title, desc, body, active, depth):
         "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
         "<title>" + title + "</title>\n"
         "<meta name=\"description\" content=\"" + desc + "\">\n"
-        + THEME_JS + "\n<style>" + CSS + "</style>\n</head>\n<body>\n"
+        + FAVICON + "\n" + THEME_JS + "\n<style>" + CSS + "</style>\n</head>\n<body>\n"
         + bar(active, depth) + "\n<div class=\"wrap\">\n" + body
         + "\n</div>\n</body>\n</html>\n")
 
@@ -1062,6 +1073,29 @@ def write(rel, text):
     print("  wrote %-42s %6d bytes" % (rel, len(text.encode("utf-8"))))
 
 
+def ensure_favicon(rel):
+    """The artifacts are hand-written and stay that way, except for this.
+
+    Without an icon link every page silently requests /favicon.ico and takes
+    a 404 on it, which shows up as a console error and makes a clean page look
+    unclean. One line, inserted once, idempotent.
+    """
+    path = os.path.join(ROOT, rel)
+    with io.open(path, encoding="utf-8") as fh:
+        text = fh.read()
+    if 'rel="icon"' in text:
+        return False
+    m = re.search(r'<meta name="viewport"[^>]*>', text)
+    anchor = m.group(0) if m else "<head>"
+    if anchor not in text:
+        return False
+    text = text.replace(anchor, anchor + "\n" + FAVICON, 1)
+    with io.open(path, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(text)
+    print("  patched favicon into %s" % rel)
+    return True
+
+
 def main():
     print("Reading repository...")
     stats = collect_stats()
@@ -1085,6 +1119,8 @@ def main():
     if missing:
         print("WARNING: artifacts referenced but not present: %s" % missing)
         return 1
+    for path, _, _, _, _ in ARTIFACTS:
+        ensure_favicon(path)
     print("Done.")
     return 0
 
