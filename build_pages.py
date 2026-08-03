@@ -201,6 +201,74 @@ DATASETS = [
      "The admissible cohort parameter family and the presence ranges it implies."),
 ]
 
+# Work that is finished, shown with a marker on the index.
+#
+# The second field is EITHER a method number in the README register - in which
+# case build_index reads the marker out of the register and refuses to build if
+# the register disagrees - OR the literal "done" / "partial" for work that is
+# not a numbered method. Nothing here types its own completeness for a method:
+# a green tick this page asserts and the register denies is exactly the drift
+# the programme exists to avoid.
+#
+# "partial" means THE WORK WAS DONE AND THE RESULT WAS NOT OBTAINED. It draws a
+# different marker, because a full tick beside "the week has not been run"
+# would overstate it.
+DONE = [
+    ("Method 32 - the corridor geometry", 32,
+     "Two open datasets, no key, about a minute",
+     "The canyon under the bridge, drawn from 960 surveyed building footprints "
+     "and 2,826 OpenStreetMap ways rather than sketched or traced off a "
+     "proprietary basemap. It produced an independent check on the bridge "
+     "alignment - <b>2.3&deg; off the bearing this repository had digitised by "
+     "eye</b> - and established that the one object in the frame nobody has "
+     "surveyed is the bridge itself."),
+    ("Method 29 - the cohort survival model", 29,
+     "About six minutes of arithmetic",
+     "Fits four population cohorts to the observed departure curve. "
+     "<b>It reports its own failure</b>: the sweep found many parameter sets "
+     "that fit equally well and imply materially different exposure, so the "
+     "model establishes that dwell time cannot be inferred from arrival and "
+     "departure counts alone. That is why Method 28 sits at the top of the "
+     "list below."),
+    ("Method 30 - the agentic population model", 30,
+     "Built, not run as a measurement",
+     "Personas, family groups, itineraries, ingress and egress points, and "
+     "dose accumulated along a path. Built as a <b>mechanism demonstration and "
+     "labelled as one on its own face</b>, because every itinerary in it is "
+     "invented. Its most useful output was a negative result: the propagation "
+     "model over the four MTA points could not be fitted."),
+    ("The acoustic demonstration", "done",
+     "Synthesised, and labelled synthetic in the interface",
+     "A train approaching, passing and departing at the measured decibel "
+     "difference against each receptor's own background, then running "
+     "continuously at the real headway. <b>It is synthesis, not a "
+     "recording</b>, and the page says so before it says anything else."),
+    ("The community evidence audit", "done",
+     "Searching, and finding nothing",
+     "Reddit, Freesound, the NYU SONYC corpus, NYC Open Data, local press and "
+     "petitions, searched for crowd-sourced recordings. <b>None exist</b> - "
+     "and the audit found the structural reason: three separate instruments "
+     "for recording city noise and no rail category in any of them."),
+    ("Method 27 - count the denominator", 27,
+     "Four API pulls, about a minute",
+     "Arrival rate, walkway flow and resident count from four public datasets, "
+     "two of which agree to within 1.77% by different methods. It "
+     "<b>disproved this repository's own claim</b> that 08:00 is the worst "
+     "hour; the real peak is 14:00. Marked partial because it produces "
+     "&lambda; and not W - the arrival rate exists, the dwell time does not."),
+    ("Method 26 - the traversal census tooling", 26,
+     "Written and verified against the live feed",
+     "The poller is built and correct. <b>The week-long run has not been "
+     "done</b>, so this is a mark on the code and not on the result - which is "
+     "why the census still appears in the queue below."),
+    ("The field capture protocol", "partial",
+     "Written; nothing has been captured",
+     "A complete protocol for a consumer phone targeting the four things the "
+     "MTA's five-number table discarded. <b>Marked for the protocol being "
+     "finished, not for anyone having stood in the park.</b> Captures C1-C5 "
+     "remain in the queue below."),
+]
+
 # The work queue. Ordering is a judgement and is stated as one; the STATUS of
 # each method is parsed from the register rather than typed here.
 TODO = [
@@ -688,7 +756,8 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
      grid-template-columns: 132px 1fr; gap: 18px; }
 .q:first-of-type { border-top: 0; }
 .q .lab { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
-          font-weight: 700; padding-top: 3px; }
+          font-weight: 700; padding-top: 3px; display: flex;
+          align-items: flex-start; gap: 8px; line-height: 1.35; }
 .q .h { font-weight: 700; margin-bottom: 2px; }
 .q .cost { font-size: 0.8rem; color: var(--cp-text-soft); margin-bottom: 7px;
            font-family: Consolas, "Courier New", monospace; }
@@ -698,6 +767,35 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 .lab.field { color: var(--cp-accent); }
 .lab.review { color: var(--cp-warning); }
 .lab.gate { color: var(--cp-text-muted); }
+.lab.done { color: var(--cp-success); }
+
+/* A tick and an empty box, so done and not-done are distinguishable without
+   relying on colour alone. Both are drawn, not typed, so neither depends on
+   an emoji font being present. */
+.mk { display: inline-block; width: 17px; height: 17px; border-radius: 4px;
+      position: relative; flex: 0 0 17px; margin-top: 1px; }
+.mk.on { background: var(--cp-success); }
+.mk.on::after { content: ""; position: absolute; left: 5px; top: 1.5px;
+                width: 4px; height: 9px; border: solid #fff;
+                border-width: 0 2px 2px 0; transform: rotate(42deg); }
+/* Indeterminate: the work was done, the result was not obtained. A full tick
+   next to "the week has not been run" would overstate it. */
+.mk.half { border: 2px solid var(--cp-success); }
+.mk.half::after { content: ""; position: absolute; left: 2.5px; top: 5.5px;
+                  width: 8px; height: 2px; background: var(--cp-success); }
+.mk.off { border: 2px solid var(--cp-border-strong); }
+.q .h { display: block; }
+.qdone { margin-bottom: 6px; }
+.qdone .h { color: var(--cp-text); }
+.qdone .why { color: var(--cp-text-soft); }
+.donehead { display: flex; align-items: baseline; justify-content: space-between;
+            gap: 14px; flex-wrap: wrap; margin: 26px 0 4px; }
+.donehead h3 { margin: 0; }
+.donehead .cnt { font-size: 0.82rem; color: var(--cp-text-muted);
+                 font-family: Consolas, "Courier New", monospace; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 14px 0 2px;
+          font-size: 0.84rem; color: var(--cp-text-muted); }
+.legend > span { display: flex; align-items: flex-start; gap: 8px; }
 
 /* ---- rendered document pages ---- */
 .doclayout { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
@@ -838,6 +936,43 @@ def rewrite_href(href, src_dir):
     return "../" + norm + frag
 
 
+def mark_register(html):
+    """Put a tick or an empty box on each row of the rendered method register.
+
+    The register in README.md is the authoritative status source and is parsed
+    by parse_methods(), so it is NOT edited to carry a glyph - a tick typed
+    into the markdown could drift from the status text beside it. The marker is
+    derived here from the same status cell the parser reads, using the same
+    row test (five cells, first one a bare number), so the two cannot disagree.
+    """
+    ROW = re.compile(r"<tr>\s*(<td.*?</td>)\s*</tr>", re.S)
+    CELL = re.compile(r"<td[^>]*>(.*?)</td>", re.S)
+
+    def strip(s):
+        return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", s)).strip()
+
+    def one(m):
+        cells = CELL.findall(m.group(1))
+        if len(cells) != 5 or not strip(cells[0]).isdigit():
+            return m.group(0)
+        status = strip(cells[4]).lower()
+        if status.startswith(("executed", "built as")):
+            mk = '<span class="mk on" title="Executed"></span> '
+        elif status.startswith(("partially executed", "tooling built")):
+            mk = ('<span class="mk half" title="Partial - the work was done, '
+                  'the result was not obtained"></span> ')
+        else:
+            mk = '<span class="mk off" title="Not started"></span> '
+        row = m.group(0)
+        # Only the LAST cell is touched, so the method number and name are
+        # returned exactly as the markdown wrote them.
+        head, sep, tail = row.rpartition("<td")
+        inner = tail.split(">", 1)
+        return head + sep + inner[0] + ">" + mk + inner[1]
+
+    return ROW.sub(one, html)
+
+
 def render_doc(src, slug, title, stats):
     md_text = read(src)
     src_dir = os.path.dirname(src).replace("\\", "/")
@@ -852,6 +987,9 @@ def render_doc(src, slug, title, stats):
                   html)
     html = re.sub(r"(<table\b)", r'<div class="tw">\1', html)
     html = html.replace("</table>", "</table></div>")
+
+    if src == "README.md":
+        html = mark_register(html)
 
     toc = ['<div class="h">On this page</div>']
     for tok in md.toc_tokens:
@@ -896,6 +1034,7 @@ def build_index(stats):
     m_exec = [m for m in stats["methods"] if m["cls"] == "executed"]
     m_part = [m for m in stats["methods"] if m["cls"] == "partial"]
     m_tool = [m for m in stats["methods"] if m["cls"] == "tooling"]
+    by_num = {m["n"]: m for m in stats["methods"]}
 
     o = []
     A = o.append
@@ -963,52 +1102,12 @@ def build_index(stats):
       'are the most reliable numbers here. The third is derived from public '
       'tax-lot data. <strong>The fourth is the finding this programme did not '
       'expect to make.</strong></p>')
-    A('</div>')
-
-    # -- status board ------------------------------------------------------
-    A('<div class="card" id="status">')
-    A('<h2>Where the investigation stands</h2>')
-    A('<p class="lede">%s research documents, %s interactive artifacts, %s '
-      'runnable scripts and roughly %s words &mdash; against %s specified '
-      'methods of which <strong>%s have been executed and %s partially</strong>. '
-      'The gap between those two halves of the sentence is the honest summary '
-      'of this programme.</p>'
-      % (spell(len(DOCS) - 1).capitalize(), spell(len(ARTIFACTS)),
-         spell(len(SCRIPTS)), "{:,}".format(stats["total_words"]),
-         spell(stats["n_methods"]), spell(stats["n_exec"]),
-         spell(stats["n_partial"])))
-
-    A('<div class="tw"><table><thead><tr>'
-      '<th>State</th><th>Count</th><th>What it means</th></tr></thead><tbody>')
-    A('<tr><td><span class="badge ok">Executed</span></td><td><b>%d</b> of %d '
-      'methods</td><td>%s. <b>All three changed something</b>, and two of them '
-      'contradicted claims this repository had already published.</td></tr>'
-      % (stats["n_exec"] + stats["n_partial"], stats["n_methods"],
-         ", ".join("Method %d" % m["n"] for m in m_exec + m_part)))
-    A('<tr><td><span class="badge warn">Tooling built</span></td><td><b>%d</b></td>'
-      '<td>%s &mdash; the code is written and verified against the live feed, '
-      'but the run has not been done.</td></tr>'
-      % (len(m_tool), ", ".join("Method %d" % m["n"] for m in m_tool) or "none"))
-    A('<tr><td><span class="badge no">Not started</span></td><td><b>%d</b></td>'
-      '<td>Proposals. Several of the cheapest are also the most load-bearing, '
-      'and their being undone is why so many claims here are hedged.</td></tr>'
-      % (stats["n_methods"] - stats["n_exec"] - stats["n_partial"] - len(m_tool)))
-    A('<tr><td><span class="badge acc">Withdrawn</span></td><td><b>%d</b> '
-      'explicit retractions</td><td>Claims this programme published and then '
-      'disproved. They are <b>left visible in the text</b> rather than deleted, '
-      'which is the point.</td></tr>' % stats["withdrawals"])
-    A('<tr><td><span class="badge">Open questions</span></td><td><b>Q1&ndash;Q%d</b></td>'
-      '<td>Numbered, attributed to a document, and none of them rhetorical. '
-      'Q42 is the highest-value one and a lawyer could settle it in a day.</td></tr>'
-      % stats["max_q"])
-    A('</tbody></table></div>')
-
-    A('<div class="note bad"><strong>The one thing to understand before reading '
-      'anything else.</strong> <b>Nobody from this programme has stood in '
-      'Brooklyn Bridge Park with an instrument.</b> Every acoustic level quoted '
-      'here was measured by someone else and published; every acoustic level '
-      '<i>modelled</i> here is synthetic. No option in any document is '
-      'recommended for procurement, and none of it is peer-reviewed.</div>')
+    A('<div class="note bad" style="margin-top:16px"><strong>Read this before '
+      'anything below it.</strong> <b>Nobody from this programme has stood in '
+      'Brooklyn Bridge Park with an instrument.</b> Every level quoted here was '
+      'measured by someone else and published; every level <i>modelled</i> here '
+      'is synthetic. <a href="#status">Where the investigation stands</a> sets '
+      'out how little of the specified work has actually been done.</div>')
     A('</div>')
 
     # -- start here --------------------------------------------------------
@@ -1065,6 +1164,58 @@ def build_index(stats):
       'reasoning about a problem, not evidence about it &mdash; and each says '
       'so in its own interface rather than in a footnote somewhere else.</div>'
       % spell(len(ARTIFACTS)))
+    A('</div>')
+
+    # -- status board ------------------------------------------------------
+    # Deliberately placed AFTER the demonstrations. A reader who has just been
+    # shown five working artifacts is the reader most likely to over-estimate
+    # how much of this programme has been done, and this is the correction.
+    A('<div class="card" id="status">')
+    A('<h2>Where the investigation stands</h2>')
+    A('<p class="lede">%s research documents, %s interactive artifacts, %s '
+      'runnable scripts and roughly %s words &mdash; against %s specified '
+      'methods of which <strong>%s have been executed and %s partially</strong>. '
+      'The gap between those two halves of the sentence is the honest summary '
+      'of this programme, and it is the reason this section sits below the '
+      'demonstrations rather than above them: <b>the artifacts are the most '
+      'finished thing here and the least load-bearing.</b></p>'
+      % (spell(len(DOCS) - 1).capitalize(), spell(len(ARTIFACTS)),
+         spell(len(SCRIPTS)), "{:,}".format(stats["total_words"]),
+         spell(stats["n_methods"]), spell(stats["n_exec"]),
+         spell(stats["n_partial"])))
+
+    A('<div class="tw"><table><thead><tr>'
+      '<th>State</th><th>Count</th><th>What it means</th></tr></thead><tbody>')
+    A('<tr><td><span class="badge ok">Executed</span></td><td><b>%d</b> of %d '
+      'methods</td><td>%s. <b>Every one of them changed something</b>, and two '
+      'contradicted claims this repository had already published.</td></tr>'
+      % (stats["n_exec"] + stats["n_partial"], stats["n_methods"],
+         ", ".join("Method %d" % m["n"]
+                   for m in sorted(m_exec + m_part, key=lambda x: x["n"]))))
+    A('<tr><td><span class="badge warn">Tooling built</span></td><td><b>%d</b></td>'
+      '<td>%s &mdash; the code is written and verified against the live feed, '
+      'but the run has not been done.</td></tr>'
+      % (len(m_tool), ", ".join("Method %d" % m["n"] for m in m_tool) or "none"))
+    A('<tr><td><span class="badge no">Not started</span></td><td><b>%d</b></td>'
+      '<td>Proposals. Several of the cheapest are also the most load-bearing, '
+      'and their being undone is why so many claims here are hedged.</td></tr>'
+      % (stats["n_methods"] - stats["n_exec"] - stats["n_partial"] - len(m_tool)))
+    A('<tr><td><span class="badge acc">Withdrawn</span></td><td><b>%d</b> '
+      'explicit retractions</td><td>Claims this programme published and then '
+      'disproved. They are <b>left visible in the text</b> rather than deleted, '
+      'which is the point.</td></tr>' % stats["withdrawals"])
+    A('<tr><td><span class="badge">Open questions</span></td><td><b>Q1&ndash;Q%d</b></td>'
+      '<td>Numbered, attributed to a document, and none of them rhetorical. '
+      'Q42 is the highest-value one and a lawyer could settle it in a day.</td></tr>'
+      % stats["max_q"])
+    A('</tbody></table></div>')
+
+    A('<div class="note bad"><strong>The one thing to carry away from '
+      'everything above.</strong> <b>Nobody from this programme has stood in '
+      'Brooklyn Bridge Park with an instrument.</b> Every acoustic level quoted '
+      'here was measured by someone else and published; every acoustic level '
+      '<i>modelled</i> here is synthetic. No option in any document is '
+      'recommended for procurement, and none of it is peer-reviewed.</div>')
     A('</div>')
 
     # -- findings ----------------------------------------------------------
@@ -1142,20 +1293,71 @@ def build_index(stats):
       'over-claimed.</p>')
     A('</div>')
 
-    # -- work to be done ---------------------------------------------------
+    # -- work: done, then to be done ---------------------------------------
     A('<div class="card" id="todo">')
-    A('<h2>Work to be done</h2>')
-    A('<p class="lede">In priority order. The ordering is a judgement; the '
-      'status of every method is read out of the register rather than asserted '
-      'here. <strong>Several of these cost an afternoon</strong>, which is the '
-      'least comfortable fact about the list.</p>')
+    A('<h2>Work: done, and to be done</h2>')
+    A('<p class="lede">A mark here means the work was finished, <b>not that '
+      'the question it was meant to answer is settled</b> &mdash; in three '
+      'cases below the finished work is what established that the question is '
+      'harder than it looked. The ordering of the open queue is a judgement; '
+      'the state of every numbered method is <b>read out of the register</b> '
+      'rather than asserted here, and this page will not build if the two '
+      'disagree.</p>')
+    A('<div class="legend">'
+      '<span><span class="mk on"></span>Done</span>'
+      '<span><span class="mk half"></span>The work was done, the result was '
+      'not obtained</span>'
+      '<span><span class="mk off"></span>Not started</span>'
+      '</div>')
+
+    A('<div class="donehead"><h3>Done</h3>'
+      '<span class="cnt">%d of %d items on this page</span></div>'
+      % (len(DONE), len(DONE) + len(TODO)))
+    for head, meth, cost, why in DONE:
+        if isinstance(meth, int):
+            # The marker is READ OUT OF THE REGISTER, not typed here. A tick on
+            # this page that the register denies is exactly the drift the whole
+            # programme is built to prevent, so a mismatch is a hard failure.
+            row = by_num.get(meth)
+            if row is None:
+                sys.exit("DONE claims Method %d, which is not in the register."
+                         % meth)
+            if row["cls"] == "executed":
+                state = "on"
+            elif row["cls"] in ("partial", "tooling"):
+                state = "half"
+            else:
+                sys.exit("DONE lists Method %d as finished, but the register "
+                         "says %r. Fix one of them." % (meth, row["status"]))
+        elif meth in ("done", "partial"):
+            state = "on" if meth == "done" else "half"
+        else:
+            sys.exit("DONE entry %r has an unusable second field %r."
+                     % (head, meth))
+        A('<div class="q qdone"><div class="lab done">'
+          '<span class="mk %s"></span><span>%s</span></div><div>'
+          '<div class="h">%s</div><div class="cost">%s</div>'
+          '<div class="why">%s</div></div></div>'
+          % (state, "Done" if state == "on" else "Partial", head, cost, why))
+
+    A('<div class="donehead"><h3>To be done</h3>'
+      '<span class="cnt">%d of %d items on this page</span></div>'
+      % (len(TODO), len(DONE) + len(TODO)))
     labels = {"blocking": "Blocking", "cheap": "Cheap &amp; high value",
               "field": "Fieldwork", "review": "Needs review", "gate": "Gating"}
     for kind, head, cost, why in TODO:
-        A('<div class="q"><div class="lab %s">%s</div><div>'
+        A('<div class="q"><div class="lab %s">'
+          '<span class="mk off"></span><span>%s</span></div><div>'
           '<div class="h">%s</div><div class="cost">%s</div>'
           '<div class="why">%s</div></div></div>' %
           (kind, labels[kind], head, cost, why))
+
+    A('<div class="note"><strong>The count above is of items on this '
+      'page, and is not the state of the programme.</strong> The register '
+      'holds %d methods, of which <b>%d have been executed or partially '
+      'executed</b>. Anything that reads as encouraging progress here should '
+      'be read against that ratio.</div>'
+      % (stats["n_methods"], stats["n_exec"] + stats["n_partial"]))
     A('<div class="note good"><strong>The cheapest useful contribution is a '
       'recording.</strong> If you have ever recorded a train crossing the '
       'Manhattan Bridge from Brooklyn Bridge Park, DUMBO or the Williamsburg '

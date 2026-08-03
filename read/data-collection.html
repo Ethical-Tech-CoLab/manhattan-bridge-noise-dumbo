@@ -295,7 +295,8 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
      grid-template-columns: 132px 1fr; gap: 18px; }
 .q:first-of-type { border-top: 0; }
 .q .lab { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
-          font-weight: 700; padding-top: 3px; }
+          font-weight: 700; padding-top: 3px; display: flex;
+          align-items: flex-start; gap: 8px; line-height: 1.35; }
 .q .h { font-weight: 700; margin-bottom: 2px; }
 .q .cost { font-size: 0.8rem; color: var(--cp-text-soft); margin-bottom: 7px;
            font-family: Consolas, "Courier New", monospace; }
@@ -305,6 +306,35 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 .lab.field { color: var(--cp-accent); }
 .lab.review { color: var(--cp-warning); }
 .lab.gate { color: var(--cp-text-muted); }
+.lab.done { color: var(--cp-success); }
+
+/* A tick and an empty box, so done and not-done are distinguishable without
+   relying on colour alone. Both are drawn, not typed, so neither depends on
+   an emoji font being present. */
+.mk { display: inline-block; width: 17px; height: 17px; border-radius: 4px;
+      position: relative; flex: 0 0 17px; margin-top: 1px; }
+.mk.on { background: var(--cp-success); }
+.mk.on::after { content: ""; position: absolute; left: 5px; top: 1.5px;
+                width: 4px; height: 9px; border: solid #fff;
+                border-width: 0 2px 2px 0; transform: rotate(42deg); }
+/* Indeterminate: the work was done, the result was not obtained. A full tick
+   next to "the week has not been run" would overstate it. */
+.mk.half { border: 2px solid var(--cp-success); }
+.mk.half::after { content: ""; position: absolute; left: 2.5px; top: 5.5px;
+                  width: 8px; height: 2px; background: var(--cp-success); }
+.mk.off { border: 2px solid var(--cp-border-strong); }
+.q .h { display: block; }
+.qdone { margin-bottom: 6px; }
+.qdone .h { color: var(--cp-text); }
+.qdone .why { color: var(--cp-text-soft); }
+.donehead { display: flex; align-items: baseline; justify-content: space-between;
+            gap: 14px; flex-wrap: wrap; margin: 26px 0 4px; }
+.donehead h3 { margin: 0; }
+.donehead .cnt { font-size: 0.82rem; color: var(--cp-text-muted);
+                 font-family: Consolas, "Courier New", monospace; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 14px 0 2px;
+          font-size: 0.84rem; color: var(--cp-text-muted); }
+.legend > span { display: flex; align-items: flex-start; gap: 8px; }
 
 /* ---- rendered document pages ---- */
 .doclayout { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
@@ -1846,7 +1876,7 @@ python build_carousel.py
 <p>A 30 s poll against an 85-300 s headway samples every train several times
 before it arrives. Shorter intervals gain nothing and are less polite to a
 free public endpoint.</p>
-<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md">Source on GitHub</a> &middot; Built from <code>b506480</code> on 2026-08-03.</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md">Source on GitHub</a> &middot; Built from <code>309558f</code> on 2026-08-03.</p>
 </main>
 </div>
 
