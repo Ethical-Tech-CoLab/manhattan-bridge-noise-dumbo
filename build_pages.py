@@ -115,6 +115,13 @@ ARTIFACTS = [
      "four-cohort presence model that publishes its own non-identifiability.",
      "Drag the coincidence window from 1 s to 29 s. The answer does not move - "
      "which is a finding about the feed, not about the railway."),
+    ("visual-review/noise-canyon.html", "Bridge", "The noise canyon",
+     "A five-slide picture essay drawn entirely from open data: the structure "
+     "photographed, 76 surveyed buildings extruded around the alignment, a true "
+     "section cut across the corridor, the ordinary walk in from the York "
+     "Street F platform, and every point along it anyone has ever measured.",
+     "The last slide. Four narrow bands of measured evidence against 1,482 m "
+     "of walk - 23% - and the shaded field is not quiet, it is unmeasured."),
     ("visual-review/agent-model.html", "Agents", "Agentic population model",
      "Groups - not individuals - enter DUMBO at persona-specific gateways, "
      "follow scenario itineraries, contend for capacity and accumulate a noise "
@@ -122,6 +129,36 @@ ARTIFACTS = [
      "The first panel: the same itinerary started ninety seconds apart gets a "
      "different dose. Then the rejected-propagation panel, which is a negative "
      "result and the most important thing on the page."),
+]
+
+# Above-the-fold statements on the index page.
+#
+# TO ADD A CARD:    append one tuple (big, unit, line, href_or_None)
+# TO REMOVE A CARD: delete the tuple
+# TO REORDER:       move it. Order here is order on screen.
+#
+# Keep every one of these traceable to something on the site. A large number
+# with no destination is a poster, not a research index.
+HERO_CARDS = [
+    ("98.9", "dB(A) average maximum",
+     "measured by the MTA in Brooklyn Bridge Park, at the dog run",
+     "read/idea-concept.html"),
+    ("54", "seconds between trains",
+     "at the weekday peak, 67 crossings in a single hour",
+     "visual-review/frequency-dashboard.html"),
+    ("4,055", "noise complaints since 2020",
+     "within 500 m of that measurement, and not one can be about the train",
+     "read/community-evidence-audit.html"),
+    ("17.3", "dB above the fit",
+     "the dog run sits this far over ideal line-source spreading, so the "
+     "three-point agreement that looked like a result was a coincidence",
+     "visual-review/agent-model.html"),
+    ("23%", "of the walk measured",
+     "four bands of instrument data along 1,482 m from the F train to the water",
+     "visual-review/noise-canyon.html"),
+    ("3", "claims withdrawn",
+     "published here, then disproved here, and left visible in the text",
+     "#status"),
 ]
 
 SCRIPTS = [
@@ -142,6 +179,17 @@ SCRIPTS = [
      "Fits four population cohorts to the observed departure curve and reports "
      "the range across every parameter set that fits equally well - which is "
      "how the non-identifiability result was found."),
+    ("data-collection/fetch_geodata.py",
+     "Fetches NYC building footprints with surveyed roof heights and the "
+     "OpenStreetMap street, park, water and footway network for the corridor. "
+     "The reproducibility path for every line in the noise-canyon drawings."),
+    ("build_carousel.py",
+     "Draws the noise-canyon slides from that geodata and emits the page. "
+     "Slides are declared in visual-review/carousel.json, and the build "
+     "refuses to run if any of them lacks a source or a caveat."),
+    ("make_hero.py",
+     "Composites the hero band on this page from a public-domain HAER "
+     "photograph and a render taken from this repository's own 3D model."),
 ]
 
 DATASETS = [
@@ -485,6 +533,84 @@ p { margin: 0 0 14px; }
 }
 .hero { background: var(--cp-bg-elevated); }
 
+/* -- above the fold ------------------------------------------------------ */
+/* The hero image is grayscale by construction so the theme, not the JPEG,
+   decides what colour it is. */
+.hb {
+  position: relative; border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--cp-border); margin: 0 0 22px;
+  background: #101010; isolation: isolate;
+}
+.hb .pic {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 62% 46%; z-index: 0;
+  opacity: 0.95;
+}
+.hb .tint {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(16,16,16,0.94) 0%, rgba(16,16,16,0.86) 34%,
+                    rgba(16,16,16,0.42) 62%, rgba(16,16,16,0.20) 100%),
+    linear-gradient(0deg, var(--cp-highlight), var(--cp-highlight));
+}
+.hb .hin { position: relative; z-index: 2; padding: 44px 40px 30px; color: #f2efea; }
+.hb .kicker {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--cp-accent); font-weight: 700; margin: 0 0 10px;
+}
+html[data-theme="light"] .hb .kicker { color: #fd8ea1; }
+.hb h1 { font-size: 2.5rem; margin: 0 0 10px; letter-spacing: -0.02em; color: #fff; }
+.hb .sub { font-size: 1.06rem; margin: 0 0 6px; max-width: 44rem; color: #e6e1da; }
+.hb .sub a { color: #ffd0da; }
+.hb .lede { font-size: 0.95rem; margin: 0; max-width: 44rem; color: #bdb7b0; }
+.hb .cred {
+  position: relative; z-index: 2; margin: 22px 0 0; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.14);
+  font-size: 0.7rem; color: rgba(255,255,255,0.52); line-height: 1.5;
+}
+.hb .cred a { color: rgba(255,255,255,0.74); }
+
+/* the statement carousel */
+.wc { position: relative; z-index: 2; margin: 26px 0 34px; min-height: 148px; }
+.wc .wcslide {
+  position: absolute; inset: 0; opacity: 0; transition: opacity .5s ease;
+  pointer-events: none; display: block; color: inherit;
+}
+.wc .wcslide.on { opacity: 1; pointer-events: auto; }
+.wc .wcslide:hover { text-decoration: none; }
+.wc .n {
+  font-size: clamp(3rem, 8.5vw, 5.4rem); font-weight: 700; line-height: 0.94;
+  letter-spacing: -0.035em; color: #fff; display: block;
+}
+.wc .u {
+  font-size: 0.96rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--cp-accent); margin: 8px 0 6px;
+}
+html[data-theme="light"] .wc .u { color: #ff9bad; }
+.wc .l { font-size: 0.98rem; color: #ded8d1; max-width: 40rem; }
+.wc .wcslide:hover .n { color: #ffd0da; }
+.wcnav { position: relative; z-index: 2; display: flex; align-items: center; gap: 8px; }
+.wcnav button {
+  width: 30px; height: 6px; border-radius: 3px; border: 0; cursor: pointer;
+  background: rgba(255,255,255,0.26); padding: 0;
+}
+.wcnav button[aria-current="true"] { background: var(--cp-accent); }
+.wcnav button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.wcnav .pp {
+  width: auto; height: auto; border-radius: 0.625rem; padding: 4px 10px;
+  font: inherit; font-size: 0.74rem; color: #ded8d1;
+  background: rgba(255,255,255,0.12); margin-left: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wc .wcslide { transition: none; }
+}
+@media (max-width: 760px) {
+  .hb .hin { padding: 28px 20px 22px; }
+  .hb h1 { font-size: 1.8rem; }
+  .hb .cred { position: static; max-width: none; text-align: left; }
+  .wc { min-height: 190px; }
+}
+
 .statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
 .s {
   background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
@@ -603,6 +729,54 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
   .statrow { grid-template-columns: 1fr; }
 }
 """
+
+
+HERO_JS = """<script>
+(function () {
+  var wc = document.getElementById("wc");
+  var nav = document.getElementById("wcnav");
+  if (!wc || !nav) return;
+  var slides = [].slice.call(wc.querySelectorAll(".wcslide"));
+  var dots = [].slice.call(nav.querySelectorAll("button[data-i]"));
+  var pp = document.getElementById("wcpp");
+  var i = 0, timer = null;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function show(n) {
+    i = (n + slides.length) % slides.length;
+    slides.forEach(function (s, k) { s.classList.toggle("on", k === i); });
+    dots.forEach(function (d, k) {
+      d.setAttribute("aria-current", k === i ? "true" : "false");
+    });
+  }
+  function stop() {
+    if (timer) { clearInterval(timer); timer = null; }
+    pp.textContent = "Play";
+    pp.setAttribute("aria-label", "Resume the rotating statements");
+  }
+  function start() {
+    if (timer || reduce) return;
+    timer = setInterval(function () { show(i + 1); }, 5200);
+    pp.textContent = "Pause";
+    pp.setAttribute("aria-label", "Pause the rotating statements");
+  }
+  dots.forEach(function (d) {
+    d.addEventListener("click", function () {
+      show(parseInt(d.dataset.i, 10)); stop();
+    });
+  });
+  pp.addEventListener("click", function () { timer ? stop() : start(); });
+  // Rotating text that keeps moving while someone is reading it is hostile,
+  // so hovering, focusing or leaving the tab all halt it.
+  wc.addEventListener("mouseenter", stop);
+  wc.addEventListener("focusin", stop);
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) stop();
+  });
+  if (reduce) { stop(); pp.textContent = "Next"; pp.addEventListener(
+    "click", function () { show(i + 1); }); } else { start(); }
+})();
+</script>"""
 
 
 def bar(active, depth):
@@ -727,16 +901,54 @@ def build_index(stats):
     A = o.append
 
     # -- hero --------------------------------------------------------------
-    A('<div class="card hero">')
+    A('<div class="hb">')
+    A('<img class="pic" src="assets/hero-composite.jpg" alt="" '
+      'srcset="assets/hero-composite-1200.jpg 1200w, '
+      'assets/hero-composite.jpg 2400w" sizes="100vw" '
+      'width="2400" height="1000" fetchpriority="high">')
+    A('<div class="tint"></div>')
+    A('<div class="hin">')
+    A('<p class="kicker">Ethical Tech CoLab &middot; open research programme</p>')
     A('<h1>Silencing the Span</h1>')
     A('<p class="sub">Rail noise from the NYC Subway crossing the Manhattan '
-      'Bridge into DUMBO, Brooklyn &mdash; an open research programme by '
-      '<a href="https://github.com/Ethical-Tech-CoLab">Ethical Tech CoLab</a>.</p>')
-    A('<p class="lede">This page is the organising index for the whole '
-      'investigation: where it currently stands, what has actually been '
-      'established, what is demonstrably wrong, and what still needs doing. '
-      'It is regenerated from the repository, so the counts on it cannot drift '
-      'away from the work.</p>')
+      'Bridge into DUMBO, Brooklyn &mdash; measured by the operator, '
+      'uncomplainable to the city, and unstudied where people actually are.</p>')
+
+    A('<div class="wc" id="wc" aria-live="polite">')
+    for i, (big, unit, line, href) in enumerate(HERO_CARDS):
+        tag = "a" if href else "div"
+        attr = ' href="%s"' % href if href else ""
+        A('<%s class="wcslide%s"%s data-i="%d">'
+          '<span class="n">%s</span><div class="u">%s</div>'
+          '<div class="l">%s</div></%s>'
+          % (tag, " on" if i == 0 else "", attr, i, big, unit, line, tag))
+    A("</div>")
+    A('<div class="wcnav" id="wcnav">')
+    for i, (big, _u, _l, _h) in enumerate(HERO_CARDS):
+        A('<button type="button" data-i="%d" aria-current="%s" '
+          'aria-label="Statement %d of %d: %s"></button>'
+          % (i, "true" if i == 0 else "false", i + 1, len(HERO_CARDS), big))
+    A('<button type="button" class="pp" id="wcpp" aria-label="Pause the '
+      'rotating statements">Pause</button>')
+    A("</div>")
+
+    A('<p class="lede" style="margin-top:26px">This page is the organising '
+      'index for the whole investigation: where it currently stands, what has '
+      'actually been established, what is demonstrably wrong, and what still '
+      'needs doing. It is regenerated from the repository, so the counts on it '
+      'cannot drift away from the work.</p>')
+    A('<p class="cred">Photograph: Historic American Engineering Record '
+      'NY-127-7, Jack E. Boucher, National Park Service, via '
+      '<a href="https://www.loc.gov/item/ny0980/">Library of Congress</a> '
+      '&mdash; no known restrictions on images made by the U.S. Government. '
+      'Overlaid wireframe rendered from this repository\'s own '
+      '<a href="visual-review/model-3d.html">3D model</a>, so it is inferred '
+      'geometry and not a survey. Composited by '
+      '<a href="' + BLOB + 'make_hero.py"><code>make_hero.py</code></a>.</p>')
+    A("</div>")
+    A("</div>")
+
+    A('<div class="card hero">')
     A('<div class="statrow">'
       '<div class="s"><div class="k">MTA-measured peak, Brooklyn Bridge Park</div>'
       '<div class="big">98.9</div>dB(A) average maximum</div>'
@@ -1052,6 +1264,8 @@ def build_index(stats):
       + '</code> on ' + stats["date"] + '. '
       '<a href="https://github.com/' + REPO + '">Repository</a> &middot; '
       '<a href="' + ISSUES + '">Open issues</a></p>')
+
+    A(HERO_JS)
 
     return shell(
         "Silencing the Span &mdash; Manhattan Bridge rail noise in DUMBO",

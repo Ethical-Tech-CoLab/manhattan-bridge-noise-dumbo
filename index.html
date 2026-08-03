@@ -140,6 +140,84 @@ p { margin: 0 0 14px; }
 }
 .hero { background: var(--cp-bg-elevated); }
 
+/* -- above the fold ------------------------------------------------------ */
+/* The hero image is grayscale by construction so the theme, not the JPEG,
+   decides what colour it is. */
+.hb {
+  position: relative; border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--cp-border); margin: 0 0 22px;
+  background: #101010; isolation: isolate;
+}
+.hb .pic {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 62% 46%; z-index: 0;
+  opacity: 0.95;
+}
+.hb .tint {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(16,16,16,0.94) 0%, rgba(16,16,16,0.86) 34%,
+                    rgba(16,16,16,0.42) 62%, rgba(16,16,16,0.20) 100%),
+    linear-gradient(0deg, var(--cp-highlight), var(--cp-highlight));
+}
+.hb .hin { position: relative; z-index: 2; padding: 44px 40px 30px; color: #f2efea; }
+.hb .kicker {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--cp-accent); font-weight: 700; margin: 0 0 10px;
+}
+html[data-theme="light"] .hb .kicker { color: #fd8ea1; }
+.hb h1 { font-size: 2.5rem; margin: 0 0 10px; letter-spacing: -0.02em; color: #fff; }
+.hb .sub { font-size: 1.06rem; margin: 0 0 6px; max-width: 44rem; color: #e6e1da; }
+.hb .sub a { color: #ffd0da; }
+.hb .lede { font-size: 0.95rem; margin: 0; max-width: 44rem; color: #bdb7b0; }
+.hb .cred {
+  position: relative; z-index: 2; margin: 22px 0 0; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.14);
+  font-size: 0.7rem; color: rgba(255,255,255,0.52); line-height: 1.5;
+}
+.hb .cred a { color: rgba(255,255,255,0.74); }
+
+/* the statement carousel */
+.wc { position: relative; z-index: 2; margin: 26px 0 34px; min-height: 148px; }
+.wc .wcslide {
+  position: absolute; inset: 0; opacity: 0; transition: opacity .5s ease;
+  pointer-events: none; display: block; color: inherit;
+}
+.wc .wcslide.on { opacity: 1; pointer-events: auto; }
+.wc .wcslide:hover { text-decoration: none; }
+.wc .n {
+  font-size: clamp(3rem, 8.5vw, 5.4rem); font-weight: 700; line-height: 0.94;
+  letter-spacing: -0.035em; color: #fff; display: block;
+}
+.wc .u {
+  font-size: 0.96rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--cp-accent); margin: 8px 0 6px;
+}
+html[data-theme="light"] .wc .u { color: #ff9bad; }
+.wc .l { font-size: 0.98rem; color: #ded8d1; max-width: 40rem; }
+.wc .wcslide:hover .n { color: #ffd0da; }
+.wcnav { position: relative; z-index: 2; display: flex; align-items: center; gap: 8px; }
+.wcnav button {
+  width: 30px; height: 6px; border-radius: 3px; border: 0; cursor: pointer;
+  background: rgba(255,255,255,0.26); padding: 0;
+}
+.wcnav button[aria-current="true"] { background: var(--cp-accent); }
+.wcnav button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.wcnav .pp {
+  width: auto; height: auto; border-radius: 0.625rem; padding: 4px 10px;
+  font: inherit; font-size: 0.74rem; color: #ded8d1;
+  background: rgba(255,255,255,0.12); margin-left: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wc .wcslide { transition: none; }
+}
+@media (max-width: 760px) {
+  .hb .hin { padding: 28px 20px 22px; }
+  .hb h1 { font-size: 1.8rem; }
+  .hb .cred { position: static; max-width: none; text-align: left; }
+  .wc { min-height: 190px; }
+}
+
 .statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
 .s {
   background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
@@ -262,18 +340,43 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <body>
 <div class="bar"><div class="in"><a class="home" href="index.html" class="on">Silencing the Span</a><nav><a href="read/readme.html">README</a><a href="read/idea-concept.html">1. Concept</a><a href="read/precedent-and-materials.html">2. Precedent</a><a href="read/williamsburg-comparator.html">3. Comparator</a><a href="read/visual-model-framework.html">4. Visual model</a><a href="read/field-capture-protocol.html">5. Field capture</a><a href="read/community-evidence-audit.html">6. Community</a><a href="read/data-collection.html">7. Data</a></nav></div></div>
 <div class="wrap">
-<div class="card hero">
+<div class="hb">
+<img class="pic" src="assets/hero-composite.jpg" alt="" srcset="assets/hero-composite-1200.jpg 1200w, assets/hero-composite.jpg 2400w" sizes="100vw" width="2400" height="1000" fetchpriority="high">
+<div class="tint"></div>
+<div class="hin">
+<p class="kicker">Ethical Tech CoLab &middot; open research programme</p>
 <h1>Silencing the Span</h1>
-<p class="sub">Rail noise from the NYC Subway crossing the Manhattan Bridge into DUMBO, Brooklyn &mdash; an open research programme by <a href="https://github.com/Ethical-Tech-CoLab">Ethical Tech CoLab</a>.</p>
-<p class="lede">This page is the organising index for the whole investigation: where it currently stands, what has actually been established, what is demonstrably wrong, and what still needs doing. It is regenerated from the repository, so the counts on it cannot drift away from the work.</p>
+<p class="sub">Rail noise from the NYC Subway crossing the Manhattan Bridge into DUMBO, Brooklyn &mdash; measured by the operator, uncomplainable to the city, and unstudied where people actually are.</p>
+<div class="wc" id="wc" aria-live="polite">
+<a class="wcslide on" href="read/idea-concept.html" data-i="0"><span class="n">98.9</span><div class="u">dB(A) average maximum</div><div class="l">measured by the MTA in Brooklyn Bridge Park, at the dog run</div></a>
+<a class="wcslide" href="visual-review/frequency-dashboard.html" data-i="1"><span class="n">54</span><div class="u">seconds between trains</div><div class="l">at the weekday peak, 67 crossings in a single hour</div></a>
+<a class="wcslide" href="read/community-evidence-audit.html" data-i="2"><span class="n">4,055</span><div class="u">noise complaints since 2020</div><div class="l">within 500 m of that measurement, and not one can be about the train</div></a>
+<a class="wcslide" href="visual-review/agent-model.html" data-i="3"><span class="n">17.3</span><div class="u">dB above the fit</div><div class="l">the dog run sits this far over ideal line-source spreading, so the three-point agreement that looked like a result was a coincidence</div></a>
+<a class="wcslide" href="visual-review/noise-canyon.html" data-i="4"><span class="n">23%</span><div class="u">of the walk measured</div><div class="l">four bands of instrument data along 1,482 m from the F train to the water</div></a>
+<a class="wcslide" href="#status" data-i="5"><span class="n">3</span><div class="u">claims withdrawn</div><div class="l">published here, then disproved here, and left visible in the text</div></a>
+</div>
+<div class="wcnav" id="wcnav">
+<button type="button" data-i="0" aria-current="true" aria-label="Statement 1 of 6: 98.9"></button>
+<button type="button" data-i="1" aria-current="false" aria-label="Statement 2 of 6: 54"></button>
+<button type="button" data-i="2" aria-current="false" aria-label="Statement 3 of 6: 4,055"></button>
+<button type="button" data-i="3" aria-current="false" aria-label="Statement 4 of 6: 17.3"></button>
+<button type="button" data-i="4" aria-current="false" aria-label="Statement 5 of 6: 23%"></button>
+<button type="button" data-i="5" aria-current="false" aria-label="Statement 6 of 6: 3"></button>
+<button type="button" class="pp" id="wcpp" aria-label="Pause the rotating statements">Pause</button>
+</div>
+<p class="lede" style="margin-top:26px">This page is the organising index for the whole investigation: where it currently stands, what has actually been established, what is demonstrably wrong, and what still needs doing. It is regenerated from the repository, so the counts on it cannot drift away from the work.</p>
+<p class="cred">Photograph: Historic American Engineering Record NY-127-7, Jack E. Boucher, National Park Service, via <a href="https://www.loc.gov/item/ny0980/">Library of Congress</a> &mdash; no known restrictions on images made by the U.S. Government. Overlaid wireframe rendered from this repository's own <a href="visual-review/model-3d.html">3D model</a>, so it is inferred geometry and not a survey. Composited by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/make_hero.py"><code>make_hero.py</code></a>.</p>
+</div>
+</div>
+<div class="card hero">
 <div class="statrow"><div class="s"><div class="k">MTA-measured peak, Brooklyn Bridge Park</div><div class="big">98.9</div>dB(A) average maximum</div><div class="s"><div class="k">Weekday crossings, busiest hour</div><div class="big">67</div>a train every 54 seconds</div><div class="s"><div class="k">People living in the affected corridor</div><div class="big">15.8k</div>to 21.4k, from tax lots</div><div class="s"><div class="k">Rail noise complaints NYC 311 can accept</div><div class="big">0</div>there is no category</div></div>
 <p style="margin-top:18px">The first two are the MTA's own figures and are the most reliable numbers here. The third is derived from public tax-lot data. <strong>The fourth is the finding this programme did not expect to make.</strong></p>
 </div>
 <div class="card" id="status">
 <h2>Where the investigation stands</h2>
-<p class="lede">Seven research documents, five interactive artifacts, five runnable scripts and roughly 94,778 words &mdash; against 32 specified methods of which <strong>two have been executed and one partially</strong>. The gap between those two halves of the sentence is the honest summary of this programme.</p>
+<p class="lede">Seven research documents, six interactive artifacts, eight runnable scripts and roughly 96,116 words &mdash; against 33 specified methods of which <strong>three have been executed and one partially</strong>. The gap between those two halves of the sentence is the honest summary of this programme.</p>
 <div class="tw"><table><thead><tr><th>State</th><th>Count</th><th>What it means</th></tr></thead><tbody>
-<tr><td><span class="badge ok">Executed</span></td><td><b>3</b> of 32 methods</td><td>Method 29, Method 30, Method 27. <b>All three changed something</b>, and two of them contradicted claims this repository had already published.</td></tr>
+<tr><td><span class="badge ok">Executed</span></td><td><b>4</b> of 33 methods</td><td>Method 29, Method 30, Method 32, Method 27. <b>All three changed something</b>, and two of them contradicted claims this repository had already published.</td></tr>
 <tr><td><span class="badge warn">Tooling built</span></td><td><b>1</b></td><td>Method 26 &mdash; the code is written and verified against the live feed, but the run has not been done.</td></tr>
 <tr><td><span class="badge no">Not started</span></td><td><b>28</b></td><td>Proposals. Several of the cheapest are also the most load-bearing, and their being undone is why so many claims here are hedged.</td></tr>
 <tr><td><span class="badge acc">Withdrawn</span></td><td><b>12</b> explicit retractions</td><td>Claims this programme published and then disproved. They are <b>left visible in the text</b> rather than deleted, which is the point.</td></tr>
@@ -297,9 +400,10 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <a class="tile" href="visual-review/model-3d.html"><div class="t">Navigable 3D model <span class="badge acc">Bridge</span></div><div class="d">Both bridges, four zoom tiers from the whole crossing down to a single rail fastener, with anchored callouts, click-to-inspect components and a live scale bar that reads in inches at the finest tier.</div><div class="look">Turn every provenance filter off. The viewport goes completely empty and the display says so. That is the state of public knowledge.</div></a>
 <a class="tile" href="visual-review/section-problem.html"><div class="t">Provenance-tagged section <span class="badge acc">Bridge</span></div><div class="d">The 2D cross-section of the Manhattan Bridge track zone, every component colour-coded and dash-coded by how well it is actually known, with the source rubric attached to the drawing.</div><div class="look">Turn off the DOCUMENTED filter and watch most of the drawing disappear.</div></a>
 <a class="tile" href="visual-review/frequency-dashboard.html"><div class="t">Frequency and exposure dashboard <span class="badge acc">Data</span></div><div class="d">Traversals by hour, route and direction across day, evening and night; pedestrian arrivals, departures, walkway flow and residents; and a four-cohort presence model that publishes its own non-identifiability.</div><div class="look">Drag the coincidence window from 1 s to 29 s. The answer does not move - which is a finding about the feed, not about the railway.</div></a>
+<a class="tile" href="visual-review/noise-canyon.html"><div class="t">The noise canyon <span class="badge acc">Bridge</span></div><div class="d">A five-slide picture essay drawn entirely from open data: the structure photographed, 76 surveyed buildings extruded around the alignment, a true section cut across the corridor, the ordinary walk in from the York Street F platform, and every point along it anyone has ever measured.</div><div class="look">The last slide. Four narrow bands of measured evidence against 1,482 m of walk - 23% - and the shaded field is not quiet, it is unmeasured.</div></a>
 <a class="tile" href="visual-review/agent-model.html"><div class="t">Agentic population model <span class="badge acc">Agents</span></div><div class="d">Groups - not individuals - enter DUMBO at persona-specific gateways, follow scenario itineraries, contend for capacity and accumulate a noise dose along their actual path. Deterministic, seeded, fully event-logged.</div><div class="look">The first panel: the same itinerary started ninety seconds apart gets a different dose. Then the rejected-propagation panel, which is a negative result and the most important thing on the page.</div></a>
 </div>
-<div class="note"><strong>A warning that applies to all five.</strong> The 3D model contains <strong>zero measured elements</strong>. The audio is <strong>synthesised, not recorded</strong>. The agent model's itineraries are <strong>invented</strong>. These are instruments for reasoning about a problem, not evidence about it &mdash; and each says so in its own interface rather than in a footnote somewhere else.</div>
+<div class="note"><strong>A warning that applies to all six.</strong> The 3D model contains <strong>zero measured elements</strong>. The audio is <strong>synthesised, not recorded</strong>. The agent model's itineraries are <strong>invented</strong>. These are instruments for reasoning about a problem, not evidence about it &mdash; and each says so in its own interface rather than in a footnote somewhere else.</div>
 </div>
 <div class="card" id="findings">
 <h2>What has actually been found</h2>
@@ -337,14 +441,14 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <h2>The research documents</h2>
 <p>Rendered here for reading. The markdown files in the repository remain authoritative, and each rendered page links back to its source.</p>
 <div class="tw"><table><thead><tr><th>Document</th><th>What it asks</th><th style="white-space:nowrap">Words</th></tr></thead><tbody>
-<tr><td style="white-space:nowrap"><a href="read/readme.html"><b>Repository README</b></a><br><code style="font-size:0.78em">README.md</code></td><td>The argument in brief, the document index, and the method register with its honest status column.</td><td>12,754</td></tr>
+<tr><td style="white-space:nowrap"><a href="read/readme.html"><b>Repository README</b></a><br><code style="font-size:0.78em">README.md</code></td><td>The argument in brief, the document index, and the method register with its honest status column.</td><td>13,496</td></tr>
 <tr><td style="white-space:nowrap"><a href="read/idea-concept.html"><b>1. Idea and concept</b></a><br><code style="font-size:0.78em">IDEA-CONCEPT.md</code></td><td>What is the problem? Defines it from agency evidence, establishes who is responsible under what law, and derives the questions nobody has asked of this site.</td><td>20,979</td></tr>
 <tr><td style="white-space:nowrap"><a href="read/precedent-and-materials.html"><b>2. Precedent and materials</b></a><br><code style="font-size:0.78em">PRECEDENT-AND-MATERIALS.md</code></td><td>What has the world already built? Elevated-transit noise mitigation in Japan, China, Sweden, Germany, Hong Kong, Australia and Chicago - and what actually transfers to a 1909 suspension bridge.</td><td>11,470</td></tr>
 <tr><td style="white-space:nowrap"><a href="read/williamsburg-comparator.html"><b>3. Williamsburg comparator</b></a><br><code style="font-size:0.78em">WILLIAMSBURG-COMPARATOR.md</code></td><td>There is a second bridge with the same owner, operator, rolling stock and statute. What does it already tell us, and what would measuring it establish?</td><td>12,757</td></tr>
 <tr><td style="white-space:nowrap"><a href="read/visual-model-framework.html"><b>4. Visual model framework</b></a><br><code style="font-size:0.78em">VISUAL-MODEL-FRAMEWORK.md</code></td><td>Every argument in the first three documents is an argument about a cross-section nobody has drawn. Can that drawing be built from open data - and made to admit what it does not know?</td><td>12,458</td></tr>
 <tr><td style="white-space:nowrap"><a href="read/field-capture-protocol.html"><b>5. Field capture protocol</b></a><br><code style="font-size:0.78em">FIELD-CAPTURE-PROTOCOL.md</code></td><td>Every acoustic claim beyond the published levels is invented. Can a consumer phone fix that this month?</td><td>7,145</td></tr>
 <tr><td style="white-space:nowrap"><a href="read/community-evidence-audit.html"><b>6. Community evidence audit</b></a><br><code style="font-size:0.78em">COMMUNITY-EVIDENCE-AUDIT.md</code></td><td>The people who live under it have been complaining since 2008. What have they already recorded, and why can nobody find it?</td><td>10,300</td></tr>
-<tr><td style="white-space:nowrap"><a href="read/data-collection.html"><b>7. Data collection</b></a><br><code style="font-size:0.78em">data-collection/README.md</code></td><td>How many trains, how many people, and for how long? Runnable scripts against MTA and NYC open data - and the traps that each silently produce a plausible wrong number.</td><td>6,915</td></tr>
+<tr><td style="white-space:nowrap"><a href="read/data-collection.html"><b>7. Data collection</b></a><br><code style="font-size:0.78em">data-collection/README.md</code></td><td>How many trains, how many people, and for how long? Runnable scripts against MTA and NYC open data - and the traps that each silently produce a plausible wrong number.</td><td>7,511</td></tr>
 </tbody></table></div>
 </div>
 <div class="card" id="code">
@@ -356,6 +460,9 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/build_dashboard_data.py"><code>build_dashboard_data.py</code></a></td><td>Assembles the frequency dashboard's dataset, including the coincidence analysis that exposed the feed's 30-second quantisation.</td><td>4&nbsp;KB</td></tr>
 <tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/build_pedestrian_data.py"><code>build_pedestrian_data.py</code></a></td><td>Derives arrival rate, departure rate, walkway flow and resident count from four public datasets. Disproved this repository's own claim about which hour is worst.</td><td>17&nbsp;KB</td></tr>
 <tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/build_cohort_model.py"><code>build_cohort_model.py</code></a></td><td>Fits four population cohorts to the observed departure curve and reports the range across every parameter set that fits equally well - which is how the non-identifiability result was found.</td><td>43&nbsp;KB</td></tr>
+<tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/fetch_geodata.py"><code>fetch_geodata.py</code></a></td><td>Fetches NYC building footprints with surveyed roof heights and the OpenStreetMap street, park, water and footway network for the corridor. The reproducibility path for every line in the noise-canyon drawings.</td><td>5&nbsp;KB</td></tr>
+<tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_carousel.py"><code>build_carousel.py</code></a></td><td>Draws the noise-canyon slides from that geodata and emits the page. Slides are declared in visual-review/carousel.json, and the build refuses to run if any of them lacks a source or a caveat.</td><td>58&nbsp;KB</td></tr>
+<tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/make_hero.py"><code>make_hero.py</code></a></td><td>Composites the hero band on this page from a public-domain HAER photograph and a render taken from this repository's own 3D model.</td><td>8&nbsp;KB</td></tr>
 <tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/dashboard-data.json"><code>dashboard-data.json</code></a></td><td>Traversal counts by hour, route, direction and period.</td><td>33&nbsp;KB</td></tr>
 <tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/pedestrian-data.json"><code>pedestrian-data.json</code></a></td><td>Turnstile entries, origin-destination arrivals, walkway counts, residents.</td><td>8&nbsp;KB</td></tr>
 <tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/cohort-data.json"><code>cohort-data.json</code></a></td><td>The admissible cohort parameter family and the presence ranges it implies.</td><td>13&nbsp;KB</td></tr>
@@ -379,7 +486,53 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <ul><li><strong>Post a recording.</strong> See <a href="read/field-capture-protocol.html">the field capture protocol</a> for what makes one usable.</li><li><strong>Falsify a &ldquo;not found&rdquo; claim.</strong> Five have already failed. The prior on others failing is not low.</li><li><strong>Execute any method.</strong> Several cost an email, a form, or an afternoon.</li><li><strong>Challenge the arithmetic.</strong> The event-duration derivation, the cohort identifiability result and the propagation rejection are each either right or wrong, and none has been reviewed by anyone. Issues <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/26">#26</a>, <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/27">#27</a> and <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/28">#28</a> exist specifically to attack them.</li><li><strong>Reclassify a component's provenance.</strong> Anyone with structural knowledge of riveted lattice trusses will find misclassifications in the 3D model, and finding them is the point of publishing the classification.</li></ul>
 <div class="note good"><strong>One standing condition.</strong> The people who live under this bridge have been asking for help since 2008. Any contact with them must offer something before it asks for anything, must not represent this programme as more established than it is, and must make clear that its central artifacts are <strong>synthetic</strong>. Over-claiming to a community in that position would be a different and worse kind of error than the ones already made here.</div>
 </div>
-<p class="foot"><strong>Silencing the Span: Defining the Manhattan Bridge Rail-Noise Problem in DUMBO for a Design-Build Intervention.</strong> Ethical Tech CoLab. Research content released under <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/LICENSE">CC BY 4.0</a>. Not peer-reviewed. No option in any document is recommended for procurement.<br><br>This page was generated by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> from commit <code>aaae876</code> on 2026-08-03. <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo">Repository</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/">Open issues</a></p>
+<p class="foot"><strong>Silencing the Span: Defining the Manhattan Bridge Rail-Noise Problem in DUMBO for a Design-Build Intervention.</strong> Ethical Tech CoLab. Research content released under <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/LICENSE">CC BY 4.0</a>. Not peer-reviewed. No option in any document is recommended for procurement.<br><br>This page was generated by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> from commit <code>aa96cc6</code> on 2026-08-03. <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo">Repository</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/">Open issues</a></p>
+<script>
+(function () {
+  var wc = document.getElementById("wc");
+  var nav = document.getElementById("wcnav");
+  if (!wc || !nav) return;
+  var slides = [].slice.call(wc.querySelectorAll(".wcslide"));
+  var dots = [].slice.call(nav.querySelectorAll("button[data-i]"));
+  var pp = document.getElementById("wcpp");
+  var i = 0, timer = null;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function show(n) {
+    i = (n + slides.length) % slides.length;
+    slides.forEach(function (s, k) { s.classList.toggle("on", k === i); });
+    dots.forEach(function (d, k) {
+      d.setAttribute("aria-current", k === i ? "true" : "false");
+    });
+  }
+  function stop() {
+    if (timer) { clearInterval(timer); timer = null; }
+    pp.textContent = "Play";
+    pp.setAttribute("aria-label", "Resume the rotating statements");
+  }
+  function start() {
+    if (timer || reduce) return;
+    timer = setInterval(function () { show(i + 1); }, 5200);
+    pp.textContent = "Pause";
+    pp.setAttribute("aria-label", "Pause the rotating statements");
+  }
+  dots.forEach(function (d) {
+    d.addEventListener("click", function () {
+      show(parseInt(d.dataset.i, 10)); stop();
+    });
+  });
+  pp.addEventListener("click", function () { timer ? stop() : start(); });
+  // Rotating text that keeps moving while someone is reading it is hostile,
+  // so hovering, focusing or leaving the tab all halt it.
+  wc.addEventListener("mouseenter", stop);
+  wc.addEventListener("focusin", stop);
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) stop();
+  });
+  if (reduce) { stop(); pp.textContent = "Next"; pp.addEventListener(
+    "click", function () { show(i + 1); }); } else { start(); }
+})();
+</script>
 </div>
 </body>
 </html>

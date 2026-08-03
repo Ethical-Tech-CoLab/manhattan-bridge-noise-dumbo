@@ -1,0 +1,125 @@
+{
+  "_readme": [
+    "Slide manifest for visual-review/noise-canyon.html.",
+    "",
+    "TO ADD A SLIDE:    append one object to \"slides\" and run",
+    "                   python build_carousel.py",
+    "TO REMOVE A SLIDE: delete the object, or set \"enabled\": false",
+    "TO REORDER:        move the object. Order in this file is order on screen.",
+    "",
+    "art.kind = \"generated\" draws the slide from open data using the named",
+    "generator in build_carousel.py. GENERATORS lists what is available and the",
+    "build fails loudly if a name is unknown, so a typo cannot ship silently.",
+    "",
+    "art.kind = \"image\" uses a file instead. Put it in assets/carousel/ and set",
+    "art.src to a path relative to the repository root. The build fails if the",
+    "file is missing.",
+    "",
+    "Every slide MUST carry sources[] and caveat. A picture with no provenance",
+    "does not go on this site."
+  ],
+
+  "title": "The noise canyon",
+  "subtitle": "What the corridor under the Manhattan Bridge actually looks like, drawn from open data rather than sketched",
+
+  "slides": [
+    {
+      "id": "the-object",
+      "enabled": true,
+      "eyebrow": "The object",
+      "title": "This is the thing that makes the noise, photographed from below",
+      "art": { "kind": "image", "src": "assets/carousel/bridge-underside.jpg" },
+      "alt": "Black and white photograph of the Manhattan Bridge from the water below and to the side, showing the Brooklyn tower, the suspension cables, and the open steel truss soffit of the deck carrying the subway tracks.",
+      "standfirst": "Everything else on this page is drawn. This is not. It is a Historic American Engineering Record plate of the same structure the rest of the site models, and the important thing in it is the underside: an open steel truss with no soffit, no absorption and nothing between the rail and the air below it.",
+      "notes": [
+        "A closed box girder radiates far less than an open truss, because an open truss lets structure-borne sound out on every face. What this photograph shows is the geometry the mitigation literature is least optimistic about.",
+        "The frame is at the river towers. Two hundred metres to the left of this view the same soffit is thirty metres above a public park and a residential street grid, and nobody has photographed that face for a survey."
+      ],
+      "figures": [],
+      "sources": [
+        ["Historic American Engineering Record NY-127-7, Jack E. Boucher, National Park Service, via Library of Congress item ny0980. No known restrictions on images made by the U.S. Government.", "https://www.loc.gov/item/ny0980/", "5/5 VERIFIED"]
+      ],
+      "caveat": "This is a photograph of the river span, not of the DUMBO approach. It is included because it shows the construction of the deck honestly and because no comparable public photograph of the soffit over DUMBO exists. Reading the acoustic behaviour of one from the other is exactly the inference this repository keeps warning about, so treat it as an illustration of the structural type and not as evidence about the approach."
+    },
+
+    {
+      "id": "canyon-massing",
+      "enabled": true,
+      "eyebrow": "The canyon, 2026",
+      "title": "The trains run down a corridor of buildings, not across open ground",
+      "art": { "kind": "generated", "generator": "canyon_massing" },
+      "alt": "Isometric massing of DUMBO and Vinegar Hill. Every building is extruded to its surveyed roof height. The Manhattan Bridge alignment runs diagonally through the middle of the block structure.",
+      "standfirst": "Every block in this drawing is a real footprint at its surveyed roof height. Nothing is stylised and nothing is placed by eye. The bridge enters Brooklyn and immediately runs between two walls of masonry and glass.",
+      "notes": [
+        "A source over open ground loses about 6 dB per doubling of distance. A source in a canyon does not, because the sound that would have left keeps arriving back off the facades.",
+        "This is why the DUMBO problem is not the same problem as the river span, even though it is the same train on the same track."
+      ],
+      "figures": [],
+      "sources": [
+        ["NYC OpenData 5zhs-2jue, BUILDING footprints with height_roof and ground_elevation", "https://data.cityofnewyork.us/d/5zhs-2jue", "5/5 VERIFIED"],
+        ["OpenStreetMap via Overpass, bridge and street alignment, ODbL 1.0", "https://www.openstreetmap.org/copyright", "4/5 VERIFIED"]
+      ],
+      "caveat": "The buildings are surveyed. The bridge is not. No public source gives the deck elevation over DUMBO, so the structure is drawn on this repository's own inferred alignment and is rated 2/5. In a drawing about noise, the one object making the noise is the least well described thing in it."
+    },
+
+    {
+      "id": "canyon-section",
+      "enabled": true,
+      "eyebrow": "Section",
+      "title": "A cut across the corridor, with the only unmeasured object in it drawn as a guess",
+      "art": { "kind": "generated", "generator": "canyon_section" },
+      "alt": "Cross-section perpendicular to the bridge alignment near the DUMBO Archway. Real building heights are drawn on both sides of a hatched band marking the assumed position of the elevated structure.",
+      "standfirst": "Cut the corridor at right angles near the Archway and the geometry is a street canyon with a noise source suspended in it. The flanking heights come from the city's own building survey. The height of the deck between them does not exist in any public dataset.",
+      "notes": [
+        "The ratio that governs a street canyon is height over width. It is computable here for the buildings and not computable for the source.",
+        "Drawing the deck as a hatched band rather than a line is the honest rendering of a number nobody has published."
+      ],
+      "figures": [],
+      "sources": [
+        ["NYC OpenData 5zhs-2jue, BUILDING footprints with height_roof", "https://data.cityofnewyork.us/d/5zhs-2jue", "5/5 VERIFIED"],
+        ["MTA document 138061, memo 18 Jan 2024, measured levels", "IDEA-CONCEPT.md", "5/5 VERIFIED"]
+      ],
+      "caveat": "The deck band is ASSUMED, rated 1/5. It is placed to be plausible, not because a source supports it. Method 16 exists to replace it and has not been run."
+    },
+
+    {
+      "id": "walk-map",
+      "enabled": true,
+      "eyebrow": "The approach",
+      "title": "The walk from the York Street F platform to the water, and along it",
+      "art": { "kind": "generated", "generator": "walk_map" },
+      "alt": "Plan of DUMBO showing a routed pedestrian path from York Street subway station north-west to the East River, then south-west along Brooklyn Bridge Park past the Manhattan Bridge to Pier 1.",
+      "standfirst": "This is the ordinary way into the neighbourhood: out of the York Street F station, north-west to the river, then left along the water. The route is not drawn by hand. It is the shortest walkable path over OpenStreetMap's own footway network between fixed waypoints, so anyone can re-derive it.",
+      "notes": [
+        "Google Maps is deliberately not used here. Its terms forbid the derivative work, and a picture nobody else can regenerate is not a source.",
+        "The four circles are every point on this walk where anyone has ever put an instrument."
+      ],
+      "figures": [],
+      "sources": [
+        ["OpenStreetMap via Overpass, pedestrian network, ODbL 1.0", "https://www.openstreetmap.org/copyright", "5/5 VERIFIED"],
+        ["MTA document 138061, four measured sessions", "IDEA-CONCEPT.md", "5/5 VERIFIED"],
+        ["Station positions, MTA Subway Stations", "https://data.ny.gov/d/39hk-dx4f", "5/5 VERIFIED"]
+      ],
+      "caveat": "The route is a plausible ordinary walk, not an observed one. Nobody has surveyed where people actually go, which is Method 28 and is the single blocking unknown for any absolute exposure figure."
+    },
+
+    {
+      "id": "walk-known",
+      "enabled": true,
+      "eyebrow": "The gap",
+      "title": "Along that entire walk, four points have been measured and nothing else has",
+      "art": { "kind": "generated", "generator": "walk_known" },
+      "alt": "A strip chart along the walking route. Four narrow bands mark measured locations. The rest of the route is shaded as unmeasured.",
+      "standfirst": "Laid out along the walk, the measured evidence occupies four narrow bands. Everything between them is inference. The programme's central claim is not that the noise is loud; it is that almost nobody has checked where it stops being loud.",
+      "notes": [
+        "This is the picture that Method 31, the decay transect, is designed to delete. One afternoon with one meter and a tape closes most of it.",
+        "A propagation model over these four points was fitted and then withdrawn before publication: jittering the digitised positions by ten metres moves the fitted decay exponent anywhere from 0.7 to 22.3."
+      ],
+      "figures": [],
+      "sources": [
+        ["MTA document 138061, memos 18 Jan 2024 and 10 Jun 2022", "IDEA-CONCEPT.md", "5/5 VERIFIED"]
+      ],
+      "caveat": "Positions of the four sessions are digitised by eye from the addresses given in the memos and are rated 2/5. The levels are 5/5. The bands are drawn wide enough to show that the position uncertainty is not negligible."
+    }
+  ]
+}

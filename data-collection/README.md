@@ -1,9 +1,9 @@
 # Establishing train frequency over the Manhattan Bridge, and who is under it
 
-Five scripts that answer three questions this programme had been asserting
+Six scripts that answer four questions this programme had been asserting
 answers to without ever deriving them: how many trains actually cross the
-Manhattan Bridge and when, **how many people are underneath to hear them**, and
-**how long each of them stays.**
+Manhattan Bridge and when, **how many people are underneath to hear them**,
+**how long each of them stays**, and **what space they are standing in.**
 
 | Script | Answers | Cost |
 |---|---|---|
@@ -12,14 +12,16 @@ Manhattan Bridge and when, **how many people are underneath to hear them**, and
 | `build_dashboard_data.py` | Per-event train data for the interactive dashboard | Seconds, after the download |
 | `build_pedestrian_data.py` | **How many people are underneath, and when** | Four API pulls, about a minute |
 | `build_cohort_model.py` | **How long they stay, and how badly that is identified** | About six minutes of arithmetic |
+| `fetch_geodata.py` | **What shape of space they are standing in** | Two API pulls, about a minute |
 
 None needs an API key, an account, or a payment method. All use only the
 Python standard library except `bridge_realtime.py`, which needs
 `pip install gtfs-realtime-bindings protobuf`.
 
 **Interactive views:**
-[`visual-review/frequency-dashboard.html`](../visual-review/frequency-dashboard.html)
-and [`visual-review/agent-model.html`](../visual-review/agent-model.html)
+[`visual-review/frequency-dashboard.html`](../visual-review/frequency-dashboard.html),
+[`visual-review/agent-model.html`](../visual-review/agent-model.html)
+and [`visual-review/noise-canyon.html`](../visual-review/noise-canyon.html)
 
 ---
 
@@ -772,6 +774,63 @@ under-deck treatment - the intervention most often proposed, including in the
 November 2025 residents' petition - would be applied where the measured problem
 is smallest.
 
+## What shape of space they are standing in
+
+`fetch_geodata.py` answers the last question the other five leave open. The
+frequency work established how often trains cross; the pedestrian and cohort
+work established roughly how many people are underneath and for how long.
+Neither says anything about the space itself, and the space is what turns a
+source level into a received level.
+
+Two public sources, no key, no account:
+
+| Source | Supplies | Rows |
+|---|---|---|
+| NYC OpenData `5zhs-2jue` BUILDING | Footprint polygon, `height_roof`, `ground_elevation`, `construction_year` | 960 footprints in the corridor |
+| OpenStreetMap via Overpass, ODbL 1.0 | Streets, footways, parks, water, coastline, piers, the subway alignment, station nodes | 2,826 ways and 9 nodes |
+
+`build_carousel.py` in the repository root draws
+[`../visual-review/noise-canyon.html`](../visual-review/noise-canyon.html) from
+them. Slides are declared in `../visual-review/carousel.json`; the build refuses
+to run if any slide lacks a source or a caveat.
+
+**Three traps, in the same style as the four above.**
+
+**Trap 5. Overpass returns 406 for a reason that has nothing to do with the query.**
+Adding `Accept: application/json` is necessary and not sufficient. The
+request also failed with a User-Agent containing parentheses and a semicolon -
+the shape every browser uses - which trips the endpoint's request filtering. The
+same query with a plain token User-Agent succeeds. The failure looks like a
+malformed query and is not one.
+
+**Trap 6. The building footprint dataset most search results point at is dead.**
+`qb5r-6dgf` and `nqwf-w8eh` both return nothing. `5zhs-2jue` is the live one and
+is the only one of the three that carries `the_geom`. Query it with
+`within_box(the_geom, north, west, south, east)` - note the argument order.
+
+**Trap 7. Chainage measured from a fitted axis can start in the river.** The
+alignment is fitted by principal components to the OpenStreetMap track geometry,
+which returns a centroid on the river span. Selecting a window around `s = 0`
+then silently returns four buildings instead of seventy-six, with no error. The
+origin has to be slid along the fitted axis to a landmark on land - here the
+DUMBO Archway, which is also one of the four MTA measurement points.
+
+**What came out of it that was not the point of it.**
+
+The alignment this repository had digitised by eye for the agent model and the
+alignment fitted to the open track geometry **differ in bearing by 2.3 degrees**.
+That is an independent check on a number that had never had one.
+
+Of the 77 objects in the massing frame, **76 are surveyed to the roof and one is not**,
+and the one that is not is the elevated structure. No public source gives
+the deck elevation over DUMBO. The drawing therefore renders 76 buildings as
+solid geometry rated 5/5 and the bridge as a hatched assumed band rated 1/5 -
+which is the honest rendering, and is also the argument.
+
+Along the 1,482 m walk from the York Street F platform to Pier 1,
+**347 m lies within a measured band - 23.4 per cent** - and those bands are drawn
+as wide as the position uncertainty in the MTA memos rather than as points.
+
 ---
 python bridge_schedule.py
 
@@ -796,6 +855,15 @@ python build_dashboard_data.py
 # cohort-data.json and injects it into the dashboard. Takes about six
 # minutes; --no-inject writes the JSON only.
 python build_cohort_model.py
+
+# What shape of space they are standing in. Building footprints with
+# surveyed roof heights, and the street, park, water and footway network.
+# Writes geo/buildings.json and geo/osm.json.
+python fetch_geodata.py
+
+# Then, from the repository root, draw the corridor from that geodata.
+cd ..
+python build_carousel.py
 ```
 
 A 30 s poll against an 85-300 s headway samples every train several times

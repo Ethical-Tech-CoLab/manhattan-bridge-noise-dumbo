@@ -140,6 +140,84 @@ p { margin: 0 0 14px; }
 }
 .hero { background: var(--cp-bg-elevated); }
 
+/* -- above the fold ------------------------------------------------------ */
+/* The hero image is grayscale by construction so the theme, not the JPEG,
+   decides what colour it is. */
+.hb {
+  position: relative; border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--cp-border); margin: 0 0 22px;
+  background: #101010; isolation: isolate;
+}
+.hb .pic {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 62% 46%; z-index: 0;
+  opacity: 0.95;
+}
+.hb .tint {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(16,16,16,0.94) 0%, rgba(16,16,16,0.86) 34%,
+                    rgba(16,16,16,0.42) 62%, rgba(16,16,16,0.20) 100%),
+    linear-gradient(0deg, var(--cp-highlight), var(--cp-highlight));
+}
+.hb .hin { position: relative; z-index: 2; padding: 44px 40px 30px; color: #f2efea; }
+.hb .kicker {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--cp-accent); font-weight: 700; margin: 0 0 10px;
+}
+html[data-theme="light"] .hb .kicker { color: #fd8ea1; }
+.hb h1 { font-size: 2.5rem; margin: 0 0 10px; letter-spacing: -0.02em; color: #fff; }
+.hb .sub { font-size: 1.06rem; margin: 0 0 6px; max-width: 44rem; color: #e6e1da; }
+.hb .sub a { color: #ffd0da; }
+.hb .lede { font-size: 0.95rem; margin: 0; max-width: 44rem; color: #bdb7b0; }
+.hb .cred {
+  position: relative; z-index: 2; margin: 22px 0 0; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.14);
+  font-size: 0.7rem; color: rgba(255,255,255,0.52); line-height: 1.5;
+}
+.hb .cred a { color: rgba(255,255,255,0.74); }
+
+/* the statement carousel */
+.wc { position: relative; z-index: 2; margin: 26px 0 34px; min-height: 148px; }
+.wc .wcslide {
+  position: absolute; inset: 0; opacity: 0; transition: opacity .5s ease;
+  pointer-events: none; display: block; color: inherit;
+}
+.wc .wcslide.on { opacity: 1; pointer-events: auto; }
+.wc .wcslide:hover { text-decoration: none; }
+.wc .n {
+  font-size: clamp(3rem, 8.5vw, 5.4rem); font-weight: 700; line-height: 0.94;
+  letter-spacing: -0.035em; color: #fff; display: block;
+}
+.wc .u {
+  font-size: 0.96rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--cp-accent); margin: 8px 0 6px;
+}
+html[data-theme="light"] .wc .u { color: #ff9bad; }
+.wc .l { font-size: 0.98rem; color: #ded8d1; max-width: 40rem; }
+.wc .wcslide:hover .n { color: #ffd0da; }
+.wcnav { position: relative; z-index: 2; display: flex; align-items: center; gap: 8px; }
+.wcnav button {
+  width: 30px; height: 6px; border-radius: 3px; border: 0; cursor: pointer;
+  background: rgba(255,255,255,0.26); padding: 0;
+}
+.wcnav button[aria-current="true"] { background: var(--cp-accent); }
+.wcnav button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.wcnav .pp {
+  width: auto; height: auto; border-radius: 0.625rem; padding: 4px 10px;
+  font: inherit; font-size: 0.74rem; color: #ded8d1;
+  background: rgba(255,255,255,0.12); margin-left: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wc .wcslide { transition: none; }
+}
+@media (max-width: 760px) {
+  .hb .hin { padding: 28px 20px 22px; }
+  .hb h1 { font-size: 1.8rem; }
+  .hb .cred { position: static; max-width: none; text-align: left; }
+  .wc { min-height: 190px; }
+}
+
 .statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
 .s {
   background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
@@ -1270,7 +1348,7 @@ Deliverables: modal map in the 5–300 Hz band; <strong>measured inherent dampin
 <li><strong>The scarce resource is access</strong>, and options differ by an order of magnitude in how much of it they consume — but <strong>no option is free of approvals</strong>, and the executable/non-executable dichotomy in v1.0 was false (§7.1).</li>
 </ol>
 <p><strong>Revision note.</strong> v1.1 corrects three material errors (§0.2), withdraws the ownership/frequency partition (§1.3), excludes acoustic short-circuiting for this site (§3.3), downgrades the rail-damper 8 dB figure to a non-transferable comparator (§4.1), corrects four overstatements in the Japan comparison (§5.1), corrects the cold-spray record to match <code>IDEA-CONCEPT.md</code> §8.1 (§6.2), replaces "sequence Track A first" with "sequence diagnostics, not asset tracks" (Part 10), adds Method 10 and the missing source-control branches (§4.5), and downgrades Q14–Q22 accordingly. <strong>This document qualifies <code>IDEA-CONCEPT.md</code> §7.3 in two places:</strong> conventional barriers are contingent not only on the C1 mass budget but on receptor geometry; and rail dampers have a <strong>measurable precondition</strong> — dynamic track stiffness below 250 MN/m — that should be tested before procurement. Neither change alters the earlier document's conclusion that the structural envelope must be established first.</p>
-<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/PRECEDENT-AND-MATERIALS.md">Source on GitHub</a> &middot; Built from <code>aaae876</code> on 2026-08-03.</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/PRECEDENT-AND-MATERIALS.md">Source on GitHub</a> &middot; Built from <code>aa96cc6</code> on 2026-08-03.</p>
 </main>
 </div>
 
