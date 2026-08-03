@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5. Field capture protocol &mdash; Silencing the Span</title>
+<meta name="description" content="Rendered copy of FIELD-CAPTURE-PROTOCOL.md from the Manhattan Bridge rail-noise research repository.">
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, kbd, pre {
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 4px;
+  padding: 0.1em 0.36em;
+}
+pre {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre code { background: none; border: 0; padding: 0; }
+
+/* ---- top bar ---- */
+.bar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--cp-panel-strong);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border);
+}
+.bar .in {
+  max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
+.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
+.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.bar nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  border-radius: 999px; white-space: nowrap;
+}
+.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
+
+h1 { font-size: 2.15rem; line-height: 1.18; margin: 0 0 10px; letter-spacing: -0.01em; }
+h2 { font-size: 1.42rem; margin: 0 0 14px; letter-spacing: -0.005em; }
+h3 { font-size: 1.08rem; margin: 26px 0 8px; }
+p { margin: 0 0 14px; }
+.lede { font-size: 1.06rem; color: var(--cp-text-muted); }
+.sub { color: var(--cp-text-muted); font-size: 1.02rem; margin: 0 0 4px; }
+
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin: 0 0 22px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.hero { background: var(--cp-bg-elevated); }
+
+.statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+.s {
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+  font-size: 0.78rem; color: var(--cp-text-muted);
+}
+.s .k { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.s .big { font-size: 1.9rem; font-weight: 700; color: var(--cp-accent); line-height: 1.1; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 14px; }
+.tile {
+  display: block; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 16px 18px; color: var(--cp-text); transition: border-color .15s, transform .15s;
+}
+.tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
+.tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
+.tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.tile .look {
+  font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
+  border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
+}
+.tile .look b { color: var(--cp-text); }
+
+.badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 999px; vertical-align: middle;
+  border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted);
+}
+.badge.ok { border-color: var(--cp-success); color: var(--cp-success); }
+.badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
+.badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
+.badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+
+.note {
+  border-left: 3px solid var(--cp-accent);
+  background: var(--cp-accent-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  padding: 13px 17px; margin: 16px 0; font-size: 0.92rem;
+}
+.note.bad { border-left-color: var(--cp-danger); background: rgba(220,38,38,0.07); }
+.note.good { border-left-color: var(--cp-success); background: rgba(22,163,74,0.07); }
+.note.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,0.09); }
+
+.tw { overflow-x: auto; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td {
+  border: 1px solid var(--cp-border); padding: 8px 11px;
+  text-align: left; vertical-align: top;
+}
+th { background: var(--cp-surface-soft); font-weight: 700; }
+tbody tr:nth-child(even) td { background: var(--cp-surface-soft); }
+
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li { margin-bottom: 7px; }
+
+blockquote {
+  margin: 16px 0; padding: 10px 18px;
+  border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  color: var(--cp-text-muted);
+}
+
+hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
+
+.foot {
+  color: var(--cp-text-soft); font-size: 0.83rem;
+  border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 30px;
+}
+
+/* ---- work queue ---- */
+.q { border-top: 1px solid var(--cp-border); padding: 15px 0; display: grid;
+     grid-template-columns: 132px 1fr; gap: 18px; }
+.q:first-of-type { border-top: 0; }
+.q .lab { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+          font-weight: 700; padding-top: 3px; }
+.q .h { font-weight: 700; margin-bottom: 2px; }
+.q .cost { font-size: 0.8rem; color: var(--cp-text-soft); margin-bottom: 7px;
+           font-family: Consolas, "Courier New", monospace; }
+.q .why { font-size: 0.9rem; color: var(--cp-text-muted); }
+.lab.blocking { color: var(--cp-danger); }
+.lab.cheap { color: var(--cp-success); }
+.lab.field { color: var(--cp-accent); }
+.lab.review { color: var(--cp-warning); }
+.lab.gate { color: var(--cp-text-muted); }
+
+/* ---- rendered document pages ---- */
+.doclayout { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
+.toc { position: sticky; top: 76px; max-height: calc(100vh - 100px); overflow-y: auto;
+       font-size: 0.84rem; padding-right: 6px; }
+.toc .h { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+          color: var(--cp-text-soft); font-weight: 700; margin-bottom: 8px; }
+.toc a { display: block; padding: 3px 0 3px 9px; color: var(--cp-text-muted);
+         border-left: 2px solid var(--cp-border); line-height: 1.35; }
+.toc a:hover { color: var(--cp-accent); border-left-color: var(--cp-accent); text-decoration: none; }
+.toc a.l3 { padding-left: 20px; font-size: 0.95em; color: var(--cp-text-soft); }
+.doc { min-width: 0; }
+.doc h1 { font-size: 1.95rem; margin-top: 0; }
+.doc h2 { font-size: 1.38rem; margin: 34px 0 12px; padding-bottom: 6px;
+          border-bottom: 1px solid var(--cp-border); }
+.doc h3 { font-size: 1.1rem; margin: 26px 0 8px; }
+.doc h4 { font-size: 0.98rem; margin: 20px 0 6px; color: var(--cp-text-muted); }
+.doc img { max-width: 100%; }
+
+@media (max-width: 980px) {
+  .statrow { grid-template-columns: repeat(2, 1fr); }
+  .doclayout { grid-template-columns: 1fr; }
+  .toc { position: static; max-height: none; margin-bottom: 26px; }
+  .q { grid-template-columns: 1fr; gap: 4px; }
+  .wrap { padding: 22px 16px 70px; }
+  .card { padding: 20px 18px; }
+}
+@media (max-width: 560px) {
+  .statrow { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bar"><div class="in"><a class="home" href="../index.html">Silencing the Span</a><nav><a href="readme.html">README</a><a href="idea-concept.html">1. Concept</a><a href="precedent-and-materials.html">2. Precedent</a><a href="williamsburg-comparator.html">3. Comparator</a><a href="visual-model-framework.html">4. Visual model</a><a href="field-capture-protocol.html" class="on">5. Field capture</a><a href="community-evidence-audit.html">6. Community</a><a href="data-collection.html">7. Data</a></nav></div></div>
+<div class="wrap">
+<div class="doclayout">
+<aside class="toc"><div class="h">On this page</div><a href="#part-0--how-to-read-this-document">Part 0 — How to read this document</a><a class="l3" href="#01-what-this-document-is-for">0.1 What this document is for</a><a class="l3" href="#02-the-claim-this-document-is-built-on">0.2 The claim this document is built on</a><a class="l3" href="#03-source-ratings-used-here">0.3 Source ratings used here</a><a href="#part-1--the-five-captures-in-priority-order">Part 1 — The five captures, in priority order</a><a class="l3" href="#c1--the-spectral-shape-of-a-pass-by">C1 — The spectral shape of a pass-by</a><a class="l3" href="#c2--the-temporal-envelope-and-why-it-matters-more-than-it-looks">C2 — The temporal envelope, and why it matters more than it looks</a><a class="l3" href="#c3--the-headway-distribution">C3 — The headway distribution</a><a class="l3" href="#c4--attribution-via-gtfs-realtime">C4 — Attribution, via GTFS-realtime</a><a class="l3" href="#c5--photogrammetry-of-the-underside">C5 — Photogrammetry of the underside</a><a href="#part-2--the-instrument-as-specified">Part 2 — The instrument, as specified</a><a class="l3" href="#21-the-clipping-question-resolved">2.1 The clipping question, resolved</a><a href="#part-3--what-the-phone-must-not-be-used-for">Part 3 — What the phone must not be used for</a><a class="l3" href="#31-the-upgrade-that-changes-this-verdict">3.1 The upgrade that changes this verdict</a><a href="#part-4--software-and-how-to-configure-it">Part 4 — Software, and how to configure it</a><a class="l3" href="#41-what-to-install">4.1 What to install</a><a class="l3" href="#42-sample-rate-and-bit-depth">4.2 Sample rate and bit depth</a><a class="l3" href="#43-format-uncompressed-without-exception">4.3 Format: uncompressed, without exception</a><a class="l3" href="#44-automatic-gain-control-the-setting-that-decides-everything">4.4 Automatic gain control: the setting that decides everything</a><a class="l3" href="#45-video-audio-is-not-measurement-audio">4.5 Video audio is not measurement audio</a><a class="l3" href="#46-the-bench-test--do-this-before-travelling">4.6 The bench test — do this before travelling</a><a class="l3" href="#47-wind-the-cheapest-large-improvement-available">4.7 Wind: the cheapest large improvement available</a><a href="#part-5--metadata-without-which-the-recordings-are-much-less-useful">Part 5 — Metadata, without which the recordings are much less useful</a><a href="#part-6--where-to-stand">Part 6 — Where to stand</a><a class="l3" href="#61-the-williamsburg-comparator">6.1 The Williamsburg comparator</a><a href="#part-7--legal-safety-and-access">Part 7 — Legal, safety and access</a><a href="#part-8--from-files-to-findings">Part 8 — From files to findings</a><a class="l3" href="#81-what-must-be-filed-with-any-result">8.1 What must be filed with any result</a><a href="#part-9--where-this-document-is-likely-to-be-wrong">Part 9 — Where this document is likely to be wrong</a><a href="#related-documents">Related documents</a></aside>
+<main class="doc">
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/FIELD-CAPTURE-PROTOCOL.md"><code>FIELD-CAPTURE-PROTOCOL.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 7,145 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<h1 id="field-capture-protocol--what-a-consumer-phone-can-and-cannot-contribute">Field Capture Protocol — What a Consumer Phone Can and Cannot Contribute</h1>
+<p><strong>Document 5 of the DUMBO rail-noise research programme.</strong>
+<strong>Version 1.0 — 1 August 2026.</strong>
+<strong>Status: proposed method, not executed. Nothing in this document has been carried out.</strong></p>
+<p>Instrument specified: <strong>Samsung Galaxy S23+</strong>, plus a named optional upgrade under USD 150.</p>
+<hr />
+<h2 id="part-0--how-to-read-this-document">Part 0 — How to read this document</h2>
+<h3 id="01-what-this-document-is-for">0.1 What this document is for</h3>
+<p>Documents 1 through 4 of this programme make a large number of claims that are hedged, and the hedging almost always traces to the same root: <strong>the MTA published levels and threw away everything else.</strong> Its DUMBO survey (doc 138061) gives, per receptor, a session <code>Leq</code>, a peak <code>Lmax</code>, a train-free baseline, a session duration and a train count. Five numbers. From those five numbers this programme has extracted about as much as arithmetic allows, including one result the MTA did not publish (<code>IDEA-CONCEPT.md</code> §1.7, the derived event duration).</p>
+<p>Everything else in the acoustic model is invented. The spectrum is invented. The envelope shape is a chosen convention. The impact-transient rate is a fabrication with no source at all. The service pattern in the continuous audio loop is a session mean rendered as a metronome.</p>
+<p><strong>A phone in a park can fix most of that, and it can fix it this month.</strong></p>
+<h3 id="02-the-claim-this-document-is-built-on">0.2 The claim this document is built on</h3>
+<blockquote>
+<p><strong>The Galaxy S23+ is a poor sound level meter and an excellent sound recorder, and this programme does not need another sound level meter.</strong></p>
+</blockquote>
+<p>That is the whole strategic argument, and it is worth stating carefully because it inverts the usual instinct.</p>
+<p>The usual instinct is to install a decibel app, stand in the park, and try to confirm the MTA's numbers. <strong>Do not do this as the primary activity.</strong> It is the one measurement where a phone is weakest, it is the one measurement already made by a party with calibrated equipment and a statutory obligation, and the MTA's figures are rated <strong>5/5 VERIFIED</strong> in this programme. Reproducing them badly adds nothing; failing to reproduce them badly is worse, because it invites a fight this programme would lose on instrumentation grounds.</p>
+<p>What the phone <em>can</em> deliver is the four things the MTA's five-number table discarded:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>What</th>
+<th>Needs absolute calibration?</th>
+<th>Currently in this programme</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Spectral shape</strong> of a pass-by</td>
+<td><strong>No</strong> — shape is relative</td>
+<td><strong>Wholly fabricated.</strong> The largest single invention in the repository.</td>
+</tr>
+<tr>
+<td><strong>Temporal envelope</strong> of a pass-by</td>
+<td><strong>No</strong> — shape is relative</td>
+<td>A chosen convention, <code>n = 1.5</code>, explicitly "chosen, not measured".</td>
+</tr>
+<tr>
+<td><strong>Headway distribution</strong> across a session</td>
+<td><strong>No</strong> — pure event timing</td>
+<td>A session <em>mean</em> rendered as a regular rhythm.</td>
+</tr>
+<tr>
+<td><strong>Attribution</strong> — which service, which direction, how many cars</td>
+<td><strong>No</strong> — video and timestamps</td>
+<td>Absent. The MTA normalises for none of it.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Every row in that table is a <strong>relative or temporal</strong> measurement. Relative and temporal measurements survive an uncalibrated recording chain, because a fixed unknown gain cancels out of a ratio and does not touch a timestamp at all.</p>
+<p>That is the opening this document exploits.</p>
+<h3 id="03-source-ratings-used-here">0.3 Source ratings used here</h3>
+<p>Same scale as the rest of the programme. Credibility <strong>1</strong> (a forum post) to <strong>5</strong> (a primary agency document or peer-reviewed measurement), and depth of reading marked <strong>VERIFIED</strong> (read in full), <strong>SNIPPET</strong> (read only the retrieved extract), or <strong>UNVERIFIED</strong> (located but not read).</p>
+<p><strong>Most hardware and app claims in Parts 2 and 4 are <code>SNIPPET</code>.</strong> They came from search extracts, not from hands-on testing of an S23+, which this programme does not possess. Part 4.6 therefore specifies a bench test to establish the ones that matter, on the actual handset, before any field trip. <strong>Do not skip it.</strong> If the bench test contradicts this document, the bench test is right.</p>
+<hr />
+<h2 id="part-1--the-five-captures-in-priority-order">Part 1 — The five captures, in priority order</h2>
+<p>Ranked by <em>value to this programme per hour of effort</em>, not by how interesting they are.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Capture</th>
+<th>Kit</th>
+<th>Time</th>
+<th>What it closes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1</strong></td>
+<td><strong>Spectrum of a pass-by</strong></td>
+<td>Phone, windscreen</td>
+<td>30 min</td>
+<td>The largest fabrication in the repository.</td>
+</tr>
+<tr>
+<td><strong>C2</strong></td>
+<td><strong>Temporal envelope of a pass-by</strong></td>
+<td>Phone, windscreen</td>
+<td>Same session as C1</td>
+<td>Breaks the closed loop in §1.7. <strong>The highest-value item epistemically.</strong></td>
+</tr>
+<tr>
+<td><strong>C3</strong></td>
+<td><strong>Headway distribution over 90 minutes</strong></td>
+<td>Phone, windscreen, power bank</td>
+<td>90 min, unattended</td>
+<td>Weakness #4 of the audio demo. Needs <strong>no calibration whatsoever</strong>.</td>
+</tr>
+<tr>
+<td><strong>C4</strong></td>
+<td><strong>Attribution — service, direction, consist</strong></td>
+<td>Phone video + timestamps + GTFS-RT</td>
+<td>Same session as C3</td>
+<td>Weakness #3. A dataset that does not appear to exist anywhere.</td>
+</tr>
+<tr>
+<td><strong>C5</strong></td>
+<td><strong>Photogrammetry of the underside</strong></td>
+<td>Phone, scale bar</td>
+<td>An afternoon</td>
+<td>Method 16. The 3D model contains <strong>zero measured elements</strong>.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="c1--the-spectral-shape-of-a-pass-by">C1 — The spectral shape of a pass-by</h3>
+<p><strong>The problem it solves.</strong> <code>visual-review/acoustic-demo.html</code> states plainly, in its own interface: <em>"No third-octave spectrum has ever been published for either bridge"</em>, and so the sound is synthesised noise with a level envelope pinned to published measurements. The page also warns that <em>"Two sounds can share an A-weighted level and be entirely different experiences"</em>, and that nothing on it should be used to argue about annoyance, speech interference, or which frequencies a treatment should target.</p>
+<p>That single missing dataset blocks most of the design conversation the programme exists to start. <strong>You cannot specify a barrier, an absorber, a damping treatment or a resilient fastener without knowing which octaves carry the energy.</strong> Every mitigation option in <code>PRECEDENT-AND-MATERIALS.md</code> is frequency-selective. Selecting among them without a spectrum is guessing.</p>
+<p><strong>Why a phone is sufficient.</strong> A spectrum for <em>design</em> purposes is a shape: where are the peaks, is the energy in the 50–125 Hz structural-radiation region or the 500–2000 Hz wheel/rail region, is there a discrete tonal component, is there a broadband impact signature. The absolute offset of that shape is irrelevant to all of those questions, and the absolute offset is the only thing an uncalibrated chain gets wrong.</p>
+<p><strong>One caveat that is not optional.</strong> The phone's microphone has its own frequency response, and it is not flat. This means the <em>measured</em> shape is the true shape convolved with an unknown response. For the mid-range this is a modest distortion. <strong>Below about 100 Hz and above about 10 kHz it may be severe</strong>, and MEMS mics in phones are routinely high-passed in hardware to suppress handling and wind noise. Since low-frequency structural radiation is exactly what a bridge problem is about, <strong>this is the most dangerous limitation in this entire document.</strong> Part 4.7 is the mitigation.</p>
+<p><strong>Procedure.</strong></p>
+<ol>
+<li>Position per Part 6. Phone on a small tripod, mic port unobstructed, <strong>windscreen fitted</strong> (Part 4.7 — non-negotiable outdoors).</li>
+<li>Record continuously through <strong>at least 10 complete pass-bys</strong>, including at least 30 s of clean background before the first and after the last.</li>
+<li>Do not touch the phone during recording. Handling noise is broadband and will contaminate the transient analysis.</li>
+<li>Note the wall-clock start time to the second (Part 5).</li>
+<li>Uncompressed WAV only. <strong>Never a lossy codec</strong> — see Part 4.3.</li>
+</ol>
+<h3 id="c2--the-temporal-envelope-and-why-it-matters-more-than-it-looks">C2 — The temporal envelope, and why it matters more than it looks</h3>
+<p><strong>This is the item that most changes the standing of the programme's own work,</strong> and it deserves explaining properly.</p>
+<p><code>IDEA-CONCEPT.md</code> §1.7 derives the equivalent event duration from the published energy balance:</p>
+<p><code>Te = ( T · 10^(Leq/10) − T · 10^(Lbase/10) ) / ( N · ( 10^(Lmax/10) − 10^(Lbase/10) ) )</code></p>
+<p>Across the three public outdoor sessions this yields <strong>5.70 s, 6.28 s and 7.25 s</strong> — a spread of only 1.04 dB in event energy, across different places, days, train counts and session lengths. That mutual consistency is real and it is the strongest derived result in the repository.</p>
+<p>But it rests on an <strong>assumed envelope shape</strong>, <code>L(t) = Lmax − 15·log10(1 + (t/τ)²)</code>, with <code>τ = Te/2</code>. The demo page is candid that this shape is <em>"a convention, not a measurement"</em> and <em>"Chosen, not measured"</em>.</p>
+<p>Worse — and this is the substance of open issues #13 and #15 — <strong>the whole construction is a closed loop.</strong> The continuous audio loop's running energy average converges on the published <code>Leq</code> because <code>τ</code> was solved <em>from</em> that <code>Leq</code>. The page says so in as many words: it is <em>"a consistency check on the arithmetic, not independent evidence"</em>. A closed loop cannot be wrong and cannot be informative. It is unfalsifiable as it stands.</p>
+<p><strong>A single recorded envelope opens the loop.</strong> Measure the actual <code>L(t)</code> of a real pass-by, fit the decay, and one of two things happens, both of which are publishable:</p>
+<ul>
+<li><strong>The measured envelope matches the assumed shape.</strong> The derivation ceases to be self-referential. <code>Te</code> becomes a corroborated quantity rather than a definition, and §1.7 upgrades from arithmetic to a result.</li>
+<li><strong>It does not match.</strong> Then §1.7's numbers are wrong by a stated factor, the audio demo's duty cycles are wrong, and the programme retracts them under its own correction discipline. <strong>This outcome is more valuable than the first</strong>, because it is the only route by which this programme can currently discover it is wrong about something it invented.</li>
+</ul>
+<p>Either way, an hour in a park settles a question that no amount of further reasoning can settle. That is the definition of a good measurement.</p>
+<p><strong>Procedure.</strong> C1 and C2 are the same recording. The distinction is analytical, not operational: C1 asks what frequencies, C2 asks what shape over time. Record once, analyse twice.</p>
+<p>The one recording requirement C2 adds is <strong>fixed gain</strong>. See Part 4.4. If automatic gain control is active, the envelope you measure is the AGC's envelope and not the train's, and the recording is worthless for this purpose. It will still look and sound perfectly fine, which is what makes this failure mode dangerous.</p>
+<h3 id="c3--the-headway-distribution">C3 — The headway distribution</h3>
+<p><strong>The problem it solves.</strong> The continuous mode of the audio demo runs the measured headway — 87.1 s at the Brooklyn Bridge Park dog run, derived as 26 trains in 37 min 45 s. Its own weakness #4 states the objection:</p>
+<blockquote>
+<p>The loop is a <em>mean</em> rendered as a <em>rhythm</em>, and the regularity you hear is an artifact of that.</p>
+</blockquote>
+<p>Real service scatters, bunches behind delays, differs by direction and by service, and thins overnight. A regular loop may materially misrepresent the experience in either direction: real bunching could produce sustained periods far worse than the mean suggests, and real gaps could produce genuine respite the loop denies.</p>
+<p><strong>Why this is the cheapest item in the programme.</strong> It requires <strong>no calibration, no windscreen strictly, and no attendance.</strong> It is a list of timestamps. A 90-minute recording, an amplitude threshold, and a peak-picking script produce the actual interval distribution — mean, spread, and the shape of the tail. The phone could be under a jacket in a bag and the data would still be good.</p>
+<p>It also directly tests the MTA's own figures. If your observed count over 90 minutes disagrees materially with the rate implied by <em>"26 trains in 37 minutes 45 seconds"</em>, that is a finding about the survey.</p>
+<p><strong>Procedure.</strong> Record 90+ minutes continuously to uncompressed WAV. Note the start time to the second. Bring a power bank; continuous recording at 48 kHz will run the battery down and the file will be roughly 300 MB per hour in 16-bit mono, 500 MB in 24-bit. Ensure adequate free storage before starting.</p>
+<h3 id="c4--attribution-via-gtfs-realtime">C4 — Attribution, via GTFS-realtime</h3>
+<p><strong>This is the item most likely to be genuinely novel, and it costs almost nothing on top of C3.</strong></p>
+<p>The MTA report normalises for nothing. Weakness #3 of the demo page:</p>
+<blockquote>
+<p>B, D, N and Q services differ in car class, consist length and axle count, and the MTA report normalises for none of these. The derived figure is an average over an unknown mixture.</p>
+</blockquote>
+<p>The MTA publishes <strong>GTFS-realtime feeds covering the B, D, N and Q</strong>, and as of <code>nyct-gtfs</code> v2.0.0 <strong>API keys are no longer required</strong> to access them (rated 3/5, <code>SNIPPET</code> — verify at the MTA developer portal before relying on it).</p>
+<p>So: if your recording carries an accurate wall-clock timestamp, and you capture the GTFS-RT feed during the same window, <strong>every acoustic event in your recording can be matched to a specific, identified train.</strong> Service, direction, and scheduled versus actual timing.</p>
+<p>That converts an anonymous acoustic event into an attributed one, and it makes several currently unanswerable questions answerable:</p>
+<ul>
+<li>Do B/D pass-bys differ measurably from N/Q pass-bys? If car class matters, this shows it, and it would be the first evidence that the MTA's unnormalised average conceals a real effect.</li>
+<li>Do northbound and southbound differ? The four tracks are not equidistant from any given receptor, so they should.</li>
+<li>Is the loudest event class a particular service, or a particular direction, or neither?</li>
+</ul>
+<p><strong>Video adds the third leg.</strong> A short 4K clip of a pass-by lets you count cars directly and read the car class from the exterior, which cross-checks the GTFS attribution rather than trusting it. Car classes assigned to these services should be <strong>confirmed from the footage, not assumed</strong> — this programme should not assert a rolling-stock assignment it has not verified, and fleet assignments change with deliveries.</p>
+<p><strong>Procedure.</strong> Run C3's audio recording. In parallel, poll the GTFS-RT feed to a log file — a laptop, a Raspberry Pi, or a scheduled script on any always-on machine will do; it does not need to be at the site. Separately, shoot 6–10 individual pass-bys on video for the visual cross-check. <strong>Do not rely on the video's own audio track for any acoustic analysis</strong> (Part 4.5).</p>
+<h3 id="c5--photogrammetry-of-the-underside">C5 — Photogrammetry of the underside</h3>
+<p><strong>The problem it solves.</strong> <code>visual-review/model-3d.html</code> contains <strong>zero MEASURED elements and zero DOCUMENTED-position elements</strong>. Hide the inferred and assumed geometry and the frame is empty — the model says so in its own HUD: <em>"the frame is empty. That is the finding."</em> Method 16 (Williamsburg walkway photogrammetric survey, <em>"A camera and an afternoon"</em>, Priority 2) and Method 19 (the L1 model) both remain open.</p>
+<p><strong>The hardware position.</strong> The S23+ has no LiDAR or time-of-flight sensor; Samsung does not fit them to this line. So this is <strong>structure-from-motion photogrammetry</strong>, not depth sensing. RealityScan (Epic Games) runs on Android and processes in the cloud (rated 3/5, <code>SNIPPET</code>). Alternatives worth trialling include Polycam and the desktop route of shooting frames and processing in <strong>Meshroom</strong> or <strong>COLMAP</strong>, both free and open source — and the desktop route is preferable here, because a research programme should be able to state exactly what its reconstruction pipeline did.</p>
+<p><strong>The one thing that decides whether this is worth doing at all.</strong></p>
+<blockquote>
+<p><strong>Photogrammetry produces a model with arbitrary scale.</strong> Without a known-length object in the scene, you get a shape, not a dimension.</p>
+</blockquote>
+<p>A shape adds nothing this programme lacks. <strong>Dimensions are the entire point.</strong> So:</p>
+<ol>
+<li><strong>Best:</strong> print a ChArUco or ArUco marker board on A4/Letter, mount it rigid and flat, and place it in the scene. Most pipelines detect these automatically and scale from them.</li>
+<li><strong>Good:</strong> place a folding rule or a steel tape, extended and rigid, in frame — ideally two, at right angles, at different depths.</li>
+<li><strong>Fallback:</strong> a US Letter sheet (8.5 × 11 in) or a US dollar bill (6.14 × 2.61 in), flat and fully visible.</li>
+<li><strong>Always:</strong> independently measure something in the scene with a tape and record it, as a check on the scaled model rather than as its source.</li>
+</ol>
+<p><strong>Every reconstructed dimension must carry the scale source in its provenance</strong>, per <code>VISUAL-MODEL-FRAMEWORK.md</code> §5.4. A dimension scaled from a dollar bill is not the same evidence as one scaled from a marker board, and the model's rendering rules already distinguish provenance classes visually.</p>
+<p><strong>Capture procedure.</strong> Photogrammetry rewards discipline and punishes improvisation:</p>
+<ul>
+<li><strong>Shoot stills, not video frames</strong>, where possible. 50 MP full-resolution on the main camera. Video frames carry compression artefacts and rolling-shutter skew.</li>
+<li><strong>60–80% overlap</strong> between consecutive frames. Move in a slow arc, one step at a time.</li>
+<li><strong>Three passes at three heights</strong> where access allows, plus obliques.</li>
+<li><strong>Lock focus and exposure</strong> between frames. Auto-exposure drift between frames degrades feature matching.</li>
+<li><strong>Use the main 50 MP camera only.</strong> Do not mix focal lengths mid-capture; the ultrawide's distortion profile differs and mixing complicates calibration.</li>
+<li><strong>Avoid the ultrawide for anything you intend to measure.</strong> Its barrel distortion is the largest at the frame edges, exactly where structural members will sit.</li>
+<li><strong>Overcast is ideal.</strong> Hard shadows under a bridge deck create the highest-contrast edges in the scene, and the reconstruction will happily model the shadow rather than the steel.</li>
+<li><strong>Expert RAW</strong> for the underside. The dynamic range between sunlit river and shadowed steel is brutal, and the default JPEG pipeline will crush the shadow detail that carries the geometry.</li>
+</ul>
+<hr />
+<h2 id="part-2--the-instrument-as-specified">Part 2 — The instrument, as specified</h2>
+<p>Consolidated so that any future reader knows exactly what produced the data.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+<th>Rating</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Microphones</td>
+<td><strong>Three</strong></td>
+<td>4/5 <code>SNIPPET</code></td>
+<td>Samsung support documentation for the S23/S23+/S23 Ultra. Warns that cases can occlude them.</td>
+</tr>
+<tr>
+<td>Native capture</td>
+<td><strong>48 kHz, 16-bit</strong> typical</td>
+<td>3/5 <code>SNIPPET</code></td>
+<td>Nyquist 24 kHz, comfortably beyond the band of interest. 24-bit may be available via third-party apps; establish on-device.</td>
+</tr>
+<tr>
+<td>Mic element headroom</td>
+<td><strong>AOP 120–132 dB SPL</strong> for typical MEMS parts</td>
+<td>4/5 <code>SNIPPET</code></td>
+<td>PUI Audio and Infineon give this as the general MEMS range.</td>
+</tr>
+<tr>
+<td>Main camera</td>
+<td><strong>50 MP</strong></td>
+<td>4/5 <code>SNIPPET</code></td>
+<td>1/1.56" sensor.</td>
+</tr>
+<tr>
+<td>Ultrawide</td>
+<td><strong>12 MP</strong></td>
+<td>4/5 <code>SNIPPET</code></td>
+<td>Highest distortion; avoid for metrology.</td>
+</tr>
+<tr>
+<td>Telephoto</td>
+<td><strong>10 MP, 3× optical</strong></td>
+<td>4/5 <code>SNIPPET</code></td>
+<td>Useful for detail on inaccessible members.</td>
+</tr>
+<tr>
+<td>Video</td>
+<td><strong>up to 8K</strong>; 4K60 practical</td>
+<td>4/5 <code>SNIPPET</code></td>
+<td></td>
+</tr>
+<tr>
+<td>RAW stills</td>
+<td><strong>Expert RAW</strong> app</td>
+<td>4/5 <code>SNIPPET</code></td>
+<td>Separate Samsung app; install before travelling.</td>
+</tr>
+<tr>
+<td>Depth sensor</td>
+<td><strong>None</strong></td>
+<td>4/5</td>
+<td>No LiDAR/ToF. Photogrammetry only.</td>
+</tr>
+<tr>
+<td>Headphone jack</td>
+<td><strong>None</strong></td>
+<td>5/5</td>
+<td>External mics must be USB-C or wireless.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="21-the-clipping-question-resolved">2.1 The clipping question, resolved</h3>
+<p>A reasonable worry is that a 98.9 dB(A) peak will overload a phone microphone. <strong>It will not overload the element.</strong> With a MEMS acoustic overload point of 120–132 dB SPL, the loudest event in the MTA dataset sits <strong>21 to 33 dB below</strong> the onset of 10% THD.</p>
+<p><strong>The real risk is entirely downstream:</strong> the analogue gain stage and the software gain policy. A phone tuned for speech at 60–70 dB may apply enough gain that a 99 dB event clips digitally at 0 dBFS long before the microphone itself is troubled. That is a <em>settings</em> problem, not a hardware limit, and Part 4.4 is how you solve it.</p>
+<p><strong>Consequence for the field:</strong> always check the recorded waveform for flat-topping before leaving the site. A clipped peak is unrecoverable, and it destroys both the spectrum (clipping generates harmonics that are not in the source) and the envelope (the peak is truncated). Record a test pass-by, inspect it, then commit to the long session.</p>
+<hr />
+<h2 id="part-3--what-the-phone-must-not-be-used-for">Part 3 — What the phone must not be used for</h2>
+<p>Stated as a prohibition because the temptation is strong and the failure is quiet.</p>
+<p><strong>A 2025 study in <em>Cureus</em> evaluated the ten top-rated free Android sound-meter apps on a Samsung Galaxy A54</strong> against a calibrated reference (rated <strong>4/5, <code>VERIFIED</code> abstract and methods</strong>; peer-reviewed, small, and on a mid-range Samsung rather than an S23+). Its two findings that matter here:</p>
+<blockquote>
+<p>Accuracy declined at higher noise levels, with Sound Meter (ABC Apps) showing the least accuracy (R² = 0.85).</p>
+<p>However, limitations such as reduced accuracy at higher decibels and lack of A-weighting for regulatory compliance hinder their use in professional settings.</p>
+</blockquote>
+<p><strong>Accuracy is worst precisely in the regime this programme cares about.</strong> The DUMBO public-space events run 81–99 dB(A). That is the high end, where the study reports degradation.</p>
+<p>By contrast, the <strong>NIOSH Sound Level Meter app</strong> is accurate to <strong>± 2 dBA</strong> and meets <strong>IEC 61672-3 Type 2</strong> — <em>with a calibrated external microphone</em> — and was validated in a reverberant chamber at the NIOSH acoustics laboratory (rated 5/5, <code>SNIPPET</code>; CDC/NIOSH primary). <strong>It is iOS only.</strong> There is no Android equivalent with comparable institutional validation. This is a genuine platform asymmetry and there is no way around it on an S23+.</p>
+<p>Therefore:</p>
+<ul>
+<li><strong>Do not</strong> present any phone-derived absolute dB value as a measurement in a regulatory, comparative or adversarial context.</li>
+<li><strong>Do not</strong> attempt to confirm, challenge or "check" the MTA's published levels with the phone. Those are rated 5/5 <code>VERIFIED</code> and were taken with proper instrumentation under a statutory obligation. Losing a fight about instrumentation would discredit the parts of this programme that are sound.</li>
+<li><strong>Do</strong> record absolute readings anyway, as <strong>context metadata</strong>, clearly labelled <code>INDICATIVE, UNCALIBRATED</code>. They are useful for spotting an anomalous session and useless for anything else.</li>
+<li><strong>Do</strong> anchor everything of substance to spectrum, envelope, timing and attribution.</li>
+</ul>
+<h3 id="31-the-upgrade-that-changes-this-verdict">3.1 The upgrade that changes this verdict</h3>
+<p>If USD 100–150 is available, the position changes materially.</p>
+<p>A <strong>miniDSP UMIK-1</strong> is a USB measurement microphone supplied with an <strong>individual, serial-numbered calibration file</strong> giving its actual frequency response. Connected to the S23+ over USB-C — with <strong>USB Audio Recorder PRO</strong>, which is the Android app most consistently reported to handle class-compliant USB audio interfaces — it provides:</p>
+<ul>
+<li>A <strong>known frequency response</strong>, which can be divided out. This removes the single most dangerous limitation in Part 1 (C1), the unknown microphone response at low frequency.</li>
+<li>A <strong>known sensitivity</strong>, which makes absolute SPL defensible rather than indicative.</li>
+<li>A <strong>fixed, documented gain path</strong> that does not include a speech-optimised DSP chain.</li>
+</ul>
+<p><strong>This is the highest-value equipment purchase available to the programme</strong>, by a wide margin, and it is cheaper than a single hour of an acoustic consultant's time. It would move the spectrum from <code>ASSUMED</code> to <code>MEASURED</code> with a provenance chain that survives scrutiny.</p>
+<p>Rated 3/5 <code>SNIPPET</code> on the specific Android compatibility claim. <strong>Verify UMIK-1 + USB Audio Recorder PRO on the actual S23+ before depending on it in the field</strong> — USB audio class support on Android is device-specific and has historically been inconsistent.</p>
+<hr />
+<h2 id="part-4--software-and-how-to-configure-it">Part 4 — Software, and how to configure it</h2>
+<h3 id="41-what-to-install">4.1 What to install</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>App</th>
+<th>Role</th>
+<th>Why this one</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RecForge II</strong></td>
+<td><strong>Primary recorder</strong></td>
+<td>Its own FAQ documents an explicit <strong>"Disable AGC"</strong> option, and it records uncompressed WAV with selectable sample rate and bit depth. The explicit AGC control is the deciding feature.</td>
+</tr>
+<tr>
+<td><strong>Audio Spectrum Analyzer</strong> (F-Droid, <code>org.woheller69.audio_analyzer_for_android</code>)</td>
+<td><strong>Field spectrum check</strong></td>
+<td><strong>Open source.</strong> For a research programme this is the point: the processing chain is inspectable, so the document can state what was done to the signal rather than guess.</td>
+</tr>
+<tr>
+<td><strong>Spectroid</strong></td>
+<td>Alternative live FFT</td>
+<td>Free, responsive, widely used. Closed source, so prefer the F-Droid analyzer for anything of record.</td>
+</tr>
+<tr>
+<td><strong>Expert RAW</strong> (Samsung)</td>
+<td>RAW stills</td>
+<td>Needed for the high-dynamic-range underside shots.</td>
+</tr>
+<tr>
+<td><strong>RealityScan</strong> (Epic)</td>
+<td>Photogrammetry, in-field</td>
+<td>Cloud processing. Convenient; the desktop route is more defensible.</td>
+</tr>
+<tr>
+<td><strong>Meshroom</strong> or <strong>COLMAP</strong> (desktop)</td>
+<td>Photogrammetry, of record</td>
+<td>Free, open source, reproducible, and the pipeline can be described exactly.</td>
+</tr>
+<tr>
+<td><strong>Audacity</strong> or <strong>Python + <code>numpy</code>/<code>scipy</code></strong> (desktop)</td>
+<td>Analysis</td>
+<td>Audacity for inspection; a script for anything reported.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Do not use Samsung Voice Recorder for anything analytical.</strong> It is tuned for speech and applies processing that is neither documented nor disableable. It is fine for spoken field notes, and should be used for those.</p>
+<h3 id="42-sample-rate-and-bit-depth">4.2 Sample rate and bit depth</h3>
+<p><strong>48 kHz, 24-bit if available, 16-bit otherwise.</strong> 48 kHz gives a 24 kHz Nyquist limit, far above anything relevant. There is no benefit to 96 kHz here and it doubles the file size on a long unattended session.</p>
+<p>Bit depth matters more than sample rate for this application. The full excursion at the dog run is roughly <strong>34 dB</strong> (65.0 dB(A) background to 98.9 dB(A) peak). 16-bit offers about 96 dB of dynamic range, so 34 dB fits with enormous margin <strong>provided the gain is fixed and sensible</strong>. 24-bit simply buys tolerance for setting the gain conservatively — which you should, because you cannot re-record a clipped peak.</p>
+<h3 id="43-format-uncompressed-without-exception">4.3 Format: uncompressed, without exception</h3>
+<p><strong>Record WAV. Never MP3, AAC, Opus or any lossy format, for any recording intended for analysis.</strong></p>
+<p>This is not audiophile fussiness. Lossy codecs are <strong>psychoacoustic</strong>: they work by discarding content a listener is predicted not to notice, principally through masking. A train pass-by is a loud broadband event, which means it is an <em>excellent</em> masker, which means a lossy encoder will discard a great deal during exactly the moments of interest. The reconstruction sounds fine and its spectrum is systematically falsified. <strong>The distortion is largest at the peak</strong> — the part being measured.</p>
+<h3 id="44-automatic-gain-control-the-setting-that-decides-everything">4.4 Automatic gain control: the setting that decides everything</h3>
+<p><strong>If AGC is active, the recording is worthless for C1 and C2, and it will not be obvious.</strong></p>
+<p>AGC continuously adjusts gain to keep levels in a comfortable range. Applied to a 34 dB excursion it does precisely the wrong thing: it pulls the peak down and pushes the background up, <strong>compressing the very ratio being measured</strong>. The envelope you then recover is the AGC's release curve, not the train's decay. The recording will sound entirely normal.</p>
+<p>Android exposes an audio source for this. From the Android CDD and developer documentation (rated <strong>5/5, <code>SNIPPET</code></strong>; primary platform documentation):</p>
+<blockquote>
+<p>Most of the audio sources (including DEFAULT) apply processing to the audio signal. To record raw audio select UNPROCESSED. Some devices do not support unprocessed input.</p>
+</blockquote>
+<p>Support is device-specific and queryable via <code>AudioManager.getProperty("PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED")</code>. Where unavailable, <code>VOICE_RECOGNITION</code> is the commonly recommended fallback, as it typically bypasses more of the voice-call processing chain than <code>MIC</code> or <code>DEFAULT</code>.</p>
+<p><strong>In RecForge II</strong>, its FAQ specifies the combination:</p>
+<blockquote>
+<p>Set the recording source to "Front Microphone" and enable the "Disable AGC" option.</p>
+</blockquote>
+<p><strong>Whether that maps cleanly onto the S23+'s three microphones is not established here</strong> and must be settled by the bench test in 4.6.</p>
+<p>Additionally, in Samsung system settings, disable every call and voice enhancement available — "Clear Call" and any noise-reduction or adaptive-audio feature. Put the phone in <strong>airplane mode</strong> during recording where GTFS logging does not depend on it: this removes both radio interference and interruption risk.</p>
+<h3 id="45-video-audio-is-not-measurement-audio">4.5 Video audio is not measurement audio</h3>
+<p><strong>Never analyse the audio track of a video clip.</strong> Camera apps apply wind-noise reduction, AGC and directional processing tuned for consumer video, none of it documented or disableable.</p>
+<p><strong>Record audio separately and in parallel</strong>, and synchronise afterwards with a clap or other sharp transient at the start of each clip. This is the standard dual-system approach and it costs nothing. Note that on many handsets a second app cannot hold the microphone while the camera is recording — <strong>this may require two devices</strong>, and if so, the audio device is the one that matters and the video can come from anything, including an older phone.</p>
+<h3 id="46-the-bench-test--do-this-before-travelling">4.6 The bench test — do this before travelling</h3>
+<p><strong>Ten minutes at home. It converts every <code>SNIPPET</code> claim in Part 4 into a <code>VERIFIED</code> one for your specific handset.</strong></p>
+<p><strong>Test A — is AGC actually off?</strong></p>
+<ol>
+<li>Put a steady, unchanging sound source in the room at moderate level — a fan, or a tone from a speaker at fixed volume. Do not touch it for the duration.</li>
+<li>Start recording with your intended settings.</li>
+<li>Let 20 s pass. Then introduce a <strong>loud</strong> sound for about 10 s — a vacuum cleaner, or a second speaker. Then remove it. Let 20 s more pass.</li>
+<li>Open the file in Audacity and look at the amplitude of the <em>steady</em> source before, during and after.</li>
+</ol>
+<p><strong>If the steady source's level dips when the loud sound appears and then creeps back up over a few seconds, AGC is active and the configuration has failed.</strong> Change source or app and repeat. <strong>If it stays flat throughout, the gain is fixed</strong> and you are ready.</p>
+<p>This test is decisive, needs no special equipment, and catches the one failure that would otherwise waste an entire field session.</p>
+<p><strong>Test B — headroom.</strong> Record something considerably louder than you expect in the field and confirm the waveform is not flat-topped. Adjust input gain down until it is not.</p>
+<p><strong>Test C — which microphone.</strong> Record while covering each microphone port in turn and note which selection in the app corresponds to which physical port. Cases and screen protectors can occlude them.</p>
+<p><strong>Test D — does the format survive?</strong> Confirm the output file really is uncompressed PCM WAV at the stated rate and depth, by inspecting the header rather than trusting the app's label.</p>
+<h3 id="47-wind-the-cheapest-large-improvement-available">4.7 Wind: the cheapest large improvement available</h3>
+<p><strong>Fit a windscreen. This is the single highest-value item in this document per dollar spent.</strong></p>
+<p>Wind noise across a bare microphone port is broadband but strongly <strong>low-frequency</strong>-weighted — and low frequency is exactly where bridge structural radiation lives and exactly where the interesting acoustics of this problem sit. <strong>Without a windscreen, low-frequency data captured on an exposed waterfront is not train noise. It is wind.</strong> It will look like a plausible rumble and it will be an artefact.</p>
+<p>Brooklyn Bridge Park is an exposed waterfront site. This is not a marginal concern there.</p>
+<p>A foam windscreen sized to the handset, or a fur "deadcat" over the mic port, costs a few dollars. Record and log wind conditions for every session regardless, and treat any session with sustained wind above a light breeze as <strong>suspect for low-frequency content</strong> no matter what protection was fitted.</p>
+<hr />
+<h2 id="part-5--metadata-without-which-the-recordings-are-much-less-useful">Part 5 — Metadata, without which the recordings are much less useful</h2>
+<p>Log for every session. A recording without this is a curiosity; with it, it is data.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Wall-clock start, to the second, and the clock source</strong></td>
+<td>The hinge for the entire GTFS-RT attribution in C4. Set to network time and note any offset.</td>
+</tr>
+<tr>
+<td><strong>Position</strong></td>
+<td>GPS from the phone, <strong>plus</strong> a description tied to a fixed landmark, plus a photograph looking back at the bridge from the mic position. GPS alone is not adequate under a structure.</td>
+</tr>
+<tr>
+<td><strong>Height and mounting</strong></td>
+<td>Mic height above grade, and what it sat on. Ground reflection changes the spectrum materially.</td>
+</tr>
+<tr>
+<td><strong>Orientation</strong></td>
+<td>Which way the mic port faced. Smartphone directional response is documented as non-trivial in the NIOSH literature.</td>
+</tr>
+<tr>
+<td><strong>Weather</strong></td>
+<td>Wind speed and direction, temperature, humidity, precipitation. Affects both propagation and wind-noise contamination.</td>
+</tr>
+<tr>
+<td><strong>Full device and app configuration</strong></td>
+<td>Handset, OS build, app and version, audio source, sample rate, bit depth, AGC state, windscreen type.</td>
+</tr>
+<tr>
+<td><strong>Confounding sources</strong></td>
+<td>Helicopters, boats, BQE traffic, buskers, construction, events. <strong>Note the time of each.</strong> The DUMBO Archway baseline of 68.9 dB(A) is already not a quiet environment.</td>
+</tr>
+<tr>
+<td><strong>Bench-test result</strong></td>
+<td>Which configuration passed Test A, and when it was last confirmed.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>On the ethics of recording in public space.</strong> These sites are busy with residents and tourists, and continuous audio recording in a public park will capture conversation. This programme's interest is entirely in the trains. Recommended practice: state the retention and processing policy in the session log before recording; <strong>do not publish raw audio containing intelligible speech</strong>; publish derived data — spectra, envelopes, event timestamps — and short excerpts audited for speech. Where a longer excerpt must be published, high-pass or notch the vocal band, or select a passage with no one nearby. This is a burden the programme should accept voluntarily, because it is arguing for the interests of the people who would be incidentally recorded.</p>
+<hr />
+<h2 id="part-6--where-to-stand">Part 6 — Where to stand</h2>
+<p>Match the MTA's own receptors so the data is directly comparable. Levels below are from MTA doc 138061 as transcribed in <code>IDEA-CONCEPT.md</code> §1.2, with derived durations from §1.7.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Receptor</th>
+<th>Published <code>Leq</code></th>
+<th>Max <code>Lmax</code></th>
+<th>Baseline</th>
+<th>Session</th>
+<th>Trains</th>
+<th>Derived <code>Te</code></th>
+<th>Headway</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Brooklyn Bridge Park dog run</strong></td>
+<td><strong>87.50</strong></td>
+<td>98.90</td>
+<td>65.0</td>
+<td>0:37:45</td>
+<td>26</td>
+<td>6.278 s</td>
+<td>87.1 s</td>
+</tr>
+<tr>
+<td><strong>Adams Street Library</strong></td>
+<td><strong>84.65</strong></td>
+<td>98.10</td>
+<td>48.1</td>
+<td>0:18:56</td>
+<td>9</td>
+<td>5.702 s</td>
+<td>126.2 s</td>
+</tr>
+<tr>
+<td><strong>DUMBO Archway</strong></td>
+<td><strong>81.33</strong></td>
+<td>91.80</td>
+<td>68.9</td>
+<td>0:25:35</td>
+<td>18</td>
+<td>7.253 s</td>
+<td>85.3 s</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Start at the dog run.</strong> It has the longest public-space session, the most trains, the highest published <code>Leq</code>, and it is the receptor the audio demo defaults to. It is also unambiguously public open space.</p>
+<p><strong>The Adams Street Library session is only 18 minutes 56 seconds and 9 trains.</strong> That is a thin basis for a published figure, and a longer recording there would be independently useful as a check on whether such a short session is representative.</p>
+<p><strong>The DUMBO Archway is the hardest site to interpret</strong> and the most interesting. Its baseline is 68.9 dB(A) — the demo page flags this directly, noting that this <em>"is not a quiet environment"</em> and that <em>"Some of what is attributed to background may be distant rail."</em> A recording there could settle that, because the <em>spectrum</em> of the background will show whether it is rail or traffic even though the <em>level</em> cannot.</p>
+<h3 id="61-the-williamsburg-comparator">6.1 The Williamsburg comparator</h3>
+<p><code>WILLIAMSBURG-COMPARATOR.md</code> makes the case that the Williamsburg Bridge is the correct control: same operator, same system, same rolling stock classes, similar suspension structure, different noise-housing configuration.</p>
+<p><strong>Capturing the same protocol at both bridges on the same day, with the same handset and the same settings, is worth more than either site alone.</strong> Every unknown in the chain — microphone response, gain, app processing — is <em>identical</em> across the two, so it cancels in the comparison. A phone that cannot tell you the absolute level at either site can tell you the <strong>difference</strong> between them with real confidence.</p>
+<p>This is Method 11 (<em>"Two-site <code>SEL</code> survey, both bridges"</em>, described in the register as <em>"The cheapest decision-relevant measurement anywhere here"</em>) executed with a phone instead of two sound level meters. It is a weaker instrument for that method, and it is available immediately.</p>
+<hr />
+<h2 id="part-7--legal-safety-and-access">Part 7 — Legal, safety and access</h2>
+<p><strong>Not legal advice.</strong> Confirm current rules before travelling; these are pointers, not clearances.</p>
+<ul>
+<li><strong>Brooklyn Bridge Park, the DUMBO Archway and public sidewalks are public space</strong>, and photography from public space is generally lawful in New York City. All five captures are designed to be performed from public ground.</li>
+<li><strong>Do not enter the bridge structure, track areas, or any MTA or NYCDOT non-public area.</strong> Nothing in this document requires it, and Method 18 exists precisely because access of that kind requires a relationship the programme does not have.</li>
+<li><strong>Drones are prohibited in New York City parks</strong> and takeoff/landing within the city is heavily restricted. <strong>No capture here uses one.</strong></li>
+<li><strong>Tripods and extended setups</strong> in park property may require notification or a permit, particularly if the activity appears commercial. Brooklyn Bridge Park is managed by a dedicated corporation with its own rules; check before an unattended 90-minute deployment.</li>
+<li><strong>Do not leave equipment unattended in a way that could be mistaken for an abandoned package.</strong> For the C3 long session, stay with the device. This is both a courtesy and a practical precaution near a major crossing.</li>
+<li><strong>Hearing.</strong> Sustained exposure at these levels is not trivial. The published Max <code>Lmax</code> at the dog run is <strong>98.90 dB(A)</strong>. If a session runs to several hours, consider protection — noting the irony that a researcher documenting a noise problem may need it, which is itself an observation worth recording.</li>
+</ul>
+<hr />
+<h2 id="part-8--from-files-to-findings">Part 8 — From files to findings</h2>
+<p>A capture that is never analysed is not a contribution. Minimum analytical path per capture:</p>
+<p><strong>C1 — spectrum.</strong> Extract a window centred on each peak and a matched window of background. Compute one-third-octave band levels for both. Report the <strong>difference spectrum</strong> — train minus background, band by band. The difference is the robust quantity: the microphone response and the unknown gain both appear in each term and largely cancel. Report the mean and spread across at least 10 events. <strong>Label the absolute ordinate as uncalibrated and relative.</strong></p>
+<p><strong>C2 — envelope.</strong> Compute a short-time A-weighted level with a <strong>125 ms</strong> time constant, matching the FAST weighting the MTA used at Front and Pine Street <em>"due to indications that the noise impact is caused by sudden impact with a track element"</em>. Normalise each event to its own peak and align on the peak. Overlay all events. Then fit <code>L(t) = Lmax − 10n·log10(1 + (t/τ)²)</code> and report <strong>fitted <code>n</code> and <code>τ</code> with confidence intervals</strong>. Compare <code>n</code> against the assumed 1.5 and <code>τ</code> against the derived values in the table in Part 6. <strong>Report the comparison whichever way it comes out.</strong></p>
+<p><strong>C3 — headway.</strong> Threshold the broadband envelope, pick peaks, enforce a minimum separation, and produce the list of inter-arrival intervals. Report mean, standard deviation, minimum, maximum, and a histogram. Compare the mean against the MTA-derived headway for that receptor. <strong>The spread is the finding</strong>, because the audio demo currently assumes it is zero.</p>
+<p><strong>C4 — attribution.</strong> Join event timestamps to the GTFS-RT log within a tolerance window. Group events by service and by direction. Test whether peak level, <code>SEL</code> and envelope width differ by group. <strong>State the group sizes</strong>; with a 90-minute session these will be small and the analysis should be treated as exploratory rather than confirmatory.</p>
+<p><strong>C5 — geometry.</strong> Reconstruct, scale from the marker board, and export. Compare at least one reconstructed dimension against the independently tape-measured check. <strong>Report the discrepancy.</strong> Then, and only then, consider whether any element can be promoted from <code>INFERRED</code> to <code>MEASURED</code> in <code>model-3d.html</code> — and if so, update the provenance filter counts, because the model's HUD currently reports zero measured elements and that number is load-bearing.</p>
+<h3 id="81-what-must-be-filed-with-any-result">8.1 What must be filed with any result</h3>
+<p>Per this programme's discipline: every quantitative claim carries a quoted locus; every source carries a credibility rating and a depth-of-reading marker; <strong>and any figure that supersedes an existing published figure must quote the old one in place and mark it withdrawn rather than deleting it.</strong> If C2 contradicts §1.7, §1.7 is not edited silently.</p>
+<hr />
+<h2 id="part-9--where-this-document-is-likely-to-be-wrong">Part 9 — Where this document is likely to be wrong</h2>
+<ol>
+<li>
+<p><strong>Most of the hardware and app detail is <code>SNIPPET</code>, not <code>VERIFIED</code>.</strong> It came from search results, and no S23+ was tested in writing this. The bench test in 4.6 exists because of that, and where the handset contradicts this document, <strong>the handset is right</strong>.</p>
+</li>
+<li>
+<p><strong>The microphone's frequency response is unknown and is not flat.</strong> This is the deepest problem with C1. Phone MEMS microphones are commonly high-passed in hardware, and the low-frequency region that a structural-radiation problem most concerns is the region most likely to be misrepresented. <strong>The difference-spectrum method reduces this but does not eliminate it</strong>, because the response affects both terms identically only if it is time-invariant — which it is, but the <em>masking</em> of a genuinely absent low-frequency component by a hardware filter is not something differencing can recover. <strong>The UMIK-1 upgrade in 3.1 is the real answer and this document should not pretend otherwise.</strong></p>
+</li>
+<li>
+<p><strong><code>PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED</code> may return false on this handset.</strong> In that case there is no documented route to genuinely unprocessed capture and the fallback is <code>VOICE_RECOGNITION</code>, which is a convention rather than a guarantee. Test A would still pass or fail honestly, but a pass would only establish that gain is <em>stable</em>, not that the signal is <em>unprocessed</em> — spectral shaping could remain.</p>
+</li>
+<li>
+<p><strong>The 2025 <em>Cureus</em> study was conducted on a Galaxy A54, not an S23+</strong>, with pure tones in a controlled room rather than broadband transients outdoors, and tested apps rather than raw capture. Generalising its "accuracy declines at higher levels" finding to this use is <strong>an inference, not a result.</strong> It is used here to justify caution, which is the safe direction to be wrong in.</p>
+</li>
+<li>
+<p><strong>GTFS-RT attribution assumes the feed's timing is accurate enough to match acoustic events.</strong> Subway real-time predictions are known to drift, and the relevant question is not when a train was predicted at a station but when it physically crossed a point on the bridge, which the feed does not directly report. <strong>The matching tolerance may turn out to be wider than the headway</strong>, in which case C4 fails entirely and only the video attribution survives. This is the least certain item in this document.</p>
+</li>
+<li>
+<p><strong>The list of receptors assumes the MTA's stated locations can be reoccupied accurately.</strong> They are given as street addresses and place names, not coordinates. Standing "at the DUMBO Archway" is not a position to a metre, and spectrum and level both vary substantially over a few metres near a reflecting surface. <strong>Any comparison to the MTA's figures inherits an unquantified position error.</strong></p>
+</li>
+<li>
+<p><strong>C3 and C4 assume acoustic events can be cleanly separated.</strong> At an 85 s headway with a ~7 s event this is comfortable. But with four tracks and two directions, <strong>simultaneous or overlapping passages must occur</strong>, and the peak-picking will merge them into one event. This will bias the measured headway distribution long and the count low. The analysis should detect and report merged events rather than quietly counting them as one.</p>
+</li>
+<li>
+<p><strong>The whole document assumes a phone recording will be accepted as evidence by anyone who matters.</strong> It may not be. Its realistic standing is as <strong>pilot data that justifies a properly instrumented campaign</strong> — Methods 1, 7 and 11 — rather than as a substitute for one. It is written to make that escalation easier to argue for, not to avoid it.</p>
+</li>
+</ol>
+<hr />
+<h2 id="related-documents">Related documents</h2>
+<ul>
+<li><a href="readme.html"><code>README.md</code></a> — programme overview, artifact index, and the register of what has not been done</li>
+<li><a href="idea-concept.html"><code>IDEA-CONCEPT.md</code></a> — the problem, the measured evidence base, and §1.7's derived event duration</li>
+<li><a href="precedent-and-materials.html"><code>PRECEDENT-AND-MATERIALS.md</code></a> — worldwide precedent and materials options</li>
+<li><a href="williamsburg-comparator.html"><code>WILLIAMSBURG-COMPARATOR.md</code></a> — the same-system comparator study</li>
+<li><a href="visual-model-framework.html"><code>VISUAL-MODEL-FRAMEWORK.md</code></a> — provenance schema and rendering rules for the 3D model</li>
+<li><a href="../visual-review/acoustic-demo.html"><code>visual-review/acoustic-demo.html</code></a> — the artifact this protocol would most directly improve</li>
+<li><a href="../visual-review/model-3d.html"><code>visual-review/model-3d.html</code></a> — the model that currently contains zero measured elements</li>
+</ul>
+<p><strong>Methods this protocol would advance:</strong> 7 (full-spectrum before/after — establishes the "before"), 11 (two-site survey, in a weaker instrument but available now), 16 (walkway photogrammetric survey), 17 (rephotogrammetry, by supplying a modern control set), 19 (the L1 model, by supplying its first measured elements).</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/FIELD-CAPTURE-PROTOCOL.md">Source on GitHub</a> &middot; Built from <code>12ccc54</code> on 2026-08-02.</p>
+</main>
+</div>
+
+</div>
+</body>
+</html>

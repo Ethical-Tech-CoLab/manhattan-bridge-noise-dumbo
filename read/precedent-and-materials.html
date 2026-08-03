@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2. Precedent and materials &mdash; Silencing the Span</title>
+<meta name="description" content="Rendered copy of PRECEDENT-AND-MATERIALS.md from the Manhattan Bridge rail-noise research repository.">
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, kbd, pre {
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 4px;
+  padding: 0.1em 0.36em;
+}
+pre {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre code { background: none; border: 0; padding: 0; }
+
+/* ---- top bar ---- */
+.bar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--cp-panel-strong);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border);
+}
+.bar .in {
+  max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
+.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
+.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.bar nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  border-radius: 999px; white-space: nowrap;
+}
+.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
+
+h1 { font-size: 2.15rem; line-height: 1.18; margin: 0 0 10px; letter-spacing: -0.01em; }
+h2 { font-size: 1.42rem; margin: 0 0 14px; letter-spacing: -0.005em; }
+h3 { font-size: 1.08rem; margin: 26px 0 8px; }
+p { margin: 0 0 14px; }
+.lede { font-size: 1.06rem; color: var(--cp-text-muted); }
+.sub { color: var(--cp-text-muted); font-size: 1.02rem; margin: 0 0 4px; }
+
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin: 0 0 22px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.hero { background: var(--cp-bg-elevated); }
+
+.statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+.s {
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+  font-size: 0.78rem; color: var(--cp-text-muted);
+}
+.s .k { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.s .big { font-size: 1.9rem; font-weight: 700; color: var(--cp-accent); line-height: 1.1; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 14px; }
+.tile {
+  display: block; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 16px 18px; color: var(--cp-text); transition: border-color .15s, transform .15s;
+}
+.tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
+.tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
+.tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.tile .look {
+  font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
+  border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
+}
+.tile .look b { color: var(--cp-text); }
+
+.badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 999px; vertical-align: middle;
+  border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted);
+}
+.badge.ok { border-color: var(--cp-success); color: var(--cp-success); }
+.badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
+.badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
+.badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+
+.note {
+  border-left: 3px solid var(--cp-accent);
+  background: var(--cp-accent-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  padding: 13px 17px; margin: 16px 0; font-size: 0.92rem;
+}
+.note.bad { border-left-color: var(--cp-danger); background: rgba(220,38,38,0.07); }
+.note.good { border-left-color: var(--cp-success); background: rgba(22,163,74,0.07); }
+.note.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,0.09); }
+
+.tw { overflow-x: auto; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td {
+  border: 1px solid var(--cp-border); padding: 8px 11px;
+  text-align: left; vertical-align: top;
+}
+th { background: var(--cp-surface-soft); font-weight: 700; }
+tbody tr:nth-child(even) td { background: var(--cp-surface-soft); }
+
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li { margin-bottom: 7px; }
+
+blockquote {
+  margin: 16px 0; padding: 10px 18px;
+  border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  color: var(--cp-text-muted);
+}
+
+hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
+
+.foot {
+  color: var(--cp-text-soft); font-size: 0.83rem;
+  border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 30px;
+}
+
+/* ---- work queue ---- */
+.q { border-top: 1px solid var(--cp-border); padding: 15px 0; display: grid;
+     grid-template-columns: 132px 1fr; gap: 18px; }
+.q:first-of-type { border-top: 0; }
+.q .lab { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+          font-weight: 700; padding-top: 3px; }
+.q .h { font-weight: 700; margin-bottom: 2px; }
+.q .cost { font-size: 0.8rem; color: var(--cp-text-soft); margin-bottom: 7px;
+           font-family: Consolas, "Courier New", monospace; }
+.q .why { font-size: 0.9rem; color: var(--cp-text-muted); }
+.lab.blocking { color: var(--cp-danger); }
+.lab.cheap { color: var(--cp-success); }
+.lab.field { color: var(--cp-accent); }
+.lab.review { color: var(--cp-warning); }
+.lab.gate { color: var(--cp-text-muted); }
+
+/* ---- rendered document pages ---- */
+.doclayout { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
+.toc { position: sticky; top: 76px; max-height: calc(100vh - 100px); overflow-y: auto;
+       font-size: 0.84rem; padding-right: 6px; }
+.toc .h { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+          color: var(--cp-text-soft); font-weight: 700; margin-bottom: 8px; }
+.toc a { display: block; padding: 3px 0 3px 9px; color: var(--cp-text-muted);
+         border-left: 2px solid var(--cp-border); line-height: 1.35; }
+.toc a:hover { color: var(--cp-accent); border-left-color: var(--cp-accent); text-decoration: none; }
+.toc a.l3 { padding-left: 20px; font-size: 0.95em; color: var(--cp-text-soft); }
+.doc { min-width: 0; }
+.doc h1 { font-size: 1.95rem; margin-top: 0; }
+.doc h2 { font-size: 1.38rem; margin: 34px 0 12px; padding-bottom: 6px;
+          border-bottom: 1px solid var(--cp-border); }
+.doc h3 { font-size: 1.1rem; margin: 26px 0 8px; }
+.doc h4 { font-size: 0.98rem; margin: 20px 0 6px; color: var(--cp-text-muted); }
+.doc img { max-width: 100%; }
+
+@media (max-width: 980px) {
+  .statrow { grid-template-columns: repeat(2, 1fr); }
+  .doclayout { grid-template-columns: 1fr; }
+  .toc { position: static; max-height: none; margin-bottom: 26px; }
+  .q { grid-template-columns: 1fr; gap: 4px; }
+  .wrap { padding: 22px 16px 70px; }
+  .card { padding: 20px 18px; }
+}
+@media (max-width: 560px) {
+  .statrow { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bar"><div class="in"><a class="home" href="../index.html">Silencing the Span</a><nav><a href="readme.html">README</a><a href="idea-concept.html">1. Concept</a><a href="precedent-and-materials.html" class="on">2. Precedent</a><a href="williamsburg-comparator.html">3. Comparator</a><a href="visual-model-framework.html">4. Visual model</a><a href="field-capture-protocol.html">5. Field capture</a><a href="community-evidence-audit.html">6. Community</a><a href="data-collection.html">7. Data</a></nav></div></div>
+<div class="wrap">
+<div class="doclayout">
+<aside class="toc"><div class="h">On this page</div><a href="#what-the-world-has-already-built-elevated-transit-noise-mitigation-precedent-materials-to-2026-and-what-transfers-to-the-manhattan-bridge">What the World Has Already Built: Elevated-Transit Noise Mitigation Precedent, Materials to 2026, and What Transfers to the Manhattan Bridge</a><a href="#0-how-to-read-this-document">0. How to read this document</a><a class="l3" href="#01-relationship-to-idea-conceptmd">0.1 Relationship to IDEA-CONCEPT.md</a><a class="l3" href="#02-method">0.2 Method</a><a class="l3" href="#03-notation">0.3 Notation</a><a href="#11-two-partitions-deliberately-kept-separate">1.1 Two partitions, deliberately kept separate</a><a href="#12-the-implementation-partition">1.2 The implementation partition</a><a href="#13-correction-there-is-no-frequency-partition-by-ownership">1.3 Correction: there is no frequency partition by ownership</a><a href="#14-the-finding-that-says-no-single-measure-sufficed">1.4 The finding that says no single measure sufficed</a><a href="#21-reported-increments-with-their-reference-conditions">2.1 Reported increments, with their reference conditions</a><a href="#22-correction-these-are-risk-factors-not-a-class-membership">2.2 Correction: these are risk factors, not a class membership</a><a href="#23-what-this-means-for-the-keystone-question">2.3 What this means for the keystone question</a><a href="#31-tuned-bridge-dampers--the-best-fit-to-the-access-constraint-on-the-weakest-evidence">3.1 Tuned bridge dampers — the best fit to the access constraint, on the weakest evidence</a><a href="#32-damping-the-steel-and-treating-the-underside">3.2 Damping the steel and treating the underside</a><a href="#33-acoustic-short-circuits--corrected-this-is-a-redistribution-treatment-and-its-adverse-result-disqualifies-it-here">3.3 Acoustic short circuits — CORRECTED: this is a redistribution treatment, and its adverse result disqualifies it here</a><a href="#34-lightweight-modular-barriers--a-design-reference-for-the-constraints">3.4 Lightweight modular barriers — a design reference for the constraints</a><a href="#35-vertical-barriers-on-viaducts--measured-performance-and-a-hypothesis-about-its-failure-mode">3.5 Vertical barriers on viaducts — measured performance, and a hypothesis about its failure mode</a><a href="#36-enclosures">3.6 Enclosures</a><a href="#37-receptor-side-treatment-and-the-rule-that-governs-the-trade">3.7 Receptor-side treatment, and the rule that governs the trade</a><a href="#41-rail-web-dampers--best-evidenced-option-on-trackforms-that-are-not-this-one">4.1 Rail web dampers — best-evidenced option, on trackforms that are not this one</a><a href="#42-corrugation-suppression--a-different-business-case">4.2 Corrugation suppression — a different business case</a><a href="#43-resilient-fasteners-pads-and-isolation">4.3 Resilient fasteners, pads and isolation</a><a href="#44-the-open-deck-and-its-openings">4.4 The open deck and its openings</a><a href="#45-source-control-branches-this-survey-did-not-cover">4.5 Source-control branches this survey did not cover</a><a href="#51-what-the-japanese-standard-actually-is">5.1 What the Japanese standard actually is</a><a href="#52-the-metric-choice-is-a-genuine-finding--with-a-limit">5.2 The metric choice is a genuine finding — with a limit</a><a href="#53-architectural-comparison">5.3 Architectural comparison</a><a href="#54-chicago-is-the-better-comparator">5.4 Chicago is the better comparator</a><a href="#61-acoustic-metamaterials-a-well-founded-programme-not-a-product">6.1 Acoustic metamaterials: a well-founded programme, not a product</a><a href="#62-cold-spray--corrected-demonstrated-on-a-decommissioned-bridge">6.2 Cold spray — CORRECTED: demonstrated on a decommissioned bridge</a><a href="#63-robotic-access-and-inspection">6.3 Robotic access and inspection</a><a href="#64-mass-comparison-with-the-short-circuit-entry-corrected">6.4 Mass comparison, with the short-circuit entry corrected</a><a href="#71-access-cost-differs-sharply-by-option--but-no-track-access-is-never-the-whole-story">7.1 Access cost differs sharply by option — but "no track access" is never the whole story</a><a href="#72-design-life-asymmetry">7.2 Design-life asymmetry</a><a href="#73-the-maintenance-benefit-inversion">7.3 The maintenance-benefit inversion</a><a href="#81-the-transfer-tests">8.1 The transfer tests</a><a href="#82-transferability-matrix">8.2 Transferability matrix</a><a href="#83-the-three-things-that-make-this-site-hard-to-borrow-for">8.3 The three things that make this site hard to borrow for</a><a class="l3" href="#q14--which-structural-modes-dominate-radiated-sound-power-and-is-any-of-them-a-tunable-target">Q14 — Which structural modes dominate radiated sound power, and is any of them a tunable target?</a><a class="l3" href="#q15--where-are-the-dominant-radiating-surfaces-and-what-is-the-pressure-field-across-them">Q15 — Where are the dominant radiating surfaces, and what is the pressure field across them?</a><a class="l3" href="#q16--what-is-the-relationship-between-spectral-content-and-reported-annoyance-for-this-population">Q16 — What is the relationship between spectral content and reported annoyance for this population?</a><a class="l3" href="#q17--what-is-barrier-insertion-loss-for-receptors-substantially-above-track-level-in-a-reflective-canyon">Q17 — What is barrier insertion loss for receptors substantially above track level in a reflective canyon?</a><a class="l3" href="#q18--is-robotic-deposition-a-better-route-to-structural-damping-than-bonded-installation">Q18 — Is robotic deposition a better route to structural damping than bonded installation?</a><a class="l3" href="#q19--what-is-the-contractual-interface-and-approval-path-for-work-at-the-trackstructure-boundary">Q19 — What is the contractual interface and approval path for work at the track/structure boundary?</a><a class="l3" href="#q20--what-are-the-actual-grinding-and-rail-defect-records-for-this-crossing-and-would-a-maintenance-case-succeed-where-an-acoustic-one-did-not">Q20 — What are the actual grinding and rail-defect records for this crossing, and would a maintenance case succeed where an acoustic one did not?</a><a class="l3" href="#q21--what-is-the-whole-life-decision-metric-and-what-belongs-in-it">Q21 — What is the whole-life decision metric, and what belongs in it?</a><a class="l3" href="#q22--under-what-conditions-does-a-treatment-degrade-low-frequency-performance-here-and-what-threshold-should-trigger-reversal">Q22 — Under what conditions does a treatment degrade low-frequency performance here, and what threshold should trigger reversal?</a><a class="l3" href="#method-6--operational-modal-and-radiation-survey-of-the-stiffening-truss">Method 6 — Operational modal and radiation survey of the stiffening truss</a><a class="l3" href="#method-7--full-spectrum-beforeafter-protocol-with-defined-reversal-thresholds">Method 7 — Full-spectrum before/after protocol with defined reversal thresholds</a><a class="l3" href="#method-8--receptor-elevation-barrier-study">Method 8 — Receptor-elevation barrier study</a><a class="l3" href="#method-9--comparative-damping-installation-study">Method 9 — Comparative damping-installation study</a><a class="l3" href="#method-10--responsibility-approval-and-interface-matrix">Method 10 — Responsibility, approval and interface matrix</a><a class="l3" href="#primary--verified-full-text-retrieved-and-quoted">Primary — VERIFIED (full text retrieved and quoted)</a><a class="l3" href="#secondary--snippet">Secondary — SNIPPET</a><a class="l3" href="#unverified--traceability-only">UNVERIFIED — traceability only</a><a class="l3" href="#retrieval-priority-for-the-next-pass">Retrieval priority for the next pass</a><a class="l3" href="#explicitly-not-found">Explicitly not found</a><a href="#provenance">Provenance</a></aside>
+<main class="doc">
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/PRECEDENT-AND-MATERIALS.md"><code>PRECEDENT-AND-MATERIALS.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 11,470 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<h1 id="precedent-and-materials">PRECEDENT-AND-MATERIALS</h1>
+<h2 id="what-the-world-has-already-built-elevated-transit-noise-mitigation-precedent-materials-to-2026-and-what-transfers-to-the-manhattan-bridge">What the World Has Already Built: Elevated-Transit Noise Mitigation Precedent, Materials to 2026, and What Transfers to the Manhattan Bridge</h2>
+<p><em>A companion document to <code>IDEA-CONCEPT.md</code>. Draft v1.1 — incorporating an adversarial review pass.</em></p>
+<hr />
+<h2 id="0-how-to-read-this-document">0. How to read this document</h2>
+<h3 id="01-relationship-to-idea-conceptmd">0.1 Relationship to IDEA-CONCEPT.md</h3>
+<p><code>IDEA-CONCEPT.md</code> establishes <strong>that there is a problem</strong>, who is responsible for it, and what has not been asked about it. It is a problem-definition document, and it deliberately stops short of recommending a treatment, because its central finding is that the diagnostic work required to choose one has never been done.</p>
+<p>This document asks something narrower: <strong>what has actually been built, measured and published elsewhere</strong>, and which of it could survive contact with this bridge.</p>
+<p><strong>Nothing here is a recommendation to install anything.</strong> Every option remains gated on the two blocking questions in <code>IDEA-CONCEPT.md</code>: the structural envelope (Q13) and the source apportionment (Q1). What this document adds is that <strong>the option space is better populated than the earlier document implied — and that several of the most attractive-looking entries fail on inspection.</strong></p>
+<h3 id="02-method">0.2 Method</h3>
+<p>This document inherits the method declared in <code>IDEA-CONCEPT.md</code> §0.1 — the research-question methodology from Ethical Tech CoLab's <em>AI-Powered Assistance in Formulating Research Questions</em> (Rhodes et al.), including the fixed 1–5 journal credibility rubric and the requirement that every citation carry a verification state (<code>VERIFIED</code> / <code>SNIPPET</code> / <code>UNVERIFIED</code>, defined in <code>IDEA-CONCEPT.md</code> §0.1).</p>
+<p><strong>Two deviations are declared.</strong></p>
+<p><strong>First, vendor sources are cited.</strong> Manufacturers of dampers and barriers score low on the rubric (2/5 at best) because they are self-published, unrefereed and commercially motivated. They are included because in this field <strong>the deployment record lives with the vendors</strong>. Each is flagged <code>VENDOR</code>. <strong>No recommendation in this document rests on a vendor source</strong>, and where a vendor claim was previously load-bearing it has been demoted (see §12, red-team item 8).</p>
+<p><strong>Second, this draft records its own corrections in place.</strong> Draft v1.0 of this document contained <strong>three material errors</strong>, all found by adversarial review, and all three are the same failure mode <code>IDEA-CONCEPT.md</code> §0.1 documented: <strong>a source was summarised from its abstract rather than read to its conclusions.</strong></p>
+<ul>
+<li>v1.0 presented acoustic short-circuiting as a noise-<em>reduction</em> treatment with a uniquely favourable mass profile. <strong>The paper's own conclusions state that it does not reduce radiated sound power and may increase it, and that it amplifies noise beneath the bridge.</strong> See §3.3 — the correction inverts the finding.</li>
+<li>v1.0 described cold spray as field-proven on <strong>in-service</strong> bridge steel. It was demonstrated on a <strong>decommissioned</strong> bridge. <code>IDEA-CONCEPT.md</code> §8.1 had this right; v1.0 of this document contradicted its own companion. See §6.2.</li>
+<li>v1.0 asserted a <strong>frequency partition by asset ownership</strong>. That is not physically sound. See §1.3.</li>
+</ul>
+<p><strong>These are left visible rather than silently repaired.</strong> Three errors in one document, all from the same cause, is not a reason to trust the remaining claims more.</p>
+<p><strong>Search limitations.</strong> Single English-language search API, one pass. <code>IDEA-CONCEPT.md</code> red-team item 9 named the absence of Japanese-, Chinese- and German-language literature as a systematic gap. <strong>This document narrows that gap and does not close it</strong> — Japanese and Chinese work is represented only through those institutions' <em>English-language</em> outputs, which are a curated subset selected partly for international interest.</p>
+<h3 id="03-notation">0.3 Notation</h3>
+<p>Acoustic descriptors follow <code>IDEA-CONCEPT.md</code> §0.2. Additional terms:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Written here</th>
+<th>Means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IL</code></td>
+<td>Insertion loss — reduction in received level attributable to inserting a treatment</td>
+</tr>
+<tr>
+<td><code>TL</code></td>
+<td>Transmission loss — energy lost passing <em>through</em> a partition</td>
+</tr>
+<tr>
+<td><code>TDR</code></td>
+<td>Track decay rate, dB/m — <strong>low TDR means rail vibration travels far along the rail and radiates over a long length</strong></td>
+</tr>
+<tr>
+<td><code>AMM</code></td>
+<td>Acoustic metamaterial</td>
+</tr>
+<tr>
+<td><code>CLD</code></td>
+<td>Constrained-layer damping</td>
+</tr>
+<tr>
+<td><code>TMD</code></td>
+<td>Tuned mass damper</td>
+</tr>
+<tr>
+<td><code>OMA</code></td>
+<td>Operational modal analysis</td>
+</tr>
+<tr>
+<td><code>dB(A)</code> / <code>dB(lin)</code></td>
+<td>A-weighted / unweighted. <strong>Not interchangeable</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>One notational warning carries analytical weight.</strong> Several sources report reductions in <strong>dB(lin)</strong>. A-weighting applies roughly <strong>−50 dB at 20 Hz, −30 dB at 50 Hz, −11 dB at 200 Hz</strong>. So a treatment reported in dB(lin) and one reported in dB(A) cannot be compared without the full before/after spectrum, and <strong>this document does not convert between them.</strong> Where a source's weighting is unstated, that is said.</p>
+<p><strong>A related caution.</strong> "Rumble" is not one quantity. Low-frequency <em>airborne</em> sound, <em>tactile</em> whole-body vibration, and <em>rattle</em> of building elements are distinct phenomena with distinct metrics and distinct dose–response relationships. This document tries not to collapse them; where it does, that is an error.</p>
+<hr />
+<h1 id="part-1--how-the-option-space-is-organised">PART 1 — HOW THE OPTION SPACE IS ORGANISED</h1>
+<h2 id="11-two-partitions-deliberately-kept-separate">1.1 Two partitions, deliberately kept separate</h2>
+<p><strong>The physical partition</strong> is the standard one, and it is the only one with any claim to being a law of nature:</p>
+<blockquote>
+<p><strong>excitation → radiator → path → receptor</strong></p>
+</blockquote>
+<p>Excitation includes wheel and rail roughness, joint and discontinuity impact, wheel flats and curving forces. Radiators include the wheel, the rail, and the bridge floor system. Paths include direct airborne, structure-borne re-radiated, and reflected. Receptors are people, indoors and out.</p>
+<p><strong>The implementation partition</strong> is by <strong>who owns the asset you must touch</strong>, because that is what determines whether a sponsor can act:</p>
+<ul>
+<li><strong>Track A</strong> — NYCDOT-owned bridge steel, the space around it, and the receptors.</li>
+<li><strong>Track B</strong> — MTA-owned rail, fixation, baseplates and trackform.</li>
+</ul>
+<p><strong>These two partitions are orthogonal and must not be conflated.</strong> Draft v1.0 of this document conflated them, and §1.3 records the correction.</p>
+<h2 id="12-the-implementation-partition">1.2 The implementation partition</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Track A — Structure, path, receptor</strong></th>
+<th><strong>Track B — Track, attachment, substrate</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Asset owner</strong></td>
+<td>NYCDOT (bridge); private owners (receptors)</td>
+<td>MTA / NYCT</td>
+</tr>
+<tr>
+<td><strong>Physical scope</strong></td>
+<td>Floor beams, stringers, truss, deck underside, outboard surfaces, canyon volume, façades</td>
+<td>Rail, fixation, baseplates, ties/direct-fixation assembly, bearing surfaces</td>
+</tr>
+<tr>
+<td><strong>Access route</strong></td>
+<td>Largely from below and outboard</td>
+<td>On the track</td>
+</tr>
+<tr>
+<td><strong>Approvals</strong></td>
+<td>NYCDOT; likely USCG, LPC/SHPO for visible change; FDNY egress</td>
+<td>MTA operations and engineering; safety authority</td>
+</tr>
+<tr>
+<td><strong>Status in record</strong></td>
+<td>Nothing proposed or done</td>
+<td>One resident suggestion declined by email in two days (<code>IDEA-CONCEPT.md</code> §5.5)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>A necessary correction to the record.</strong> <code>IDEA-CONCEPT.md</code> §5.5 documents the MTA declining <strong>one resident's specific suggestion</strong>. It is not evidence that the MTA has refused all track-side work, and this document should not — and after revision does not — characterise the MTA as "the party that has already said no."</p>
+<h2 id="13-correction-there-is-no-frequency-partition-by-ownership">1.3 Correction: there is no frequency partition by ownership</h2>
+<p><strong>Draft v1.0 claimed Track A addresses roughly 20–200 Hz and Track B roughly 400 Hz–2 kHz, and called the two "spectrally complementary." That claim was wrong and is withdrawn.</strong></p>
+<p>It fails on its own examples. <strong>Resilient fasteners and under-tie pads are Track B assets that act principally on low-frequency force transmission into the structure.</strong> <strong>Barriers are Track A assets that act principally on mid- and high-frequency airborne noise.</strong> Joint impact is broadband and excites both the rail and the structure. Ownership does not track frequency.</p>
+<p>What the sources actually support is narrower, and it is about <strong>specific treatments</strong>, not tracks:</p>
+<ul>
+<li><strong>Rail web dampers</strong> target rolling noise: "for metro railways in Australia, rolling noise levels in A-weighted terms are most significant in the third octave bands with centre frequencies <strong>400 to 2 kHz</strong> inclusive... the third octave band with <strong>400 Hz</strong> centre frequency is typically the lowest band target" — Zoontjens, ACOUSTICS 2025 (rubric <strong>3/5</strong>, <code>VERIFIED</code>).</li>
+<li><strong>Bridge structural radiation</strong> is a low-frequency phenomenon: "<strong>Low-frequency noise (20–200 Hz)</strong> radiated from concrete box girder bridges on urban viaduct railway lines is a significant source of disturbance" — Wang et al., <strong>Scientific Reports</strong> 14 (2024) (rubric <strong>4/5</strong>, <code>VERIFIED</code>).</li>
+<li><strong>Different microphone positions on one viaduct see different spectra</strong>: trackside peaks mid-to-high; <strong>under-beam</strong> peaks low; beam-side sees both — Song et al., <strong>Buildings</strong> 15(10):1621 (2025) (rubric <strong>3/5</strong>, <code>VERIFIED</code>).</li>
+</ul>
+<p>The third of these is a statement about <strong>spatial source mixing</strong>, not a frequency law.</p>
+<p><strong>What survives, and it is still useful:</strong> a treatment aimed at rolling noise and a treatment aimed at structural radiation address different parts of the spectrum, so <strong>procuring one does not discharge the other</strong>. That conclusion holds without any appeal to ownership.</p>
+<h2 id="14-the-finding-that-says-no-single-measure-sufficed">1.4 The finding that says no single measure sufficed</h2>
+<p>A systematic study on a <strong>steel railway bridge</strong> tested four measures:</p>
+<blockquote>
+<p>"Two different methods to reduce the air-borne sound and two methods to reduce the structure-borne sound from a steel bridge were investigated: the high screening girder was provided with a <strong>sound absorber</strong> on the side facing the trains; all <strong>openings between and around the sleepers were filled</strong> with a covering consisting of 50 mm thick plank; the track was <strong>vibration isolated</strong>; and the <strong>steel was damped</strong>. <strong>To reach the goal of lowering the sound level by 10 dB(A), a combination of measures was found necessary</strong>; isolation of structure-borne sound by <strong>pads under the sleepers</strong>; and <strong>covering of the lower parts of the bridge</strong>."
+— Odebrant, <em>Noise from steel railway bridges: a systematic investigation on methods for sound reduction</em>, <strong>Journal of Sound and Vibration</strong> 193(1):227–233 (1996) (rubric <strong>5/5</strong>, <code>SNIPPET</code> — <strong>TRID abstract record only; the JSV paper was not opened</strong>)</p>
+</blockquote>
+<p><strong>What this abstract supports:</strong> that on one steel bridge, reaching a 10 dB(A) goal was reported to need a combination spanning both a track-side and a structure-side measure.</p>
+<p><strong>What it does not support, and v1.0 wrongly implied:</strong> the individual reductions, the achieved total, the test configuration, the control conditions, the bridge geometry, the trackform, or whether any single measure was close. <strong>None of that is in the abstract.</strong> This document previously called it "the strongest single precedent" and "the winning combination." That language is withdrawn.</p>
+<p>It remains the most on-point record located — a <em>steel</em> bridge, systematically tested, spanning both tracks — and <strong>obtaining the full text is the single highest-value retrieval available</strong> (§12). Until then it is a <strong>hypothesis with an abstract behind it</strong>, not a finding.</p>
+<hr />
+<h1 id="part-2--how-much-of-the-noise-is-the-structure">PART 2 — HOW MUCH OF THE NOISE IS THE STRUCTURE?</h1>
+<h2 id="21-reported-increments-with-their-reference-conditions">2.1 Reported increments, with their reference conditions</h2>
+<p><code>IDEA-CONCEPT.md</code> §1.6 quoted the Brooklyn Bridge Park FEIS calling the Manhattan Bridge's steel "an efficient radiator" — qualitative, and never quantified at this site.</p>
+<p>Increments reported elsewhere:</p>
+<blockquote>
+<p>"The increase of noise emissions depends primarily on the bridge type, for example for steel bridges with open deck, and concrete bridges with direct rail fastenings <strong>noise reaches even up to 15 dB</strong>."
+"Such bridge-borne noise can typically be <strong>10 dB or more</strong> for common railway networks. <strong>The greatest threats to the environment are steel structures without crushed stone</strong> [ballast]."
+— Janas et al., <em>Experimental Study on Vibration and Noise Characteristics of Steel-Concrete Railway Bridge</em>, <strong>Sensors</strong> 21(23):7964 (2021) (rubric <strong>3/5</strong>, <code>VERIFIED</code>)</p>
+</blockquote>
+<p>A vendor states the industry's working assumption more bluntly:</p>
+<blockquote>
+<p>"<strong>Steel railway bridges are doubling the noise</strong>... they have <strong>low inherent damping</strong>... <strong>Steel bridges are speaker boxes.</strong>"
+— Schrey &amp; Veit, <em>Railway bridges</em> (rubric <strong>2/5</strong>, <code>VERIFIED</code>, <code>VENDOR</code>)</p>
+</blockquote>
+<h2 id="22-correction-these-are-risk-factors-not-a-class-membership">2.2 Correction: these are risk factors, not a class membership</h2>
+<p><strong>Draft v1.0 said the Manhattan Bridge "sits in the worst-case category on every axis" and "belongs to the class for which the literature reports 10–15 dB." That over-read the sources and is withdrawn.</strong></p>
+<p>The problems with the v1.0 formulation:</p>
+<ul>
+<li>The reported figures are <strong>"up to"</strong> values across <strong>broad, loosely-defined bridge categories</strong>. No source defines a Manhattan-Bridge-equivalent class.</li>
+<li>No source isolates a structural contribution <strong>under matched trains, track and receptor geometry</strong>. Without a controlled counterfactual, "the bridge adds N dB" is not a well-defined measurement.</li>
+<li><strong>Steel, open deck, no ballast, direct fastening and low damping are not independent penalty terms</strong> that can be summed or stacked.</li>
+<li><strong>Inherent damping has never been measured on this bridge.</strong> It is the parameter the entire steel-bridge literature identifies as the problem, and here it is simply unknown.</li>
+</ul>
+<p><strong>The defensible statement is weaker and still decision-relevant:</strong> this bridge carries <strong>several of the qualitative risk factors</strong> the literature associates with large structural contributions — steel, open deck, unballasted, directly fastened — and <strong>none of them has been measured here.</strong> That raises the value of measuring, and does not establish a magnitude.</p>
+<h2 id="23-what-this-means-for-the-keystone-question">2.3 What this means for the keystone question</h2>
+<p><code>IDEA-CONCEPT.md</code> Q1 asks for a source–radiator–path matrix and declines to guess the answer. That remains correct. Three design requirements follow from this survey:</p>
+<ul>
+<li>Instrument <strong>below the deck</strong>, not only trackside — the under-beam position is where structural radiation shows up (§1.3), and trackside microphones will under-represent it.</li>
+<li>Report <strong>unweighted as well as A-weighted</strong> one-third-octave spectra, because A-weighting heavily discounts the band where structural radiation lives (§0.3).</li>
+<li>Measure <strong>radiation efficiency and inherent damping</strong>, not only vibration amplitude. A structure can vibrate strongly and radiate weakly, or the reverse. <strong>Accelerometers alone do not measure sound power.</strong></li>
+</ul>
+<p><strong>Nothing in the MTA's measurement practice as described in <code>IDEA-CONCEPT.md</code> §1.2 indicates any of the three.</strong> If the 2022–2024 sessions were A-weighted, street-level and reported as broadband Leq and Lmax, they would be <strong>poorly configured to detect a structural mechanism.</strong> That is a testable claim about the raw data and is a further reason to obtain it (<code>IDEA-CONCEPT.md</code> issue #3).</p>
+<hr />
+<h1 id="part-3--track-a-the-structure-the-path-and-the-receptor">PART 3 — TRACK A: THE STRUCTURE, THE PATH AND THE RECEPTOR</h1>
+<h2 id="31-tuned-bridge-dampers--the-best-fit-to-the-access-constraint-on-the-weakest-evidence">3.1 Tuned bridge dampers — the best fit to the access constraint, on the weakest evidence</h2>
+<blockquote>
+<p>"Combination of different <strong>metal beams, which are structure-dynamically adjusted to the bridge</strong>, are installed on the <strong>longitudinal and transverse bridge girders</strong>... this generates a <strong>counterforce which is damping the bridge</strong>."
+"Measurements on <strong>15 bridges</strong>... have shown an average sound pressure level reduction of <strong>3–6 dB (linear)</strong>."
+"<strong>In most cases</strong>... can be installed without affecting train traffic. For the measurement and installation only a small area, <strong>below the bridge</strong>, has to be blocked. Guiding values are <strong>two blocking days for measuring and two to six days for installation</strong>."
+— Schrey &amp; Veit (rubric <strong>2/5</strong>, <code>VERIFIED</code>, <code>VENDOR</code>)</p>
+</blockquote>
+<p><strong>Note the qualifier "in most cases."</strong> Draft v1.0 rendered this as "requires no track outage" and built a sequencing recommendation on it. <strong>That was an overstatement of a vendor claim and is corrected here.</strong> The vendor states that installation <em>usually</em> avoids traffic effects, on <em>its</em> bridges, under conditions it does not specify.</p>
+<p>Why it still merits first attention: <code>IDEA-CONCEPT.md</code> §6.1 found <strong>C3 (access) is the only firmly established constraint</strong>. A treatment mounting on <strong>girders</strong> rather than track, worked <strong>from below</strong>, in <strong>days</strong>, addresses that constraint more directly than anything else surveyed.</p>
+<p><strong>The objections are serious and unresolved:</strong></p>
+<ol>
+<li><strong>Vendor claim, rubric 2/5.</strong> No independent verification located. Protocol, reference condition, and whether the "average" is across or within bridges are all unstated.</li>
+<li><strong>Reported in dB(lin), not dB(A)</strong> — appropriate for a low-frequency treatment, but <strong>not comparable</strong> to any dB(A) figure elsewhere (§0.3).</li>
+<li><strong>No suspension-bridge precedent.</strong> All 15 are presumably conventional fixed-span railway bridges. <strong>TMDs are narrowband by construction</strong>; a suspension-bridge stiffening truss carrying four tracks plausibly has high modal density in the relevant band, which is the condition most likely to defeat them. See Q14.</li>
+<li><strong>Tuned masses add mass</strong>, deliberately placed to maximise dynamic coupling — squarely inside the unresolved C1 envelope.</li>
+</ol>
+<p>Independent work supports the principle while illustrating the narrowband limitation: "Six TMD sets tuned to P2 resonance (47 Hz) shows <strong>11 dB reduction at P2 resonance</strong>" — Soltanieh et al. (rubric <strong>2/5</strong>, <code>SNIPPET</code>). A large number, <strong>at one frequency</strong>.</p>
+<h2 id="32-damping-the-steel-and-treating-the-underside">3.2 Damping the steel and treating the underside</h2>
+<p>Odebrant's two Track A measures were <strong>damping the steel</strong> and <strong>covering the lower parts of the bridge</strong> (§1.4). The second is not a barrier in the line-of-sight sense — it treats the radiating surface and the openings.</p>
+<p>For an <strong>open-deck</strong> bridge, openings between and around ties are both a direct sound path and part of why the deck radiates as it does. Odebrant filled them with 50 mm plank; §6 discusses what a 2026 project would do instead. <strong>The individual contribution of this measure is not in the abstract</strong> (§1.4).</p>
+<h2 id="33-acoustic-short-circuits--corrected-this-is-a-redistribution-treatment-and-its-adverse-result-disqualifies-it-here">3.3 Acoustic short circuits — CORRECTED: this is a redistribution treatment, and its adverse result disqualifies it here</h2>
+<p><strong>Draft v1.0 of this document presented perforation as the one treatment class with a <em>negative</em> mass penalty and "up to 6.8 dB" of noise reduction. That reading came from the abstract. The paper's own conclusions say something materially different, and the correction reverses the entry.</strong></p>
+<p>What the abstract says:</p>
+<blockquote>
+<p>"by this means the <strong>bridge noise can be reduced by up to 6.8 dB</strong> at standard-specified measurement points."</p>
+</blockquote>
+<p>What the conclusions say:</p>
+<blockquote>
+<p>"The data suggest that acoustic short-circuiting has <strong>minimal effect on the bridge's radiated sound power, and may even lead to an increase</strong>. Nevertheless... <strong>the sound field distribution is modified</strong>, thereby reducing the sound pressure at critical sensitive points."
+"<strong>A noise-amplifying phenomenon for the box girder structure occurs in certain areas beneath the bridge.</strong> The phenomenon has been attributed to openings in the bridge wing plate, and <strong>the specific reasons await further investigation</strong>."
+"While there might be some amplification at the top and bottom sections of the bridge, <strong>these areas are fortunately free of residential development</strong> and are not primary concerns."
+— Wang et al., <strong>Scientific Reports</strong> 14 (2024) (rubric <strong>4/5</strong>, <code>VERIFIED</code>)</p>
+</blockquote>
+<p><strong>Three consequences, and the third is decisive.</strong></p>
+<ol>
+<li><strong>It is not a noise-reduction treatment.</strong> Total radiated sound power is unchanged or higher. It <strong>redistributes</strong> the field, trading level at chosen receptors against level elsewhere.</li>
+<li><strong>It is not a material-removal treatment either.</strong> The paper proposes <strong>mesh-perforated steel plates to cover the openings</strong> so the wing plate stays usable — so the "negative mass" characterisation was wrong on its own terms.</li>
+<li><strong>The paper's reassurance does not hold in DUMBO.</strong> Its amplification is beneath the bridge, and it is comfortable with that because those areas are "free of residential development." <strong>Beneath and immediately around the Manhattan Bridge in DUMBO is dense residential, park and institutional development</strong> — the Archway, the dog run, the library, the housing on Front and Pine. <strong>The very zone this technique sacrifices is the zone this project exists to protect.</strong></li>
+</ol>
+<p><strong>Withdrawn along with the above:</strong> v1.0's suggestion that a truss "is already, in a sense, acoustically short-circuited — it is mostly holes." An acoustic short circuit requires <strong>pressure communication between opposite faces of a radiating plate</strong>. Geometric openness of a truss is not the same thing, and the analogy was not sound.</p>
+<p><strong>Revised status: this is a geometry- and receptor-specific directivity intervention, demonstrated on a concrete box girder, whose published adverse result falls precisely on this site's receptors.</strong> It is retained in this survey as a cautionary entry, not a candidate. See Q15.</p>
+<h2 id="34-lightweight-modular-barriers--a-design-reference-for-the-constraints">3.4 Lightweight modular barriers — a design reference for the constraints</h2>
+<blockquote>
+<p>"Structural strength is provided by corrosion-resistant steel panels... that <strong>weigh about a third as much as traditional concrete noise barriers</strong>... our barriers can be <strong>assembled and erected manually by workers, without the need for heavy machinery</strong>."
+"The equivalent continuous A-weighted sound pressure level averaged from nine passing trains was <strong>2.4 dB lower compared to conventional concrete noise barriers</strong>."
+— RTRI, <em>Modular sound insulating barriers designed to replace existing noise barriers on viaducts</em>, FY2022 item 25 (rubric <strong>3/5</strong>, <code>VERIFIED</code>)</p>
+</blockquote>
+<p>Three properties are relevant, and all three are about constraints rather than acoustics: <strong>one third the mass</strong> (C1), <strong>manual erection without heavy plant</strong> (C3 — crane access over a navigable waterway is its own permitting problem), and <strong>corrosion-resistant coating</strong> (C4).</p>
+<p><strong>The 2.4 dB is relative to concrete barriers, not an insertion loss</strong>, and must not be read as the benefit of installing one.</p>
+<h2 id="35-vertical-barriers-on-viaducts--measured-performance-and-a-hypothesis-about-its-failure-mode">3.5 Vertical barriers on viaducts — measured performance, and a hypothesis about its failure mode</h2>
+<blockquote>
+<p>"the insertion loss at each noise measurement point located <strong>7.5 m</strong> from the outer track centerline ranges from <strong>6.5 to 9.0 dB, 8.5 to 10.5 dB, 7.5 to 9.5 dB, and 7.5 to 10.2 dB</strong> [at 20, 40, 60, 80 km/h]. At <strong>25 m</strong>... <strong>1.5 to 2.5 dB, 6.0 to 6.5 dB, 5.5 to 6.0 dB, and 5.0 to 6.0 dB</strong>."
+"The vertical sound barrier has an effective noise reduction effect on mid-to-high frequency noise, but there is an <strong>increase in noise in the low-frequency range between 20–63 Hz, possibly due to the self-vibration of the sound barrier</strong> caused by the train passing over the viaduct, which radiates some secondary structural noise."
+— Song et al., <strong>Buildings</strong> 15(10):1621 (2025) (rubric <strong>3/5</strong>, <code>VERIFIED</code>)</p>
+</blockquote>
+<p><strong>The low-frequency increase is measured; the explanation is the authors' hypothesis.</strong> They write "possibly due to." Diffraction, interference between direct and reflected paths, and test variability are live alternatives. <strong>Draft v1.0 asserted as established physics that "a barrier bolted to a vibrating elevated structure becomes a new radiator." That is a mechanism that <em>can</em> occur — it requires the barrier's coupling, mobility, modes and radiation efficiency to permit it — and it is not demonstrated by this study.</strong></p>
+<p><strong>Corrected status:</strong> an <strong>option-specific risk worth designing against and measuring for</strong>, not a general law and not a reason to exclude barriers a priori.</p>
+<p><strong>The distance decay is the better-established objection.</strong> Insertion loss falls from roughly 6.5–10.5 dB at 7.5 m to roughly 1.5–6.5 dB at 25 m. <strong>DUMBO's receptors are further than 25 m and frequently <em>higher</em> than the track.</strong> Barriers work by breaking line of sight; against an elevated receptor that mechanism degrades sharply. See Q17.</p>
+<p>Wind loading is a recognised failure mode — "wind pressure fluctuations... can lead to the <strong>loosening and breaking of bolts and the destruction of sound barriers</strong>" (<em>High-Speed Train Noise Control Methods</em>, Encyclopedia MDPI, rubric <strong>2/5</strong>, <code>SNIPPET</code>) — bearing on the <strong>wind-area</strong> component of C1 that <code>IDEA-CONCEPT.md</code> §6.0 flagged as "plausibly more binding than weight."</p>
+<h2 id="36-enclosures">3.6 Enclosures</h2>
+<p>Full and semi-enclosure deliver the largest reported reductions — 19.8–20.1 dB(A) full at 350 km/h; 15–17 dB(A) semi within 25 m, as summarised by Song et al. (<code>VERIFIED</code> as characterisation; underlying studies <code>UNVERIFIED</code>). Hong Kong's West Rail viaducts are the notable designed-in precedent (TRID 709974, rubric 2/5, <code>SNIPPET</code>).</p>
+<p>On this bridge, enclosure is the option most likely to be defeated by <strong>non-acoustic</strong> constraints: wind area on a suspension span, dead load, visual impact on a historically significant structure over a <strong>navigable federal waterway</strong>, and fire and emergency-egress implications of enclosing an operating railway. Listed so that exclusion is explicit rather than by omission.</p>
+<h2 id="37-receptor-side-treatment-and-the-rule-that-governs-the-trade">3.7 Receptor-side treatment, and the rule that governs the trade</h2>
+<blockquote>
+<p>"the cost effectiveness of methods applied along the noise path compared to the cost effectiveness of methods applied at the receiver is <strong>primarily dependent on the trade-off between the length of track and the number of residents impacted</strong>."
+— FRA, <em>High Speed Rail: Cost of Compliance for Noise Mitigation Procedures</em> (rubric <strong>4/5</strong>, <code>SNIPPET</code>)</p>
+</blockquote>
+<p><strong>This is a decision rule, not a calculation.</strong> Draft v1.0 called it "the first quantitative argument" for treating the bridge rather than the windows. <strong>It is not quantitative</strong> — this document has no affected-population count, no façade count, no track length and no unit costs. The rule tells you <em>which variables decide</em>; it does not decide.</p>
+<p>Directionally, short track and dense multi-storey receptors is the configuration in which path treatment tends to win. <strong>That is a hypothesis to be tested by collecting the four variables</strong>, and doing so is cheap.</p>
+<p>Receptor treatment has real advantages the rule ignores: it needs no MTA consent and no structural approval, and can proceed dwelling by dwelling. It has one decisive weakness — <strong>it does nothing for the public realm.</strong> <code>IDEA-CONCEPT.md</code> §3.2 recorded exceedances at the Adams Street Library, the dog run and the Archway. <strong>You cannot double-glaze a park.</strong> That asymmetry is the substance of <code>IDEA-CONCEPT.md</code> Q5.</p>
+<p>The mature US precedent for programmatic receptor treatment is <strong>aviation, not rail</strong> — FAA AC 150/5000-9B (2022) (rubric 4/5, <code>SNIPPET</code>) describes a full sound-insulation programme with outreach process and milestones. <strong>That such a programme exists in aviation with no rail equivalent is itself a finding</strong>, and connects to Part 5.</p>
+<hr />
+<h1 id="part-4--track-b-track-attachments-and-substrate">PART 4 — TRACK B: TRACK, ATTACHMENTS AND SUBSTRATE</h1>
+<h2 id="41-rail-web-dampers--best-evidenced-option-on-trackforms-that-are-not-this-one">4.1 Rail web dampers — best-evidenced option, on trackforms that are not this one</h2>
+<p>Rail web dampers are clamp-on tuned absorbers on the rail web — a retrofit that "does not alter the rail, ballast, or track superstructure" (STRAIL, rubric <strong>2/5</strong>, <code>SNIPPET</code>, <code>VENDOR</code>).</p>
+<blockquote>
+<p>"their effectiveness is <strong>maximised in trackforms with low stiffness and high rail mobility, such as direct fix slab tracks</strong>."
+"a <strong>four to five decibel</strong> reduction... was predicted and measured <strong>on ballasted track</strong>, and an <strong>eight-decibel</strong> reduction was predicted and measured <strong>on the direct fix trackform</strong>."
+"rail dampers should provide <strong>at least three decibels</strong>... <strong>where the dynamic track stiffness is less than 250 MN/m and wheels are regularly maintained</strong>."
+— Zoontjens, ACOUSTICS 2025 (rubric <strong>3/5</strong>, <code>VERIFIED</code>)</p>
+</blockquote>
+<p><strong>Correction.</strong> Draft v1.0 concluded that because this crossing is direct-fixation, "the applicable figure is the 8 dB one." <strong>That inference is withdrawn.</strong> The underlying case was <strong>direct-fix slab track in Perth Tunnel</strong> — a stiff, massive, acoustically enclosed environment. <strong>Direct fixation to timber ties on an open steel deck over a river is a different mechanical and acoustic environment</strong>, and "direct fixation" is not a sufficient dynamic descriptor. What actually governs is pad stiffness, rail receptance, support spacing, TDR, wheel roughness, fastening geometry and bridge mobility — <strong>none of which has been measured here.</strong></p>
+<p><strong>The 8 dB figure is a non-transferable comparator.</strong> It indicates the technology's upper range in a favourable case; it is not a prediction for this site.</p>
+<p><strong>What is genuinely useful is the precondition</strong>, because it is measurable and cheap: <strong>dynamic track stiffness below 250 MN/m, and regularly maintained wheels.</strong> Establish those before anyone prices anything.</p>
+<p>The mass comparison is the most useful number located:</p>
+<blockquote>
+<p>"Typical weights of rail web dampers for AS60 rail are about <strong>25 kg per metre of rail, so 100 kg per metre with 2 tracks in each direction</strong>. A precast concrete wall of 2.4 metres height on just one side... would be <strong>more than ten times this mass rate</strong>."
+— Zoontjens, ACOUSTICS 2025 (<code>VERIFIED</code>)</p>
+</blockquote>
+<p><strong>Note the scaling problem this bridge introduces:</strong> that figure is for two tracks. <strong>This crossing has four tracks and eight rails</strong>, which multiplies not only mass but installation hours, inspection burden, fire load and eventual replacement access.</p>
+<p>The drawbacks are recorded in full because a survey reporting only the favourable half is worthless:</p>
+<blockquote>
+<p>"<strong>Rail dampers are not a universal solution.</strong> The performance of noise and vibration controls on one railway are not necessarily indicative of others."
+"<strong>Limited benefit in vibration mitigation.</strong> ...the frequencies of interest to vibration received at nearby buildings are substantially lower than that associated with the damper performance."
+"dampers <strong>cannot be fitted near switches, turnouts or trackside equipment</strong>."
+"Potentially <strong>shorter design life of typically 25 years</strong>, compared to traditional masonry noise walls... 50-year."
+"<strong>Potential fire hazard.</strong> Dampers contain rubber elements which represent minor but not insignificant fuel load."
+"<strong>Reduced 'visibility' to stakeholders</strong>... residents who were expecting the visual scale of a noise wall tend to place less value on controls which do not help to visually screen noise sources."</p>
+</blockquote>
+<p><strong>One nuance v1.0 got wrong.</strong> It concluded that "rail dampers will not address structure-borne re-radiation." <strong>Too categorical.</strong> The source says benefit for <em>building vibration</em> is limited because those frequencies are lower than damper performance. Reducing rail vibration can still alter support forces and therefore bridge excitation. <strong>The honest statement is that the effect on bridge re-radiation is unquantified, not absent.</strong></p>
+<p>The <strong>fire-load</strong> point deserves specific attention on a four-track crossing with constrained egress. The <strong>25-year design life</strong> matters disproportionately here (§7.2). The <strong>stakeholder visibility</strong> point is likely underestimated: in a community that has been asking for years (<code>IDEA-CONCEPT.md</code> Part 2), an invisible treatment carries real political risk.</p>
+<h2 id="42-corrugation-suppression--a-different-business-case">4.2 Corrugation suppression — a different business case</h2>
+<blockquote>
+<p>"Field measurements conducted on metro train tracks in <strong>Hong Kong</strong> revealed that the installation of tuned mass dampers can <strong>suppress corrugation growth rates at key frequencies by the order of 40 to 70%</strong> (Ho et al. 2025)."
+— Zoontjens, ACOUSTICS 2025 (rubric <strong>3/5</strong>, <code>VERIFIED</code> as characterisation; Ho et al. <code>UNVERIFIED</code>)</p>
+</blockquote>
+<p>A treatment that slows roughness growth reduces grinding frequency, which recovers <strong>access windows</strong> — the binding constraint. Given the MTA's own cost structure (labour roughly 4–6× materials; <code>IDEA-CONCEPT.md</code> §9.3), a measure whose principal benefit is reduced future labour is aligned with the actual cost driver.</p>
+<p><strong>Caveat:</strong> one system, <code>UNVERIFIED</code> at source, and corrugation behaviour depends on curvature, traction, vehicle and rail metallurgy. <strong>It does not establish reduced grinding on the Manhattan Bridge.</strong> Site grinding and defect records are the prerequisite. See Q20.</p>
+<h2 id="43-resilient-fasteners-pads-and-isolation">4.3 Resilient fasteners, pads and isolation</h2>
+<p>Odebrant's decisive Track B measure was <strong>pads under the sleepers</strong> — the interface where vibration transfers into the structure.</p>
+<blockquote>
+<p>"<strong>No significant changes to the directly emitted air-borne noise have yet been identified.</strong> Secondary air-borne noise arises due to the sound emission of a structure that is stimulated to vibrate..."
+— Getzner, <em>Under Sleeper Pads</em> (rubric <strong>2/5</strong>, <code>SNIPPET</code>, <code>VENDOR</code>)</p>
+</blockquote>
+<p>An honest statement of mechanism: pads attack <strong>structure-radiated</strong> noise, not the direct wheel–rail airborne component.</p>
+<p>The MTA's claimed 6–8 dBA for resilient fasteners on elevated structure, and its internal contradiction with a 3–5 dBA figure in the same document, are documented in <code>IDEA-CONCEPT.md</code> §5.1 and <strong>remain unresolved.</strong> The worldwide literature does not settle it, because achievable reduction depends on the stiffness specified and on the structure's response.</p>
+<p>A caution from the viaduct literature — softening the track transfers energy rather than destroying it, and can shift it downward in frequency:</p>
+<blockquote>
+<p>"structure-borne noise decreases by approximately 2.1 dB. However, the supporting spring force with the trapezoidal sleeper in the frequency band <strong>below 31.5 Hz</strong> is relatively large, leading to an <strong>increase in structure-borne noise within this</strong> [band]"
+— <strong>Materials</strong> 18(5):968 / PMC11901189 (rubric <strong>3/5</strong>, <code>SNIPPET</code>)</p>
+</blockquote>
+<p><strong>As with §3.5, this is one result on one viaduct and does not establish a general backfire mode for this bridge.</strong> What it establishes is that <strong>low-frequency degradation is a known possibility for two of the most obvious interventions</strong>, which is sufficient reason to instrument for it (Method 7) — and insufficient reason to assume it.</p>
+<h2 id="44-the-open-deck-and-its-openings">4.4 The open deck and its openings</h2>
+<p>Odebrant's second airborne measure was filling "all openings between and around the sleepers."</p>
+<p>This sits on the <strong>Track A/Track B boundary</strong>: the openings are between MTA track components within NYCDOT deck structure. <strong>Draft v1.0 framed this as "who owns the void," which is the wrong question.</strong> The right question is <strong>what the contractual interface and approval path are</strong> — which is an answerable, practical question, and one that plausibly explains inaction better than any technical barrier. See Q19.</p>
+<p>It is also where 2026 materials most obviously outperform 1996's plank: a tuned, absorptive, drainage-compatible, salt-tolerant, inspectable, robotically-installable gap treatment is a plausible development target (§6).</p>
+<h2 id="45-source-control-branches-this-survey-did-not-cover">4.5 Source-control branches this survey did not cover</h2>
+<p>For completeness, and because their absence from v1.0 was a real gap. Each is a live candidate and none is surveyed here:</p>
+<ul>
+<li><strong>Wheel-side treatments</strong> — wheel roughness and flats, wheel truing and reprofiling intervals, ring-damped or resilient wheels, wheel dampers. <strong>Rail damper performance is explicitly conditional on "wheels regularly maintained" (§4.1)</strong>, so wheel condition is a prerequisite variable, not an alternative option.</li>
+<li><strong>Vehicle characteristics</strong> — unsprung mass, primary suspension. The <strong>B, D, N and Q are not a single fleet</strong>; car classes differ in suspension, axle load and wheel maintenance history.</li>
+<li><strong>Operational measures</strong> — speed management, scheduling and track allocation. <code>IDEA-CONCEPT.md</code> §4.2.1 identified an operational lever in the FEIS speed–noise relationship, and §5.4 below documents a 2025 Chicago episode where removing a speed restriction raised neighbours' noise. <strong>Speed is a candidate intervention, not merely an anecdote</strong>, and it is the only one requiring no capital at all.</li>
+<li><strong>Rail joint inventory and geometry</strong> — already <code>IDEA-CONCEPT.md</code> Q2 and issue #2.</li>
+<li><strong>Condition-triggered maintenance</strong> — grinding on measured roughness rather than fixed intervals.</li>
+</ul>
+<p><strong>The MTA excludes CWR from elevated track</strong> for thermal-expansion reasons (<code>IDEA-CONCEPT.md</code> §5.2). <strong>Nearly every study surveyed here was conducted on continuously welded rail.</strong> That is the single most consequential difference between this site and the precedent base (§8.3).</p>
+<hr />
+<h1 id="part-5--a-regulatory-analogue-and-what-it-is-not">PART 5 — A REGULATORY ANALOGUE, AND WHAT IT IS NOT</h1>
+<p><code>IDEA-CONCEPT.md</code> §3.4 established that N.Y. Public Authorities Law § 1204-a defines "subways" to include elevated structures, sets a compliance schedule, and contains a Sound Level Table whose <strong>Category IV — ELEVATED STRUCTURES</strong> entry reads <em>"Sound level to be established."</em> It never was. Q11 asked what instrument could create a receptor-based obligation.</p>
+<p><strong>A structurally similar regime exists in Japan. The comparison is instructive and it is not a legal argument. Draft v1.0 overstated it in four ways, corrected below.</strong></p>
+<h2 id="51-what-the-japanese-standard-actually-is">5.1 What the Japanese standard actually is</h2>
+<blockquote>
+<p>"The values of the environmental quality standards are established for each category of area... Prefectural governors shall designate the category of area.
+| Category of area | Standard value [in dB] |
+| I | <strong>70 or less</strong> |
+| II | <strong>75 or less</strong> |"
+— Ministry of the Environment, Japan, <em>Environmental Quality Standards for Shinkansen Superexpress Railway Noise</em> (rubric <strong>5/5</strong>, <code>VERIFIED</code>)</p>
+</blockquote>
+<p><strong>Four corrections to v1.0:</strong></p>
+<ol>
+<li><strong>It is not an elevated-structure standard.</strong> It applies to <strong>Shinkansen noise regardless of structure type</strong>. v1.0's claim that "Japan established the elevated-structure standard § 1204-a left blank" was wrong. The correct statement is that <strong>Japan set an enforceable numeric limit for a rail noise category and New York left its elevated category blank</strong> — a parallel of <em>structure</em>, not of scope.</li>
+<li><strong>It is not a subway standard.</strong> Shinkansen is high-speed intercity rail. Speeds, spectra, vehicle design and duty cycle all differ from a four-track urban transit crossing.</li>
+<li><strong>The date is not 1993.</strong> The English page is headed "Latest Amendment... Notification No. 91 of 1993" and cites the Basic Environment Law (Law No. 91 of 1993). <strong>The standard originates in the 1970s</strong>; 1993 is an amendment. v1.0's "Japan established, in 1993" is not supported by the retrieved page and the origin date was not verified.</li>
+<li><strong>The language is substantially aspirational.</strong> The page says maintenance of the standards "<strong>is desirable</strong>" and "<strong>efforts shall be made</strong>." v1.0 called receptor treatment a "duty" and said the system "functions." <strong>Neither is established without compliance and enforcement evidence</strong>, which was not retrieved.</li>
+</ol>
+<h2 id="52-the-metric-choice-is-a-genuine-finding--with-a-limit">5.2 The metric choice is a genuine finding — with a limit</h2>
+<blockquote>
+<p>"Measurements shall be carried out by recording the <strong>peak noise level of each of the Shinkansen trains</strong> passing in both directions, in principle, <strong>for 20 successive trains</strong>."
+"The Shinkansen railway noise shall be evaluated by the <strong>energy mean value of the higher half of the measured peak noise levels</strong>."
+"...with A-weighted calibration and <strong>slow dynamic response</strong>."</p>
+</blockquote>
+<p>This bears on <code>IDEA-CONCEPT.md</code> Q4 — which metric predicts harm for an intermittent, impact-dominated stimulus. Japan's regulatory answer is <strong>not a long-period energy average but the energy mean of the worst half of individual event peaks</strong>, a descriptor deliberately insensitive to quiet gaps between trains.</p>
+<p><strong>The limit on that inference, which v1.0 missed:</strong> a standard's chosen metric is a <strong>policy choice</strong>, not an empirical finding about dose–response. It shows what one mature regulator considered defensible. It is evidence that Leq is not the only reasonable choice; it is not evidence that this descriptor predicts harm.</p>
+<p>The <strong>SLOW</strong> setting is a further contrast worth recording. § 1204-a(2)(c) requires <strong>FAST</strong> — which <code>IDEA-CONCEPT.md</code> §3.4 established means the MTA's FAST readings prove nothing about impulsiveness, since they were statutorily compelled. <strong>Two mature regimes chose opposite settings for broadly similar stimuli</strong>, which is a reason to treat metric selection as an open question rather than settled convention.</p>
+<h2 id="53-architectural-comparison">5.3 Architectural comparison</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>N.Y. PAL § 1204-a</strong></th>
+<th><strong>Japan Shinkansen EQS</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scope</td>
+<td>Subways incl. elevated structures</td>
+<td>Shinkansen, <strong>all structure types</strong></td>
+</tr>
+<tr>
+<td>Numeric standard for elevated</td>
+<td><strong>"Sound level to be established"</strong> — never established</td>
+<td>70 dB (residential) / 75 dB (other), <strong>not elevated-specific</strong></td>
+</tr>
+<tr>
+<td>Metric</td>
+<td>L10-type percentages, <strong>FAST</strong></td>
+<td>Energy mean of <strong>higher half</strong> of 20 event peaks, <strong>SLOW</strong></td>
+</tr>
+<tr>
+<td>Schedule</td>
+<td>4 / 8 / 12 years</td>
+<td><strong>Tiered by severity</strong>: ≥80 dB within 3 yr; 75–80 within 7–10 yr; 70–75 within 10 yr</td>
+</tr>
+<tr>
+<td>On failure</td>
+<td>Duty to state and explain</td>
+<td>"efforts shall be continued... as soon as possible"</td>
+</tr>
+<tr>
+<td>Fallback</td>
+<td>—</td>
+<td>"measures shall be taken... such as <strong>soundproofing houses</strong>, with a view to obtaining <strong>indoor conditions equivalent</strong>"</td>
+</tr>
+<tr>
+<td>Priority rule</td>
+<td>—</td>
+<td>"the area a shall be given <strong>priority and special attention</strong>"</td>
+</tr>
+</tbody>
+</table></div>
+<p><em>Japan column quoted from MOE English page (<code>VERIFIED</code>); New York column from <code>IDEA-CONCEPT.md</code> §3.4.</em></p>
+<p><strong>Three architectural features have no New York analogue, and they are the substance of the answer to Q11:</strong> severity-indexed deadlines; an explicit fallback to receptor treatment aimed at an <em>equivalent interior condition</em>; and a worst-first priority rule.</p>
+<p><strong>Draft v1.0 additionally suggested DUMBO's measured levels would fall in the three-year tier. That is withdrawn.</strong> DUMBO's Leq values and a single Lmax event <strong>cannot be assigned to a tier</strong> defined by the energy mean of the higher half of 20 SLOW event maxima measured outdoors at 1.2 m. The descriptors are not interchangeable (§0.3), and asserting a tier would be exactly the kind of silent metric conversion this project's method forbids.</p>
+<h2 id="54-chicago-is-the-better-comparator">5.4 Chicago is the better comparator</h2>
+<p>The nearest US analogue is the Chicago 'L' — ageing elevated steel transit past residential windows — and the parallel extends to legal posture:</p>
+<blockquote>
+<p>"It is interesting to note that, while <strong>exempt from the city's evening noise ordinance</strong>, the Leq is in excess of the prescribed level of 55 dB."
+— JASA 118(3) Suppl. (rubric <strong>4/5</strong>, <code>SNIPPET</code>)</p>
+</blockquote>
+<p>And to operations, in 2025:</p>
+<blockquote>
+<p>"After CTA Eliminates Red Line 'Slow Zone,' Noise Has Become Unbearable For Uptown Residents"
+— Block Club Chicago, 1 August 2025 (rubric <strong>2/5</strong>, <code>SNIPPET</code>)</p>
+</blockquote>
+<p><strong>A speed restriction was removed and neighbours' noise rose</strong> — a natural experiment on an elevated steel structure in a US city within the last year, corroborating the operational lever in <code>IDEA-CONCEPT.md</code> §4.2.1. Song et al. give a magnitude: roughly <strong>2.3 dB per 10 km/h trackside, 1.8 dB per 10 km/h beam-side</strong> (<code>VERIFIED</code>) — <strong>on a different structure, so indicative only.</strong></p>
+<p><strong>Chicago should be the primary comparator jurisdiction</strong> for legal and programmatic strategy: same country, same federal framework, same asset class, same exemption problem, and a live documented case. It was not examined in <code>IDEA-CONCEPT.md</code> at all.</p>
+<hr />
+<h1 id="part-6--materials-and-methods-available-in-2026">PART 6 — MATERIALS AND METHODS AVAILABLE IN 2026</h1>
+<h2 id="61-acoustic-metamaterials-a-well-founded-programme-not-a-product">6.1 Acoustic metamaterials: a well-founded programme, not a product</h2>
+<blockquote>
+<p>"The application of AMMs in railway systems is analyzed across three key domains: <strong>vibration sources, transmission paths, and receptors</strong>... AMMs... enable <strong>targeted frequency control, efficient low-frequency vibration isolation, and compact designs</strong>."
+"...future research directions are proposed, emphasizing the need to <strong>overcome challenges related to design complexity, computational costs, and practical implementation</strong>."
+— <em>Vibration control and noise attenuation strategies via acoustic metamaterial in railway transportation: a state-of-the-art review</em>, <strong>Urban Lifeline</strong> (Springer) 2025 (rubric <strong>4/5</strong>, <code>VERIFIED</code>)</p>
+</blockquote>
+<p>The most advanced deployment claim located:</p>
+<blockquote>
+<p>"opening several <strong>bandgaps below 200 Hz</strong>, and the attenuation values are <strong>mostly above 10 dB</strong> within the bandgap... their <strong>robustness was validated in practical subway applications</strong>."
+— Urban Lifeline 2025, characterising Xiao et al. 2024 (<code>VERIFIED</code> as characterisation; Xiao et al. <code>UNVERIFIED</code>)</p>
+</blockquote>
+<p><strong>Sub-200 Hz bandgaps with &gt;10 dB attenuation would address the band where rail dampers do nothing</strong> (§1.3). Two disciplined cautions: the review's own conclusion names <strong>practical implementation</strong> as unsolved, and the metaconcrete result is a <strong>concrete trackbed</strong> application — an asset class this bridge does not have. <strong>The transfer path to an open steel deck is not established.</strong></p>
+<p>Honest summary for 2026: <strong>acoustic metamaterials are a well-founded research programme with limited independently-verified field deployment in railway environments.</strong> The UK Metamaterials Network <em>Acoustic Metamaterials Roadmap</em> (Chaplain et al. 2025, J. Phys. D; rubric 4/5, <code>SNIPPET</code>) is the right instrument for assessing maturity and is a retrieval priority (§12).</p>
+<h2 id="62-cold-spray--corrected-demonstrated-on-a-decommissioned-bridge">6.2 Cold spray — CORRECTED: demonstrated on a decommissioned bridge</h2>
+<p><strong>Draft v1.0 described cold spray as field-proven on "in-service structural steel." That is wrong, and it contradicted this document's own companion.</strong> <code>IDEA-CONCEPT.md</code> §8.1 correctly recorded the demonstration as <strong>"static, decommissioned"</strong> and rated the source <strong>1/5</strong> (institutional press release). v1.0 rated it 3/5 and dropped the qualifier. Both errors are corrected here.</p>
+<p>What is established: a <strong>proof-of-concept repair on a small corroded section of a decommissioned bridge</strong> in Great Barrington, Massachusetts, by a UMass Amherst / MIT team, recognised by AISC (MIT News, 20 June 2025, rubric <strong>1/5</strong>, <code>SNIPPET</code>; AISC IDEAS², rubric <strong>2/5</strong>, <code>SNIPPET</code>). MIT's own account describes further R&amp;D as needed.</p>
+<p>What is <strong>not</strong> established: operation under live traffic, on a moving substrate, at scale, or <strong>any acoustic function whatsoever</strong>. Cold spray restored <strong>section loss</strong>.</p>
+<p><strong>The onward question is narrower than v1.0 implied.</strong> Cold spray could plausibly deposit the <strong>metallic constraining skin</strong> of a CLD treatment — but CLD also requires a qualified <strong>viscoelastic core</strong> and bond system, and spraying hot, high-velocity metal particles onto a viscoelastic layer may destroy it. And a "graded impedance layer" has not been shown to attenuate low-frequency structural radiation. <strong>Before treating cold spray as an acoustic platform it must be compared against bonded sheet CLD, thermal spray and conventional installation</strong>, which are mature and cheap. See Q18, whose novelty claim is now explicitly weakened.</p>
+<h2 id="63-robotic-access-and-inspection">6.3 Robotic access and inspection</h2>
+<blockquote>
+<p>"<strong>Bridge Inspection Robot Deployment Systems (BIRDS)</strong>, received a U.S. patent issued in <strong>2025</strong> and won the <strong>2025 ASCE Charles Pankow Award for Innovation</strong>."
+— USDOT / ROSA-P, <em>Traffic Disruption-free Bridge Inspection Initiative with Robotic Systems</em> (rubric <strong>4/5</strong>, <code>SNIPPET</code>)</p>
+<p>"field deployments on <strong>more than twenty steel bridges</strong> confirm the adhesive, climbing, inspection capability of the robot."
+— Nguyen &amp; La, <em>A Climbing Robot for Steel Bridge Inspection</em> (rubric <strong>3/5</strong>, <code>SNIPPET</code>)</p>
+</blockquote>
+<p>The organising phrase is <strong>"traffic disruption-free"</strong> — the premise of <code>IDEA-CONCEPT.md</code> Part 8, that robotics matter here because access-hours are the scarce resource.</p>
+<p><strong>The limits stand unsoftened.</strong> These are <strong>inspection</strong> platforms — sensing tasks with modest force and tolerance requirements. Installing, bonding or depositing a treatment is a <strong>manipulation</strong> task with far higher requirements, on a moving substrate. <strong>No source closes that gap.</strong></p>
+<h2 id="64-mass-comparison-with-the-short-circuit-entry-corrected">6.4 Mass comparison, with the short-circuit entry corrected</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Treatment</th>
+<th>Approx. mass effect</th>
+<th>Source</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rail web dampers, <strong>4 tracks</strong></td>
+<td>~200 kg/linear m (scaled from 100 kg/m for 2 tracks)</td>
+<td>Zoontjens 2025, <code>VERIFIED</code></td>
+<td>Scaling is this document's arithmetic, not the source's</td>
+</tr>
+<tr>
+<td>Precast concrete barrier, 2.4 m, one side</td>
+<td>&gt;10× the 2-track damper rate</td>
+<td>Zoontjens 2025, <code>VERIFIED</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>RTRI modular steel barrier</td>
+<td>~1/3 of concrete barrier</td>
+<td>RTRI FY2022, <code>VERIFIED</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Acoustic short circuits</td>
+<td><strong>Roughly neutral</strong> — openings covered by mesh plates</td>
+<td>Wang et al. 2024, <code>VERIFIED</code></td>
+<td><strong>v1.0 wrongly claimed negative; corrected §3.3</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>The residual pattern is that lighter options are less well proven.</strong> That inverse relationship is the honest summary of the 2026 state of the art, and it is why the structural envelope (Q13) gates everything: <strong>generous envelope → buy the proven heavy option; tight envelope → fund development of the light one.</strong> This is an engineering judgement with <strong>no cost basis</strong> — no source in this document supports a budget.</p>
+<hr />
+<h1 id="part-7--labour-maintenance-and-whole-life-models">PART 7 — LABOUR, MAINTENANCE AND WHOLE-LIFE MODELS</h1>
+<h2 id="71-access-cost-differs-sharply-by-option--but-no-track-access-is-never-the-whole-story">7.1 Access cost differs sharply by option — but "no track access" is never the whole story</h2>
+<p>The property that most distinguishes options at this site is <strong>not dB — it is what installation demands of the operating railway.</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Track outage</th>
+<th>Other approvals still required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tuned bridge dampers on girders</td>
+<td>"In most cases" avoided; from below</td>
+<td>NYCDOT structural; attachment fatigue; falling-object/marine containment; lead-paint controls</td>
+</tr>
+<tr>
+<td>Under-deck / soffit treatment</td>
+<td>Largely avoided</td>
+<td>As above; drainage, inspection access</td>
+</tr>
+<tr>
+<td>Receptor-side glazing</td>
+<td>None</td>
+<td>Building owners; LPC where applicable</td>
+</tr>
+<tr>
+<td>Modular barriers</td>
+<td>Partial — manual erection</td>
+<td>Wind load; visual review; clearance</td>
+</tr>
+<tr>
+<td>Acoustic short circuits</td>
+<td>Structural cutting</td>
+<td><strong>Major structural approval; and §3.3 disqualifies it here anyway</strong></td>
+</tr>
+<tr>
+<td>Rail web dampers</td>
+<td><strong>Required</strong></td>
+<td>MTA engineering; fire load; signal/stray-current compatibility</td>
+</tr>
+<tr>
+<td>Resilient fasteners / pads</td>
+<td><strong>Required, extensive</strong></td>
+<td>As above</td>
+</tr>
+<tr>
+<td>Ballast, floating slab</td>
+<td><strong>Required, extensive</strong></td>
+<td>Plus full C1 envelope</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Correction to v1.0.</strong> It concluded that Track A "requires no MTA consent" and is "the one a sponsor can actually execute." <strong>That dichotomy is false.</strong> Work beneath an operating railway still engages railway clearances, electrical and signal clearance, emergency egress, falling-object protection over water, and — for any instrumentation that must identify trains or speeds — operator cooperation. <strong>Cutting structural plates or instrumenting the operating floor system cannot be called "no track access" merely because workers approach from below.</strong></p>
+<p><strong>What survives is a weaker but real claim:</strong> Track A options generally impose <strong>lower demand on General Order windows</strong>, which is the scarcest resource. That is a reason to <strong>start the Track A diagnostic early</strong>, not a licence to skip approvals — and §10 now sequences diagnostics rather than asset tracks.</p>
+<p>The right instrument is a <strong>responsibility and approval matrix</strong> listing, for each intervention: asset owner, operator, safety authority, maintainer, permitting bodies (NYCDOT, MTA, USCG, LPC/SHPO, FDNY), and outage requirement. <strong>No such matrix exists for this problem.</strong> Producing one is cheap and is Method 10.</p>
+<h2 id="72-design-life-asymmetry">7.2 Design-life asymmetry</h2>
+<p>Rail dampers carry "typically 25 years... compared to traditional masonry noise walls... 50-year" (Zoontjens 2025, <code>VERIFIED</code>).</p>
+<p>On a normal railway this is a modest difference. Here it is not, because <strong>replacement consumes the scarce resource.</strong> A 25-year asset on a bridge the City intends to hold for decades implies two or three replacement campaigns — each consuming access windows, each multiplied across <strong>four tracks and eight rails</strong> — within the life of one 50-year alternative.</p>
+<h2 id="73-the-maintenance-benefit-inversion">7.3 The maintenance-benefit inversion</h2>
+<p>§4.2's corrugation finding points to treatments that pay for themselves by <strong>reducing future maintenance labour</strong>. Given labour roughly 4–6× materials (<code>IDEA-CONCEPT.md</code> §9.3), that attacks the dominant cost line. <strong>It is the argument most likely to interest an operator, and it appears never to have been put</strong> — but it requires site grinding and defect records first (Q20).</p>
+<hr />
+<h1 id="part-8--transferability">PART 8 — TRANSFERABILITY</h1>
+<h2 id="81-the-transfer-tests">8.1 The transfer tests</h2>
+<ul>
+<li><strong>T1 — Structural type.</strong> This is a <strong>suspension bridge with a stiffening truss</strong> — a class essentially absent from the surveyed literature.</li>
+<li><strong>T2 — Trackform.</strong> <strong>Open deck, direct fixation</strong> — not slab, not ballast.</li>
+<li><strong>T3 — Rail continuity.</strong> Nearly all sources assume <strong>CWR</strong>; this site excludes it.</li>
+<li><strong>T4 — Receptor geometry.</strong> Barrier data is for receptors at or below track level within 7.5–25 m. DUMBO's are <strong>further, higher, in a reflective canyon</strong>.</li>
+<li><strong>T5 — Operating regime.</strong> Four tracks; <strong>B/D/N/Q are different car classes</strong> with different suspensions, axle loads and wheel histories.</li>
+</ul>
+<h2 id="82-transferability-matrix">8.2 Transferability matrix</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Track</th>
+<th>Best evidence</th>
+<th>Transfer risk</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tuned bridge dampers on girders</td>
+<td>A</td>
+<td>15 bridges, 3–6 dB(lin), <code>VENDOR</code> 2/5</td>
+<td><strong>High — T1</strong>; no suspension precedent; narrowband</td>
+<td><strong>Study first</strong> (Q14). Best fit to access constraint, weakest evidence</td>
+</tr>
+<tr>
+<td>Damping steel + treating underside</td>
+<td>A</td>
+<td>Odebrant, <code>SNIPPET</code> 5/5</td>
+<td>Moderate — steel bridge, but T1, T3 differ</td>
+<td><strong>Retrieve full text before relying</strong></td>
+</tr>
+<tr>
+<td>Acoustic short circuits</td>
+<td>A</td>
+<td>Sci Rep 2024, <code>VERIFIED</code> 4/5</td>
+<td><strong>Disqualifying</strong></td>
+<td><strong>Excluded</strong> — amplifies beneath the bridge, where DUMBO's receptors are (§3.3)</td>
+</tr>
+<tr>
+<td>Lightweight modular barrier</td>
+<td>A</td>
+<td>RTRI, <code>VERIFIED</code> 3/5</td>
+<td>High — T4</td>
+<td>Design reference for mass/erection; performance not transferable</td>
+</tr>
+<tr>
+<td>Vertical barrier</td>
+<td>A</td>
+<td>Buildings 2025, <code>VERIFIED</code> 3/5</td>
+<td><strong>High — T4</strong> decay with distance and receptor height</td>
+<td>Do not assume benefit; low-frequency risk to be measured</td>
+</tr>
+<tr>
+<td>Full/semi enclosure</td>
+<td>A</td>
+<td>secondary</td>
+<td>High</td>
+<td>Likely defeated by wind area, dead load, visual, waterway, egress</td>
+</tr>
+<tr>
+<td>Receptor glazing</td>
+<td>A</td>
+<td>FRA, FAA, <code>SNIPPET</code> 4/5</td>
+<td>Low</td>
+<td>Viable; <strong>does nothing for public realm</strong></td>
+</tr>
+<tr>
+<td>Rail web dampers</td>
+<td>B</td>
+<td>ACOUSTICS 2025, <code>VERIFIED</code> 3/5</td>
+<td><strong>Moderate — T2</strong>; Perth case was slab track in tunnel</td>
+<td><strong>Best-evidenced technology; 8 dB is a non-transferable comparator.</strong> Measure stiffness and TDR first</td>
+</tr>
+<tr>
+<td>Resilient fasteners / pads</td>
+<td>B</td>
+<td>Odebrant; MTA claims</td>
+<td>Moderate</td>
+<td>Addresses structure-borne path; MTA's own figures contradict each other</td>
+</tr>
+<tr>
+<td>Gap / open-deck treatment</td>
+<td>A∩B</td>
+<td>Odebrant, <code>SNIPPET</code></td>
+<td>Moderate</td>
+<td>Best 2026-materials target; <strong>needs an interface/approval answer</strong> (Q19)</td>
+</tr>
+<tr>
+<td>Wheel-side, operational, scheduling</td>
+<td>B</td>
+<td><strong>not surveyed</strong></td>
+<td>—</td>
+<td><strong>Gap in this document</strong> (§4.5)</td>
+</tr>
+<tr>
+<td>Metamaterial trackbed</td>
+<td>B</td>
+<td>Urban Lifeline 2025</td>
+<td><strong>High — no concrete trackbed here</strong></td>
+<td>Principle relevant; not transferable as-is</td>
+</tr>
+<tr>
+<td>Cold-spray-applied damping</td>
+<td>A</td>
+<td><strong>no source</strong></td>
+<td>—</td>
+<td>Unattempted; <strong>compare against bonded CLD first</strong> (§6.2)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="83-the-three-things-that-make-this-site-hard-to-borrow-for">8.3 The three things that make this site hard to borrow for</h2>
+<ol>
+<li><strong>It is a suspension bridge.</strong> Every quantified result found is from a girder, box or fixed truss span. A suspension bridge deck is long, flexible and torsionally coupled, with high modal density. <strong>Narrowband tuned treatments are exactly the class most vulnerable to that</strong> — and tuned bridge dampers are the option that otherwise fits best. <strong>It is possible that few of the structural treatments transfer at all</strong>, and Method 6 is the cheapest way to find out.</li>
+<li><strong>The rail is jointed.</strong> Nearly the entire source-control literature assumes CWR. This cuts both ways: there is a <strong>larger discontinuity term available to remove</strong>, and the surveyed treatments were <strong>tuned for rolling noise rather than impact.</strong></li>
+<li><strong>Receptors are high, far and in a canyon.</strong> Barrier physics rewards low, near, unobstructed receptors. DUMBO offers none. <strong>This is the strongest argument for prioritising source and structural treatment over screening</strong>, independent of the mass constraint.</li>
+</ol>
+<hr />
+<h1 id="part-9--questions-this-survey-opens">PART 9 — QUESTIONS THIS SURVEY OPENS</h1>
+<p><em>Continuing <code>IDEA-CONCEPT.md</code> Part 10. "Not asked" means not found in this review, of this site or configuration.</em></p>
+<h3 id="q14--which-structural-modes-dominate-radiated-sound-power-and-is-any-of-them-a-tunable-target">Q14 — Which structural modes dominate <em>radiated sound power</em>, and is any of them a tunable target?</h3>
+<p>Not "can a damper be tuned at all," which is ill-posed. <strong>Radiated power, not vibration amplitude, is the quantity that matters</strong>, and modal analysis alone does not deliver it — radiation efficiency must be measured or modelled too. Gating question for the option that best fits the access constraint (§3.1). Method 6.</p>
+<h3 id="q15--where-are-the-dominant-radiating-surfaces-and-what-is-the-pressure-field-across-them">Q15 — Where are the dominant radiating surfaces, and what is the pressure field across them?</h3>
+<p><strong>Reframed.</strong> v1.0 asked whether the truss is "already short-circuited"; that rested on an invalid analogy and §3.3 withdrew it. The useful question is <strong>identification of radiating plates and the pressure fields across their faces</strong>, by acoustic intensity or nearfield holography. Directivity interventions must then be evaluated against <strong>all</strong> receptors, since §3.3 shows they can move energy toward some while reducing it at others.</p>
+<h3 id="q16--what-is-the-relationship-between-spectral-content-and-reported-annoyance-for-this-population">Q16 — What is the relationship between spectral content and reported annoyance for this population?</h3>
+<p><strong>Not novel</strong> — psychoacoustics has established descriptors, and the false Track A/B band split that originally motivated this question is withdrawn (§1.3). It remains <strong>unasked of this population</strong>. Requires paired spectral measurement and ethically designed resident-response work, separating low-frequency airborne sound, tactile vibration and rattle (§0.3).</p>
+<h3 id="q17--what-is-barrier-insertion-loss-for-receptors-substantially-above-track-level-in-a-reflective-canyon">Q17 — What is barrier insertion loss for receptors substantially above track level in a reflective canyon?</h3>
+<p>Published data is 7.5–25 m at or below track level. <strong>Does barrier performance survive DUMBO's geometry, or approach zero above some receptor elevation?</strong> A site-specific design question rather than a novelty claim — and capable of eliminating an expensive option class cheaply. Method 8.</p>
+<h3 id="q18--is-robotic-deposition-a-better-route-to-structural-damping-than-bonded-installation">Q18 — Is robotic deposition a better route to structural damping than bonded installation?</h3>
+<p><strong>Weakened from v1.0</strong>, which claimed cold-spray acoustic deposition as the document's most novel question on the basis of not finding it. <strong>Absence of evidence in a single-API English search is weak</strong>, and <code>IDEA-CONCEPT.md</code> already had two novelty claims falsified. The question must also be posed comparatively: cold spray competes with <strong>bonded sheet CLD, thermal spray and conventional installation</strong>, which are mature. And a coupon loss-factor test does not establish bridge-scale benefit or robotic feasibility. <strong>Treat the novelty as a hypothesis to attack.</strong></p>
+<h3 id="q19--what-is-the-contractual-interface-and-approval-path-for-work-at-the-trackstructure-boundary">Q19 — What is the contractual interface and approval path for work at the track/structure boundary?</h3>
+<p><strong>Reframed</strong> from "who owns the void." Deck openings sit between MTA components within NYCDOT structure. <strong>Which body approves, who bears liability, and what outage is required?</strong> Plausibly explains inaction better than any technical barrier. Method 10.</p>
+<h3 id="q20--what-are-the-actual-grinding-and-rail-defect-records-for-this-crossing-and-would-a-maintenance-case-succeed-where-an-acoustic-one-did-not">Q20 — What are the actual grinding and rail-defect records for this crossing, and would a maintenance case succeed where an acoustic one did not?</h3>
+<p>Corrugation suppression on one Hong Kong system does not establish reduced grinding here (§4.2). <strong>Obtain site grinding intervals, defect history and roughness records first.</strong> Then test whether a maintenance-savings case is more persuasive to the operator than an acoustic one.</p>
+<h3 id="q21--what-is-the-whole-life-decision-metric-and-what-belongs-in-it">Q21 — What is the whole-life decision metric, and what belongs in it?</h3>
+<p>"dB per access-hour" alone is <strong>not a sound decision metric</strong> — v1.0 treated it as one. A defensible metric must combine lifecycle cost, <strong>population exposure reduction</strong>, durability, uncertainty, access risk and reversibility. Design-life asymmetry (25 vs 50 years), multiplied across four tracks, is one input among several. <strong>No source computes anything like this.</strong></p>
+<h3 id="q22--under-what-conditions-does-a-treatment-degrade-low-frequency-performance-here-and-what-threshold-should-trigger-reversal">Q22 — Under what conditions does a treatment degrade low-frequency performance here, and what threshold should trigger reversal?</h3>
+<p><strong>Separated and downgraded.</strong> Barrier self-vibration (§3.5) and resilient-track low-frequency transfer (§4.3) are <strong>distinct hypotheses on different structures</strong>, each stated tentatively by its source. Neither is established here. The practical question is not "do they backfire" but <strong>what measurement uncertainty and material-adverse-change thresholds should govern a staged deployment</strong> — since reversing for any increase in any band is not workable.</p>
+<hr />
+<h1 id="part-10--how-to-answer-them">PART 10 — HOW TO ANSWER THEM</h1>
+<p><em>Continuing <code>IDEA-CONCEPT.md</code> Part 11. Methods 0–5 remain valid.</em></p>
+<p><strong>Sequencing correction.</strong> Draft v1.0 recommended sequencing <strong>Track A first because it is executable.</strong> That risks being read as "intervene first," and it conflicts with this document's own gates. <strong>The corrected principle is to sequence diagnostics, not asset tracks:</strong></p>
+<blockquote>
+<p>records and approvals → source apportionment → mobility, modal and radiation study → reversible instrumented trials</p>
+</blockquote>
+<p>A Track A <em>study</em> can sensibly begin early. <strong>A Track A treatment cannot be prioritised before the structure is shown to be a material radiator and a transferable target is identified.</strong></p>
+<h3 id="method-6--operational-modal-and-radiation-survey-of-the-stiffening-truss">Method 6 — Operational modal and radiation survey of the stiffening truss</h3>
+<p>Answers <strong>Q14</strong>, informs <strong>Q15</strong> and <strong>Q1</strong>. Distributed triaxial accelerometry on floor beams, stringers, truss members and deck under traffic, <strong>plus acoustic intensity or nearfield acoustic holography</strong> to obtain radiation efficiency.
+Deliverables: modal map in the 5–300 Hz band; <strong>measured inherent damping</strong> — the parameter the steel-bridge literature blames and nobody has measured here; <strong>local relative displacement at candidate attachment points</strong>, addressing <code>IDEA-CONCEPT.md</code> §6.1 C2.
+<strong>Honest scoping caveat, absent from v1.0:</strong> output-only OMA on a large, non-stationarily excited suspension structure up to 300 Hz needs <strong>dense instrumentation</strong> and is not trivially cheap; accelerometers do <strong>not</strong> directly yield relative displacement, which requires either double integration with its attendant drift or direct displacement sensing; and <strong>modes alone do not reveal radiation efficiency</strong>, which is why the acoustic measurement is not optional.</p>
+<h3 id="method-7--full-spectrum-beforeafter-protocol-with-defined-reversal-thresholds">Method 7 — Full-spectrum before/after protocol with defined reversal thresholds</h3>
+<p>Answers <strong>Q22</strong>. One-third-octave <strong>unweighted and A-weighted</strong>, at trackside, under-deck and at real receptor elevations, before and after, logging <strong>train class (B/D/N/Q), direction, track, speed, consist and visible defects</strong>.
+<strong>Corrected from v1.0</strong>, which required authority to reverse on any band increase. Instead: <strong>define measurement uncertainty and material-adverse-change thresholds in advance</strong>, and contract against those. A warranty written in dB(A) does not protect against low-frequency degradation.</p>
+<h3 id="method-8--receptor-elevation-barrier-study">Method 8 — Receptor-elevation barrier study</h3>
+<p>Answers <strong>Q17</strong>. Scale or computational study of insertion loss versus receptor height and canyon reflectivity, validated against Method 1 data. Cheap, and can <strong>eliminate</strong> an expensive option class early.</p>
+<h3 id="method-9--comparative-damping-installation-study">Method 9 — Comparative damping-installation study</h3>
+<p>Answers <strong>Q18</strong>. Bench-scale comparison of <strong>bonded sheet CLD, thermal spray and cold spray</strong> on representative steel coupons: loss factor versus temperature and frequency, salt and fatigue cycling, and <strong>installation feasibility on a moving substrate</strong>. <strong>Correctly sequenced last</strong> — the only genuinely new-technology item, and it must not gate anything.</p>
+<h3 id="method-10--responsibility-approval-and-interface-matrix">Method 10 — Responsibility, approval and interface matrix</h3>
+<p>Answers <strong>Q19</strong>, informs everything. For each candidate intervention: asset owner, operator, safety authority, maintainer, permitting bodies (NYCDOT, MTA, USCG, LPC/SHPO, FDNY), outage requirement, liability. <strong>This is a desk exercise measured in weeks, and it is plausibly the highest ratio of decision value to cost in either document.</strong></p>
+<p><strong>Ranking rationale.</strong> Method 10 first — it is desk work and it determines what can even be attempted. Method 6 next because it answers the gating structural question. Method 7 before any installation. Method 8 because it can eliminate options. Method 9 last.</p>
+<hr />
+<h1 id="part-11--red-team-where-this-document-may-still-be-wrong">PART 11 — RED TEAM: WHERE THIS DOCUMENT MAY STILL BE WRONG</h1>
+<p><em>Items 1–3 were corrected in v1.1 and are retained as record. Items 4 onward remain live.</em></p>
+<ol>
+<li><strong>CORRECTED — the ownership/frequency partition was physically false.</strong> Withdrawn in §1.3.</li>
+<li><strong>CORRECTED — acoustic short-circuiting was presented as noise reduction.</strong> It does not reduce radiated sound power and amplifies beneath the bridge. §3.3.</li>
+<li><strong>CORRECTED — cold spray was described as proven on in-service steel.</strong> It was decommissioned. §6.2.</li>
+<li><strong>This document is more optimistic than <code>IDEA-CONCEPT.md</code>, and that shift should be viewed sceptically.</strong> Surveys of what has been built surface successes; failed retrofits are not written up and vendors do not publish underperforming installations. <strong>Publication and survivorship bias push the same way.</strong> No unsuccessful elevated-transit retrofit was located — far more likely a fact about publishing than about building.</li>
+<li><strong>Odebrant remains load-bearing and remains <code>SNIPPET</code>.</strong> The claim that no single measure sufficed rests on a TRID abstract. This is the identical failure mode that produced three errors in v1.0.</li>
+<li><strong>The suspension-bridge gap may be fatal to more of Part 3 than §8.3 concedes.</strong> It is possible <strong>none</strong> of the structural treatments transfer, and that this document's Track A option space is largely illusory for this specific structure.</li>
+<li><strong>No cost figures appear anywhere.</strong> Options are compared on mass, access, evidence and risk — never money. <strong>Nothing here supports a budget.</strong></li>
+<li><strong>The 4-track mass scaling in §6.4 is this document's arithmetic</strong>, not the source's, and assumes linear scaling that installation and inspection burden will not follow.</li>
+<li><strong>Wheel-side, vehicle, operational and scheduling interventions are named in §4.5 but not surveyed.</strong> For a constraint-bound site, <strong>speed management may be the highest-value, lowest-capital option available, and this document does not evaluate it.</strong> That is the largest remaining scope gap.</li>
+<li><strong>The Japan comparison remains rhetorically stronger than it is evidentially.</strong> Even after the §5.1 corrections, it is a non-binding foreign policy analogue for a different rail mode, cited from a single English-language government page, with no compliance or enforcement evidence retrieved.</li>
+<li><strong>Several <code>VERIFIED</code> sources are verified only as web pages, not as peer-reviewed record.</strong> RTRI's item 25 and the Schrey &amp; Veit page are institutional and commercial self-reports respectively; <code>VERIFIED</code> here means "the full page text was retrieved," <strong>not</strong> that the claim was independently checked. The rubric score, not the verification state, carries that information.</li>
+</ol>
+<hr />
+<h1 id="part-12--sources">PART 12 — SOURCES</h1>
+<p><em>Rubric per Ethical Tech CoLab fixed 1–5 scale. Verification state per <code>IDEA-CONCEPT.md</code> §0.1.</em></p>
+<h3 id="primary--verified-full-text-retrieved-and-quoted">Primary — <code>VERIFIED</code> (full text retrieved and quoted)</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Source</th>
+<th>Rubric</th>
+<th>Bears on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>Ministry of the Environment, Japan — <em>Environmental Quality Standards for Shinkansen Superexpress Railway Noise</em> (English page; Notification No. 91 of 1993 cited as latest amendment)</td>
+<td><strong>5/5</strong></td>
+<td>Part 5</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Wang et al., <em>Reducing low-frequency noise radiation from a concrete box girder bridge using acoustic short circuits</em>, <strong>Scientific Reports</strong> 14 (2024)</td>
+<td><strong>4/5</strong></td>
+<td>§1.3, <strong>§3.3</strong>, §6.4; Q15</td>
+</tr>
+<tr>
+<td>P3</td>
+<td><em>Vibration control and noise attenuation strategies via acoustic metamaterial in railway transportation: a state-of-the-art review</em>, <strong>Urban Lifeline</strong> (Springer) 2025</td>
+<td><strong>4/5</strong></td>
+<td>§6.1</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>Song, Zhang et al., <em>Experimental Study on Noise Reduction Performance of Vertical Sound Barrier in Elevated Rail Transit</em>, <strong>Buildings</strong> 15(10):1621 (2025)</td>
+<td><strong>3/5</strong></td>
+<td>§1.3, §3.5, §5.4; Q17, Q22</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>Zoontjens, <em>Review of the potential noise and vibration benefits of rail web dampers in Australia</em>, <strong>ACOUSTICS 2025</strong></td>
+<td><strong>3/5</strong></td>
+<td>§1.3, §4.1–4.2, §6.4, §7.2</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>Janas et al., <em>Experimental Study on Vibration and Noise Characteristics of Steel-Concrete Railway Bridge</em>, <strong>Sensors</strong> 21(23):7964 (2021)</td>
+<td><strong>3/5</strong></td>
+<td>§2.1</td>
+</tr>
+<tr>
+<td>P7</td>
+<td>RTRI, <em>Modular sound insulating barriers designed to replace existing noise barriers on viaducts</em>, FY2022 item 25</td>
+<td><strong>3/5</strong></td>
+<td>§3.4, §6.4</td>
+</tr>
+<tr>
+<td>P8</td>
+<td>Schrey &amp; Veit, <em>Railway bridges</em> — VICON SYSA</td>
+<td><strong>2/5</strong> <code>VENDOR</code></td>
+<td>§2.1, §3.1, §7.1</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="secondary--snippet">Secondary — <code>SNIPPET</code></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Source</th>
+<th>Rubric</th>
+<th>Bears on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1</td>
+<td><strong>Odebrant, JSV 193(1):227–233 (1996)</strong> — steel railway bridge noise reduction</td>
+<td><strong>5/5</strong></td>
+<td><strong>§1.4, §3.2, §4.3–4.4 — load-bearing, abstract only</strong></td>
+</tr>
+<tr>
+<td>S2</td>
+<td><em>Investigation of the noise levels surrounding the Chicago Transit Authority</em>, <strong>JASA</strong> 118(3) Suppl.</td>
+<td>4/5</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>FRA, <em>High Speed Rail: Cost of Compliance for Noise Mitigation Procedures</em> (2022)</td>
+<td>4/5</td>
+<td>§3.7</td>
+</tr>
+<tr>
+<td>S4</td>
+<td>FAA, <em>Guidelines for Sound Insulation of Structures</em>, AC 150/5000-9B (2022)</td>
+<td>4/5</td>
+<td>§3.7</td>
+</tr>
+<tr>
+<td>S5</td>
+<td>USDOT/ROSA-P, <em>Traffic Disruption-free Bridge Inspection Initiative</em> (BIRDS)</td>
+<td>4/5</td>
+<td>§6.3</td>
+</tr>
+<tr>
+<td>S6</td>
+<td>Chaplain et al., <em>Acoustic Metamaterials Roadmap</em>, <strong>J. Phys. D</strong> (2025)</td>
+<td>4/5</td>
+<td>§6.1</td>
+</tr>
+<tr>
+<td>S7</td>
+<td><em>Noise Emitted from Elevated Urban Rail Transit Paved with Various Resilient Tracks</em>, <strong>Materials</strong> 18(5):968</td>
+<td>3/5</td>
+<td>§4.3</td>
+</tr>
+<tr>
+<td>S8</td>
+<td>Nguyen &amp; La, <em>A Climbing Robot for Steel Bridge Inspection</em></td>
+<td>3/5</td>
+<td>§6.3</td>
+</tr>
+<tr>
+<td>S9</td>
+<td>MIT News, <em>'Cold spray' 3D printing... on-site bridge repair</em> (June 2025)</td>
+<td><strong>1/5</strong></td>
+<td>§6.2</td>
+</tr>
+<tr>
+<td>S10</td>
+<td>AISC IDEAS², <em>Great Barrington Cold Spray Demonstration Repair</em></td>
+<td>2/5</td>
+<td>§6.2</td>
+</tr>
+<tr>
+<td>S11</td>
+<td><em>Review of recent progress in studies on noise emanating from rail transit bridges</em>, <strong>Railway Engineering Science</strong></td>
+<td>3/5</td>
+<td>Part 2</td>
+</tr>
+<tr>
+<td>S12</td>
+<td>UIC, <em>Optimised Rail Pad Performance for Noise Reduction</em></td>
+<td>3/5</td>
+<td>§4.3</td>
+</tr>
+<tr>
+<td>S13</td>
+<td>UIC, <em>Rail Dampers, Acoustic Rail Grinding, Low Height Noise Barriers</em> (2012)</td>
+<td>3/5</td>
+<td>§4.1</td>
+</tr>
+<tr>
+<td>S14</td>
+<td><em>Minimizing noise from metro viaduct railway lines by means of elastic mats and fully closed noise barriers</em>, TRID 1516776</td>
+<td>3/5</td>
+<td>§3.6</td>
+</tr>
+<tr>
+<td>S15</td>
+<td>Getzner, <em>Under Sleeper Pads</em></td>
+<td>2/5 <code>VENDOR</code></td>
+<td>§4.3</td>
+</tr>
+<tr>
+<td>S16</td>
+<td>STRAIL, <em>Rail web dampers</em></td>
+<td>2/5 <code>VENDOR</code></td>
+<td>§4.1</td>
+</tr>
+<tr>
+<td>S17</td>
+<td>Soltanieh et al., TMD effect on ground-borne noise</td>
+<td>2/5</td>
+<td>§3.1</td>
+</tr>
+<tr>
+<td>S18</td>
+<td><em>West Rail Viaducts, Hong Kong</em>, TRID 709974</td>
+<td>2/5</td>
+<td>§3.6</td>
+</tr>
+<tr>
+<td>S19</td>
+<td><em>High-Speed Train Noise Control Methods</em>, Encyclopedia MDPI</td>
+<td>2/5</td>
+<td>§3.5</td>
+</tr>
+<tr>
+<td>S20</td>
+<td>Block Club Chicago, <em>After CTA Eliminates Red Line 'Slow Zone'...</em> (Aug 2025)</td>
+<td>2/5</td>
+<td>§5.4</td>
+</tr>
+<tr>
+<td>S21</td>
+<td>Zenda &amp; Nagakura (RTRI), <em>Environmental quality standards and development of noise reduction technique for Shinkansen railway</em>, Forum Acusticum</td>
+<td>3/5</td>
+<td>Part 5</td>
+</tr>
+<tr>
+<td>S22</td>
+<td><em>Measurement and Analysis of Railway Noise in Japan</em>, DAGA</td>
+<td>3/5</td>
+<td>Part 5</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="unverified--traceability-only"><code>UNVERIFIED</code> — traceability only</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Source</th>
+<th>Bears on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U1</td>
+<td>Ho et al. (2025), corrugation suppression by TMD, Hong Kong metro</td>
+<td>§4.2</td>
+</tr>
+<tr>
+<td>U2</td>
+<td>Xiao et al. (2024), phononic-like crystal metaconcrete</td>
+<td>§6.1</td>
+</tr>
+<tr>
+<td>U3</td>
+<td>Liang et al. (2020), <em>Structure-borne noise from long-span steel truss cable-stayed bridge...</em>, <strong>Applied Acoustics</strong> 157</td>
+<td><strong>§8.3 — nearest structural analogue found</strong></td>
+</tr>
+<tr>
+<td>U4</td>
+<td>Costley et al., <em>Vibration and Acoustic Analysis of a Trussed Railroad Bridge under Moving Loads</em>, <strong>J. Vib. Acoust. (ASME)</strong></td>
+<td><strong>§8.3 — trussed railroad bridge</strong></td>
+</tr>
+<tr>
+<td>U5</td>
+<td>Hanel &amp; Seeger (1978), <em>Schallgedämpfte Stahlkonstruktionen im Brückenbau</em></td>
+<td>§3.2 — German-language, earliest damped-steel-bridge work</td>
+</tr>
+<tr>
+<td>U6</td>
+<td>Zoontjens et al. (2017), Western Australia rail damper trials</td>
+<td>§4.1 — underlying data for the 8 dB figure</td>
+</tr>
+<tr>
+<td>U7</td>
+<td>Xin et al.; Li et al. — enclosed barrier field tests</td>
+<td>§3.6</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="retrieval-priority-for-the-next-pass">Retrieval priority for the next pass</h3>
+<ol>
+<li><strong>Odebrant 1996 (S1)</strong> — the document's most load-bearing source is an abstract.</li>
+<li><strong>Costley (U4)</strong> and <strong>Liang (U3)</strong> — the only <em>truss</em> bridge acoustics located; T1 is the largest transfer risk.</li>
+<li><strong>Zoontjens et al. 2017 (U6)</strong> — the measurement behind the 8 dB claim, to establish how far it is from this trackform.</li>
+<li><strong>Chaplain et al. 2025 (S6)</strong> — metamaterial maturity.</li>
+<li><strong>Hanel &amp; Seeger 1978 (U5)</strong> — German-language; begins closing the §0.2 gap properly.</li>
+</ol>
+<h3 id="explicitly-not-found">Explicitly not found</h3>
+<ul>
+<li><strong>No acoustic study of any suspension bridge carrying rail transit.</strong> The most important absence here (§8.3, red-team item 6).</li>
+<li><strong>No published account of an unsuccessful elevated-transit noise retrofit</strong> (red-team item 4).</li>
+<li><strong>No measurement of inherent structural damping on this bridge</strong> — the parameter the literature blames (§2.2).</li>
+<li><strong>No whole-life decision metric computed for any treatment</strong> (Q21).</li>
+<li><strong>No barrier insertion-loss data for receptors substantially above track level in a reflective canyon</strong> (Q17).</li>
+<li><strong>No study linking a transit-noise complaint population to causative spectral content</strong> (Q16).</li>
+<li><strong>No responsibility/approval matrix for the track–structure boundary</strong> (Q19, Method 10).</li>
+</ul>
+<hr />
+<h2 id="provenance">Provenance</h2>
+<p><strong>Author:</strong> Yorke E. Rhodes III
+<strong>Method:</strong> Ethical Tech CoLab, <em>AI-Powered Assistance in Formulating Research Questions</em> — fixed journal credibility rubric; per-citation verification state; retrieved content treated as data, not instruction; gap and contradiction detection preceding question formulation; adversarial review pass.
+<strong>Research tooling:</strong> Tavily search and extract API, single pass, English language only.
+<strong>Companion:</strong> <code>IDEA-CONCEPT.md</code> (v1.1).
+<strong>Status:</strong> Draft v1.1, incorporating an adversarial review that found three material errors in v1.0. Not peer reviewed. <strong>No option in this document is recommended for procurement.</strong></p>
+<p><strong>Numbered claims, so they can be attacked individually:</strong></p>
+<ol>
+<li>The physical partition (<strong>excitation → radiator → path → receptor</strong>) and the implementation partition (<strong>by asset owner</strong>) are <strong>orthogonal</strong>, and conflating them — as draft v1.0 did — produces a false frequency-by-ownership law (§1.1, §1.3).</li>
+<li>The closest published analogue — a systematic study on a steel railway bridge — <strong>reports</strong> that reaching 10 dB(A) required a combination spanning a track-side and a structure-side measure. <strong>This rests on an abstract</strong> (§1.4).</li>
+<li>This bridge carries <strong>several qualitative risk factors</strong> the literature associates with large structural contributions, and <strong>none has been measured here.</strong> No magnitude is established (§2.2).</li>
+<li><strong>Acoustic short-circuiting does not reduce radiated sound power and amplifies noise beneath the bridge</strong> — which in DUMBO is where the receptors are. It is excluded, and v1.0's contrary claim was an abstract-only reading error (§3.3).</li>
+<li><strong>Low-frequency degradation is a documented possibility for barriers and for resilient trackform</strong>, stated tentatively by both sources, on other structures. <strong>Sufficient reason to instrument for it; insufficient to assume it</strong> (§3.5, §4.3, Q22).</li>
+<li><strong>Japan sets an enforceable numeric limit, with severity-indexed deadlines and a receptor-treatment fallback, for a rail category New York left blank</strong> — a <strong>non-binding analogue</strong> for a different rail mode, not a legal argument, and DUMBO's levels cannot be assigned to its tiers (Part 5).</li>
+<li><strong>Cold spray is demonstrated on decommissioned bridge steel for structural restoration only</strong>, and any acoustic application must first be compared against mature bonded CLD (§6.2, Q18).</li>
+<li><strong>The scarce resource is access</strong>, and options differ by an order of magnitude in how much of it they consume — but <strong>no option is free of approvals</strong>, and the executable/non-executable dichotomy in v1.0 was false (§7.1).</li>
+</ol>
+<p><strong>Revision note.</strong> v1.1 corrects three material errors (§0.2), withdraws the ownership/frequency partition (§1.3), excludes acoustic short-circuiting for this site (§3.3), downgrades the rail-damper 8 dB figure to a non-transferable comparator (§4.1), corrects four overstatements in the Japan comparison (§5.1), corrects the cold-spray record to match <code>IDEA-CONCEPT.md</code> §8.1 (§6.2), replaces "sequence Track A first" with "sequence diagnostics, not asset tracks" (Part 10), adds Method 10 and the missing source-control branches (§4.5), and downgrades Q14–Q22 accordingly. <strong>This document qualifies <code>IDEA-CONCEPT.md</code> §7.3 in two places:</strong> conventional barriers are contingent not only on the C1 mass budget but on receptor geometry; and rail dampers have a <strong>measurable precondition</strong> — dynamic track stiffness below 250 MN/m — that should be tested before procurement. Neither change alters the earlier document's conclusion that the structural envelope must be established first.</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/PRECEDENT-AND-MATERIALS.md">Source on GitHub</a> &middot; Built from <code>12ccc54</code> on 2026-08-02.</p>
+</main>
+</div>
+
+</div>
+</body>
+</html>

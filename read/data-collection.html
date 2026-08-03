@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7. Data collection &mdash; Silencing the Span</title>
+<meta name="description" content="Rendered copy of data-collection/README.md from the Manhattan Bridge rail-noise research repository.">
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, kbd, pre {
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 4px;
+  padding: 0.1em 0.36em;
+}
+pre {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre code { background: none; border: 0; padding: 0; }
+
+/* ---- top bar ---- */
+.bar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--cp-panel-strong);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border);
+}
+.bar .in {
+  max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
+.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
+.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.bar nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  border-radius: 999px; white-space: nowrap;
+}
+.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
+
+h1 { font-size: 2.15rem; line-height: 1.18; margin: 0 0 10px; letter-spacing: -0.01em; }
+h2 { font-size: 1.42rem; margin: 0 0 14px; letter-spacing: -0.005em; }
+h3 { font-size: 1.08rem; margin: 26px 0 8px; }
+p { margin: 0 0 14px; }
+.lede { font-size: 1.06rem; color: var(--cp-text-muted); }
+.sub { color: var(--cp-text-muted); font-size: 1.02rem; margin: 0 0 4px; }
+
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin: 0 0 22px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.hero { background: var(--cp-bg-elevated); }
+
+.statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+.s {
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+  font-size: 0.78rem; color: var(--cp-text-muted);
+}
+.s .k { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.s .big { font-size: 1.9rem; font-weight: 700; color: var(--cp-accent); line-height: 1.1; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 14px; }
+.tile {
+  display: block; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 16px 18px; color: var(--cp-text); transition: border-color .15s, transform .15s;
+}
+.tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
+.tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
+.tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.tile .look {
+  font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
+  border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
+}
+.tile .look b { color: var(--cp-text); }
+
+.badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 999px; vertical-align: middle;
+  border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted);
+}
+.badge.ok { border-color: var(--cp-success); color: var(--cp-success); }
+.badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
+.badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
+.badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+
+.note {
+  border-left: 3px solid var(--cp-accent);
+  background: var(--cp-accent-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  padding: 13px 17px; margin: 16px 0; font-size: 0.92rem;
+}
+.note.bad { border-left-color: var(--cp-danger); background: rgba(220,38,38,0.07); }
+.note.good { border-left-color: var(--cp-success); background: rgba(22,163,74,0.07); }
+.note.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,0.09); }
+
+.tw { overflow-x: auto; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td {
+  border: 1px solid var(--cp-border); padding: 8px 11px;
+  text-align: left; vertical-align: top;
+}
+th { background: var(--cp-surface-soft); font-weight: 700; }
+tbody tr:nth-child(even) td { background: var(--cp-surface-soft); }
+
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li { margin-bottom: 7px; }
+
+blockquote {
+  margin: 16px 0; padding: 10px 18px;
+  border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  color: var(--cp-text-muted);
+}
+
+hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
+
+.foot {
+  color: var(--cp-text-soft); font-size: 0.83rem;
+  border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 30px;
+}
+
+/* ---- work queue ---- */
+.q { border-top: 1px solid var(--cp-border); padding: 15px 0; display: grid;
+     grid-template-columns: 132px 1fr; gap: 18px; }
+.q:first-of-type { border-top: 0; }
+.q .lab { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+          font-weight: 700; padding-top: 3px; }
+.q .h { font-weight: 700; margin-bottom: 2px; }
+.q .cost { font-size: 0.8rem; color: var(--cp-text-soft); margin-bottom: 7px;
+           font-family: Consolas, "Courier New", monospace; }
+.q .why { font-size: 0.9rem; color: var(--cp-text-muted); }
+.lab.blocking { color: var(--cp-danger); }
+.lab.cheap { color: var(--cp-success); }
+.lab.field { color: var(--cp-accent); }
+.lab.review { color: var(--cp-warning); }
+.lab.gate { color: var(--cp-text-muted); }
+
+/* ---- rendered document pages ---- */
+.doclayout { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
+.toc { position: sticky; top: 76px; max-height: calc(100vh - 100px); overflow-y: auto;
+       font-size: 0.84rem; padding-right: 6px; }
+.toc .h { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+          color: var(--cp-text-soft); font-weight: 700; margin-bottom: 8px; }
+.toc a { display: block; padding: 3px 0 3px 9px; color: var(--cp-text-muted);
+         border-left: 2px solid var(--cp-border); line-height: 1.35; }
+.toc a:hover { color: var(--cp-accent); border-left-color: var(--cp-accent); text-decoration: none; }
+.toc a.l3 { padding-left: 20px; font-size: 0.95em; color: var(--cp-text-soft); }
+.doc { min-width: 0; }
+.doc h1 { font-size: 1.95rem; margin-top: 0; }
+.doc h2 { font-size: 1.38rem; margin: 34px 0 12px; padding-bottom: 6px;
+          border-bottom: 1px solid var(--cp-border); }
+.doc h3 { font-size: 1.1rem; margin: 26px 0 8px; }
+.doc h4 { font-size: 0.98rem; margin: 20px 0 6px; color: var(--cp-text-muted); }
+.doc img { max-width: 100%; }
+
+@media (max-width: 980px) {
+  .statrow { grid-template-columns: repeat(2, 1fr); }
+  .doclayout { grid-template-columns: 1fr; }
+  .toc { position: static; max-height: none; margin-bottom: 26px; }
+  .q { grid-template-columns: 1fr; gap: 4px; }
+  .wrap { padding: 22px 16px 70px; }
+  .card { padding: 20px 18px; }
+}
+@media (max-width: 560px) {
+  .statrow { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bar"><div class="in"><a class="home" href="../index.html">Silencing the Span</a><nav><a href="readme.html">README</a><a href="idea-concept.html">1. Concept</a><a href="precedent-and-materials.html">2. Precedent</a><a href="williamsburg-comparator.html">3. Comparator</a><a href="visual-model-framework.html">4. Visual model</a><a href="field-capture-protocol.html">5. Field capture</a><a href="community-evidence-audit.html">6. Community</a><a href="data-collection.html" class="on">7. Data</a></nav></div></div>
+<div class="wrap">
+<div class="doclayout">
+<aside class="toc"><div class="h">On this page</div><a href="#why-not-google-maps">Why not Google Maps</a><a href="#the-premise-correction">The premise correction</a><a href="#four-traps-all-of-which-silently-produce-a-wrong-number">Four traps, all of which silently produce a wrong number</a><a href="#the-result">The result</a><a class="l3" href="#by-noise-period">By noise period</a><a class="l3" href="#the-dashboard">The dashboard</a><a href="#three-findings-that-were-not-being-looked-for">Three findings that were not being looked for</a><a class="l3" href="#1-peak-park-use-and-peak-train-frequency-are-out-of-phase---narrowed">1. Peak park use and peak train frequency are out of phase - narrowed</a><a class="l3" href="#2-the-mtas-own-train-counts-do-not-match-the-mtas-own-schedule">2. The MTA's own train counts do not match the MTA's own schedule</a><a class="l3" href="#3-explanation-3-would-undermine-this-programmes-own-derived-result">3. Explanation 3 would undermine this programme's own derived result</a><a class="l3" href="#what-can-honestly-be-said-instead">What can honestly be said instead</a><a href="#what-these-scripts-still-do-not-give-you">What these scripts still do not give you</a><a href="#counting-the-denominator">Counting the denominator</a><a class="l3" href="#the-direction-trap">The direction trap</a><a class="l3" href="#four-sources-none-of-which-counts-a-pedestrian">Four sources, none of which counts a pedestrian</a><a class="l3" href="#what-it-found">What it found</a><a class="l3" href="#the-corridor-fills-in-the-morning-and-empties-in-the-evening">The corridor fills in the morning and empties in the evening</a><a class="l3" href="#a-cross-check-that-was-not-designed-in">A cross-check that was not designed in</a><a class="l3" href="#residents">Residents</a><a class="l3" href="#littles-law-half-solved">Little's Law, half solved</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong">Where this section is likely to be wrong</a><a href="#who-is-actually-here-hour-by-hour">Who is actually here, hour by hour</a><a class="l3" href="#the-model">The model</a><a class="l3" href="#what-it-is-fitted-to">What it is fitted to</a><a class="l3" href="#the-visitor-prior-and-what-it-costs">The visitor prior, and what it costs</a><a class="l3" href="#the-finding-cohort-labels-are-not-identifiable">The finding: cohort labels are not identifiable</a><a class="l3" href="#the-other-thing-the-curve-is-not">The other thing the curve is not</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong_1">Where this section is likely to be wrong</a><a href="#where-the-people-go-not-merely-how-many-there-are">Where the people go, not merely how many there are</a></aside>
+<main class="doc">
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md"><code>data-collection/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 6,915 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<h1 id="establishing-train-frequency-over-the-manhattan-bridge-and-who-is-under-it">Establishing train frequency over the Manhattan Bridge, and who is under it</h1>
+<p>Five scripts that answer three questions this programme had been asserting
+answers to without ever deriving them: how many trains actually cross the
+Manhattan Bridge and when, <strong>how many people are underneath to hear them</strong>, and
+<strong>how long each of them stays.</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Script</th>
+<th>Answers</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bridge_schedule.py</code></td>
+<td>What is scheduled, by hour and day type</td>
+<td>One 5 MB download, about a minute</td>
+</tr>
+<tr>
+<td><code>bridge_realtime.py</code></td>
+<td>What actually ran</td>
+<td>Polls; a week takes a week</td>
+</tr>
+<tr>
+<td><code>build_dashboard_data.py</code></td>
+<td>Per-event train data for the interactive dashboard</td>
+<td>Seconds, after the download</td>
+</tr>
+<tr>
+<td><code>build_pedestrian_data.py</code></td>
+<td><strong>How many people are underneath, and when</strong></td>
+<td>Four API pulls, about a minute</td>
+</tr>
+<tr>
+<td><code>build_cohort_model.py</code></td>
+<td><strong>How long they stay, and how badly that is identified</strong></td>
+<td>About six minutes of arithmetic</td>
+</tr>
+</tbody>
+</table></div>
+<p>None needs an API key, an account, or a payment method. All use only the
+Python standard library except <code>bridge_realtime.py</code>, which needs
+<code>pip install gtfs-realtime-bindings protobuf</code>.</p>
+<p><strong>Interactive views:</strong>
+<a href="../visual-review/frequency-dashboard.html"><code>visual-review/frequency-dashboard.html</code></a>
+and <a href="../visual-review/agent-model.html"><code>visual-review/agent-model.html</code></a></p>
+<hr />
+<h2 id="why-not-google-maps">Why not Google Maps</h2>
+<p>The originating thesis was that a week of Google Maps travel data would
+establish running frequency. It will not, for three reasons.</p>
+<p><strong>It is the wrong direction of travel.</strong> Google Maps does not originate NYC
+transit schedules. It ingests the MTA's published GTFS feed. Querying Google
+means paying for, and accepting restrictions on, a redistribution of a file
+the MTA gives away with no restrictions at all. The file is linked in
+<code>bridge_schedule.py</code>.</p>
+<p><strong>The Terms of Service forbid the use.</strong> Google Maps Platform ToS prohibit
+scraping and bulk export, and restrict how long results may be cached. A
+week-long frequency census is precisely bulk extraction and long-term
+storage. <em>(Rated 3/5 SNIPPET - read from secondary summaries of the ToS, not
+from a legal reading of the current text. If this route were ever taken
+seriously the actual clause would need reading.)</em></p>
+<p><strong>The API returns the wrong object.</strong> Directions and Routes return
+<em>itineraries</em> - "leave at 14:12, arrive 14:31". Frequency has to be inferred
+by firing thousands of queries at staggered departure times and differencing
+the results. That is expensive, lossy, and prohibited, to reconstruct a number
+that is stated outright in a free file.</p>
+<p><strong>Conclusion: go to the MTA feed directly.</strong> It is the upstream source for
+Google's own answer.</p>
+<hr />
+<h2 id="the-premise-correction">The premise correction</h2>
+<blockquote>
+<p>A week of normal travel data would establish day-time running frequency from
+<strong>York St</strong> and <strong>East Broadway</strong>.</p>
+</blockquote>
+<p>Both of those stations are on the <strong>F</strong> line, through the <strong>Rutgers Street Tunnel</strong>. Neither is on the Manhattan Bridge. Verified against MTA's own
+<code>stops.txt</code> and <code>trips.txt</code>:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Station</th>
+<th><code>stop_id</code></th>
+<th>Routes serving it</th>
+<th>On the bridge?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>York St</td>
+<td><code>F18</code></td>
+<td>F, FX only</td>
+<td><strong>No</strong> - Rutgers Street Tunnel</td>
+</tr>
+<tr>
+<td>East Broadway</td>
+<td><code>F16</code></td>
+<td>F, FX only</td>
+<td><strong>No</strong> - Rutgers Street Tunnel</td>
+</tr>
+<tr>
+<td>Grand St</td>
+<td><code>D22</code></td>
+<td>B, D</td>
+<td><strong>Yes</strong> - north tracks</td>
+</tr>
+<tr>
+<td>Canal St</td>
+<td><code>Q01</code></td>
+<td>N, Q</td>
+<td><strong>Yes</strong> - south tracks</td>
+</tr>
+</tbody>
+</table></div>
+<p>A week spent at York St would have measured the F train, which does not cross
+the bridge and contributes nothing to the noise in DUMBO. The error is easy to
+make - York St is the closest station to the affected blocks, and it is the
+station a resident of DUMBO uses. It is just not the station the noise comes
+from.</p>
+<hr />
+<h2 id="four-traps-all-of-which-silently-produce-a-wrong-number">Four traps, all of which silently produce a wrong number</h2>
+<p>These are not hypothetical. Each one was hit while writing these scripts.</p>
+<p><strong>Trap 1 - <code>stop_name</code> is not unique.</strong> "Grand St" is a B/D station in
+Manhattan (<code>D22</code>) <em>and</em> an L station in Williamsburg (<code>L12</code>). "DeKalb Av" is a
+Brooklyn bridge-side station (<code>R30</code>) <em>and</em> an L station in Bushwick (<code>L16</code>).
+"Canal St" resolves to six different <code>stop_id</code> values. Any join on station
+name silently merges platforms that are miles apart. <strong>Always key on <code>stop_id</code>.</strong></p>
+<p><strong>Trap 2 - DeKalb Av undercounts by about half.</strong> It looks like the natural
+chokepoint: everything from the bridge passes through it. It does not stop
+there. <strong>The D and the N run express and skip DeKalb</strong>, running Grand St or
+Canal St straight to Atlantic Av. Counting at DeKalb yields roughly 1,269 of
+2,524 weekly crossings and gives no error message. The correct chokepoints are
+<strong>Grand St <code>D22</code> for B/D and Canal St <code>Q01</code> for N/Q</strong> - every bridge train
+stops at one of them.</p>
+<p><strong>Trap 3 - route ID is not enough.</strong> The R and the W never touch the bridge;
+they use the Montague St tunnel. Worse, the <strong>N is not consistently a bridge train</strong>: of 717 weekly N crossings of the East River, 584 are via the bridge
+and 133 via Montague. Filtering on <code>route_id == "N"</code> overcounts. The stop pair
+has to be checked.</p>
+<p><strong>Trap 4 - static and realtime disagree about <code>stop_id</code>.</strong> The static feed
+identifies the Canal St N/Q platform as <code>Q01</code>. The realtime feed was observed
+emitting <code>R23</code> for the same trains. Filtering realtime on the static ID
+returned 16 traversals where the true figure was 48 - <strong>a 3x undercount, with no error and no warning</strong>. <code>bridge_realtime.py</code> accepts both.</p>
+<hr />
+<h2 id="the-result">The result</h2>
+<p><code>bridge_schedule.py</code> output, feed <code>20260731-149-st-hostos</code>, valid
+2026-05-26 to 2026-09-07. All four tracks, both directions.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Hour</th>
+<th>Weekday</th>
+<th>headway</th>
+<th>Saturday</th>
+<th>headway</th>
+<th>Sunday</th>
+<th>headway</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00</td>
+<td>16</td>
+<td>225s</td>
+<td>17</td>
+<td>212s</td>
+<td>16</td>
+<td>225s</td>
+</tr>
+<tr>
+<td>01-04</td>
+<td>12</td>
+<td>300s</td>
+<td>12</td>
+<td>300s</td>
+<td>12</td>
+<td>300s</td>
+</tr>
+<tr>
+<td>05</td>
+<td>15</td>
+<td>240s</td>
+<td>14</td>
+<td>257s</td>
+<td>13</td>
+<td>277s</td>
+</tr>
+<tr>
+<td>06</td>
+<td>42</td>
+<td>86s</td>
+<td>26</td>
+<td>138s</td>
+<td>24</td>
+<td>150s</td>
+</tr>
+<tr>
+<td>07</td>
+<td>58</td>
+<td>62s</td>
+<td>31</td>
+<td>116s</td>
+<td>29</td>
+<td>124s</td>
+</tr>
+<tr>
+<td><strong>08</strong></td>
+<td><strong>67</strong></td>
+<td><strong>54s</strong></td>
+<td>32</td>
+<td>112s</td>
+<td>31</td>
+<td>116s</td>
+</tr>
+<tr>
+<td>09</td>
+<td>65</td>
+<td>55s</td>
+<td>32</td>
+<td>112s</td>
+<td>32</td>
+<td>112s</td>
+</tr>
+<tr>
+<td>10</td>
+<td>59</td>
+<td>61s</td>
+<td>32</td>
+<td>112s</td>
+<td>32</td>
+<td>112s</td>
+</tr>
+<tr>
+<td>11</td>
+<td>60</td>
+<td>60s</td>
+<td>35</td>
+<td>103s</td>
+<td>34</td>
+<td>106s</td>
+</tr>
+<tr>
+<td>12</td>
+<td>60</td>
+<td>60s</td>
+<td>34</td>
+<td>106s</td>
+<td>35</td>
+<td>103s</td>
+</tr>
+<tr>
+<td>13</td>
+<td>60</td>
+<td>60s</td>
+<td>36</td>
+<td>100s</td>
+<td>36</td>
+<td>100s</td>
+</tr>
+<tr>
+<td>14</td>
+<td>62</td>
+<td>58s</td>
+<td>34</td>
+<td>106s</td>
+<td>34</td>
+<td>106s</td>
+</tr>
+<tr>
+<td>15</td>
+<td>58</td>
+<td>62s</td>
+<td>36</td>
+<td>100s</td>
+<td>36</td>
+<td>100s</td>
+</tr>
+<tr>
+<td>16</td>
+<td>62</td>
+<td>58s</td>
+<td>34</td>
+<td>106s</td>
+<td>34</td>
+<td>106s</td>
+</tr>
+<tr>
+<td>17</td>
+<td>66</td>
+<td>55s</td>
+<td>36</td>
+<td>100s</td>
+<td>36</td>
+<td>100s</td>
+</tr>
+<tr>
+<td>18</td>
+<td>62</td>
+<td>58s</td>
+<td>34</td>
+<td>106s</td>
+<td>34</td>
+<td>106s</td>
+</tr>
+<tr>
+<td>19</td>
+<td>57</td>
+<td>63s</td>
+<td>36</td>
+<td>100s</td>
+<td>35</td>
+<td>103s</td>
+</tr>
+<tr>
+<td>20</td>
+<td>53</td>
+<td>68s</td>
+<td>34</td>
+<td>106s</td>
+<td>32</td>
+<td>112s</td>
+</tr>
+<tr>
+<td>21</td>
+<td>48</td>
+<td>75s</td>
+<td>33</td>
+<td>109s</td>
+<td>31</td>
+<td>116s</td>
+</tr>
+<tr>
+<td>22</td>
+<td>34</td>
+<td>106s</td>
+<td>32</td>
+<td>112s</td>
+<td>30</td>
+<td>120s</td>
+</tr>
+<tr>
+<td>23</td>
+<td>21</td>
+<td>171s</td>
+<td>21</td>
+<td>171s</td>
+<td>19</td>
+<td>190s</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Daily totals: Weekday 1,073 - Saturday 667 - Sunday 651.</strong></p>
+<p>Per-route daily traversals:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Day</th>
+<th>B</th>
+<th>D</th>
+<th>N</th>
+<th>Q</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weekday</td>
+<td>220</td>
+<td>296</td>
+<td>242</td>
+<td>315</td>
+<td>1,073</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td><strong>0</strong></td>
+<td>216</td>
+<td>171</td>
+<td>280</td>
+<td>667</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td><strong>0</strong></td>
+<td>216</td>
+<td>171</td>
+<td>264</td>
+<td>651</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>The B does not run weekends at all.</strong> Weekend service is not "the same trains
+less often" - the route mix changes, and with it the car classes, so the
+weekend acoustic signature is not the weekday one attenuated.</p>
+<h3 id="by-noise-period">By noise period</h3>
+<p>Periods follow the EU Environmental Noise Directive 2002/49/EC Annex I default
+split, quoted verbatim: <em>"the day is 12 hours, the evening four hours and the
+night eight hours... the default values are 07.00 to 19.00, 19.00 to 23.00 and
+23.00 to 07.00 local time."</em> (5/5 <code>VERIFIED</code>, primary text.)</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Day type</th>
+<th>Period</th>
+<th>Trains</th>
+<th>Per hour</th>
+<th>Hourly range</th>
+<th>Mean headway</th>
+<th>North / south</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weekday</td>
+<td>Daytime</td>
+<td>739</td>
+<td>61.6</td>
+<td>58-67</td>
+<td>58 s</td>
+<td>372 / 367</td>
+</tr>
+<tr>
+<td>Weekday</td>
+<td>Evening</td>
+<td>192</td>
+<td>48.0</td>
+<td>34-57</td>
+<td>75 s</td>
+<td>93 / 99</td>
+</tr>
+<tr>
+<td>Weekday</td>
+<td>Night</td>
+<td>142</td>
+<td>17.8</td>
+<td>12-42</td>
+<td>203 s</td>
+<td>71 / 71</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td>Daytime</td>
+<td>406</td>
+<td>33.8</td>
+<td>31-36</td>
+<td>106 s</td>
+<td>204 / 202</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td>Evening</td>
+<td>135</td>
+<td>33.8</td>
+<td>32-36</td>
+<td>107 s</td>
+<td>67 / 68</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td>Night</td>
+<td>126</td>
+<td>15.8</td>
+<td>12-26</td>
+<td>229 s</td>
+<td>62 / 64</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>Daytime</td>
+<td>403</td>
+<td>33.6</td>
+<td>29-36</td>
+<td>107 s</td>
+<td>203 / 200</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>Evening</td>
+<td>128</td>
+<td>32.0</td>
+<td>30-35</td>
+<td>113 s</td>
+<td>63 / 65</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>Night</td>
+<td>120</td>
+<td>15.0</td>
+<td>12-24</td>
+<td>240 s</td>
+<td>59 / 61</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Direction is very nearly balanced in every period</strong> - within a few percent
+everywhere. Whatever asymmetry exists in the noise is not an asymmetry of
+traffic.</p>
+<p><strong>Note the weekday night range: 12 to 42.</strong> The night period runs to 07:00, so
+the 06:00 hour sits inside it, and on a weekday that hour carries 42 crossings.
+Under the <code>Lden</code> convention the night period carries a +10 dB penalty and the
+evening +5 dB, on the reasoning that the same sound does more harm at those
+hours. That makes 06:00-07:00 the single most heavily weighted busy hour of the
+day, and it is invisible in any framing that starts the day at 06:00. <em>(The
++5/+10 weightings are 3/5 <code>SNIPPET</code> - the Directive's formula is an image in
+the source PDF and was read from secondary summaries. No penalty is applied to
+any number in this repository; these are counts of events, not levels.)</em></p>
+<h3 id="the-dashboard">The dashboard</h3>
+<p><a href="../visual-review/frequency-dashboard.html"><code>visual-review/frequency-dashboard.html</code></a>
+presents all of the above interactively - by hour, by route, by direction, by
+day type - and lets you vary the coincidence window and the overlap model. It
+is self-contained: no build step, no server, no network, no dependencies.</p>
+<p>Rebuild its embedded data with <code>python build_dashboard_data.py</code>.</p>
+<hr />
+<h2 id="three-findings-that-were-not-being-looked-for">Three findings that were not being looked for</h2>
+<h3 id="1-peak-park-use-and-peak-train-frequency-are-out-of-phase---narrowed">1. Peak park use and peak train frequency are out of phase - narrowed</h3>
+<p>An earlier version of this file published the following:</p>
+<blockquote>
+<p><strong>Peak park use and peak train frequency are out of phase.</strong> Brooklyn Bridge
+Park is most heavily used on weekend afternoons. That is when bridge traffic
+is at its <strong>lowest</strong> daytime value: 34-36 per hour on a Saturday against
+57-66 per hour on a weekday afternoon - a factor of about 1.8.</p>
+<p>Person-exposure is attendance multiplied by event rate, and the two move in
+opposite directions across the week.</p>
+</blockquote>
+<p><strong>The arithmetic is right. The generalisation is withdrawn.</strong> It silently
+assumed one receptor population - park visitors - and then spoke as if that
+were the affected population.</p>
+<p>The affected corridor is much larger than the park. It runs from the York St
+station down to the water entrance to Brooklyn Bridge Park, and it contains at
+least three populations with different daily and weekly rhythms:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Population</th>
+<th>Peak presence</th>
+<th>Relationship to train rate</th>
+<th>Phase</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Residents</td>
+<td>Every hour</td>
+<td>Exposure tracks traversals directly; weekday is worst, and the daytime period alone carries 69% of the weekday total</td>
+<td><strong>In phase</strong></td>
+</tr>
+<tr>
+<td>Commuters and workers</td>
+<td>Weekday morning and evening peaks</td>
+<td>Peak corridor pedestrian flow coincides with the 24-hour maximum train rate</td>
+<td><strong>In phase</strong></td>
+</tr>
+<tr>
+<td>Park visitors and tourists</td>
+<td>Weekend afternoons</td>
+<td>Heaviest attendance against the lowest daytime train rate</td>
+<td>Out of phase</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>There is no single phase relationship, because there is no single receptor population.</strong> Two of the three are in phase; the withdrawn claim generalised
+from the one that is not.</p>
+<p>The sharper consequence: <strong>the worst case is not the park.</strong> It is the corridor
+on a weekday morning, when the train rate is at its 24-hour maximum - <strong>67 crossings between 08:00 and 09:00, a 54-second headway</strong> - and the corridor is
+carrying commuters. The original framing could not see that case, because it
+was only looking at the park.</p>
+<h4 id="that-replacement-is-also-withdrawn">That replacement is also withdrawn</h4>
+<p>The paragraph immediately above was written before any pedestrian data existed.
+It is now measurable, and it is wrong.</p>
+<blockquote>
+<p><strong>The worst case is not the park.</strong> It is the corridor on a weekday morning,
+when the train rate is at its 24-hour maximum.</p>
+</blockquote>
+<p><strong>That is withdrawn.</strong> The 08:00 hour does carry the most trains - 67. It
+carries <strong>46% of the corridor's daily maximum number of people</strong>. Multiply the
+two and it scores <strong>50 out of 100</strong> on the exposure index. The actual maximum is
+<strong>14:00</strong>, with about 3,780 people present against 62 crossings.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Day type</th>
+<th>Trains peak</th>
+<th>People peak</th>
+<th>Exposure peak</th>
+<th>Index at 08:00</th>
+<th>Index at 13:00</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weekday</td>
+<td>08:00</td>
+<td>13:00</td>
+<td><strong>14:00</strong></td>
+<td>50</td>
+<td>97</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td>13:00</td>
+<td>13:00</td>
+<td><strong>13:00</strong></td>
+<td>23</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>13:00</td>
+<td>14:00</td>
+<td><strong>15:00</strong></td>
+<td>19</td>
+<td>100</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>This programme has now made the same error twice, in opposite directions.</strong>
+The first framing optimised on attendance alone and concluded the concern was
+the park on a weekend afternoon. The correction optimised on train rate alone
+and concluded it was the corridor on a weekday morning.
+<strong>Exposure is the product, and the product peaks in between</strong>
+- in the early afternoon, on every day of the week.</p>
+<p>All three day types peak within two hours of each other despite carrying very
+different train rates. The reason is that
+<strong>train rate is nearly flat from 07:00 to 19:00</strong>
+while presence changes by a factor of four inside the same window.
+Where people are matters more than where trains are, and only one of those two
+had ever been measured.</p>
+<p>The index is deliberately <strong>relative</strong> - each day type scaled to its own
+maximum. No absolute person-event figure is published, because presence here is
+a lower bound covering only subway-delivered transients, and multiplying a lower
+bound by a train count produces a number that looks authoritative and is not.</p>
+<p><strong>What is verified and what is not.</strong> The train rates are 5/5 <code>VERIFIED</code>.
+Presence is 2/5, up from the 1/5 this section carried until the denominator work
+below was done.
+<strong>No pedestrian has been counted directly anywhere in this corridor.</strong>
+What changed is that arrival rate is now derivable
+from fare data, so the exposure index is a statement about shape rather than a
+guess. An absolute exposure figure still cannot be published, because dwell time
+is unmeasured and residents are not in the accumulation at all.</p>
+<p>There is also a resolution here of the premise correction above. York St is an
+<code>F</code> train station and no train crossing this bridge stops there, so it is
+useless as a place to <em>measure the source</em>. It is nonetheless the pedestrian
+gateway to the affected corridor. <strong>It matters as a receptor origin, not as a source</strong> - which is why it felt relevant, and why measuring trains there would
+still have measured the wrong thing.</p>
+<h3 id="2-the-mtas-own-train-counts-do-not-match-the-mtas-own-schedule">2. The MTA's own train counts do not match the MTA's own schedule</h3>
+<p>From the section 1204-a noise sessions already recorded in <code>IDEA-CONCEPT.md</code>
+section 1.2:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Site</th>
+<th>Trains counted</th>
+<th>Session length</th>
+<th>Implied rate</th>
+<th>Implied headway</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BBP dog run</td>
+<td>26</td>
+<td>37:45</td>
+<td>41.3/hr</td>
+<td>87s</td>
+</tr>
+<tr>
+<td>DUMBO Archway</td>
+<td>18</td>
+<td>25:35</td>
+<td>42.2/hr</td>
+<td>85s</td>
+</tr>
+<tr>
+<td>Adams St Library</td>
+<td>9</td>
+<td>18:56</td>
+<td>28.5/hr</td>
+<td>126s</td>
+</tr>
+</tbody>
+</table></div>
+<p>The weekday daytime schedule is <strong>53-67/hr</strong>. Weekend midday is <strong>32-36/hr</strong>.
+Every measured session falls <strong>below the weekday schedule</strong>, and two of the
+three fall <strong>above the weekend schedule</strong>.</p>
+<p>Three candidate explanations, none verified:</p>
+<ol>
+<li>The sessions were conducted at weekends or off-peak. This would fit 28.5
+   and partly fit 41-42.</li>
+<li>Service was rerouted during the measurement window.</li>
+<li><strong>The observer counted audible events, not trains.</strong> On a four-track
+   crossing, two trains passing together are heard as one.</li>
+</ol>
+<h3 id="3-explanation-3-would-undermine-this-programmes-own-derived-result">3. Explanation 3 would undermine this programme's own derived result</h3>
+<p><code>IDEA-CONCEPT.md</code> section 1.7 derives event duration as</p>
+<pre><code>Te = (T*10^(Leq/10) - T*10^(Lbase/10)) / (N*(10^(Lmax/10) - 10^(Lbase/10)))
+</code></pre>
+<p><code>N</code> is the train count, in the denominator. <strong>If <code>N</code> is an event count rather than a train count, and events merge, then <code>N</code> is an undercount and <code>Te</code> is overestimated.</strong> The published 5.70 / 6.28 / 7.25 s figures would then be
+durations <em>per audible event</em> - which would also help explain why three
+independent sites agree as closely as they do, since merging is a smoothing
+operation.</p>
+<p>How large is the effect? An earlier version of this file answered that with the
+following table:</p>
+<blockquote>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Day</th>
+<th>Merged pairs</th>
+<th>Traversals</th>
+<th>Distinct events</th>
+<th>Loss</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weekday</td>
+<td>67</td>
+<td>1,073</td>
+<td>1,006</td>
+<td>6.2%</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td>21</td>
+<td>667</td>
+<td>646</td>
+<td>3.1%</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>22</td>
+<td>651</td>
+<td>629</td>
+<td>3.4%</td>
+</tr>
+</tbody>
+</table></div>
+</blockquote>
+<p><strong>That is withdrawn.</strong> It is not a weak lower bound, as was claimed at the
+time. It is not a bound at all - it is an artefact of the feed's time
+resolution, and it should never have been published as a quantity.</p>
+<p><strong>Every scheduled departure in this feed falls on an exact :00 or :30 second.</strong>
+Across 1,073 weekday traversals there are exactly <strong>two</strong> distinct sub-minute
+values. The schedule is quantised to 30 seconds, so the gap between two
+consecutive crossings is never recorded as 1 s, or 4 s, or 12 s - the entire
+range in which two trains would actually merge acoustically is empty by
+construction.</p>
+<p>The consequence is directly demonstrable, and
+<a href="../visual-review/frequency-dashboard.html"><code>visual-review/frequency-dashboard.html</code></a>
+demonstrates it live: set the overlap model to <strong>Schedule</strong> and drag the
+coincidence window from 1 s to 29 s. The answer does not move - it sits at
+50.3 events/hr the whole way - and then jumps to 33.0 the instant you cross
+30 s. <strong>Counting coincidences in the schedule measures the scheduler's rounding, not the railway.</strong></p>
+<h3 id="what-can-honestly-be-said-instead">What can honestly be said instead</h3>
+<p>Since the schedule cannot locate the answer, bracket it with two models that do
+not depend on it. For the weekday daytime period (61.6 trains/hr) at a 6-second
+coincidence window:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Assumption</th>
+<th>Events/hr</th>
+<th>Merging</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Regular</strong></td>
+<td>Perfectly even spacing - least merging physically possible</td>
+<td>61.6</td>
+<td>0%</td>
+</tr>
+<tr>
+<td><strong>Poisson</strong></td>
+<td>Maximum disorder - most merging plausible</td>
+<td>55.6</td>
+<td>9.8%</td>
+</tr>
+</tbody>
+</table></div>
+<p>The Poisson figure is <code>N * exp(-lambda*w)</code> with <code>lambda = N/3600</code>. It is
+defensible as a ceiling on merging because the superposition of several
+semi-independent streams tends toward Poisson (Palm-Khintchine), and four
+tracks is enough for that to be directionally right. Real operation is more
+regular than Poisson and less regular than a metronome, so <strong>the true value lies inside the bracket</strong> - and the bracket narrows sharply at night, where
+low rates make coincidence rare regardless of model.</p>
+<p>At a 6-second window the merging ceiling is <strong>9.8% by day, 7.7% in the evening, 2.9% at night</strong>. So the discrepancy in the table above - the MTA
+counting 28-42/hr against a scheduled 53-67/hr - is <strong>too large to be explained by acoustic merging alone</strong>. Merging can account for at most about
+a tenth of it. That does not rule explanation 3 out, but it does mean
+explanation 1 or 2 must be doing most of the work.</p>
+<p>A single live snapshot showed a <strong>minimum observed gap of 3 s</strong> and two D
+trains predicted at the identical second. <strong>The real coincidence rate is an empirical question that only <code>bridge_realtime.py</code>, run for a week, can answer</strong> - and it bears directly on whether section 1.7 is measuring what it
+claims to measure.</p>
+<hr />
+<h2 id="what-these-scripts-still-do-not-give-you">What these scripts still do not give you</h2>
+<p><strong>Schedule is not service.</strong> <code>bridge_schedule.py</code> reports what is planned.
+Delays, reroutes, planned weekend work and incidents all move the real number.</p>
+<p><strong>Neither feed contains non-revenue moves.</strong> Work trains, put-ins, lay-ups and
+equipment moves cross the bridge and make noise - in some cases more noise,
+since work equipment is not designed for ride quality. They appear in no
+public feed. <strong>Every figure here is a systematic undercount of acoustic events by an unknown amount.</strong></p>
+<p><strong>Realtime is prediction, not observation.</strong> <code>stop_time_update</code> carries the
+MTA's estimate of when a train will reach a platform. It is revised as the
+train approaches, and <code>bridge_realtime.py</code> keeps the last revision, but it is
+never a measurement.</p>
+<p><strong>A platform is not the bridge.</strong> Grand St and Canal St are near the bridge,
+not on it. Converting a platform time to a time over Brooklyn Bridge Park
+needs a travel-time offset that has not been measured. For <em>rate</em> and
+<em>headway</em> this cancels. For aligning a specific train to a specific acoustic
+event - capture C4 in <code>FIELD-CAPTURE-PROTOCOL.md</code> - it does not, and it is
+the reason C4 is the least certain capture in that document.</p>
+<p><strong>Confidence.</strong> The GTFS-derived numbers are 5/5 VERIFIED: they come from
+MTA's own published feed, read directly, and both scripts reproduce them from
+scratch. The Google Maps ToS position is 3/5 SNIPPET. The three findings
+above are 2/5 UNVERIFIED interpretations of verified numbers, and the third is
+written as a challenge rather than a claim.</p>
+<hr />
+<h2 id="counting-the-denominator">Counting the denominator</h2>
+<p><code>build_pedestrian_data.py</code> answers a question the train work could not:
+<strong>how many people are actually under the bridge, and when.</strong></p>
+<p>It does not answer it completely. It closes one half of the problem and names
+the other half precisely.</p>
+<h3 id="the-direction-trap">The direction trap</h3>
+<p>The obvious move is to pull turnstile data at York St and High St. That
+measures <strong>the wrong direction</strong>, and nothing in the data says so.</p>
+<p>MTA's own column definition for the hourly ridership feed, quoted verbatim:</p>
+<blockquote>
+<p>Total number of riders that <strong>entered</strong> a subway complex via OMNY or
+MetroCard at the specific hour and for that specific fare type.</p>
+</blockquote>
+<p>Entries are people <em>leaving</em> the corridor on foot-to-subway. The question was
+about people <em>arriving</em>. Over a whole day the two roughly balance, so a daily
+total would have looked fine. <strong>By hour they are close to opposite</strong> - at a
+residential station, entries peak when residents leave and exits peak when they
+return. Using entries as a proxy for arrivals produces a curve with the peak in
+the wrong place.</p>
+<p>The fix is the <strong>Origin-Destination Ridership Estimate</strong>, a separate MTA feed
+that carries an inferred destination for each trip. Summed over all origins with
+destination York St or High St, it gives arrivals by hour and day of week.</p>
+<h3 id="four-sources-none-of-which-counts-a-pedestrian">Four sources, none of which counts a pedestrian</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Host</th>
+<th>Dataset</th>
+<th>Gives</th>
+<th>Rating</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MTA Subway Hourly Ridership: Beginning 2025</td>
+<td><code>data.ny.gov</code></td>
+<td><code>5wq4-mkjj</code></td>
+<td>Entries, hourly, observed</td>
+<td>5/5 <code>VERIFIED</code></td>
+</tr>
+<tr>
+<td>MTA Subway Origin-Destination Ridership Estimate: Beginning 2026</td>
+<td><code>data.ny.gov</code></td>
+<td><code>28vm-gjqr</code></td>
+<td>Arrivals, hourly by day of week, <strong>inferred</strong></td>
+<td>4/5 <code>VERIFIED</code></td>
+</tr>
+<tr>
+<td>Brooklyn Bridge Automated Pedestrian Counts</td>
+<td><code>data.cityofnewyork.us</code></td>
+<td><code>6fi9-q3ta</code></td>
+<td>Walkway flow, hourly, <strong>directional</strong></td>
+<td>4/5 <code>VERIFIED</code></td>
+</tr>
+<tr>
+<td>PLUTO tax lots</td>
+<td><code>data.cityofnewyork.us</code></td>
+<td><code>64uk-42ks</code></td>
+<td>Residential units</td>
+<td>5/5 <code>VERIFIED</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>None needs an API key.</strong> All four were pulled with <code>urllib</code> and no
+credentials. The Census API, by contrast, now refuses key-less requests with
+<code>Missing Key</code>, which is why resident counts come from tax lots rather than ACS.</p>
+<h3 id="what-it-found">What it found</h3>
+<p>Typical day, corridor total for both stations, EU 2002/49/EC periods:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Day type</th>
+<th>Period</th>
+<th>Arrive by subway</th>
+<th>Enter subway</th>
+<th>Walkway to Brooklyn</th>
+<th>Walkway to Manhattan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weekday</td>
+<td>Daytime</td>
+<td>18,074</td>
+<td>16,401</td>
+<td>7,147</td>
+<td>6,605</td>
+</tr>
+<tr>
+<td>Weekday</td>
+<td>Evening</td>
+<td>2,877</td>
+<td>4,692</td>
+<td>462</td>
+<td>492</td>
+</tr>
+<tr>
+<td>Weekday</td>
+<td>Night</td>
+<td>1,379</td>
+<td>848</td>
+<td>63</td>
+<td>74</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td>Daytime</td>
+<td>16,105</td>
+<td>13,956</td>
+<td>10,895</td>
+<td>10,176</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td>Evening</td>
+<td>2,615</td>
+<td>4,320</td>
+<td>875</td>
+<td>751</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td>Night</td>
+<td>1,106</td>
+<td>1,046</td>
+<td>68</td>
+<td>108</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>Daytime</td>
+<td>14,551</td>
+<td>12,106</td>
+<td>8,886</td>
+<td>8,008</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>Evening</td>
+<td>2,066</td>
+<td>4,068</td>
+<td>639</td>
+<td>567</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>Night</td>
+<td>816</td>
+<td>778</td>
+<td>55</td>
+<td>83</td>
+</tr>
+</tbody>
+</table></div>
+<p>Subway figures are May 2026.
+<strong>Walkway figures are 2019, because the counter died in 2019</strong>
+and no live pedestrian counter exists anywhere near DUMBO. Of the
+ten pedestrian-capable sensors NYC DOT currently operates, the nearest is at
+Willis Avenue in the Bronx. The Brooklyn Bridge and Manhattan Bridge counters
+that are still live are <strong>bicycle-only</strong> - including one named "Manhattan Bridge
+Ped Path", which counts bikes.</p>
+<h3 id="the-corridor-fills-in-the-morning-and-empties-in-the-evening">The corridor fills in the morning and empties in the evening</h3>
+<p>Net flow, arrivals minus entries, weekday:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Hour</th>
+<th>06</th>
+<th>07</th>
+<th>08</th>
+<th>09</th>
+<th>10</th>
+<th>12</th>
+<th>14</th>
+<th>16</th>
+<th>18</th>
+<th>20</th>
+<th>22</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Net</td>
+<td>+374</td>
+<td>+511</td>
+<td>+546</td>
+<td><strong>+800</strong></td>
+<td>+590</td>
+<td>+183</td>
+<td>-14</td>
+<td>-332</td>
+<td>-454</td>
+<td><strong>-590</strong></td>
+<td>-303</td>
+</tr>
+</tbody>
+</table></div>
+<p>That is the signature of a <strong>destination</strong> district, not a dormitory. A purely
+residential neighbourhood would show the opposite.
+<strong>The people under the bridge during the busiest train hours are</strong>
+<strong>disproportionately not the people who live there.</strong>
+They are workers and visitors, and they are the population least
+likely to appear at a community board meeting.</p>
+<h3 id="a-cross-check-that-was-not-designed-in">A cross-check that was not designed in</h3>
+<p>Over a full day, arrivals and entries at the same two stations should balance.
+They do:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Day type</th>
+<th>Arrivals (inferred)</th>
+<th>Entries (observed)</th>
+<th>Closure error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weekday</td>
+<td>22,330</td>
+<td>21,942</td>
+<td>+1.77%</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td>19,827</td>
+<td>19,322</td>
+<td>+2.61%</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>17,433</td>
+<td>16,952</td>
+<td>+2.84%</td>
+</tr>
+</tbody>
+</table></div>
+<p>Two datasets built by entirely different methods - one counting fare
+transactions, one inferring destinations from return swipes - agree to within
+3% at the level of two station complexes.</p>
+<p><strong>They are not fully independent.</strong> The origin-destination estimate is scaled to
+match total system ridership. But that scaling is system-wide, not per-station,
+so agreement at this level is still informative. The residual is carried through
+as the uncertainty band on the accumulation curve in the dashboard, rather than
+being discarded.</p>
+<p>The walkway figures were checked the same way: the typical-day profile implies
+6,013,344 pedestrians in 2019 against a published annual sum of 6,011,174, a
+0.04% difference attributable to rounding.</p>
+<h3 id="residents">Residents</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Study area</th>
+<th>Lots</th>
+<th>Homes</th>
+<th>Residents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DUMBO and Vinegar Hill</td>
+<td>231</td>
+<td>6,314</td>
+<td>9,875-13,360</td>
+</tr>
+<tr>
+<td>Affected corridor</td>
+<td>376</td>
+<td>10,128</td>
+<td>15,840-21,431</td>
+</tr>
+<tr>
+<td>Wide catchment</td>
+<td>822</td>
+<td>20,279</td>
+<td>31,716-42,910</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Homes are a tax fact. Residents are an assumption</strong> - units multiplied by 92%
+occupancy and a household size of 1.7 to 2.3, reported as a range for that
+reason and rated 2/5.</p>
+<p>The boxes are stated as explicit coordinates in the script rather than borrowed
+from a census geography, because <strong>no census geography matches this corridor</strong>.
+DUMBO is not its own Neighborhood Tabulation Area; it sits inside <code>BK0202
+Downtown Brooklyn-DUMBO-Boerum Hill</code>, an area of about 2.2 square kilometres.
+Using that NTA would have overstated the affected population several times over
+while appearing more official.</p>
+<p>The "DUMBO and Vinegar Hill" box includes <strong>Farragut Houses</strong>, which sits
+directly under the bridge approach. That is deliberate. It is public housing,
+it is the closest large residential population to the structure, and any
+framing that treats this as a question about loft conversions and a park has
+already excluded the people most exposed.</p>
+<h3 id="littles-law-half-solved">Little's Law, half solved</h3>
+<p>The number of people present in an area is <code>L = lambda * W</code> - arrival rate
+multiplied by mean dwell time.</p>
+<p><strong>This work produces lambda. It does not produce W.</strong> A commuter walking from
+York St to an office on Water St is exposed for four minutes. A family on the
+Brooklyn Bridge Park lawn is exposed for three hours. Both count once in the
+arrival figures.</p>
+<p>Until dwell time is measured, the accumulation curve is
+<strong>a lower bound on transient presence, not a headcount</strong>,
+and it omits, in rough order of size:</p>
+<ul>
+<li><strong>Residents</strong>, who are present whether or not they touch a turnstile. Almost
+  certainly the largest omission, and the population whose exposure is
+  continuous rather than episodic.</li>
+<li><strong>Walkway arrivals</strong> - about 7,700 toward Brooklyn on a typical weekday in
+  2019. Unknown today.</li>
+<li><strong>Every other mode</strong> - the ferry at Fulton Ferry Landing, the B25 and B67, Citi
+  Bike, private car, the Brooklyn Heights stair.</li>
+<li><strong>Mode-swapping.</strong> Anyone who arrives by subway and leaves on foot over the
+  bridge is counted arriving and never leaving. The small closure error suggests
+  these flows roughly cancel. It does not prove it.</li>
+</ul>
+<h3 id="where-this-section-is-likely-to-be-wrong">Where this section is likely to be wrong</h3>
+<p><strong>The origin-destination hour is probably the origin hour, not the arrival hour.</strong>
+MTA's column description says only "the hour of the day in which the
+subway trips occurred". If it is the entry hour, every arrival figure is
+timestamped 10-25 minutes early, which shifts the accumulation curve left by
+part of an hour. This has not been confirmed with MTA.</p>
+<p><strong>Not everyone who arrives at High St is going to DUMBO.</strong> High St also serves
+Brooklyn Heights, and no allocation has been attempted. The same is true of
+York St and Vinegar Hill. Arrivals are attributed to the corridor in full,
+which overstates it.</p>
+<p><strong>The walkway counter was on the Manhattan approach</strong>, not the Brooklyn end.
+Pedestrians who turned back mid-span are counted as heading to Brooklyn.</p>
+<p><strong>2019 predates the 2021 promenade reconfiguration</strong> that moved cyclists off the
+walkway onto the roadway. Pedestrian volumes and behaviour will have changed in
+ways the 2019 figures cannot show.</p>
+<p><strong>One month is not a year.</strong> May 2026 was chosen because it is the most recent
+month present in both MTA feeds. Seasonality in a corridor with this much
+tourist traffic is likely to be large and is not characterised.</p>
+<hr />
+<h2 id="who-is-actually-here-hour-by-hour">Who is actually here, hour by hour</h2>
+<p>The pedestrian work above produces a <strong>flow</strong>. Exposure needs a <strong>stock</strong>. Those
+are different quantities and the gap between them is dwell time, which nobody
+has measured in DUMBO.</p>
+<p><code>build_cohort_model.py</code> closes that gap by inference rather than measurement,
+and the honest headline is that it half succeeds. It recovers a defensible
+figure for <em>how many non-residents are present at a given hour</em>. It cannot
+recover <em>who they are</em>, and the reason it cannot is a permanent property of the
+data, not a limitation of the search.</p>
+<h3 id="the-model">The model</h3>
+<p>Four cohorts, each with its own arrival profile and its own dwell
+distribution. Presence at hour <code>h</code> is the arrivals in every earlier hour
+multiplied by the probability that a person who arrived then has not yet left.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Cohort</th>
+<th>Arrival shape</th>
+<th>Dwell</th>
+<th>Source of the dwell figure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Workers</td>
+<td>Gaussian, fitted</td>
+<td>8.5 h, sd 1.6</td>
+<td>assumed working day</td>
+</tr>
+<tr>
+<td>Visitors</td>
+<td>Gaussian, fitted</td>
+<td>2.31 h mean</td>
+<td>Louisville waterfront survey, binned</td>
+</tr>
+<tr>
+<td>Transients</td>
+<td>follows the arrival curve</td>
+<td>0.35 h</td>
+<td>assumed pass-through</td>
+</tr>
+<tr>
+<td>Residents</td>
+<td>present unless away</td>
+<td>schedule, fitted</td>
+<td>PLUTO units, corridor boxes</td>
+</tr>
+</tbody>
+</table></div>
+<p>The visitor dwell distribution is not a guess. It is a published survey with
+seven duration bins, stratified by whether the respondent lived locally, and it
+is applied at a 45% out-of-town share. Its mean is 2.31 h. What it is not is a
+survey of Brooklyn.</p>
+<p>Residents come from the PLUTO tax-lot count established in the section above:
+<strong>15,840 to 21,431 in the affected corridor, midpoint 18,636</strong>. The corridor
+box deliberately includes Farragut Houses.</p>
+<h3 id="what-it-is-fitted-to">What it is fitted to</h3>
+<p>The only observable is the MTA hourly <strong>entries</strong> series - people leaving the
+corridor through a turnstile. The model computes implied departures from its
+own cohort presence and compares. The fit is a coarse grid over ten parameters
+followed by two refinement passes.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Day</th>
+<th>RMS fit error</th>
+<th>Same, over the resident window</th>
+<th>Cost of the visitor prior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weekday</td>
+<td>0.186</td>
+<td>0.092</td>
+<td>+0.053</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td>0.127</td>
+<td>0.014</td>
+<td>+0.064</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>0.150</td>
+<td>0.013</td>
+<td>+0.031</td>
+</tr>
+</tbody>
+</table></div>
+<p>Ten free parameters against twenty-four data points is a generous ratio. A
+good fit here is close to guaranteed and is therefore
+<strong>not evidence that the cohort structure is right</strong>. It is evidence only that
+the structure is capable of producing the observed curve, which is a much
+weaker statement.</p>
+<h3 id="the-visitor-prior-and-what-it-costs">The visitor prior, and what it costs</h3>
+<p>An unconstrained fit pushed the visitor arrival peak to a narrow spike at
+19:00, which zeroed visitors during the day and let the long-dwell worker
+cohort absorb every daytime arrival. Saturday came out with
+<strong>fifteen visitors</strong>, which is absurd - a Saturday has more visitors than a
+Tuesday, not four hundred times fewer.</p>
+<p>Two constraints were declared:</p>
+<ul>
+<li>visitor arrivals peak no later than <strong>16:00</strong></li>
+<li>the visitor arrival distribution has standard deviation of at least <strong>2.0 h</strong></li>
+</ul>
+<p>Justification is the FEIS, which places peak park attendance in the early to
+mid Sunday afternoon. Saturday visitors moved from 15 to 2,153, Sunday from 9
+to 2,944.</p>
+<p>A declared prior that improves a result is exactly the kind of move this
+programme is supposed to distrust, so <strong>the prior is priced</strong>. The script also
+sweeps a strictly larger unconstrained grid and reports how much better the
+unconstrained best fit is. That difference is the third column above: between
++0.031 and +0.064 RMS. The prior costs almost nothing in fit and changes the
+answer by two orders of magnitude, which is the signature of a
+<strong>flat likelihood surface</strong> rather than of a prior overriding evidence.</p>
+<h3 id="the-finding-cohort-labels-are-not-identifiable">The finding: cohort labels are not identifiable</h3>
+<p>The script does not report a point estimate. It sweeps the parameter grid and
+collects <strong>every</strong> parameter set whose fit is within 10% of the best, then
+reports the range of outcomes across that admissible family.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Day</th>
+<th>Admissible sets</th>
+<th>Non-residents at 14:00</th>
+<th>of which workers</th>
+<th>of which visitors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weekday</td>
+<td>9,248</td>
+<td>6,029 to 7,338</td>
+<td>3,629 to 5,490</td>
+<td>1,460 to 2,313</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td>2,791</td>
+<td>5,775 to 6,516</td>
+<td>3,462 to 4,374</td>
+<td>1,881 to 2,330</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>11,590</td>
+<td>5,932 to 6,820</td>
+<td>2,619 to 3,911</td>
+<td>2,541 to 3,137</td>
+</tr>
+</tbody>
+</table></div>
+<p>Read the columns against each other. The <strong>total</strong> is pinned to about plus or
+minus 10%. The <strong>split inside it</strong> swings by more than a factor of one and a
+half on a weekday, across parameter sets that fit the observed data equally
+well.</p>
+<p>The reason is not subtle once stated.
+<strong>A departure curve carries no job titles.</strong> Someone who is in the corridor for
+eight hours looks identical whether they came to work or came for the day. The
+only thing that distinguishes a worker from a visitor in this model is the
+<em>shape</em> of their arrival, and a smooth aggregate curve can be decomposed into
+two smooth components in a great many ways.</p>
+<p>A degeneracy test makes this concrete. It measures the share of fitted worker
+arrivals landing between 06:00 and 10:00 - if the "worker" cohort does not
+arrive in the morning, the label is not doing any work.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Day</th>
+<th>Worker arrivals in the morning window</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weekday</td>
+<td>96%</td>
+<td>label supported</td>
+</tr>
+<tr>
+<td>Saturday</td>
+<td><strong>33%</strong></td>
+<td><strong>DEGENERATE - do not read this as workers</strong></td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>63%</td>
+<td>weak</td>
+</tr>
+</tbody>
+</table></div>
+<p>Saturday's best fit puts the "worker" arrival standard deviation at 5.6 h,
+which is approaching uniform across the whole day. That parameter sits on the
+edge of its grid and wants to go further. It has not been chased, because
+chasing it would produce a smoother number that means even less: a cohort
+arriving uniformly across a day is not a cohort, it is a residual.</p>
+<p><strong>Consequence for anything downstream.</strong> Total non-resident presence may be
+quoted. The worker/visitor split may not be quoted at all on a Saturday, and
+should be quoted only as a range on the other two days.</p>
+<h3 id="the-other-thing-the-curve-is-not">The other thing the curve is not</h3>
+<p>Total presence, including residents, peaks in the evening on every day type -
+weekday 13:00, Saturday 09:00, Sunday 13:00 for the totals, but the shape is
+dominated by residents being at home. <strong>That is not an exposure curve.</strong>
+Residents at home are indoors, behind a facade, and the one indoor measurement
+in the record comes from a building whose occupants had already paid privately
+to isolate it.</p>
+<p>The non-resident curve peaks at 12:00 weekday, 14:00 Saturday, 15:00 Sunday,
+which is consistent with the exposure-index result in the section above and
+was arrived at by a completely different route.</p>
+<h3 id="where-this-section-is-likely-to-be-wrong_1">Where this section is likely to be wrong</h3>
+<p><strong>The dwell distribution is from Louisville, Kentucky.</strong> It is real, published
+and stratified. It is also about a different park, in a different city, on a
+different river, with a different mix of tourists and no elevated railway over
+it. This is the largest single transfer in the model and it is load-bearing.</p>
+<p><strong>Ten parameters against twenty-four points.</strong> The fit quality reported above
+is close to meaningless as validation. The identifiability sweep is the only
+part of this section that constitutes evidence about anything.</p>
+<p><strong>Entries are still entries.</strong> The model is fitted to the same series whose
+direction trap is documented above. If the origin-destination hour is the entry
+hour rather than the arrival hour, every arrival is timestamped early and the
+fitted arrival Gaussians absorb the error silently.</p>
+<p><strong>Residents are a stock with no measured schedule.</strong> The away-fraction, leave
+hour and return hour are all fitted, which means the resident cohort is the
+most flexible object in the model and will absorb misfit from everywhere else.</p>
+<p><strong>Nothing here is a headcount.</strong> Presence is modelled. The word "modelled"
+should survive every act of quotation, and if it does not, this section has
+done net harm.</p>
+<hr />
+<h2 id="where-the-people-go-not-merely-how-many-there-are">Where the people go, not merely how many there are</h2>
+<p><code>../visual-review/agent-model.html</code> is the next term again. The cohort model
+supplies a duration; it has no position. Exposure is an integral of level along
+a path, so a duration without a path is still not exposure.</p>
+<p>The agent model is a demonstration of that mechanism and
+<strong>not a measurement of DUMBO</strong>. It carries its own weaknesses list on the page.
+Two results from building it are worth recording here because they bear on the
+data work:</p>
+<p><strong>A propagation model over the four MTA measurement points cannot be fitted.</strong>
+The three near-bridge sites agree with ideal line-source spreading to within
+0.15 dB, which looks like a result and is not one: a Monte-Carlo test that
+jitters the digitised positions by plus or minus 10 m puts the fitted decay
+exponent anywhere between 0.7 and 22.3. The agreement is coincidence.</p>
+<p><strong>Distance does not order the measurements, and that is robust.</strong> The DUMBO
+Archway sits directly under the structure and is the quietest of the four. The
+Brooklyn Bridge Park site several hundred metres away is the loudest, and
+exceeds a line-source prediction fitted to the near sites by about 17 dB. This
+survives any plausible correction to the positions. It matters because
+under-deck treatment - the intervention most often proposed, including in the
+November 2025 residents' petition - would be applied where the measured problem
+is smallest.</p>
+<hr />
+<p>python bridge_schedule.py</p>
+<h1 id="what-is-running-right-now">What is running right now.</h1>
+<p>pip install gtfs-realtime-bindings protobuf
+python bridge_realtime.py --once</p>
+<h1 id="what-actually-ran-over-a-week-resumable---re-running-with-the-same">What actually ran, over a week. Resumable - re-running with the same</h1>
+<h1 id="--out-file-reloads-and-continues">--out file reloads and continues.</h1>
+<p>python bridge_realtime.py --poll 30 --out bridge_week.csv</p>
+<h1 id="who-is-underneath-four-public-datasets-no-api-key-no-dependencies">Who is underneath. Four public datasets, no API key, no dependencies</h1>
+<h1 id="beyond-the-standard-library-writes-pedestrian-datajson-and-injects">beyond the standard library. Writes pedestrian-data.json and injects</h1>
+<h1 id="it-into-the-dashboard">it into the dashboard.</h1>
+<p>python build_pedestrian_data.py</p>
+<h1 id="per-event-train-data-for-the-dashboard">Per-event train data for the dashboard.</h1>
+<p>python build_dashboard_data.py</p>
+<h1 id="who-is-here-at-each-hour-and-for-how-long-fits-four-cohorts-to-the">Who is here at each hour, and for how long. Fits four cohorts to the</h1>
+<h1 id="observed-departure-curve-sweeps-for-identifiability-writes">observed departure curve, sweeps for identifiability, writes</h1>
+<h1 id="cohort-datajson-and-injects-it-into-the-dashboard-takes-about-six">cohort-data.json and injects it into the dashboard. Takes about six</h1>
+<h1 id="minutes---no-inject-writes-the-json-only">minutes; --no-inject writes the JSON only.</h1>
+<p>python build_cohort_model.py
+```</p>
+<p>A 30 s poll against an 85-300 s headway samples every train several times
+before it arrives. Shorter intervals gain nothing and are less polite to a
+free public endpoint.</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md">Source on GitHub</a> &middot; Built from <code>12ccc54</code> on 2026-08-02.</p>
+</main>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4. Visual model framework &mdash; Silencing the Span</title>
+<meta name="description" content="Rendered copy of VISUAL-MODEL-FRAMEWORK.md from the Manhattan Bridge rail-noise research repository.">
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, kbd, pre {
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 4px;
+  padding: 0.1em 0.36em;
+}
+pre {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre code { background: none; border: 0; padding: 0; }
+
+/* ---- top bar ---- */
+.bar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--cp-panel-strong);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border);
+}
+.bar .in {
+  max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
+.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
+.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.bar nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  border-radius: 999px; white-space: nowrap;
+}
+.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
+
+h1 { font-size: 2.15rem; line-height: 1.18; margin: 0 0 10px; letter-spacing: -0.01em; }
+h2 { font-size: 1.42rem; margin: 0 0 14px; letter-spacing: -0.005em; }
+h3 { font-size: 1.08rem; margin: 26px 0 8px; }
+p { margin: 0 0 14px; }
+.lede { font-size: 1.06rem; color: var(--cp-text-muted); }
+.sub { color: var(--cp-text-muted); font-size: 1.02rem; margin: 0 0 4px; }
+
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin: 0 0 22px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.hero { background: var(--cp-bg-elevated); }
+
+.statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+.s {
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+  font-size: 0.78rem; color: var(--cp-text-muted);
+}
+.s .k { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.s .big { font-size: 1.9rem; font-weight: 700; color: var(--cp-accent); line-height: 1.1; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 14px; }
+.tile {
+  display: block; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 16px 18px; color: var(--cp-text); transition: border-color .15s, transform .15s;
+}
+.tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
+.tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
+.tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.tile .look {
+  font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
+  border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
+}
+.tile .look b { color: var(--cp-text); }
+
+.badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 999px; vertical-align: middle;
+  border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted);
+}
+.badge.ok { border-color: var(--cp-success); color: var(--cp-success); }
+.badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
+.badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
+.badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+
+.note {
+  border-left: 3px solid var(--cp-accent);
+  background: var(--cp-accent-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  padding: 13px 17px; margin: 16px 0; font-size: 0.92rem;
+}
+.note.bad { border-left-color: var(--cp-danger); background: rgba(220,38,38,0.07); }
+.note.good { border-left-color: var(--cp-success); background: rgba(22,163,74,0.07); }
+.note.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,0.09); }
+
+.tw { overflow-x: auto; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td {
+  border: 1px solid var(--cp-border); padding: 8px 11px;
+  text-align: left; vertical-align: top;
+}
+th { background: var(--cp-surface-soft); font-weight: 700; }
+tbody tr:nth-child(even) td { background: var(--cp-surface-soft); }
+
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li { margin-bottom: 7px; }
+
+blockquote {
+  margin: 16px 0; padding: 10px 18px;
+  border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  color: var(--cp-text-muted);
+}
+
+hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
+
+.foot {
+  color: var(--cp-text-soft); font-size: 0.83rem;
+  border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 30px;
+}
+
+/* ---- work queue ---- */
+.q { border-top: 1px solid var(--cp-border); padding: 15px 0; display: grid;
+     grid-template-columns: 132px 1fr; gap: 18px; }
+.q:first-of-type { border-top: 0; }
+.q .lab { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+          font-weight: 700; padding-top: 3px; }
+.q .h { font-weight: 700; margin-bottom: 2px; }
+.q .cost { font-size: 0.8rem; color: var(--cp-text-soft); margin-bottom: 7px;
+           font-family: Consolas, "Courier New", monospace; }
+.q .why { font-size: 0.9rem; color: var(--cp-text-muted); }
+.lab.blocking { color: var(--cp-danger); }
+.lab.cheap { color: var(--cp-success); }
+.lab.field { color: var(--cp-accent); }
+.lab.review { color: var(--cp-warning); }
+.lab.gate { color: var(--cp-text-muted); }
+
+/* ---- rendered document pages ---- */
+.doclayout { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
+.toc { position: sticky; top: 76px; max-height: calc(100vh - 100px); overflow-y: auto;
+       font-size: 0.84rem; padding-right: 6px; }
+.toc .h { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+          color: var(--cp-text-soft); font-weight: 700; margin-bottom: 8px; }
+.toc a { display: block; padding: 3px 0 3px 9px; color: var(--cp-text-muted);
+         border-left: 2px solid var(--cp-border); line-height: 1.35; }
+.toc a:hover { color: var(--cp-accent); border-left-color: var(--cp-accent); text-decoration: none; }
+.toc a.l3 { padding-left: 20px; font-size: 0.95em; color: var(--cp-text-soft); }
+.doc { min-width: 0; }
+.doc h1 { font-size: 1.95rem; margin-top: 0; }
+.doc h2 { font-size: 1.38rem; margin: 34px 0 12px; padding-bottom: 6px;
+          border-bottom: 1px solid var(--cp-border); }
+.doc h3 { font-size: 1.1rem; margin: 26px 0 8px; }
+.doc h4 { font-size: 0.98rem; margin: 20px 0 6px; color: var(--cp-text-muted); }
+.doc img { max-width: 100%; }
+
+@media (max-width: 980px) {
+  .statrow { grid-template-columns: repeat(2, 1fr); }
+  .doclayout { grid-template-columns: 1fr; }
+  .toc { position: static; max-height: none; margin-bottom: 26px; }
+  .q { grid-template-columns: 1fr; gap: 4px; }
+  .wrap { padding: 22px 16px 70px; }
+  .card { padding: 20px 18px; }
+}
+@media (max-width: 560px) {
+  .statrow { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bar"><div class="in"><a class="home" href="../index.html">Silencing the Span</a><nav><a href="readme.html">README</a><a href="idea-concept.html">1. Concept</a><a href="precedent-and-materials.html">2. Precedent</a><a href="williamsburg-comparator.html">3. Comparator</a><a href="visual-model-framework.html" class="on">4. Visual model</a><a href="field-capture-protocol.html">5. Field capture</a><a href="community-evidence-audit.html">6. Community</a><a href="data-collection.html">7. Data</a></nav></div></div>
+<div class="wrap">
+<div class="doclayout">
+<aside class="toc"><div class="h">On this page</div><a href="#a-provenance-tagged-visual-model-framework-for-the-manhattan-and-williamsburg-bridge-track-structures">A Provenance-Tagged Visual Model Framework for the Manhattan and Williamsburg Bridge Track Structures</a><a href="#0-about-this-document">0. About this document</a><a class="l3" href="#01-relationship-to-the-companion-documents">0.1 Relationship to the companion documents</a><a class="l3" href="#02-method">0.2 Method</a><a class="l3" href="#03-notation">0.3 Notation</a><a href="#part-1--why-a-model-and-which-question-it-is-supposed-to-answer">Part 1 — Why a model, and which question it is supposed to answer</a><a class="l3" href="#11-the-wrong-reason-to-build-one">1.1 The wrong reason to build one</a><a class="l3" href="#12-the-right-reason-the-section-geometry-governs-what-the-structure-radiates">1.2 The right reason: the section geometry governs what the structure radiates</a><a class="l3" href="#13-the-caveat-that-has-to-travel-with-that-finding">1.3 The caveat that has to travel with that finding</a><a class="l3" href="#14-the-second-reason-the-fastener-is-the-models-input-not-its-ornament">1.4 The second reason: the fastener is the model's input, not its ornament</a><a class="l3" href="#15-the-third-reason-which-connects-back-to-document-1s-brief">1.5 The third reason, which connects back to Document 1's brief</a><a href="#part-2--what-already-exists">Part 2 — What already exists</a><a class="l3" href="#21-the-haer-result">2.1 The HAER result</a><a class="l3" href="#22-the-one-real-section-source">2.2 The one real section source</a><a class="l3" href="#23-citywide-3d-data">2.3 Citywide 3D data</a><a class="l3" href="#24-what-nycdot-holds-and-does-not-publish">2.4 What NYCDOT holds and does not publish</a><a href="#part-3--the-occlusion-problem-and-four-ways-past-it">Part 3 — The occlusion problem, and four ways past it</a><a class="l3" href="#31-the-problem-stated-precisely">3.1 The problem, stated precisely</a><a class="l3" href="#32-route-one-the-walkway">3.2 Route one: the walkway</a><a class="l3" href="#33-route-two-rephotogrammetry-of-the-haer-negatives">3.3 Route two: rephotogrammetry of the HAER negatives</a><a class="l3" href="#34-route-three-uas-and-the-regulatory-wall">3.4 Route three: UAS, and the regulatory wall</a><a class="l3" href="#35-route-four-the-maintenance-platforms">3.5 Route four: the maintenance platforms</a><a href="#part-4--the-ladder-mapped-to-the-standards-that-already-exist">Part 4 — The ladder, mapped to the standards that already exist</a><a class="l3" href="#41-why-use-an-existing-scale">4.1 Why use an existing scale</a><a class="l3" href="#42-the-ladder-for-these-two-bridges">4.2 The ladder for these two bridges</a><a class="l3" href="#43-the-heritage-framework-applies">4.3 The Heritage framework applies</a><a href="#part-5--the-contribution-carrying-provenance-alongside-accuracy">Part 5 — The contribution: carrying provenance alongside accuracy</a><a class="l3" href="#51-what-the-existing-standards-already-require-and-nobody-does">5.1 What the existing standards already require, and nobody does</a><a class="l3" href="#52-what-loa-does-not-cover-and-why-that-is-not-loas-fault">5.2 What LOA does not cover, and why that is not LOA's fault</a><a class="l3" href="#53-prior-art-and-why-no-novelty-is-claimed">5.3 Prior art, and why no novelty is claimed</a><a class="l3" href="#54-the-schema">5.4 The schema</a><a class="l3" href="#55-the-rendering-rules">5.5 The rendering rules</a><a href="#part-6--the-toolchain">Part 6 — The toolchain</a><a class="l3" href="#61-an-all-open-source-path">6.1 An all-open-source path</a><a class="l3" href="#62-where-the-toolchain-will-mislead-you">6.2 Where the toolchain will mislead you</a><a href="#part-7--what-a-model-of-this-is-actually-for">Part 7 — What a model of this is actually for</a><a class="l3" href="#71-communication">7.1 Communication</a><a class="l3" href="#72-coordination">7.2 Coordination</a><a class="l3" href="#73-simulation">7.3 Simulation</a><a href="#part-8--the-reference-implementation">Part 8 — The reference implementation</a><a href="#part-9--the-questions-this-opens">Part 9 — The questions this opens</a><a href="#part-10--methods">Part 10 — Methods</a><a href="#part-11--where-this-document-is-likely-to-be-wrong">Part 11 — Where this document is likely to be wrong</a><a href="#part-12--sources">Part 12 — Sources</a><a class="l3" href="#121-verified-full-text-read">12.1 Verified, full text read</a><a class="l3" href="#122-snippet-only--retrieval-priority">12.2 Snippet only — retrieval priority</a><a class="l3" href="#123-explicitly-not-found">12.3 Explicitly not found</a><a href="#provenance">Provenance</a></aside>
+<main class="doc">
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/VISUAL-MODEL-FRAMEWORK.md"><code>VISUAL-MODEL-FRAMEWORK.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 12,458 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<h1 id="drawing-what-we-do-not-know">Drawing What We Do Not Know</h1>
+<h2 id="a-provenance-tagged-visual-model-framework-for-the-manhattan-and-williamsburg-bridge-track-structures">A Provenance-Tagged Visual Model Framework for the Manhattan and Williamsburg Bridge Track Structures</h2>
+<p><strong>Ethical Tech CoLab — Research Programme, Document 4</strong>
+Draft v1.1 · August 2026 · revised after adversarial review</p>
+<hr />
+<h2 id="0-about-this-document">0. About this document</h2>
+<h3 id="01-relationship-to-the-companion-documents">0.1 Relationship to the companion documents</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Asks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IDEA-CONCEPT.md</code></td>
+<td>What is the problem in DUMBO, who is responsible, and what has never been asked?</td>
+</tr>
+<tr>
+<td><code>PRECEDENT-AND-MATERIALS.md</code></td>
+<td>What has the world already built, and what transfers to a suspension bridge?</td>
+</tr>
+<tr>
+<td><code>WILLIAMSBURG-COMPARATOR.md</code></td>
+<td>There is a second bridge with the same owner, the same operator, the same division of rolling stock and the same statute. What does it already tell us, and what would measuring it establish?</td>
+</tr>
+<tr>
+<td><strong><code>VISUAL-MODEL-FRAMEWORK.md</code></strong></td>
+<td><strong>Every argument in the first three documents is an argument about a cross-section nobody has drawn. Can we build that drawing from open data and open tools — and can we make it admit what it does not know?</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>The three preceding documents converge on a single unstated dependency.</p>
+<p><code>IDEA-CONCEPT.md</code> asks what fastening system the Manhattan Bridge uses and cannot say. <code>PRECEDENT-AND-MATERIALS.md</code> concludes that physical access to the underside is the binding constraint on every intervention it surveys, and that the world literature on elevated-structure noise does not cover this structural type. <code>WILLIAMSBURG-COMPARATOR.md</code> proposes a matched-pair measurement study whose entire logic rests on one geometric proposition — that the Williamsburg Bridge's flanking roadway decks stand between the rail and a receptor below, and the Manhattan Bridge's outboard tracks do not — and then concedes, in its own list of weaknesses, that this proposition is inferred rather than documented.</p>
+<p>All three are blocked on the same missing object: <strong>a described cross-section.</strong> Not a photograph, not an artist's impression, not a massing model. A section that states where each component is, at what elevation, relative to every other component and to a person standing underneath.</p>
+<p>This document is about building that object, and about the fact that the honest version of it is mostly empty.</p>
+<h3 id="02-method">0.2 Method</h3>
+<p>Same rubric and same discipline as the companions.</p>
+<p><strong>Source credibility, 1–5.</strong> 5 = peer-reviewed or primary agency/statutory document. 4 = technical report from a research institution, or an industry consensus standard published by a recognised standards body. 3 = conference paper, trade technical press, agency secondary. 2 = advocacy, vendor, or enthusiast-technical. 1 = tertiary encyclopaedia, news aggregation, social media.</p>
+<p><strong>Verification state.</strong> <code>VERIFIED</code> = the source was opened and the passage supporting the claim was read. <code>SNIPPET</code> = only an abstract, search result or quoted excerpt was seen. <code>UNVERIFIED</code> = the citation is recorded but nothing was read.</p>
+<p><strong>Locus.</strong> Every quantitative or dispositive claim states which passage of the source it comes from, and quotes it. This control was adopted in Document 3 after all five errors found across Documents 1 and 2 turned out to have one cause: a source summarised from its abstract rather than read to its conclusions. It is retained here, and this document extends the same idea from citations to geometry, which is its central proposal.</p>
+<p><strong>A note on what this document is not.</strong> It is not a model. <strong>No survey was conducted, no point cloud was captured, no photograph was taken.</strong> It is a specification for a model, an inventory of the data that could feed one, a proposal for how such a model should represent its own uncertainty, and one small working reference implementation. Everything below that reads like a result about a bridge is a result about a <em>document</em> about a bridge.</p>
+<h3 id="03-notation">0.3 Notation</h3>
+<p>Acoustic quantities follow Document 3 and are written in code style throughout: <code>Leq</code>, <code>L10(1)</code>, <code>Lmax</code>, <code>SEL</code>, <code>dB(A)</code>, <code>dB(lin)</code>, <code>TL</code>, <code>IL</code>.</p>
+<p>Geometry and information-modelling terms:</p>
+<ul>
+<li><code>LOD</code> — Level of Development, the AIA and BIMForum scale <code>LOD 100</code> to <code>LOD 500</code> describing how completely and reliably a model element has been developed. <strong>Not</strong> "level of detail," although the two are constantly confused; the LOD scale is about reliability of the information, not about polygon count.</li>
+<li><code>LOA</code> — Level of Accuracy, the USIBD scale <code>LOA10</code> to <code>LOA50</code> describing the metric tolerance to which an existing condition has been captured or represented.</li>
+<li><code>GOG</code>, <code>GOI</code>, <code>GOA</code> — Grade of Generation, of Information, and of Accuracy, the parallel scales developed in the heritage-BIM literature.</li>
+<li><code>IFC</code> — Industry Foundation Classes, the open interchange schema for built-asset data, published as ISO 16739.</li>
+<li><code>SfM</code> — structure from motion, the photogrammetric technique that recovers camera positions and sparse geometry from an unordered set of overlapping photographs. <code>MVS</code> — multi-view stereo, the densification step that follows it.</li>
+<li><code>DEM</code>, <code>DSM</code> — digital elevation model (bare earth) and digital surface model (first return, including structures).</li>
+<li><code>LiDAR</code> — light detection and ranging. Airborne unless stated.</li>
+<li><code>UAS</code>, <code>UA</code> — uncrewed aircraft system, uncrewed aircraft. The terms used by the FAA and by the NYPD rule discussed in §3.4.</li>
+</ul>
+<p>Institutional abbreviations follow Document 3: <strong>NYCDOT</strong> owns both bridges, <strong>NYCT</strong> operates the trains, <strong>C&amp;D</strong> is MTA Construction &amp; Development, <strong>CEQR</strong> is City Environmental Quality Review, <strong>HAER</strong> is the Historic American Engineering Record, <strong>FOIL</strong> is the New York State Freedom of Information Law.</p>
+<hr />
+<h2 id="part-1--why-a-model-and-which-question-it-is-supposed-to-answer">Part 1 — Why a model, and which question it is supposed to answer</h2>
+<h3 id="11-the-wrong-reason-to-build-one">1.1 The wrong reason to build one</h3>
+<p>There is an obvious and bad reason to produce a 3D model at this stage of a research programme, which is that it looks like progress. A rendered bridge with a shaded noise plume over DUMBO would be circulated, screenshotted, and believed. It would be believed in exact proportion to how good it looked, and in no proportion at all to how much of it was known.</p>
+<p>This is not a hypothetical failure mode. It is the normal outcome. The companion documents already contain an instance of the same pathology in a different medium: an abstract that said "up to 6.8 dB" was propagated into Document 2 as a finding, when the paper's conclusions said the opposite. A rendering is an abstract with better production values.</p>
+<p>So the framework proposed here begins from a constraint rather than a capability: <strong>the model must be no more persuasive than it is justified.</strong> Everything in Part 5 follows from that sentence.</p>
+<h3 id="12-the-right-reason-the-section-geometry-governs-what-the-structure-radiates">1.2 The right reason: the section geometry governs what the structure radiates</h3>
+<p>The strongest argument for building the model is not communication. It is that in the published vibro-acoustic literature, the transverse geometry of an elevated rail structure is a first-order determinant of how much noise the structure itself radiates — and the share of the total that our structure radiates is unknown.</p>
+<p>Li, Dai, Zhu and Thompson, <em>Comparison of vibration and noise characteristics of urban rail transit bridges with box-girder and U-shaped sections</em>, <strong>Applied Acoustics 186 (2022) 108494</strong> — rubric <strong>5/5</strong>, <code>VERIFIED</code>, full text read. Thompson is the author of the standard reference work on railway noise; this is as close to authoritative as this subject gets.</p>
+<p>The method they use is exactly the chain this document is trying to make possible:</p>
+<blockquote>
+<p>"A coupled track-bridge model is introduced to obtain the rail vibration and the power input to the bridge through the rail fasteners. A three-dimensional vibro-acoustic finite element method is applied to obtain the noise radiated from the bridge and the rail subjected to sets of multiple forces acting on them."</p>
+</blockquote>
+<p>And the result, from the conclusions, not the abstract:</p>
+<blockquote>
+<p>"The single-box and twin box girders produce an average of 8.3 and 11.6 dB(A) less noise from the bridge itself than the U-shaped girder because the mobilities of the U-shaped bridge beneath the rails are greater than those of the box girders."</p>
+</blockquote>
+<p>Read that carefully. Three bridges, same track, same trains, same barriers, same roughness excitation. The <strong>only</strong> difference is the shape of the cross-section. The spread in <strong>structure-radiated</strong> noise is <strong>8.3 to 11.6 dB(A)</strong>.</p>
+<p>Draft v1.0 then wrote:</p>
+<blockquote>
+<p>For comparison, the entire abatement inventory in the MTA's statutory § 1204-a report — the one quoted at length in Documents 1 and 3 — offers 5–7 dB(A) for traction motor work and, in its own words, "resilient rail fastener installation on steel elevated structures (3–5 dBA)."</p>
+<p><strong>The cross-section is worth more decibels than the fasteners.</strong> And nobody has drawn ours.</p>
+</blockquote>
+<p><strong>That comparison is invalid and is withdrawn.</strong> It compares two quantities that are not the same quantity. The 8.3 and 11.6 dB(A) figures are the change in <strong>noise radiated by the bridge structure alone</strong>. The MTA's 3–5 dB(A) fastener figure is a claim about <strong>total</strong> received noise. A decibel of a component is not a decibel of a total, and the same paper says so in the very next finding: rail noise there is about 10 dB above bridge noise, so <strong>removing the bridge's radiation entirely would move the total by about 0.4 dB</strong> — 10·log₁₀(1 + 10^(−10/10)) = 0.41. On those three bridges, an 11.6 dB swing in the bridge component is worth a fraction of a decibel at the receptor.</p>
+<p>This is the fifth instance in this repository of the same failure: a number lifted out of the scope in which it was measured. It is recorded here rather than deleted, because the pattern is the finding.</p>
+<p><strong>What survives, and it is a stronger argument than the one it replaces:</strong></p>
+<blockquote>
+<p>Section geometry is a first-order determinant of structure-radiated noise. Whether that matters at the receptor depends entirely on <strong>what share of the total the structure contributes</strong> — and on the Manhattan Bridge that share is unknown.</p>
+</blockquote>
+<p>Which promotes a method that Document 1 listed as merely useful into a <strong>prerequisite</strong>. <code>IDEA-CONCEPT.md</code> Method 1 — instrumented source apportionment separating wheel/rail noise from structure-radiated noise — is not one investigation among several. Until it returns a number, nobody can say whether geometry-led intervention on this structure is worth 10 dB or worth 0.4 dB, and no design-build proposal that skips it is defensible. The model this document specifies is what makes that apportionment interpretable; the apportionment is what tells us whether the model's geometry matters. Neither is optional and they are not sequential.</p>
+<h3 id="13-the-caveat-that-has-to-travel-with-that-finding">1.3 The caveat that has to travel with that finding</h3>
+<p>Document 2 established a transferability test and it applies to its own strongest citation as much as to anyone else's.</p>
+<p>The three bridges in the Applied Acoustics comparison are <strong>concrete</strong>. A concrete box girder and a riveted steel truss carrying open-deck jointed rail are not the same acoustic object, and the paper's other headline finding makes the mismatch explicit:</p>
+<blockquote>
+<p>"the rail noise level is about 10 dB larger than the bridge noise for the three bridge designs when averaged over the field positions considered in this study. The total noise is therefore dominated by the rail noise which is mainly influenced by the barrier effect but is not affected by the stiffness of the bridge structure."</p>
+</blockquote>
+<p>On a concrete viaduct, structure-radiated noise is 10 dB below rail noise and the structure's stiffness barely matters. That is very probably <strong>not</strong> the case on a lightweight steel truss with no ballast, which is precisely the configuration where the elevated-structure literature reports the largest structure-borne contributions. Document 2 §4 already collected the qualitative reasons.</p>
+<p>So the correct statement is narrower than the headline, and it is the one this document will use:</p>
+<blockquote>
+<p><strong>In a validated model of an elevated rail structure, changing only the transverse section geometry moved structure-radiated noise by 8.3 to 11.6 dB(A), while moving total noise by very little, because on those concrete bridges rail noise dominated by about 10 dB. The sensitivity was measured on concrete box and U-girders and does not transfer numerically to a steel truss. What transfers is a conditional: section geometry is a first-order variable for the structure-radiated component, and therefore matters at the receptor if and only if that component is a significant share of the total. On the Manhattan Bridge that share has never been measured.</strong></p>
+</blockquote>
+<p>That is the argument for the model, and it is also the argument for measuring before designing. Not that the model will look good. That the thing we do not know is the thing that decides whether anything else we do is worth doing.</p>
+<h3 id="14-the-second-reason-the-fastener-is-the-models-input-not-its-ornament">1.4 The second reason: the fastener is the model's input, not its ornament</h3>
+<p>One clause of the method quotation above deserves separating out, because it converts a documentation gap into a modelling blocker.</p>
+<blockquote>
+<p>"...to obtain the rail vibration and <strong>the power input to the bridge through the rail fasteners.</strong>"</p>
+</blockquote>
+<p>The fastener is not a fine detail to be added at the end. In this class of model it is the interface across which all energy enters the structure.</p>
+<p>Draft v1.0 wrote: <em>"Its dynamic stiffness</em> is <em>the boundary condition."</em> <strong>That is wrong terminology and it is withdrawn.</strong> A fastener is a <strong>coupling element</strong> — a transfer path between rail and structure, characterised by dynamic stiffness, damping and preload, which together set how much power crosses it and in which bands. The boundary conditions of a vibro-acoustic model of this bridge are something else entirely: the tower and pier supports, the bearings, the cable and suspender connections, the joints to the approach structures, and wherever the modeller truncates the domain. Both matter. They are not the same thing, and a model that gets the fastener right and the truncation wrong will still be wrong.</p>
+<p>The correct statement: <strong>change the fastener and you change how much power enters the structure, and therefore every structure-radiated number downstream.</strong></p>
+<p>There is a second consequence, which cuts against this document's own thesis and belongs here rather than buried in Part 11. <strong>Geometry cannot supply any of the three fastener parameters.</strong> No scan, no drawing, no <code>LOD 400</code> model yields dynamic stiffness, loss factor or clamping preload — those come from a specification, a manufacturer's data sheet, or a laboratory or in-situ dynamic test. So the claim that reaching a given geometric level of detail "makes the model an acoustic input" is false as stated. Geometry is necessary and it is not sufficient. The framework in Part 5 tracks what is <em>known</em> about geometry; a parallel and equally important register tracks what is known about <strong>material and interface properties</strong>, and this programme has essentially nothing in it.</p>
+<p><code>IDEA-CONCEPT.md</code> §4.2 lists as Q2 — flagged blocking — the question of what fastening system the Manhattan Bridge actually uses. Three documents later it is still unanswered. Document 3 found the nearest thing to a partial answer, from Rutgers CAIT working with NYCDOT: the bridge has <strong>bolted rail joints</strong>, classified fair, poor and severe, and</p>
+<blockquote>
+<p>"the more severely misaligned splices resulted in more vibration on the bridge, almost double that of the fair splices."</p>
+</blockquote>
+<p>That is a statement about joints, not fastenings, and it is about condition, not specification.</p>
+<p><strong>Conclusion for the framework:</strong> a model of this bridge cannot become a usable acoustic input from geometry alone. The fastener's dynamic properties require a records request, a specification, or a test — none of which is a modelling task and none of which scanning solves. Filed as Method 15 (records) and, for the test route, as a dependency of <code>IDEA-CONCEPT.md</code> Method 1.</p>
+<h3 id="15-the-third-reason-which-connects-back-to-document-1s-brief">1.5 The third reason, which connects back to Document 1's brief</h3>
+<p>The original brief for this research programme named robotic on-site fabrication and robotic maintenance as areas to reason about. Document 2 concluded that access to the underside is the binding constraint on every intervention it surveyed, and Document 3 found that NYCDOT already operates</p>
+<blockquote>
+<p>"Two traveling maintenance platforms ... approximately 119 feet wide and 17 feet long, in order to inspect one complete panel point without needing to move the platform"</p>
+</blockquote>
+<p>on the sister bridge.</p>
+<p>A robot — whether it is depositing material, installing a damper, or inspecting a joint — needs geometry, and it needs it in a specific form: <strong>a tolerance envelope, a coverage guarantee, and a bound on localisation uncertainty relative to the surface it will touch.</strong> Those are task requirements, not document-delivery requirements. A path planner needs to know where an interface is to within the compliance of its end effector; a fixture designer needs to know a flange width to within its clamp travel.</p>
+<p>The nearest published vocabulary is BIMForum's <code>LOD 350</code>, the level at which an element's</p>
+<blockquote>
+<p>"quantity, size, shape, location, orientation, and interfaces with adjacent or dependent Model Elements can be measured."</p>
+</blockquote>
+<p>Two qualifications, both of which draft v1.0 omitted.</p>
+<p><strong>First, LOD 350 is a coordination definition, not a robotics requirement.</strong> It exists so that trades can detect clashes with each other's work. Nothing in the specification is about machine localisation, and a robot may well need far tighter local accuracy on the 300 mm it is working on than LOD 350 implies, while needing nothing at all about the rest of the span.</p>
+<p><strong>Second, and more important: a robot does not need a model to have geometry.</strong> It can obtain the geometry it needs from a task-specific survey of the work zone, or generate it live from onboard sensing — lidar, structured light, contact probing, force feedback. Mobile manipulation on unmodelled infrastructure is an active field precisely because prior models are usually absent or wrong. So the absence of a public <code>LOD 350</code> model is <strong>not</strong> a blocker on robotic intervention.</p>
+<p>Draft v1.0 claimed otherwise:</p>
+<blockquote>
+<p>"The first obstacle to the robotic-maintenance thesis is not actuation, not materials, not power, not certification. It is that no public description of the work surface exists at the resolution a machine would need to touch it. The geometry gap precedes the robotics question by two levels of development."</p>
+</blockquote>
+<p><strong>Both sentences are withdrawn.</strong> "Two levels of development" treats LOD as a sequential maturity ladder, which BIMForum explicitly denies — the 2024 specification states that <code>LOD 500</code> "does not indicate a higher level than 400." And "the first obstacle" was asserted without any comparison against actuation, power, certification, access or the union rules governing work on a NYCDOT structure, several of which are plainly harder.</p>
+<p><strong>What survives is narrower and still worth stating.</strong> Nobody can currently <em>specify</em> a robotic intervention on this bridge from public information — not scope it, not price it, not choose an end effector, not write a procurement document — because no public description of the work surface exists at the resolution any of those tasks require. That is a <strong>planning and procurement</strong> blocker, not a technical one, and the way through it is a task-specific survey of a representative bay rather than a full-structure model. Part 4 sets out how far the public record actually reaches.</p>
+<hr />
+<h2 id="part-2--what-already-exists">Part 2 — What already exists</h2>
+<p>Every row below was queried, not assumed. Negative results are recorded at equal length to positive ones because rediscovering them is the expensive part.</p>
+<h3 id="21-the-haer-result">2.1 The HAER result</h3>
+<p>The Historic American Engineering Record is the natural first stop for measured drawings of landmark American structures, and both bridges are recorded in it. The Library of Congress collection API was queried directly for each survey.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Bridge</th>
+<th>HAER survey</th>
+<th>Photographs</th>
+<th>Measured drawings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Brooklyn Bridge</td>
+<td><code>ny1234</code></td>
+<td>90</td>
+<td><strong>1 sheet</strong> — "Plan, elevation, detail at Manhattan tower"</td>
+</tr>
+<tr>
+<td>Manhattan Bridge</td>
+<td><code>ny0980</code> · HAER NY-164</td>
+<td>11 plus 1 colour</td>
+<td><strong>none</strong></td>
+</tr>
+<tr>
+<td>Williamsburg Bridge</td>
+<td><code>ny1263</code> · HAER NY-165</td>
+<td>9</td>
+<td><strong>none</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Rubric <strong>5/5</strong> (primary collection metadata), <code>VERIFIED</code> by direct API query.</p>
+<p>The two bridges that carry subway trains have no measured drawings in the national record. Their neighbour, which carries none, has one. The Williamsburg set is attributed to Jet Lowe, 1991.</p>
+<p>This is not a total loss. HAER photography is large-format, deliberately composed for documentation, and archivally scanned, which makes it a legitimate <code>SfM</code> input — see §3.3. But a photograph is a picture of a bridge, not a description of one, and no amount of processing turns eleven exterior views into a section.</p>
+<h3 id="22-the-one-real-section-source">2.2 The one real section source</h3>
+<p><code>WILLIAMSBURG-COMPARATOR.md</code> §2.2 established that a single document contains genuine transverse information for either bridge: Haight and Patel, <em>Reconstruction of the Williamsburg Bridge</em>, AISC 2005, rubric <strong>5/5</strong> — co-authored by the Director of East River Bridges at NYCDOT.</p>
+<p>For the framework, the relevant content is its figure annotations, which name the components of the section:</p>
+<blockquote>
+<p><code>NORTH FOOTWALK</code> · <code>CL.TRK J1</code> · <code>CL.TRK J2</code> · <code>NEW STIFFENERS (TYP)</code> · <code>NEW BMT TRACKS</code> · <code>SOUTH PEDESTRIAN WALKWAY</code> · <code>NEW TRACK STRINGER COLUMN AND BRACING</code> · <code>REPAIR FLOORBEAM, TRUSS BOTTOM CHORD, LATERAL BRACING (TYP)</code></p>
+</blockquote>
+<p>and one dimension in prose:</p>
+<blockquote>
+<p>"The stiffening truss is 67 feet wide and approximately 40 feet deep and is pinned at each main tower."</p>
+</blockquote>
+<p>That is the entire verified transverse dimensional content available for either East River subway bridge. <strong>Two numbers — one width, one depth — and both describe the envelope rather than locating anything inside it.</strong></p>
+<p>A methodological caution that must be carried into any use of this figure: PDF text extraction does not preserve spatial order. The labels above are known to exist in the drawing; their left-to-right and top-to-bottom arrangement as extracted is an artefact of the extraction, not evidence about the bridge. Any element placed on the basis of extracted label order is <code>ASSUMED</code>, not <code>INFERRED</code>. This distinction is exactly what Part 5 is built to carry.</p>
+<h3 id="23-citywide-3d-data">2.3 Citywide 3D data</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Content</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2017 NYC Topobathymetric LiDAR</td>
+<td>1 ft <code>DEM</code> and <code>DSM</code> plus classified point cloud; Quantum Spatial for NYC DoITT</td>
+<td>Available — NYC Open Data, NYS GIS clearinghouse, NOAA S3 bucket <code>noaa-nos-coastal-lidar-pds</code>, OpenTopography</td>
+</tr>
+<tr>
+<td>NYC 3D Model by Community District</td>
+<td>Every building present in 2014, from the DoITT 2014 aerial survey</td>
+<td>Available. <strong>Buildings only</strong> — no bridge structure</td>
+</tr>
+<tr>
+<td>OpenStreetMap</td>
+<td>Both bridges as tagged ways, including rail alignment</td>
+<td>Almost certainly available; the Overpass API returned HTTP 406 without a user agent and then 504 gateway timeouts from two mirrors during this review. Recorded as <code>UNVERIFIED</code></td>
+</tr>
+<tr>
+<td>USGS 3DEP</td>
+<td>National elevation coverage</td>
+<td>Available, coarser than the city product</td>
+</tr>
+</tbody>
+</table></div>
+<p>The NYC 3D Model is more useful than it first appears, and for a reason unrelated to the bridge. Receptor-side acoustics in DUMBO depends on the surrounding buildings — they are the reflecting and shielding surfaces that determine what a person in Brooklyn Bridge Park actually receives. A building-only model is the <em>right</em> dataset for that half of the problem and it is complete.</p>
+<p>For the bridge itself it contributes nothing.</p>
+<h3 id="24-what-nycdot-holds-and-does-not-publish">2.4 What NYCDOT holds and does not publish</h3>
+<p>Record drawings, shop drawings, inspection reports and the rehabilitation contract documents for both bridges exist. They are the only plausible route to the level of detail this programme needs, and none of them are public.</p>
+<p>This is a FOIL question, not a research question, and it is filed as Method 15. It is worth noting the asymmetry it creates: the single most valuable geometric artifact in this entire framework is one records request away, and every open-data route described in Part 3 is a workaround for not having made it.</p>
+<hr />
+<h2 id="part-3--the-occlusion-problem-and-four-ways-past-it">Part 3 — The occlusion problem, and four ways past it</h2>
+<h3 id="31-the-problem-stated-precisely">3.1 The problem, stated precisely</h3>
+<p>Every citywide 3D dataset New York publishes is captured from an aircraft looking down. An aircraft sees the <strong>top of the deck</strong>.</p>
+<p>The geometry that governs this entire research programme is, without exception, underneath it:</p>
+<ul>
+<li>the floor beams and their spacing</li>
+<li>the track stringers and the stringer-to-floorbeam connection</li>
+<li>the rail fastening assembly</li>
+<li>the truss bottom chord and lateral bracing</li>
+<li>the outboard cantilever framing on the Manhattan Bridge, which carries the tracks nearest the neighbourhood</li>
+<li>the clearance envelope over the streets of DUMBO</li>
+<li>any existing shielding, screening or debris containment already installed</li>
+</ul>
+<p>Each of these is in the deck's optical shadow from above and its acoustic shadow from the receptor below at the same time, which is a coincidence worth pausing on: <strong>the surfaces that matter most acoustically are exactly the ones an aerial survey cannot see.</strong> Downward radiation is the mechanism, and downward-facing is the geometry.</p>
+<p>This is not a resolution limit. Denser LiDAR does not fix it. It is line of sight. <strong>There is a hard floor at <code>LOD 200</code> for every free public dataset covering these bridges, and it is geometric, not financial.</strong></p>
+<h3 id="32-route-one-the-walkway">3.2 Route one: the walkway</h3>
+<p>Both bridges carry public pedestrian walkways running the full length of the structure, alongside the track zone. On the Williamsburg Bridge the AISC paper describes</p>
+<blockquote>
+<p>"a new footwalk/bikeway system that is barrier-free"</p>
+</blockquote>
+<p>and names both a north footwalk and a south pedestrian walkway.</p>
+<p>This is the same property that makes the acoustic protocol in Document 3 §6.5 cheap: <strong>the measurement that matters can be taken from public space, with no permission from anybody.</strong> A camera, an afternoon, and a walk.</p>
+<p>Walkway-level <code>SfM</code> will not see the underside either. What it will see, and what nothing else available will, is:</p>
+<ul>
+<li>the <em>relative vertical positions</em> of walkway, roadway deck, track and truss, which is the single weakest link in the shielding hypothesis of Document 3</li>
+<li>the truss members from inside the structure</li>
+<li>the trackside face of whatever screening exists</li>
+<li>the actual sightline from a walkway position to a receptor position below</li>
+</ul>
+<p>That list is short but it is targeted precisely at the propositions the companion documents cannot support. It should be executed on the Williamsburg Bridge first, because the Williamsburg Bridge is where the inference is load-bearing.</p>
+<p>Filed as Method 16.</p>
+<h3 id="33-route-two-rephotogrammetry-of-the-haer-negatives">3.3 Route two: rephotogrammetry of the HAER negatives</h3>
+<p>Eleven and nine large-format documentation photographs, respectively, taken by a professional architectural photographer with archival intent, are a better <code>SfM</code> input than most casual imagery. They are also thirty-five years old, which for a structure is close to irrelevant at the massing scale and completely relevant at the condition scale.</p>
+<p>The limitation is baseline. Documentation photography is composed for legibility, not for reconstruction; the views are unlikely to have the overlap and the varied vantage points a solver needs. Whether they are sufficient is an empirical question that costs one afternoon of processing to answer, since the images are public domain and the software is free.</p>
+<p>Filed as Method 17, priority low, cost near zero.</p>
+<h3 id="34-route-three-uas-and-the-regulatory-wall">3.4 Route three: UAS, and the regulatory wall</h3>
+<p>Uncrewed aircraft are the obvious answer to an occlusion problem, and the bridge-inspection literature is now substantial: UAS photogrammetry of bridge undersides is routine practice in several state DOTs, and comparative studies report accuracies competitive with terrestrial survey.</p>
+<p>In New York City it is a different proposition, and the primary source is unambiguous.</p>
+<p>NYPD Unmanned Aircraft Permit Application Portal, official FAQ — rubric <strong>5/5</strong>, <code>VERIFIED</code>:</p>
+<blockquote>
+<p>"Prior to July XX, 2023, section 10-126(c) of the New York City Administrative Code prohibited most take-off and landings of unmanned aircraft (UA) within New York City. The Department's new rule, 38 RCNY 24, creates a procedure by which the public may submit applications to launch and land UA, including drones, within the City."</p>
+<p>"Currently, UA may only launch or land from locations designated by the Department of Transportation (DOT), or from specific model aircraft fields designated by the NYC Department of Parks and Recreation."</p>
+<p>"Applicants must submit a completed application at least 30 days in advance of the date of the first proposed take-off or landing."</p>
+<p>"all applications must propose an UA operator who have obtained a Remote Pilot Certificate pursuant to Part 107 of Title 14 of the CFR."</p>
+<p>"Drone operators are required to have certain documents on hand ... including the take-off/landing permit issued, a copy of the prerequisite insurance policy, documentation of FAA authorization to operate an UA and any relevant waivers, and a government-issued photo ID."</p>
+</blockquote>
+<p>And, importantly for anyone budgeting the attempt:</p>
+<blockquote>
+<p>"An UA take-off and landing permit alone does not constitute a reservation or grant exclusive use of the location listed on the permit."</p>
+</blockquote>
+<p>So the stack is: a Part 107 certificate, an insurance policy, FAA airspace authorisation for Class B airspace over the East River between two international airports, a 30-day NYPD application, and separate permission for whatever ground you launch from. Add that both structures are critical infrastructure under active security posture.</p>
+<p><strong>The finding is a comparison, not a prohibition.</strong> The walkway route requires a camera. The UAS route requires four permissions from three agencies and a 30-day lead time, and it is the <em>only</em> route that reaches the underside without NYCDOT's cooperation. Which means the underside — the acoustically decisive surface — is behind an institutional gate no matter which way you approach it.</p>
+<p>That is the same conclusion Document 2 reached from a completely different direction when it identified access as the binding constraint on intervention. It is now also the binding constraint on <em>description</em>. Filed as Q34.</p>
+<h3 id="35-route-four-the-maintenance-platforms">3.5 Route four: the maintenance platforms</h3>
+<p>The AISC paper documents two traveling maintenance platforms on the Williamsburg Bridge, approximately 119 ft by 17 ft, sized to inspect one complete panel point without repositioning.</p>
+<p>A platform that exists to put a human inspector under the deck is, without modification, a platform that can put a camera or a scanner there. This is the cheapest conceivable route to <code>LOD 350</code> underside geometry on either bridge, it uses equipment the owner already operates, and it requires exactly one thing this programme does not have: NYCDOT's cooperation.</p>
+<p>Which makes it the first thing to ask for. Filed as Method 18.</p>
+<hr />
+<h2 id="part-4--the-ladder-mapped-to-the-standards-that-already-exist">Part 4 — The ladder, mapped to the standards that already exist</h2>
+<h3 id="41-why-use-an-existing-scale">4.1 Why use an existing scale</h3>
+<p>It would be easy to invent a five-rung scale for this project. It would also be a mistake, because two consensus scales already exist, they are widely used in the industries that would execute a design-build project on this bridge, and using them makes the framework's claims legible to the people who would have to act on them.</p>
+<p><strong>BIMForum / AIA Level of Development</strong>, LOD Specification 2024 Part I — rubric <strong>4/5</strong> (industry consensus standard), <code>VERIFIED</code>, definitions read in full:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th><code>LOD</code></th>
+<th>Definition, quoted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>"may be graphically represented in the Model with a symbol or other generic representation, but does not satisfy the requirements for LOD 200"</td>
+</tr>
+<tr>
+<td>200</td>
+<td>"generically and graphically represented within the Model with approximate quantity, size, shape, location, and orientation"</td>
+</tr>
+<tr>
+<td>300</td>
+<td>"graphically represented within the Model such that its quantity, size, shape, location, and orientation can be measured"</td>
+</tr>
+<tr>
+<td>350</td>
+<td>"...and interfaces with adjacent or dependent Model Elements can be measured"</td>
+</tr>
+<tr>
+<td>400</td>
+<td>"graphically represented within the Model with detail sufficient for fabrication, assembly, and installation"</td>
+</tr>
+<tr>
+<td>500</td>
+<td>"a graphic representation of an existing or as-constructed condition developed through a combination of observation, field verification, or interpolation"</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>USIBD Level of Accuracy</strong>, Document C120 Guide v2.0 (2016) — rubric <strong>4/5</strong>, <code>VERIFIED</code>:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th><code>LOA</code></th>
+<th>Upper range</th>
+<th>Lower range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LOA10</td>
+<td>user defined</td>
+<td>5 cm</td>
+</tr>
+<tr>
+<td>LOA20</td>
+<td>5 cm</td>
+<td>15 mm</td>
+</tr>
+<tr>
+<td>LOA30</td>
+<td>15 mm</td>
+<td>5 mm</td>
+</tr>
+<tr>
+<td>LOA40</td>
+<td>5 mm</td>
+<td>1 mm</td>
+</tr>
+<tr>
+<td>LOA50</td>
+<td>1 mm</td>
+<td>0</td>
+</tr>
+</tbody>
+</table></div>
+<p>with the note attached to the table: "Specified at the 95 percent confidence level." The scale is derived from the five tolerance ranges of DIN 18710 and organised by CSI UniFormat.</p>
+<p>Two features of these standards matter enormously here and are developed in Part 5.</p>
+<h3 id="42-the-ladder-for-these-two-bridges">4.2 The ladder for these two bridges</h3>
+<p>The rungs below are the project's own, but each is stated in terms of the standard scales so it can be commissioned rather than merely described.</p>
+<p><strong>L0 — Site and context.</strong> Shorelines, street network, parcels, terrain, receptor park boundaries, surrounding building massing. Equivalent to <code>LOD 100</code>–<code>LOD 200</code> for context objects. <strong>Availability: complete.</strong> NYC Open Data, OpenStreetMap, USGS 3DEP, NYC 3D Model by Community District.</p>
+<p><strong>L1 — Bridge massing.</strong> Towers, cables, deck envelope, approach viaducts. <code>LOD 200</code>, <code>LOA10</code>–<code>LOA20</code>. <strong>Availability: good.</strong> 2017 topobathymetric LiDAR at 1 ft resolution, classified point cloud.</p>
+<p><strong>L2 — Structural system.</strong> Trusses, floor beams, stringers, cantilever framing, lateral bracing, and the clearance envelope. <code>LOD 300</code>. <strong>Availability: partial and lopsided.</strong> For the Williamsburg Bridge, one dimensioned prose statement and a set of named components from the AISC figures. For the Manhattan Bridge, nothing above rubric 1/5. This is where the aerial data stops being able to help at all, for the reason given in §3.1.</p>
+<p><strong>L3 — Track assembly.</strong> Rails, joints, bearers, guard rails, fastening layout, the stringer-to-rail interface. <code>LOD 350</code>. <strong>Availability: almost none.</strong> Element names from one figure annotation; the Rutgers CAIT work confirms bolted joints exist on the Manhattan Bridge approach and classifies their condition, which is a statement about state rather than geometry.</p>
+<p><strong>L4 — Component schematics.</strong> Fastener type, clip, pad, tie plate, bolt pattern, torque. <code>LOD 400</code>. <strong>Availability: none.</strong> No public source for either bridge.</p>
+<p>The brief that opened this research programme asked for a visual review reaching "down to the schematics of screws." The honest answer, four documents in, is that L4 is a records request rather than a modelling exercise — and per §1.4 it is also the level at which the model would become an acoustic input rather than an illustration.</p>
+<h3 id="43-the-heritage-framework-applies">4.3 The Heritage framework applies</h3>
+<p>The USIBD specification provides two sets of suggested accuracy levels:</p>
+<blockquote>
+<p>"The second is the 'Heritage' Framework which is intended for use on heritage applications that, generally speaking, have higher LOA requirements."</p>
+</blockquote>
+<p>Both bridges are designated historic structures. Both are more than a century old, riveted, and repeatedly modified. Any documentation programme on either should be specified against the Heritage framework, which is a small point with a real budgetary consequence and one that a proposal writer will otherwise miss.</p>
+<hr />
+<h2 id="part-5--the-contribution-carrying-provenance-alongside-accuracy">Part 5 — The contribution: carrying provenance alongside accuracy</h2>
+<h3 id="51-what-the-existing-standards-already-require-and-nobody-does">5.1 What the existing standards already require, and nobody does</h3>
+<p>Two clauses in the standards quoted above are doing more work than they appear to.</p>
+<p>The first is in the BIMForum definition of <code>LOD 500</code>, which is the level that applies to any model of an existing structure:</p>
+<blockquote>
+<p>"developed through a combination of observation, field verification, <strong>or interpolation</strong>. <strong>The level of accuracy shall be noted or attached to the Model Element.</strong>"</p>
+</blockquote>
+<p>Not attached to the model. Attached to <strong>the element</strong>. Per component. That is already a requirement, in a consensus standard, published for over a decade. And the definition explicitly contemplates interpolation as a legitimate source of geometry — which is honest, and which is precisely why the accuracy note is mandatory.</p>
+<p>The second is the USIBD distinction between two kinds of accuracy:</p>
+<blockquote>
+<p>"Measured Accuracy represents the standard deviation range that is to be achieved from the final measurements taken regardless of the method used to acquire those measurements. Represented Accuracy represents the standard deviation range that is to be achieved once the measured data is processed into some other form such as line work or a model."</p>
+<p>"The primary distinction is that error will always be introduced when measured data is processed into, or 'represented' as, some other form of deliverable."</p>
+</blockquote>
+<p>So the industry has already separated <em>how well you measured it</em> from <em>how much of that survived into the drawing</em>, and requires both to be stated per element.</p>
+<p><strong>Neither requirement is met by any public-facing model of a New York bridge, and neither could be met by this project, because both presuppose that a measurement happened.</strong></p>
+<h3 id="52-what-loa-does-not-cover-and-why-that-is-not-loas-fault">5.2 What LOA does not cover, and why that is not LOA's fault</h3>
+<p><code>LOA</code> is a metric scale. It answers: given that this element was measured, how close is the number to reality? Its lowest rung, <code>LOA10</code>, is "user defined to 5 cm."</p>
+<p>Draft v1.0 wrote that there is "no rung for" unmeasured geometry and called this "a defect discovered in LOA." <strong>That is withdrawn, and it was an unfair reading of the standard.</strong> <code>LOA</code> is explicitly a metric-accuracy framework for captured data. An element that was never measured has no measured accuracy — the correct value is <strong>null</strong>, not a low rung, and a standard is not defective for declining to assign a number to something it does not describe. Inventing an <code>LOA05</code> for reasoning would corrupt the scale by putting inference and measurement on one axis, which is precisely the error this section is trying to avoid.</p>
+<p>The real gap is therefore not inside <code>LOA</code> at all. It is that <strong>nothing in the delivery chain requires the unmeasured elements to be labelled as such</strong>, so a model containing both surveyed and reasoned geometry ships as a single undifferentiated object. <code>LOD 500</code> gets closest — it mandates that "the level of accuracy shall be noted or attached to the Model Element" — but says nothing about what to attach when the answer is "we did not measure this; we reasoned it from a sentence."</p>
+<p>So the proposal here is <strong>complementary lineage metadata</strong>, sitting beside <code>LOA</code> rather than extending it:</p>
+<ul>
+<li><code>LOA</code> answers <em>how well was it measured</em>, and is null when nothing was measured.</li>
+<li>Provenance answers <em>where did this geometry come from</em>, and is never null.</li>
+</ul>
+<p>Applied to the section of the Manhattan Bridge — the bridge this entire programme exists to address — the honest statement is that <strong>no transverse dimension is available at better than rubric 1/5 from a tertiary encyclopaedia, a limitation <code>IDEA-CONCEPT.md</code> §4.1 already concedes about itself at line level.</strong></p>
+<h3 id="53-prior-art-and-why-no-novelty-is-claimed">5.3 Prior art, and why no novelty is claimed</h3>
+<p>The idea of tagging model elements with their reliability is not new, and it would be dishonest to present it as such. The heritage-BIM literature has been working on this for a decade.</p>
+<ul>
+<li>Banfi, <em>BIM orientation: grades of generation and information for different type of analysis and management process</em>, ISPRS Archives XLII-2/W5 (2017), 57–64 — introduces <code>GOG</code>, <code>GOI</code> and <code>GOA</code> for heritage models. Rubric <strong>4/5</strong>, <code>SNIPPET</code>.</li>
+<li>Brumana, Banfi, Cantini, Previtali, Della Torre, <em>HBIM level of detail-geometry-accuracy and survey analysis for architectural preservation</em>, ISPRS Archives XLII-2/W11 (2019), 293. Rubric <strong>4/5</strong>, <code>SNIPPET</code>.</li>
+<li>The concept of a Level of Reliability for heritage models appears across the review literature, and practitioner guidance already describes the intent plainly: every piece of information in a heritage model can be tagged on a scale "from 'reliable and trusted' through 'you can't necessarily count on this information'." Rubric <strong>2/5</strong> (practice blog), <code>SNIPPET</code>.</li>
+</ul>
+<p>Draft v1.0 claimed that this mechanism "has not been applied to transport infrastructure acoustics." <strong>That claim is withdrawn.</strong> Two of the three sources above are <code>SNIPPET</code> — their full scope was not read — and the negative search that would be needed to support the claim is the one filed as Method 20, which has not been done. A claim of novelty cannot rest on a search that the same document schedules as future work.</p>
+<p>What is offered instead is a <strong>proposed project-specific application</strong>, novelty unassessed:</p>
+<ol>
+<li>
+<p><strong>The consumer is different here, which changes what the metadata has to carry.</strong> The heritage literature's consumer is a conservator. Here the consumer is an acoustic analysis whose most sensitive geometric input, per §1.2, is the least documented. Whether the heritage schemas already accommodate that is exactly what Method 20 should determine, and if they do, this project should adopt one rather than mint another.</p>
+</li>
+<li>
+<p><strong>Provenance is carried separately from accuracy rather than folded into it.</strong> <code>LOA</code> measures error given a measurement; provenance records the source class independent of stated precision. §5.2 explains why merging them would be a mistake.</p>
+</li>
+<li>
+<p><strong>The provenance scale is the same scale used for the prose.</strong> This is the part specific to this programme rather than to the field. Documents 1 through 3 rate every citation 1–5 for credibility and <code>VERIFIED</code>/<code>SNIPPET</code>/<code>UNVERIFIED</code> for depth of reading. If a model element carries the same two fields, a reader can move between the written argument and the drawing without changing units, and a single reviewer can attack both with one method. Small idea, useful consequence: <strong>the model becomes part of the citation apparatus rather than an illustration of it.</strong></p>
+</li>
+</ol>
+<h3 id="54-the-schema">5.4 The schema</h3>
+<p>Proposed as an <code>IFC</code> property set, <code>Pset_ResearchProvenance</code>, attachable to any <code>IfcElement</code>, and equally expressible as a GeoJSON property block or a plain column in a spreadsheet. The point is that it is trivial; the point is that it is <em>there</em>.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SourceRef</code></td>
+<td>text</td>
+<td>Citation key resolving to the document's source list</td>
+</tr>
+<tr>
+<td><code>SourceCredibility</code></td>
+<td>integer</td>
+<td>1–5, the same rubric as the prose</td>
+</tr>
+<tr>
+<td><code>VerificationState</code></td>
+<td>enum</td>
+<td><code>VERIFIED</code>, <code>SNIPPET</code>, <code>UNVERIFIED</code> — how deeply the source was read</td>
+</tr>
+<tr>
+<td><code>GeometryProvenance</code></td>
+<td>enum</td>
+<td><code>MEASURED</code>, <code>DOCUMENTED</code>, <code>INFERRED</code>, <code>ASSUMED</code> — what supports the shape</td>
+</tr>
+<tr>
+<td><code>GeometrySupportNote</code></td>
+<td>text</td>
+<td>What the source does and does not establish about this element's geometry</td>
+</tr>
+<tr>
+<td><code>Locus</code></td>
+<td>text</td>
+<td>The exact passage the geometry rests on, quoted</td>
+</tr>
+<tr>
+<td><code>ObservationDate</code></td>
+<td>date</td>
+<td>When the source observed the structure — not when it was published, and not today</td>
+</tr>
+<tr>
+<td><code>CurrentApplicability</code></td>
+<td>enum</td>
+<td><code>CURRENT</code>, <code>SUPERSEDED</code>, <code>UNKNOWN</code> — whether the observed condition is believed to still hold</td>
+</tr>
+<tr>
+<td><code>AcousticRelevance</code></td>
+<td>text</td>
+<td>Why this element matters to the noise question, or that it does not</td>
+</tr>
+<tr>
+<td><code>MeasuredAccuracy</code></td>
+<td>enum</td>
+<td><code>LOA10</code>–<code>LOA50</code>, or null where nothing was measured</td>
+</tr>
+<tr>
+<td><code>RepresentedAccuracy</code></td>
+<td>enum</td>
+<td><code>LOA10</code>–<code>LOA50</code>, or null</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>The two enums are independent, and keeping them independent is the whole point.</strong> A source can be fully <code>VERIFIED</code> — opened, read, passage quoted — and still support a <code>GeometryProvenance</code> of <code>ASSUMED</code>, because a sentence establishing that an element exists says nothing about where it is. The reference implementation in Part 8 got this wrong in its first version by collapsing both into one field, which is how eight components came to be labelled "verified" on the strength of a source that located none of them.</p>
+<p><strong><code>ObservationDate</code> and <code>CurrentApplicability</code> exist because a document describes a moment.</strong> The AISC paper describes the Williamsburg Bridge as reconstructed to 2005; the CAIT work reports instrumentation from around 2021; a 2005 statement that two traveling maintenance platforms were installed is not a 2026 statement that two traveling maintenance platforms are operational. Without these fields a model silently presents twenty-year-old observations as present conditions, which is a different failure from the provenance failure and just as easy to make.</p>
+<p><code>GeometryProvenance</code> is the new field and its four values are defined as:</p>
+<ul>
+<li><strong><code>MEASURED</code></strong> — the geometry derives from an instrument reading of the actual structure. Carries an <code>LOA</code>. <strong>No element of either bridge is at this level.</strong></li>
+<li><strong><code>DOCUMENTED</code></strong> — <em>this element's</em> position or dimension is stated numerically in a source that was read. Carries the source's rubric and a locus, not an <code>LOA</code>, because the source's own accuracy is generally unstated. <strong>No element of either bridge is at this level either.</strong> The Williamsburg Bridge has two stated dimensions — a 67 ft truss width and an approximately 40 ft truss depth — but both describe the overall envelope and neither locates any element within it, so the truss members that carry them are <code>INFERRED</code>, not <code>DOCUMENTED</code>. That distinction is the difference between a drawing and a claim about a drawing.</li>
+<li><strong><code>INFERRED</code></strong> — the element's <em>existence</em> is documented but its position or dimension is reasoned. All 13 Williamsburg components and 10 of the 14 Manhattan components.</li>
+<li><strong><code>ASSUMED</code></strong> — the element is placed by engineering judgement with no source statement locating it at all. Four components, all on the Manhattan Bridge: both outboard cantilever assemblies, the floor system, and the rail-joint marker — the last of which sits on a <code>VERIFIED</code> 3/5 source that establishes joints exist without locating one, which is exactly the case the two-field schema exists to represent.</li>
+</ul>
+<h3 id="55-the-rendering-rules">5.5 The rendering rules</h3>
+<p>A provenance property that only appears in a properties palette is a property nobody reads. The framework's second requirement is that provenance is <strong>visible in the geometry itself</strong>, so that the picture cannot be circulated without its uncertainty.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>State</th>
+<th>Render</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MEASURED</code> / <code>DOCUMENTED</code></td>
+<td>Solid fill, solid outline, full opacity</td>
+</tr>
+<tr>
+<td><code>INFERRED</code></td>
+<td>Reduced opacity, dashed outline</td>
+</tr>
+<tr>
+<td><code>ASSUMED</code></td>
+<td>Low opacity, dotted outline, and excluded from any dimension callout</td>
+</tr>
+</tbody>
+</table></div>
+<p>Plus three interaction requirements:</p>
+<ul>
+<li><strong>Filter by provenance.</strong> The reader must be able to switch <code>ASSUMED</code> and <code>INFERRED</code> geometry off and see what is left. The filter must <strong>hide</strong> the geometry, not merely fade it: a faded outline is still a shape a reader will trace, and the honest experience of switching both off on this project is an empty frame. This is the single most useful feature and it is close to free to implement.</li>
+<li><strong>Locus on selection.</strong> Clicking any element shows the quoted passage its geometry rests on, or states that there is none.</li>
+<li><strong>A standing tally.</strong> The counts of each state, displayed permanently, not buried in a methods appendix.</li>
+</ul>
+<p>The rule that follows from all of this, and that this programme adopts:</p>
+<blockquote>
+<p><strong>No dimension may be annotated on any element whose <code>GeometryProvenance</code> is <code>ASSUMED</code>.</strong> If we do not know where it is, we do not get to say how big it is.</p>
+</blockquote>
+<hr />
+<h2 id="part-6--the-toolchain">Part 6 — The toolchain</h2>
+<h3 id="61-an-all-open-source-path">6.1 An all-open-source path</h3>
+<p>No proprietary licence anywhere in the chain, so the result can be published under the same terms as the written research and rebuilt by anyone who disputes it. This is not ideological; it is the condition under which a red team can actually check the work.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Tool</th>
+<th>Licence</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Geospatial base</td>
+<td>QGIS</td>
+<td>GPL</td>
+<td>Georeferencing, terrain, parcels, receptor boundaries</td>
+</tr>
+<tr>
+<td>Point cloud</td>
+<td>CloudCompare</td>
+<td>GPL</td>
+<td>LiDAR handling, registration, cleanup, cloud-to-cloud comparison</td>
+</tr>
+<tr>
+<td>Photogrammetry</td>
+<td>Meshroom, COLMAP</td>
+<td>MPL-2.0, BSD</td>
+<td><code>SfM</code> and <code>MVS</code> from walkway photography</td>
+</tr>
+<tr>
+<td>Cloud to BIM</td>
+<td>Cloud2BIM</td>
+<td>Open source, arXiv 2503.11498</td>
+<td>Automated point cloud to <code>IFC</code> conversion</td>
+</tr>
+<tr>
+<td>BIM core</td>
+<td>IfcOpenShell</td>
+<td>LGPL</td>
+<td><code>IFC</code> read and write; the interchange spine</td>
+</tr>
+<tr>
+<td>Modelling</td>
+<td>Blender with Bonsai</td>
+<td>GPL</td>
+<td>Component authoring, level-of-detail control, rendering</td>
+</tr>
+<tr>
+<td>Parametric CAD</td>
+<td>FreeCAD 1.0</td>
+<td>LGPL</td>
+<td>L4 parametric parts, once a specification exists</td>
+</tr>
+<tr>
+<td>Coordination</td>
+<td>Speckle</td>
+<td>Apache-2.0</td>
+<td>Versioned model sharing and review</td>
+</tr>
+<tr>
+<td>Acoustic mapping</td>
+<td>NoiseModelling, Université Gustave Eiffel</td>
+<td>GPL-3.0</td>
+<td>CNOSSOS-EU outdoor propagation</td>
+</tr>
+<tr>
+<td>Web delivery</td>
+<td>glTF, Three.js</td>
+<td>MIT</td>
+<td>The reviewable artifact itself</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>IFC</code> is the right interchange format rather than a mesh format, and the reason is recent: IFC 4.3 extends the schema to infrastructure including bridges and alignments, and has been adopted as an ISO standard in the 16739-1 series. Rubric <strong>3/5</strong> via secondary sources, <code>SNIPPET</code>; the exact ISO edition year should be confirmed against buildingSMART before it is cited in a proposal. FHWA has published bridge information model standardisation guidance in the same lineage (HIF-16-011), rubric <strong>5/5</strong>, <code>SNIPPET</code>, and is the natural authority to cite in an American infrastructure context.</p>
+<h3 id="62-where-the-toolchain-will-mislead-you">6.2 Where the toolchain will mislead you</h3>
+<p>Stated up front, because the failure mode of a good-looking pipeline is unearned confidence.</p>
+<p><strong>NoiseModelling implements CNOSSOS-EU, whose rail source model is calibrated on European at-grade and ballasted track.</strong> A 1903 open-deck steel suspension bridge with jointed rail on stringers is outside its domain. It will still return a number, formatted identically to a number that means something.</p>
+<p><strong>CNOSSOS handles a barrier by diffraction over an obstacle.</strong> It does not model a steel structure re-radiating as a surface. Per §1.2, structure re-radiation is the mechanism this programme most needs modelled, and it is the one thing the free propagation tool does not do. The methodologically correct pairing is <code>NoiseModelling</code> for propagation from a source position to a receptor, and a separate vibro-acoustic finite element step of the kind Li et al. describe for what the structure itself emits — and that second step needs <code>LOD 300</code> geometry and a fastener stiffness, neither of which exists.</p>
+<p><strong>Use the propagation model for relative geometry, not absolute level.</strong> "Does moving this screen 3 m change the shadow over the dog run" is a fair question. "How many decibels" is not.</p>
+<p><strong>Photogrammetry produces confident geometry from bad inputs.</strong> <code>SfM</code> will reconstruct a plausible fastener that does not exist, and the reconstruction will not look any different from a correct one. Scale must come from a measured reference physically in frame, never from the solver, and the resulting <code>RepresentedAccuracy</code> must be validated against independent measurements — the USIBD specification calls this Representation Validation and treats it as a separate step from Measurement Validation, correctly.</p>
+<p><strong>Cloud2BIM and every automated scan-to-BIM tool were developed on buildings.</strong> Planar walls, orthogonal rooms, repeated storeys. A riveted lattice truss violates every assumption in that family of algorithms. It should be tried, because it is free, and it should be expected to fail.</p>
+<hr />
+<h2 id="part-7--what-a-model-of-this-is-actually-for">Part 7 — What a model of this is actually for</h2>
+<p>Three distinct uses get conflated, and they have different data requirements. Separating them is the difference between a fundable proposal and a wish.</p>
+<h3 id="71-communication">7.1 Communication</h3>
+<p>Showing a resident, a council member or a Community Board what is above them and why it is loud. Requires L1 and honest labelling. <strong>Achievable now.</strong> This is the only one of the three that current data supports, and it is the purpose of the reference implementation in Part 8.</p>
+<h3 id="72-coordination">7.2 Coordination</h3>
+<p><code>PRECEDENT-AND-MATERIALS.md</code> Method 10 proposed an interface matrix: for every candidate intervention, which asset owner's component does it touch, and who must therefore approve it. Document 2 identified this as the cheapest high-value method in the programme, and it is now filed as repository issue #8.</p>
+<p>An interface matrix is a geometric question wearing an institutional costume. "Does this damper attach to NYCDOT steel or NYCT track?" is answered by a model at <code>LOD 350</code>, where interfaces between adjacent elements can be measured, and cannot be answered reliably at any lower level.</p>
+<p><strong>Requires L3. Not achievable without a records request or underside access.</strong> This is the strongest argument for Method 15 and Method 18, because it converts a modelling wish into an approvals dependency that a project sponsor already understands.</p>
+<h3 id="73-simulation">7.3 Simulation</h3>
+<p>Feeding a vibro-acoustic model of the kind validated in Applied Acoustics 2022. Requires L3 geometry <em>and</em> a fastener dynamic stiffness <em>and</em> a rail roughness spectrum <em>and</em> a validated radiation model for a lattice truss, the last of which Document 2 established does not exist in the literature for this structural type.</p>
+<p><strong>Requires L3 plus L4 plus new physics. Not achievable, and should not be promised.</strong> A proposal that quietly implies this capability is the failure mode this framework exists to prevent.</p>
+<hr />
+<h2 id="part-8--the-reference-implementation">Part 8 — The reference implementation</h2>
+<p><code>visual-review/section-problem.html</code> is a single self-contained HTML file, no build step, no dependencies, no network access, and it implements Part 5 at the smallest scale that demonstrates it.</p>
+<p><strong>What it does.</strong> It draws schematic transverse sections of both bridges. Every component carries <strong>two independent fields</strong> — <code>VerificationState</code>, how deeply the source was read, and <code>GeometryProvenance</code>, what actually supports the drawn shape — plus a source reference with rubric, a quoted locus, an observation date, a note stating what the source does and does not support geometrically, and a note on acoustic relevance. Provenance is rendered in the geometry — solid green, dashed amber, dotted red — and can be filtered, so a reader can switch the assumed and inferred geometry off and see what remains. A receptor sightline overlay draws the straight line from each track to the receptor position. Four further tabs carry the level-of-detail ladder with an auditable test at each rung, the source inventory including the HAER negative result, the toolchain with its failure modes, and the limitations. A running tally states how many components sit in each state.</p>
+<p><strong>The result, and it is worse than draft v1.0 reported.</strong> Of 27 components across both bridges: <strong>0 <code>MEASURED</code>, 0 <code>DOCUMENTED</code>, 23 <code>INFERRED</code>, 4 <code>ASSUMED</code>.</strong> Not one element of either section is drawn at a position that any source states. Switching off both the inferred and the assumed geometry leaves an empty frame, which is the most honest single output the artifact produces.</p>
+<p>Draft v1.0 reported "8 <code>VERIFIED</code>, 10 <code>INFERRED</code>, 9 <code>ASSUMED</code>" and added that "9 of 14 components on the Manhattan Bridge are placed by reasoning rather than stated by any source." Both are wrong. The first used one conflated field where the schema in Part 5 defines two, and marked components "verified" because their <em>source</em> had been read — the truss envelope does not verify a chord position, "the central section" does not verify a track offset, "four cables" does not verify a transverse coordinate, and the CAIT article does not locate a rail joint. The second undercounted, because <code>INFERRED</code> components are placed by reasoning too; the correct figure for the Manhattan Bridge is 14 of 14. <strong>Both are recorded in Part 11 items 13 and 14 rather than quietly replaced, and the artifact violating its own document's schema is itself the most useful thing this exercise produced.</strong></p>
+<p><strong>What it does not do.</strong> It computes no acoustics. The sightline is a straight line, which is a statement about geometry and not about sound. Both sections are schematic and <strong>not to scale</strong>; the only two transverse dimensions stated in any located source — the Williamsburg Bridge's 67 ft truss width and approximately 40 ft truss depth — are not drawn in proportion to each other, and no dimension is annotated on any component, per the rule in §5.5. There is no L4 content because no public source has any, and §1.4 establishes that L4 geometry would not be sufficient even if it existed. And it encodes one author's inferences, assigned by the same person who drew the geometry — a conflict whose only mitigation is that every inference is labelled and every source is named, so that a reviewer can attack them individually rather than having to attack the picture as a whole. A reviewer did, and eight assignments changed.</p>
+<p><strong>The productive use of it is as a shopping list.</strong> Every red component is an argument for a specific records request, and the tally is the size of the gap between what this programme claims to understand and what it can show.</p>
+<hr />
+<h2 id="part-9--the-questions-this-opens">Part 9 — The questions this opens</h2>
+<p>Continuing the numbering from <code>WILLIAMSBURG-COMPARATOR.md</code>, which ended at Q31.</p>
+<p><strong>Q32.</strong> What is the <em>measured</em> transverse section of the Manhattan Bridge at midspan, at a tower, and at the Brooklyn approach? Every acoustic argument in this programme depends on it and no source above rubric 1/5 states any of it. <strong>Blocking.</strong></p>
+<p><strong>Q33.</strong> What are the relative <em>vertical</em> positions of the Williamsburg Bridge's track, roadway deck, walkway and truss bottom chord? This determines whether the shielding hypothesis of Document 3 is even geometrically possible. <strong>Blocking on Document 3.</strong></p>
+<p><strong>Q34.</strong> Is there any route to underside geometry on either bridge that does not require NYCDOT's cooperation or a four-agency UAS permission stack? If the answer is no, then the description problem and the intervention problem have the same gatekeeper, and that should be stated plainly to any sponsor.</p>
+<p><strong>Q35.</strong> Does the 8.3–11.6 dB(A) section-geometry sensitivity measured on concrete girders have any analogue on a steel truss? Document 2 found no quantified acoustic result from any rail-carrying suspension bridge; this is the same gap seen from the modelling side.</p>
+<p><strong>Q36.</strong> What is the dynamic stiffness of the rail fastening assembly actually installed on each bridge? Per §1.4 this is the model's boundary condition, not a detail.</p>
+<p><strong>Q37.</strong> Do the existing traveling maintenance platforms on the Williamsburg Bridge have an analogue on the Manhattan Bridge, and what is their instrument payload capacity? This determines whether Method 18 is a request or a proposal.</p>
+<p><strong>Q38.</strong> Has any transport agency anywhere published a provenance-tagged or reliability-tagged model of an existing structure for public review? The heritage sector has; a negative result for transport would strengthen the contribution claim in §5.3 and a positive one would correct it.</p>
+<p><strong>Q39.</strong> What <code>LOA</code> does walkway-based <code>SfM</code> actually achieve on a lattice truss under bridge lighting conditions, and is it enough to resolve Q33? This is an empirical question answerable in one afternoon.</p>
+<p><strong>Q40.</strong> Does NYCDOT hold the 1980s–1990s rehabilitation contract drawings for both bridges in a form releasable under FOIL, and what is the fee schedule? The single highest-value unknown in this document is an administrative one.</p>
+<p><strong>Q41.</strong> If a robotic maintenance or deposition system were proposed for an under-deck task on this structure, what geometric tolerance, surface coverage and localisation uncertainty would it actually require — and does any precedent robotic infrastructure intervention document the geometry it needed, or did it survey the work zone itself? Draft v1.0 asserted <code>LOD 350</code> from the BIMForum definition; §1.5 withdrew that, since LOD is a coordination vocabulary rather than a robotics requirement and onboard sensing may make prior geometry unnecessary. The open question is the requirement, not the LOD label.</p>
+<hr />
+<h2 id="part-10--methods">Part 10 — Methods</h2>
+<p>Continuing from Document 3, which ended at Method 14.</p>
+<p><strong>Method 15 — FOIL request to NYCDOT for record and rehabilitation drawings, both bridges.</strong>
+Cost: a form and a fee. Value: potentially resolves Q32, Q33, Q36 and most of L2–L4 in a single step. This is the highest value-per-unit-effort action available anywhere in the programme and it has not been attempted. <strong>Priority 1.</strong></p>
+<p><strong>Method 16 — Walkway photogrammetric survey, Williamsburg Bridge, south walkway.</strong>
+Camera, tripod-free, one afternoon, no permission. Targets Q33 and Q39 specifically. Deliverable: an <code>SfM</code> reconstruction with a physically measured scale reference, published with its <code>RepresentedAccuracy</code> stated. Repeat on the Manhattan Bridge. <strong>Priority 2.</strong></p>
+<p><strong>Method 17 — Rephotogrammetry of the HAER photographic sets.</strong>
+Public-domain imagery, free software, one afternoon of compute. Likely to fail on baseline grounds; costs almost nothing to establish that. <strong>Priority 4.</strong></p>
+<p><strong>Method 18 — Approach NYCDOT regarding instrument deployment on the existing traveling maintenance platforms.</strong>
+Uses equipment the owner already operates. The cheapest conceivable route to underside geometry. Requires a relationship this programme does not yet have, which is itself a reason to start it. <strong>Priority 2.</strong></p>
+<p><strong>Method 19 — Build the provenance-tagged L1 model and publish it.</strong>
+2017 LiDAR plus NYC 3D Model plus OpenStreetMap, assembled in QGIS and CloudCompare, exported as <code>IFC</code> with <code>Pset_ResearchProvenance</code> populated, delivered as glTF. Achievable now with existing public data. Establishes the schema in a working artifact rather than a proposal. <strong>Priority 3.</strong></p>
+<p><strong>Method 20 — Negative-result literature search on provenance-tagged infrastructure models.</strong>
+Targets Q38 directly and disciplines the novelty claim in §5.3, which is currently asserted from an absence of search results rather than from a search for absence. <strong>Priority 3.</strong></p>
+<hr />
+<h2 id="part-11--where-this-document-is-likely-to-be-wrong">Part 11 — Where this document is likely to be wrong</h2>
+<p>Stated by the author, before a reviewer has to. <strong>Draft v1.1 note:</strong> v1.0 was submitted to an adversarial review that returned <em>not fit to publish</em> with six blocking issues. All six are incorporated in the body above, with the original wording quoted in place. Items 9 through 14 below record them; items 1 to 8 were self-declared in v1.0 and are retained, with items 1 and 2 now superseded by corrections in the text.</p>
+<p><strong>1. The <code>LOD 350</code> requirement for robotics in §1.5 was reasoned, not sourced — and is now withdrawn.</strong> See item 11. Q41 remains open in a narrower form: what geometric tolerance, coverage and localisation uncertainty does a specific under-deck task actually require?</p>
+<p><strong>2. The novelty claim in §5.3 rested on not having found prior art — and is now withdrawn.</strong> v1.0 flagged this as a weakness and then made the claim anyway, which is the wrong order. Method 20 must precede any novelty statement, not follow it.</p>
+<p><strong>3. Two of the three heritage-BIM citations are <code>SNIPPET</code>.</strong> This document argues at length that abstract-level reading is the root cause of every error in the programme so far, and then cites Banfi 2017 and Brumana et al. 2019 from search results. The inconsistency is noted rather than excused. Both are open-access ISPRS Archives papers and both should be read before Part 5 is published outside this repository.</p>
+<p><strong>4. The IFC 4.3 / ISO 16739-1 status is <code>SNIPPET</code> at rubric 3/5.</strong> The claim that IFC 4.3 covers bridges is well attested across multiple secondary sources, but the exact ISO edition and its date were not confirmed against buildingSMART directly. A proposal that cites a standard should cite the standard.</p>
+<p><strong>5. The reference implementation's provenance assignments are the author's judgement and have not been independently reviewed.</strong> Someone with structural engineering knowledge of riveted lattice trusses may reasonably reclassify components in either direction. The schema is the contribution; the specific assignments are a first pass — and v1.1 reclassified eight of them after review, which is evidence for how soft they are.</p>
+<p><strong>6. The occlusion argument may be too strong for the approach spans.</strong> It is stated for the suspended spans, where the deck is high above water. Over land in DUMBO, an aerial survey with oblique imagery may capture more of the approach viaduct underside than §3.1 allows. Given the Rutgers observation that "many of the problems these days are actually on the approach spans," this is not a minor caveat — it may mean the most acoustically relevant structure is also the most photographable. It was not checked.</p>
+<p><strong>7. No cost figures appear anywhere in this document.</strong> Same weakness as Document 2. "One afternoon" is not a budget and a FOIL fee schedule was not retrieved.</p>
+<p><strong>8. The framework has been demonstrated at the scale of a 2D schematic, not a 3D model.</strong> Everything in Part 5 is designed to be schema-level and format-agnostic, and <code>Pset_ResearchProvenance</code> is expressible in <code>IFC</code> — but it has not been round-tripped through IfcOpenShell, and the claim that it survives an <code>IFC</code> export is untested.</p>
+<p><strong>9. The programme's signature error appeared again, in the document written to prevent it.</strong> §1.2 of v1.0 compared an 8.3–11.6 dB(A) change in <strong>bridge-radiated</strong> noise against a 3–5 dB(A) claim about <strong>total</strong> noise and concluded "the cross-section is worth more decibels than the fasteners." A decibel of a component is not a decibel of a total. On the source's own numbers, eliminating bridge radiation entirely would have moved the total by about 0.4 dB. The correction is in §1.2; the pattern — a number lifted out of the scope in which it was measured — is the fifth instance in this repository and is the reason <code>IDEA-CONCEPT.md</code> Method 1 is now treated as a prerequisite rather than an option.</p>
+<p><strong>10. "The fastener's dynamic stiffness <em>is</em> the boundary condition" was wrong terminology.</strong> A fastener is a coupling element; boundary conditions are supports, bearings, connections and domain truncation. Corrected in §1.4, which now also concedes the more damaging point: geometry of any resolution cannot supply dynamic stiffness, damping or preload, so no level of geometric detail alone makes this model an acoustic input.</p>
+<p><strong>11. The LOD-as-maturity-ladder argument in §1.5 was doubly wrong.</strong> "Two levels of development" treats <code>LOD</code> as sequential when BIMForum states explicitly that <code>LOD 500</code> is not higher than <code>400</code>; and "the first obstacle to the robotic-maintenance thesis" was asserted without comparison against actuation, power, certification, access or labour agreements, several of which are plainly harder. A robot can also work from task-specific survey or onboard sensing without any prior model. Both sentences are withdrawn and the claim is narrowed to a planning and procurement blocker.</p>
+<p><strong>12. Part 5 presented a gap in <code>LOA</code> that is not a gap in <code>LOA</code>.</strong> <code>LOA</code> is a metric-accuracy framework; an unmeasured element correctly has a null accuracy, not a missing low rung. v1.0 called this "a defect discovered in LOA" and proposed a "third accuracy axis," both of which misread the standard's scope. v1.1 reframes provenance as complementary lineage metadata alongside <code>LOA</code>, not an extension of it, and retitles Part 5.</p>
+<p><strong>13. The reference implementation violated this document's own schema.</strong> <code>section-problem.html</code> v1.0 carried a single <code>state</code> field taking <code>verified</code>/<code>inferred</code>/<code>assumed</code> — conflating <code>VerificationState</code>, which is about how deeply a source was read, with <code>GeometryProvenance</code>, which is about what supports a drawn shape. Eight components were marked "verified" on sources that establish only that the element exists. The truss envelope does not verify member coordinates; "the central section" does not verify a track offset; "four cables" does not verify a transverse position; the CAIT article does not locate a rail joint, and its instrumented tests were on the Manhattan side while the marker sat on a Brooklyn-side track. The artifact also asserted the Williamsburg trackform is "unballasted" as fact, which Document 3 Part 9 item 3 records as an unresolved inference. <strong>All corrected.</strong> The corrected tally is the more useful result: of 27 components, <strong>0 measured, 0 documented, 23 inferred, 4 assumed</strong> — not one element of either section is drawn where any source places it.</p>
+<p><strong>14. The tally sentence was arithmetically defensible and semantically wrong.</strong> "9 of 14 components are placed by reasoning" counted only the <code>ASSUMED</code> ones, when <code>INFERRED</code> components are also placed by reasoning. On the corrected schema the figure for the Manhattan Bridge is 14 of 14.</p>
+<p><strong>15. Not yet fixed: the material and interface register does not exist.</strong> §1.4 establishes that dynamic stiffness, damping and preload are as important as geometry and are not obtainable from it. This document specifies a provenance schema for geometry and nothing equivalent for material properties, and the programme currently holds no value, no source and no rubric for a single one of them. That is a larger hole than any of the fourteen above and it is the natural subject of the next document.</p>
+<hr />
+<h2 id="part-12--sources">Part 12 — Sources</h2>
+<h3 id="121-verified-full-text-read">12.1 Verified, full text read</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Rubric</th>
+<th>Contributes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Li, Dai, Zhu, Thompson — <em>Comparison of vibration and noise characteristics of urban rail transit bridges with box-girder and U-shaped sections</em>, Applied Acoustics 186 (2022) 108494</td>
+<td>5/5</td>
+<td>The 8.3–11.6 dB(A) section-geometry sensitivity; the coupled track-bridge to vibro-acoustic FE method; the fastener as power-input interface; the rail-dominance caveat</td>
+</tr>
+<tr>
+<td>BIMForum, <em>Level of Development Specification 2024, Part I</em></td>
+<td>4/5</td>
+<td><code>LOD 100</code>–<code>LOD 500</code> definitions; the <code>LOD 500</code> per-element accuracy requirement; the pointer to USIBD <code>LOA</code></td>
+</tr>
+<tr>
+<td>USIBD, <em>Level of Accuracy Specification Guide</em>, Document C120 v2.0 (2016)</td>
+<td>4/5</td>
+<td><code>LOA10</code>–<code>LOA50</code> tolerance ranges at 95% confidence; Measured versus Represented Accuracy; the Heritage framework; DIN 18710 and UniFormat lineage</td>
+</tr>
+<tr>
+<td>NYPD Unmanned Aircraft Permit Application Portal, official FAQ, and 38 RCNY 24</td>
+<td>5/5</td>
+<td>The NYC UAS permission stack; NYC Admin Code § 10-126(c); 30-day lead time; Part 107, insurance and FAA prerequisites</td>
+</tr>
+<tr>
+<td>Library of Congress HAER collection API, surveys <code>ny0980</code>, <code>ny1263</code>, <code>ny1234</code></td>
+<td>5/5</td>
+<td>The measured-drawing negative result for both subway-carrying bridges</td>
+</tr>
+<tr>
+<td>Haight and Patel, <em>Reconstruction of the Williamsburg Bridge</em>, AISC 2005</td>
+<td>5/5</td>
+<td>Section element names; the 67 ft by 40 ft stiffening truss; the traveling maintenance platforms; the barrier-free footwalk system</td>
+</tr>
+<tr>
+<td>Rutgers CAIT and NYCDOT, Manhattan Bridge instrumentation, 2021</td>
+<td>3/5</td>
+<td>Bolted joints exist and are classified fair, poor, severe; roughly double the vibration at severe splices; approach spans named as the current problem</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="122-snippet-only--retrieval-priority">12.2 Snippet only — retrieval priority</h3>
+<ol>
+<li><strong>Banfi (2017), ISPRS Archives XLII-2/W5, 57–64</strong> — <code>GOG</code>, <code>GOI</code>, <code>GOA</code>. Open access. Read before publishing Part 5.</li>
+<li><strong>Brumana, Banfi, Cantini, Previtali, Della Torre (2019), ISPRS Archives XLII-2/W11, 293</strong> — HBIM level of detail, geometry, accuracy. Open access. Same.</li>
+<li><strong>buildingSMART, IFC 4.3 and the ISO 16739-1 series</strong> — confirm edition and date directly.</li>
+<li><strong>FHWA, HIF-16-011, <em>Bridge Information Model Standardization</em>, Volumes I and II</strong> — the American authority for infrastructure BIM standardisation.</li>
+<li><strong>Cloud2BIM, arXiv 2503.11498</strong> — read the assumptions before assuming it applies to a truss.</li>
+<li><strong>UAS bridge-inspection accuracy literature</strong> — several reviews located, none read to conclusions. Relevant only if Method 18 and Method 16 both fail.</li>
+</ol>
+<h3 id="123-explicitly-not-found">12.3 Explicitly not found</h3>
+<ul>
+<li>Any measured drawing, section or general arrangement of either the Manhattan or Williamsburg Bridge in any public collection.</li>
+<li>Any published 3D model of either bridge below deck level.</li>
+<li>Any provenance-tagged or reliability-tagged model of transport infrastructure published for public review. This is an absence of search results, not a verified negative — see Part 11 items 2 and 3, and Method 20. <strong>No claim of novelty rests on it.</strong></li>
+<li>Any statement of the rail fastening specification for either bridge.</li>
+<li>Any cost figure for bridge documentation work in New York City.</li>
+<li>Verified OpenStreetMap geometry for either bridge. The Overpass API returned HTTP 406 without a user agent and then 504 gateway timeouts from <code>overpass-api.de</code> and <code>overpass.kumi.systems</code> during this review. Recorded as a tooling failure, not a data absence.</li>
+</ul>
+<hr />
+<h2 id="provenance">Provenance</h2>
+<p>This document was produced in August 2026 as the fourth output of an Ethical Tech CoLab research programme on rail noise in DUMBO, Brooklyn. It reports no measurements, no survey and no model. Every geometric statement about either bridge is sourced to a document, and where no document exists that is stated rather than filled in.</p>
+<p>Eight claims carry the weight of the argument and each is recorded with its locus in Part 12:</p>
+<ol>
+<li>Changing only the transverse section geometry of an elevated rail bridge moved <strong>structure-radiated</strong> noise by 8.3 to 11.6 dB(A) in a validated vibro-acoustic model — Li, Dai, Zhu and Thompson, Applied Acoustics 186 (2022), conclusions, <code>VERIFIED</code>. The result is for concrete girders, does not transfer numerically to steel, and is a <strong>component</strong> figure that must not be compared against total-noise figures; §1.2 and §1.3.</li>
+<li>The rail fastener is the interface through which power enters the bridge in that model class — same source, method statement, <code>VERIFIED</code>. It is a coupling element, not a boundary condition, and its dynamic properties are not obtainable from geometry; §1.4.</li>
+<li><code>LOD 500</code> already requires that a level of accuracy be noted or attached to each model element, and <code>LOD 500</code> is explicitly <em>not</em> a higher level than <code>LOD 400</code> — BIMForum LOD Specification 2024 Part I, <code>VERIFIED</code>.</li>
+<li><code>LOA</code> separates Measured from Represented Accuracy and is scoped to captured data — USIBD C120 v2.0, <code>VERIFIED</code>. §5.2 proposes complementary lineage metadata alongside it and no longer characterises the absence of an unmeasured category as a defect.</li>
+<li>Neither the Manhattan nor the Williamsburg Bridge has measured drawings in HAER; the Brooklyn Bridge has one sheet — Library of Congress collection API, <code>VERIFIED</code> by direct query.</li>
+<li>The only stated transverse dimensions available for either bridge are the Williamsburg Bridge's 67 ft stiffening truss width and approximately 40 ft depth — Haight and Patel, AISC 2005, <code>VERIFIED</code>. Both describe the envelope; neither locates any element within the section.</li>
+<li>UAS operation in New York City requires an NYPD permit under 38 RCNY 24 with 30 days' notice, a Part 107 certificate, insurance and FAA authorisation — NYPD permit portal FAQ, <code>VERIFIED</code>.</li>
+<li>Reliability tagging of model elements is established practice in heritage BIM — Banfi 2017 and Brumana et al. 2019, both <code>SNIPPET</code>. This is the weakest of the eight. <strong>No novelty claim now rests on it</strong>, because v1.1 withdrew the claim that the mechanism has not been applied to transport infrastructure; see Part 11 items 2 and 3, and Method 20.</li>
+</ol>
+<p><strong>Claims withdrawn between v1.0 and v1.1.</strong> All are quoted in place in the body rather than deleted, and all are restated in Part 11.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Withdrawn claim</th>
+<th>Where</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>"The cross-section is worth more decibels than the fasteners"</td>
+<td>§1.2</td>
+<td>Compares a bridge-only component figure against a total-noise figure; on the source's own numbers eliminating bridge radiation entirely moves the total ~0.4 dB</td>
+</tr>
+<tr>
+<td>2</td>
+<td>The fastener's dynamic stiffness "<em>is</em> the boundary condition"</td>
+<td>§1.4</td>
+<td>A fastener is a coupling element; boundary conditions are supports, bearings, connections and truncation</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Reaching a geometric level of detail makes the model an acoustic input</td>
+<td>§1.4, §1.5</td>
+<td>Geometry cannot supply dynamic stiffness, damping or preload</td>
+</tr>
+<tr>
+<td>4</td>
+<td>"The geometry gap precedes the robotics question by two levels of development"</td>
+<td>§1.5</td>
+<td>BIMForum states <code>LOD 500</code> is not higher than <code>400</code>; LOD is not a maturity ladder</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Geometry is "the first obstacle" to robotic maintenance</td>
+<td>§1.5</td>
+<td>Asserted without comparison against actuation, power, certification, access or labour agreements</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>LOA</code> has a defect: "no rung for unmeasured geometry"</td>
+<td>§5.2, Part 5 title</td>
+<td><code>LOA</code> is scoped to captured data; unmeasured is correctly null, not a low rung</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Provenance as "a third accuracy axis"</td>
+<td>Part 5 title, §5.3</td>
+<td>It is not an accuracy axis; it is lineage metadata carried alongside accuracy</td>
+</tr>
+<tr>
+<td>8</td>
+<td>The mechanism "has not been applied to transport infrastructure acoustics"</td>
+<td>§5.3</td>
+<td>Two of three prior-art sources are <code>SNIPPET</code> and the negative search is filed as future work</td>
+</tr>
+<tr>
+<td>9</td>
+<td>"8 <code>VERIFIED</code>, 10 <code>INFERRED</code>, 9 <code>ASSUMED</code>" and "9 of 14 placed by reasoning"</td>
+<td>Part 8, artifact</td>
+<td>Conflated two schema fields into one, and undercounted reasoning by excluding <code>INFERRED</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td>HAER photographs are "calibrated"</td>
+<td>artifact</td>
+<td>No camera calibration data accompanies them</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Level-of-detail availability as percentages (100/85/35/8/0 %)</td>
+<td>artifact</td>
+<td>Fabricated precision with no denominator; replaced with an auditable count at each rung</td>
+</tr>
+<tr>
+<td>12</td>
+<td>The Williamsburg trackform is "unballasted", stated as fact</td>
+<td>artifact</td>
+<td>An inference from element names; Document 3 Part 9 item 3 records it as unresolved</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Review note.</strong> Draft v1.0 was submitted to an adversarial review that returned <em>not fit to publish</em> with six blocking issues. The most damaging finding is recorded as Part 11 item 9: <strong>this document, written specifically to stop unsupported numbers travelling further than their evidence, contained an unsupported number of exactly the kind it was written to stop.</strong> The correction is not a patch. It changes the programme's priority order, promoting instrumented source apportionment from a useful investigation to a prerequisite for any design-build proposal.</p>
+<p>The reference implementation is <code>visual-review/section-problem.html</code>. It is schematic, not to scale, computes no acoustics, and should not be used for engineering purposes. Its component classifications were reworked in v1.1 after the review found it violating the schema defined in Part 5 of its own accompanying document.</p>
+<p>Released under CC BY 4.0. Corrections, and particularly reclassifications of any component's provenance state, are welcome as repository issues.</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/VISUAL-MODEL-FRAMEWORK.md">Source on GitHub</a> &middot; Built from <code>12ccc54</code> on 2026-08-02.</p>
+</main>
+</div>
+
+</div>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Silencing the Span &mdash; Manhattan Bridge rail noise in DUMBO</title>
-<meta name="description" content="An open research programme on rail noise from the NYC Subway crossing the Manhattan Bridge into DUMBO, Brooklyn. Seven documents, five interactive artifacts, five runnable scripts.">
+<meta name="description" content="Open research on rail noise from the NYC Subway crossing the Manhattan Bridge into DUMBO, Brooklyn. Current state of the investigation, interactive demonstrations, and the work still to be done.">
 <script>
   (() => {
     const param = new URLSearchParams(window.location.search).get("scoutTheme");
@@ -67,485 +67,318 @@ html[data-theme="dark"] {
   --cp-highlight: rgba(253, 142, 161, 0.12);
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 body {
-  margin: 0; background: var(--cp-bg); color: var(--cp-text);
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
   font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 16px; line-height: 1.62;
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
 }
-.page { max-width: 1120px; margin: 0 auto; padding: 34px 22px 80px; }
-code, .mono { font-family: Consolas, "Courier New", Courier, monospace; font-size: 0.9em; }
 a { color: var(--cp-link); text-decoration: none; }
 a:hover { text-decoration: underline; }
-header.top { padding: 26px 0 8px; }
-h1 { font-size: 40px; line-height: 1.15; margin: 0 0 6px; letter-spacing: -0.02em; }
-.tagline { font-size: 19px; color: var(--cp-text-muted); margin: 0 0 18px; max-width: 70ch; }
-.lede { font-size: 17px; max-width: 74ch; }
-h2 { font-size: 25px; margin: 0 0 14px; letter-spacing: -0.01em; }
-h3 { font-size: 17px; margin: 22px 0 8px; }
+code, kbd, pre {
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 4px;
+  padding: 0.1em 0.36em;
+}
+pre {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre code { background: none; border: 0; padding: 0; }
+
+/* ---- top bar ---- */
+.bar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--cp-panel-strong);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border);
+}
+.bar .in {
+  max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
+.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
+.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.bar nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  border-radius: 999px; white-space: nowrap;
+}
+.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
+
+h1 { font-size: 2.15rem; line-height: 1.18; margin: 0 0 10px; letter-spacing: -0.01em; }
+h2 { font-size: 1.42rem; margin: 0 0 14px; letter-spacing: -0.005em; }
+h3 { font-size: 1.08rem; margin: 26px 0 8px; }
+p { margin: 0 0 14px; }
+.lede { font-size: 1.06rem; color: var(--cp-text-muted); }
+.sub { color: var(--cp-text-muted); font-size: 1.02rem; margin: 0 0 4px; }
+
 .card {
-  background: var(--cp-surface); border: 1px solid var(--cp-border);
-  border-radius: 16px; padding: 24px 26px; margin: 20px 0;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin: 0 0 22px;
   box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
 }
-.card > :last-child { margin-bottom: 0; }
-.badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 22px; }
-.badge {
-  font-size: 12.5px; font-weight: 650; padding: 4px 11px; border-radius: 999px;
+.hero { background: var(--cp-bg-elevated); }
+
+.statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+.s {
   background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+  font-size: 0.78rem; color: var(--cp-text-muted);
+}
+.s .k { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.s .big { font-size: 1.9rem; font-weight: 700; color: var(--cp-accent); line-height: 1.1; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 14px; }
+.tile {
+  display: block; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 16px 18px; color: var(--cp-text); transition: border-color .15s, transform .15s;
+}
+.tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
+.tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
+.tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.tile .look {
+  font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
+  border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
+}
+.tile .look b { color: var(--cp-text); }
+
+.badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 999px; vertical-align: middle;
+  border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted);
+}
+.badge.ok { border-color: var(--cp-success); color: var(--cp-success); }
+.badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
+.badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
+.badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+
+.note {
+  border-left: 3px solid var(--cp-accent);
+  background: var(--cp-accent-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  padding: 13px 17px; margin: 16px 0; font-size: 0.92rem;
+}
+.note.bad { border-left-color: var(--cp-danger); background: rgba(220,38,38,0.07); }
+.note.good { border-left-color: var(--cp-success); background: rgba(22,163,74,0.07); }
+.note.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,0.09); }
+
+.tw { overflow-x: auto; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td {
+  border: 1px solid var(--cp-border); padding: 8px 11px;
+  text-align: left; vertical-align: top;
+}
+th { background: var(--cp-surface-soft); font-weight: 700; }
+tbody tr:nth-child(even) td { background: var(--cp-surface-soft); }
+
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li { margin-bottom: 7px; }
+
+blockquote {
+  margin: 16px 0; padding: 10px 18px;
+  border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
   color: var(--cp-text-muted);
 }
-.badge.hot { background: var(--cp-accent-soft); border-color: var(--cp-accent); color: var(--cp-accent); }
-.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(285px, 1fr)); gap: 16px; }
-.tile {
-  display: block; border: 1px solid var(--cp-border); border-radius: 0.625rem;
-  padding: 16px 18px; background: var(--cp-surface-soft); color: inherit;
-  transition: border-color 0.12s, background 0.12s;
+
+hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
+
+.foot {
+  color: var(--cp-text-soft); font-size: 0.83rem;
+  border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 30px;
 }
-.tile:hover { border-color: var(--cp-accent); background: var(--cp-accent-soft); text-decoration: none; }
-.tile .t { font-weight: 700; font-size: 16px; color: var(--cp-accent); margin-bottom: 5px; }
-.tile .d { font-size: 14px; color: var(--cp-text-muted); line-height: 1.5; }
-.tile .look { font-size: 13px; color: var(--cp-text-soft); margin-top: 9px;
-  border-top: 1px solid var(--cp-border); padding-top: 8px; }
-.tile .look b { color: var(--cp-text); }
-table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 12px 0; }
-th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--cp-border); vertical-align: top; }
-th { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em;
-  color: var(--cp-text-muted); font-weight: 650; }
-.note {
-  border-left: 3px solid var(--cp-border-strong); padding: 12px 16px; margin: 16px 0;
-  background: var(--cp-surface-soft); border-radius: 0 0.625rem 0.625rem 0; font-size: 15px;
+
+/* ---- work queue ---- */
+.q { border-top: 1px solid var(--cp-border); padding: 15px 0; display: grid;
+     grid-template-columns: 132px 1fr; gap: 18px; }
+.q:first-of-type { border-top: 0; }
+.q .lab { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+          font-weight: 700; padding-top: 3px; }
+.q .h { font-weight: 700; margin-bottom: 2px; }
+.q .cost { font-size: 0.8rem; color: var(--cp-text-soft); margin-bottom: 7px;
+           font-family: Consolas, "Courier New", monospace; }
+.q .why { font-size: 0.9rem; color: var(--cp-text-muted); }
+.lab.blocking { color: var(--cp-danger); }
+.lab.cheap { color: var(--cp-success); }
+.lab.field { color: var(--cp-accent); }
+.lab.review { color: var(--cp-warning); }
+.lab.gate { color: var(--cp-text-muted); }
+
+/* ---- rendered document pages ---- */
+.doclayout { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
+.toc { position: sticky; top: 76px; max-height: calc(100vh - 100px); overflow-y: auto;
+       font-size: 0.84rem; padding-right: 6px; }
+.toc .h { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+          color: var(--cp-text-soft); font-weight: 700; margin-bottom: 8px; }
+.toc a { display: block; padding: 3px 0 3px 9px; color: var(--cp-text-muted);
+         border-left: 2px solid var(--cp-border); line-height: 1.35; }
+.toc a:hover { color: var(--cp-accent); border-left-color: var(--cp-accent); text-decoration: none; }
+.toc a.l3 { padding-left: 20px; font-size: 0.95em; color: var(--cp-text-soft); }
+.doc { min-width: 0; }
+.doc h1 { font-size: 1.95rem; margin-top: 0; }
+.doc h2 { font-size: 1.38rem; margin: 34px 0 12px; padding-bottom: 6px;
+          border-bottom: 1px solid var(--cp-border); }
+.doc h3 { font-size: 1.1rem; margin: 26px 0 8px; }
+.doc h4 { font-size: 0.98rem; margin: 20px 0 6px; color: var(--cp-text-muted); }
+.doc img { max-width: 100%; }
+
+@media (max-width: 980px) {
+  .statrow { grid-template-columns: repeat(2, 1fr); }
+  .doclayout { grid-template-columns: 1fr; }
+  .toc { position: static; max-height: none; margin-bottom: 26px; }
+  .q { grid-template-columns: 1fr; gap: 4px; }
+  .wrap { padding: 22px 16px 70px; }
+  .card { padding: 20px 18px; }
 }
-.note.bad { border-left-color: var(--cp-danger); }
-.note.warn { border-left-color: var(--cp-warning); }
-.note.good { border-left-color: var(--cp-success); }
-.note > :last-child { margin-bottom: 0; }
-.tag {
-  display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 7px;
-  border-radius: 999px; vertical-align: 1.5px; margin-left: 3px; white-space: nowrap;
+@media (max-width: 560px) {
+  .statrow { grid-template-columns: 1fr; }
 }
-.tag.v { background: rgba(22,163,74,0.16); color: var(--cp-success); }
-.tag.d { background: rgba(245,158,11,0.18); color: var(--cp-warning); }
-.tag.u { background: rgba(220,38,38,0.14); color: var(--cp-danger); }
-nav.toc { font-size: 14.5px; }
-nav.toc a { display: inline-block; margin-right: 16px; padding: 3px 0; }
-.foot { font-size: 13.5px; color: var(--cp-text-soft); border-top: 1px solid var(--cp-border);
-  padding-top: 16px; margin-top: 30px; }
-ol li, ul li { margin-bottom: 7px; }
-.big { font-size: 34px; font-weight: 700; line-height: 1.1; color: var(--cp-accent);
-  font-variant-numeric: tabular-nums; }
-.statrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
-.statrow .s { border: 1px solid var(--cp-border); border-radius: 0.625rem;
-  padding: 13px 15px; background: var(--cp-surface-soft); }
-.statrow .s .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--cp-text-muted); font-weight: 650; }
-@media (max-width: 640px) { h1 { font-size: 30px; } .page { padding: 20px 14px 60px; } }
 </style>
 </head>
 <body>
-<div class="page">
-
-<header class="top">
-  <h1>Silencing the Span</h1>
-  <p class="tagline">
-    An open research programme on the noise made by B, D, N and Q trains crossing the
-    Manhattan Bridge into DUMBO, Brooklyn &mdash; and on what would have to be true before anyone
-    could responsibly propose a fix.
-  </p>
-  <div class="badges">
-    <span class="badge hot">7 documents</span>
-    <span class="badge hot">5 interactive artifacts</span>
-    <span class="badge hot">5 runnable scripts</span>
-    <span class="badge">32 methods specified</span>
-    <span class="badge">2 executed, 1 partially</span>
-    <span class="badge">51 open questions</span>
-    <span class="badge">3 published claims withdrawn</span>
-  </div>
-  <nav class="toc">
-    <a href="#start">Where to start</a>
-    <a href="#artifacts">Interactive artifacts</a>
-    <a href="#findings">What has been found</a>
-    <a href="#documents">Documents</a>
-    <a href="#data">Data and code</a>
-    <a href="#discipline">How to read this</a>
-    <a href="#gaps">What is missing</a>
-    <a href="#help">How to help</a>
-  </nav>
-</header>
-
-<div class="card">
-  <h2>The problem, in four numbers</h2>
-  <div class="statrow">
-    <div class="s"><div class="k">MTA-measured peak, Brooklyn Bridge Park</div><div class="big">98.9</div>dB(A) average maximum</div>
-    <div class="s"><div class="k">Weekday crossings, busiest hour</div><div class="big">67</div>a train every 54 seconds</div>
-    <div class="s"><div class="k">People living in the affected corridor</div><div class="big">15.8k</div>to 21.4k, from tax lots</div>
-    <div class="s"><div class="k">Rail noise complaints NYC 311 can accept</div><div class="big">0</div>there is no category</div>
-  </div>
-  <p style="margin-top:18px">
-    The first two are the MTA's own figures and are the most reliable numbers here. The third is
-    derived from public tax-lot data. <strong>The fourth is the finding this programme did not expect
-    to make.</strong>
-  </p>
+<div class="bar"><div class="in"><a class="home" href="index.html" class="on">Silencing the Span</a><nav><a href="read/readme.html">README</a><a href="read/idea-concept.html">1. Concept</a><a href="read/precedent-and-materials.html">2. Precedent</a><a href="read/williamsburg-comparator.html">3. Comparator</a><a href="read/visual-model-framework.html">4. Visual model</a><a href="read/field-capture-protocol.html">5. Field capture</a><a href="read/community-evidence-audit.html">6. Community</a><a href="read/data-collection.html">7. Data</a></nav></div></div>
+<div class="wrap">
+<div class="card hero">
+<h1>Silencing the Span</h1>
+<p class="sub">Rail noise from the NYC Subway crossing the Manhattan Bridge into DUMBO, Brooklyn &mdash; an open research programme by <a href="https://github.com/Ethical-Tech-CoLab">Ethical Tech CoLab</a>.</p>
+<p class="lede">This page is the organising index for the whole investigation: where it currently stands, what has actually been established, what is demonstrably wrong, and what still needs doing. It is regenerated from the repository, so the counts on it cannot drift away from the work.</p>
+<div class="statrow"><div class="s"><div class="k">MTA-measured peak, Brooklyn Bridge Park</div><div class="big">98.9</div>dB(A) average maximum</div><div class="s"><div class="k">Weekday crossings, busiest hour</div><div class="big">67</div>a train every 54 seconds</div><div class="s"><div class="k">People living in the affected corridor</div><div class="big">15.8k</div>to 21.4k, from tax lots</div><div class="s"><div class="k">Rail noise complaints NYC 311 can accept</div><div class="big">0</div>there is no category</div></div>
+<p style="margin-top:18px">The first two are the MTA's own figures and are the most reliable numbers here. The third is derived from public tax-lot data. <strong>The fourth is the finding this programme did not expect to make.</strong></p>
 </div>
-
+<div class="card" id="status">
+<h2>Where the investigation stands</h2>
+<p class="lede">Seven research documents, five interactive artifacts, five runnable scripts and roughly 94,778 words &mdash; against 32 specified methods of which <strong>two have been executed and one partially</strong>. The gap between those two halves of the sentence is the honest summary of this programme.</p>
+<div class="tw"><table><thead><tr><th>State</th><th>Count</th><th>What it means</th></tr></thead><tbody>
+<tr><td><span class="badge ok">Executed</span></td><td><b>3</b> of 32 methods</td><td>Method 29, Method 30, Method 27. <b>All three changed something</b>, and two of them contradicted claims this repository had already published.</td></tr>
+<tr><td><span class="badge warn">Tooling built</span></td><td><b>1</b></td><td>Method 26 &mdash; the code is written and verified against the live feed, but the run has not been done.</td></tr>
+<tr><td><span class="badge no">Not started</span></td><td><b>28</b></td><td>Proposals. Several of the cheapest are also the most load-bearing, and their being undone is why so many claims here are hedged.</td></tr>
+<tr><td><span class="badge acc">Withdrawn</span></td><td><b>12</b> explicit retractions</td><td>Claims this programme published and then disproved. They are <b>left visible in the text</b> rather than deleted, which is the point.</td></tr>
+<tr><td><span class="badge">Open questions</span></td><td><b>Q1&ndash;Q51</b></td><td>Numbered, attributed to a document, and none of them rhetorical. Q42 is the highest-value one and a lawyer could settle it in a day.</td></tr>
+</tbody></table></div>
+<div class="note bad"><strong>The one thing to understand before reading anything else.</strong> <b>Nobody from this programme has stood in Brooklyn Bridge Park with an instrument.</b> Every acoustic level quoted here was measured by someone else and published; every acoustic level <i>modelled</i> here is synthetic. No option in any document is recommended for procurement, and none of it is peer-reviewed.</div>
+</div>
 <div class="card" id="start">
-  <h2>Where to start</h2>
-  <p class="lede">
-    Three different readers want three different things.
-  </p>
-  <div class="tiles">
-    <a class="tile" href="visual-review/acoustic-demo.html">
-      <div class="t">I want to hear it &rarr;</div>
-      <div class="d">The acoustic demonstration. A train approaching, passing and departing at the
-      correct decibel difference against each receptor's measured background &mdash; then running
-      continuously at the real headway.</div>
-      <div class="look">Start with <b>Brooklyn Bridge Park dog run</b>, one pass-by, then switch to
-      continuous at 20&times; speed.</div>
-    </a>
-    <a class="tile" href="README.md">
-      <div class="t">I want the argument &rarr;</div>
-      <div class="d">The repository README. Headline findings, the full document index, the method
-      register with its honest status column, and a section titled &ldquo;what has not been
-      done&rdquo; that is longer than most projects' results sections.</div>
-      <div class="look">Read <b>Three headline findings</b>, then <b>What has not been done</b>.</div>
-    </a>
-    <a class="tile" href="visual-review/frequency-dashboard.html">
-      <div class="t">I want the data &rarr;</div>
-      <div class="d">The frequency and exposure dashboard. Every crossing by hour, route and
-      direction; how many people are underneath; how long they stay; and three of this programme's
-      own withdrawn claims, printed on the page.</div>
-      <div class="look">Drag the coincidence window from 1&nbsp;s to 29&nbsp;s. <b>The answer does not
-      move.</b> That is a finding about the feed, not the railway.</div>
-    </a>
-  </div>
+<h2>Start here</h2>
+<p class="lede">Three different readers want three different things.</p>
+<div class="tiles">
+<a class="tile" href="visual-review/acoustic-demo.html"><div class="t">I want to hear it &rarr;</div><div class="d">The acoustic demonstration. A train approaching, passing and departing at the correct decibel difference against each receptor's measured background &mdash; then running continuously at the real headway.</div><div class="look">Start with <b>Brooklyn Bridge Park dog run</b>, one pass-by, then switch to continuous at 20&times; speed.</div></a>
+<a class="tile" href="read/readme.html"><div class="t">I want the argument &rarr;</div><div class="d">The repository README. Headline findings, the full document index, the method register with its honest status column, and a section called &ldquo;what has not been done&rdquo; that is longer than most projects' results sections.</div><div class="look">Read <b>Three headline findings</b>, then <b>What has not been done</b>.</div></a>
+<a class="tile" href="visual-review/frequency-dashboard.html"><div class="t">I want the data &rarr;</div><div class="d">The frequency and exposure dashboard. Every crossing by hour, route and direction; how many people are underneath; how long they stay; and three of this programme's own withdrawn claims, printed on the page.</div><div class="look">Drag the coincidence window from 1&nbsp;s to 29&nbsp;s. <b>The answer does not move.</b> That is a finding about the feed, not the railway.</div></a>
+</div></div>
+<div class="card" id="demos">
+<h2>Interactive demonstrations</h2>
+<p>Each is a <strong>single self-contained HTML file</strong>: no build step, no server, no network access, no dependencies, no tracking. Open it here, or download it and double-click. Each applies the same provenance discipline to a different medium.</p>
+<div class="tiles">
+<a class="tile" href="visual-review/acoustic-demo.html"><div class="t">Acoustic demonstration <span class="badge acc">Audio</span></div><div class="d">Web Audio synthesis pinned to the MTA's own measurements. Six receptors, single pass-by or continuous running at the measured headway, A-weighted meters, CEQR threshold marks and a running energy average.</div><div class="look">Start at the Brooklyn Bridge Park dog run, play one pass-by, then switch to continuous at 20x speed and watch the running average settle onto 87.50 - then read why that convergence is a closed loop and not evidence.</div></a>
+<a class="tile" href="visual-review/model-3d.html"><div class="t">Navigable 3D model <span class="badge acc">Bridge</span></div><div class="d">Both bridges, four zoom tiers from the whole crossing down to a single rail fastener, with anchored callouts, click-to-inspect components and a live scale bar that reads in inches at the finest tier.</div><div class="look">Turn every provenance filter off. The viewport goes completely empty and the display says so. That is the state of public knowledge.</div></a>
+<a class="tile" href="visual-review/section-problem.html"><div class="t">Provenance-tagged section <span class="badge acc">Bridge</span></div><div class="d">The 2D cross-section of the Manhattan Bridge track zone, every component colour-coded and dash-coded by how well it is actually known, with the source rubric attached to the drawing.</div><div class="look">Turn off the DOCUMENTED filter and watch most of the drawing disappear.</div></a>
+<a class="tile" href="visual-review/frequency-dashboard.html"><div class="t">Frequency and exposure dashboard <span class="badge acc">Data</span></div><div class="d">Traversals by hour, route and direction across day, evening and night; pedestrian arrivals, departures, walkway flow and residents; and a four-cohort presence model that publishes its own non-identifiability.</div><div class="look">Drag the coincidence window from 1 s to 29 s. The answer does not move - which is a finding about the feed, not about the railway.</div></a>
+<a class="tile" href="visual-review/agent-model.html"><div class="t">Agentic population model <span class="badge acc">Agents</span></div><div class="d">Groups - not individuals - enter DUMBO at persona-specific gateways, follow scenario itineraries, contend for capacity and accumulate a noise dose along their actual path. Deterministic, seeded, fully event-logged.</div><div class="look">The first panel: the same itinerary started ninety seconds apart gets a different dose. Then the rejected-propagation panel, which is a negative result and the most important thing on the page.</div></a>
 </div>
-
-<div class="card" id="artifacts">
-  <h2>The five interactive artifacts</h2>
-  <p>
-    Each is a <strong>single self-contained HTML file</strong>. No build step, no server, no network
-    access, no dependencies, no tracking. Download and double-click, or clone and open. Each applies
-    the same provenance discipline to a different medium.
-  </p>
-  <div class="tiles">
-    <a class="tile" href="visual-review/agent-model.html">
-      <div class="t">Agentic population model</div>
-      <div class="d">Groups &mdash; not individuals &mdash; enter DUMBO at persona-specific gateways,
-      follow scenario itineraries, contend for capacity, and accumulate a noise dose along their
-      actual path. Deterministic, seeded, with a full event log.</div>
-      <div class="look">The first panel: the <b>same itinerary started ninety seconds apart gets a
-      different dose</b>. Then the rejected-propagation panel, which is a negative result and the most
-      important thing on the page.</div>
-    </a>
-    <a class="tile" href="visual-review/frequency-dashboard.html">
-      <div class="t">Frequency and exposure dashboard</div>
-      <div class="d">Traversals by hour, route and direction across day, evening and night periods;
-      pedestrian arrivals, departures, walkway flow and residents; and a four-cohort presence model
-      that publishes its own non-identifiability.</div>
-      <div class="look">The cohort card. The worker and visitor ranges <b>overlap</b>, and that
-      overlap is the finding.</div>
-    </a>
-    <a class="tile" href="visual-review/acoustic-demo.html">
-      <div class="t">Acoustic demonstration</div>
-      <div class="d">Web Audio synthesis pinned to the MTA measurements. Six receptors, single
-      pass-by or continuous running at the measured headway, A-weighted meters, CEQR threshold marks
-      and a running energy average.</div>
-      <div class="look">Watch the running <b>L<sub>eq</sub></b> settle onto 87.50 &mdash; then read
-      why that convergence is a closed loop and not evidence.</div>
-    </a>
-    <a class="tile" href="visual-review/model-3d.html">
-      <div class="t">Navigable 3D model</div>
-      <div class="d">Both bridges, four zoom tiers from the whole crossing down to a single rail
-      fastener, with anchored callouts, click-to-inspect components and a live scale bar that reads
-      in inches at the finest tier.</div>
-      <div class="look">Turn <b>every provenance filter off</b>. The viewport goes completely empty,
-      and the display says so. That is the state of public knowledge.</div>
-    </a>
-    <a class="tile" href="visual-review/section-problem.html">
-      <div class="t">Provenance-tagged section</div>
-      <div class="d">The 2D cross-section of the Manhattan Bridge track zone, every component
-      colour-coded and dash-coded by how well it is known, with the source rubric attached.</div>
-      <div class="look">Turn off the <b>DOCUMENTED</b> filter and watch most of the drawing
-      disappear.</div>
-    </a>
-  </div>
-  <div class="note">
-    <strong>A warning that applies to all five.</strong> The 3D model contains
-    <strong>zero measured elements</strong>. The audio is <strong>synthesised, not recorded</strong>.
-    The agent model's itineraries are <strong>invented</strong>. These are instruments for reasoning
-    about a problem, not evidence about it, and each one says so in its own interface rather than
-    in a footnote somewhere else.
-  </div>
+<div class="note"><strong>A warning that applies to all five.</strong> The 3D model contains <strong>zero measured elements</strong>. The audio is <strong>synthesised, not recorded</strong>. The agent model's itineraries are <strong>invented</strong>. These are instruments for reasoning about a problem, not evidence about it &mdash; and each says so in its own interface rather than in a footnote somewhere else.</div>
 </div>
-
 <div class="card" id="findings">
-  <h2>What has actually been found</h2>
-
-  <h3>1. The problem is documented and then abandoned</h3>
-  <p>
-    The MTA measured the noise, in DUMBO, at named addresses, and published the levels. The levels
-    are high. Nothing followed. The measurement exists and the response does not, and the gap between
-    those two facts is where this programme lives.
-  </p>
-
-  <h3>2. Three instruments for recording city noise, and no rail category in any of them</h3>
-  <p>
-    NYC 311 has a complaint descriptor for ice cream trucks and one for &ldquo;other animals&rdquo;.
-    It has none for trains. Neither does SONYC, NYU's 150-million-clip urban sound corpus, whose
-    authors state in print that they built their taxonomy from the NYC noise code &mdash; which is
-    where the absence originates.
-  </p>
-  <div class="note bad">
-    Within 500&nbsp;m of the park where the MTA measured <strong>87.50 dB(A)</strong>, residents filed
-    <strong>4,055</strong> noise complaints since 2020 and <strong>not one of them can be about the
-    train.</strong> That circle produced 117 complaints about ice cream trucks and 95 about barking
-    dogs. <em>The dogs at the dog run are complainable. The trains over it are not.</em>
-  </div>
-  <p>
-    This is a mechanism rather than a motive, which makes it testable, and it yields the first remedy
-    in the programme that a resident could act on this month: amending a taxonomy is a far smaller
-    ask than solving the noise.
-  </p>
-
-  <h3>3. Exposure peaks in the early afternoon &mdash; and this programme got that wrong twice first</h3>
-  <p>
-    Exposure is people multiplied by events. Optimising on attendance alone pointed to the weekend
-    afternoon. Optimising on train rate alone pointed to the weekday morning.
-    <strong>Both were published here and both are withdrawn.</strong> Train rate is nearly flat from
-    07:00 to 19:00 while the number of people underneath changes by a factor of four, so the product
-    peaks between the two: <strong>14:00 on a weekday</strong>, 13:00 Saturday, 15:00 Sunday.
-  </p>
-
-  <h3>4. A population's composition cannot be recovered from its departure curve</h3>
-  <p>
-    A four-cohort model pins <em>total</em> non-resident presence to about &plusmn;10%. The
-    <em>split</em> between workers and visitors inside that total swings by more than half again
-    across thousands of parameter sets that fit the data equally well.
-    <strong>A departure curve carries no job titles</strong> &mdash; someone present for eight hours
-    looks identical whether they came to work or came for the day. On a Saturday the model is
-    explicitly degenerate and says so in its own output.
-  </p>
-
-  <h3>5. Distance does not order the measurements</h3>
-  <div class="note bad">
-    The DUMBO Archway sits <strong>directly underneath the structure</strong> and is the
-    <strong>quietest</strong> of the four MTA sites. Brooklyn Bridge Park's Main Street section,
-    several hundred metres away across open water, is the <strong>loudest</strong> &mdash; exceeding a
-    line-source prediction fitted to the near sites by about <strong>17&nbsp;dB</strong>.
-    <p>
-      <strong>The design consequence is direct.</strong> Under-deck treatment &mdash; the intervention
-      most often proposed, and the first item in the November 2025 residents' petition &mdash; would be
-      applied <em>where the measured problem is smallest</em>. That is cheap to test: one afternoon,
-      a meter and a tape measure.
-    </p>
-  </div>
-
-  <h3>6. And one model that was deleted before publication rather than after</h3>
-  <p>
-    Fitting a propagation model to the near sites gave agreement with ideal line-source spreading to
-    within <strong>0.15&nbsp;dB</strong>, which looked like a real result. A sensitivity test killed
-    it: jitter the eye-digitised positions by &plusmn;10&nbsp;m and the fitted decay exponent ranges
-    from <strong>0.7 to 22.3</strong> &mdash; from no decay at all to steeper than a point source.
-    The data cannot constrain a propagation model and the agreement is coincidence. It is recorded on
-    the agent-model page as a finding, because the near-miss is more instructive than the model would
-    have been.
-  </p>
+<h2>What has actually been found</h2>
+<h3>1. The problem is documented, and then abandoned</h3>
+<p>The MTA measured the noise, in DUMBO, at named addresses, and published the levels. The levels are high. Nothing followed. The measurement exists and the response does not, and the gap between those two facts is where this programme lives.</p>
+<h3>2. Three instruments for recording city noise, and no rail category in any of them</h3>
+<p>NYC 311 has a complaint descriptor for ice cream trucks and one for &ldquo;other animals&rdquo;. It has none for trains. Neither does SONYC, NYU's 150-million-clip urban sound corpus, whose authors state in print that they built their taxonomy from the NYC noise code &mdash; which is where the absence originates.</p>
+<div class="note bad">Within 500&nbsp;m of the park where the MTA measured <strong>87.50 dB(A)</strong>, residents filed <strong>4,055</strong> noise complaints since 2020 and <strong>not one of them can be about the train.</strong> That same circle produced 117 complaints about ice cream trucks and 95 about barking dogs. <em>The dogs at the dog run are complainable. The trains over it are not.</em></div>
+<p>This is a mechanism rather than a motive, which makes it testable, and it yields the first remedy in the programme that a resident could act on this month: amending a taxonomy is a far smaller ask than solving the noise.</p>
+<h3>3. Exposure peaks in the early afternoon &mdash; and this programme got that wrong twice first</h3>
+<p>Exposure is people multiplied by events. Optimising on attendance alone pointed to the weekend afternoon. Optimising on train rate alone pointed to the weekday morning. <strong>Both were published here and both are withdrawn.</strong> Train rate is nearly flat from 07:00 to 19:00 while the number of people underneath changes by a factor of four, so the product peaks between the two: <strong>14:00 on a weekday</strong>, 13:00 Saturday, 15:00 Sunday.</p>
+<h3>4. A population's composition cannot be recovered from its departure curve</h3>
+<p>A four-cohort model pins <em>total</em> non-resident presence to about &plusmn;10%. The <em>split</em> between workers and visitors inside that total swings by more than half again across thousands of parameter sets that fit the data equally well. <strong>A departure curve carries no job titles</strong> &mdash; someone present for eight hours looks identical whether they came to work or came for the day. On a Saturday the model is explicitly degenerate and says so in its own output.</p>
+<h3>5. Distance does not order the measurements, and a propagation model was withdrawn before publication</h3>
+<div class="note bad">The three near-bridge sites agree with ideal line-source spreading to <strong>0.15 dB</strong>, which looks like a result and is not one. Jittering the digitised positions by &plusmn;10&nbsp;m &mdash; well inside the error of reading a point off a scanned figure &mdash; moves the fitted decay exponent anywhere from <strong>0.7 to 22.3</strong>, and the dog run sits <strong>17.3 dB above</strong> the fit. The agreement is coincidence.</div>
+<p>The model was therefore <strong>retracted before it was published rather than after</strong> &mdash; the first time in this programme that has happened in that order. It is also under review in its own right, at <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/28">issue #28</a>, because <b>a negative result asserted from four points is as vulnerable to over-claiming as a positive one.</b></p>
+<h3>6. Twenty-one years of measurement without mitigation, and a blank cell in a statute helps explain it</h3>
+<p>The levels have been on the record for two decades. The legal mechanism joining that record to the absence of any remedy is rated <b>2/5 and written as a question, not a finding</b> &mdash; and the document that proposes it names that joint as the first place to attack it, because the finding is elegant and arrived unexpectedly, which is exactly the condition under which this programme has previously over-claimed.</p>
 </div>
-
+<div class="card" id="todo">
+<h2>Work to be done</h2>
+<p class="lede">In priority order. The ordering is a judgement; the status of every method is read out of the register rather than asserted here. <strong>Several of these cost an afternoon</strong>, which is the least comfortable fact about the list.</p>
+<div class="q"><div class="lab blocking">Blocking</div><div><div class="h">Method 28 - measure dwell time</div><div class="cost">A few hours with a clicker, repeated over several sessions</div><div class="why">Presence is L = &lambda;W. Method 27 produced &lambda;. Without W there is no absolute exposure figure, and the cohort model proved that no amount of further arithmetic will substitute for measuring it. <b>This is the single blocking unknown for any design-build case.</b></div></div></div>
+<div class="q"><div class="lab cheap">Cheap &amp; high value</div><div><div class="h">Method 31 - the decay transect</div><div class="cost">One afternoon, free if a sound level meter is borrowed</div><div class="why">Walk outward from the structure with a meter and establish where the affected zone ends. Nobody has ever determined that boundary, yet it sizes the denominator for every exposure figure here. Three possible outcomes and all three are informative, including the one that corrects this repository.</div></div></div>
+<div class="q"><div class="lab cheap">Cheap &amp; high value</div><div><div class="h">Method 21 - the taxonomy query</div><div class="cost">A database query</div><div class="why">Confirm across the full 311 and SONYC taxonomies that no rail category exists anywhere in either. The finding is already evidenced; this closes the last route by which it could be wrong.</div></div></div>
+<div class="q"><div class="lab cheap">Cheap &amp; high value</div><div><div class="h">Q42 - preemption or merely unregulated?</div><div class="cost">One competent lawyer, one day</div><div class="why">Is elevated rapid transit federally <i>preempted</i> from local noise regulation, or simply <i>unregulated</i>? These have opposite consequences for every remedy in the programme. <b>The highest-value open question here.</b></div></div></div>
+<div class="q"><div class="lab cheap">Cheap &amp; high value</div><div><div class="h">Method 26 - the traversal census</div><div class="cost">Leave a script running for a week, unattended</div><div class="why">The tooling is built and verified. It is now the only route to the coincidence distribution, since the schedule feed was shown to be quantised to 30 s and unable to answer it.</div></div></div>
+<div class="q"><div class="lab field">Fieldwork</div><div><div class="h">Captures C1 to C5 - the phone protocol</div><div class="cost">A Galaxy S23+, public ground, no permission and no funding</div><div class="why">The only proposal in the programme that requires nothing the programme does not already have. <b>C2, the temporal envelope, is the highest-value item</b>: it is the one measurement that could establish that this repository's own derived result is wrong.</div></div></div>
+<div class="q"><div class="lab review">Needs review</div><div><div class="h">Red-team the three newest results</div><div class="cost">Reading and arithmetic</div><div class="why">Issues <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/26">#26</a> (is the cohort model's non-identifiability a finding or an artefact of an arbitrary threshold?), <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/27">#27</a> (does a model whose every input is invented belong in a repository built on quoted loci?) and <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/28">#28</a> (<b>was the propagation model genuinely unfittable, or merely digitised badly?</b>).</div></div></div>
+<div class="q"><div class="lab review">Needs review</div><div><div class="h">Read the five counter-citations</div><div class="cost">Library access</div><div class="why">Five works surfaced during red-teaming that bear directly on Q1 to Q8 and were <b>not read in full</b>. They are listed in section 14 of the concept document. Anyone taking this forward should start there, not here.</div></div></div>
+<div class="q"><div class="lab gate">Gating</div><div><div class="h">Methods 0 and 1 - the structural and acoustic prerequisites</div><div class="cost">A records request and an engineer; then a two-season field campaign</div><div class="why">The load rating at the track zone gates roughly half the option space, and source apportionment is the programme's stated prerequisite - nothing downstream is non-arbitrary without it. Expensive, unavoidable, and the reason nothing here is recommended for procurement.</div></div></div>
+<div class="note good"><strong>The cheapest useful contribution is a recording.</strong> If you have ever recorded a train crossing the Manhattan Bridge from Brooklyn Bridge Park, DUMBO or the Williamsburg Bridge walkway, that file is more useful to this programme than anything currently in it. The bar is far lower than people assume: <b>spectral shape and event timing survive an uncalibrated phone.</b></div>
+</div>
 <div class="card" id="documents">
-  <h2>The seven documents</h2>
-  <table>
-    <thead><tr><th>Document</th><th>The question it asks</th><th>Scope</th></tr></thead>
-    <tbody>
-      <tr>
-        <td><a href="IDEA-CONCEPT.md"><strong>IDEA-CONCEPT.md</strong></a></td>
-        <td><strong>What is the problem?</strong> Defines it from agency evidence, establishes who is
-        responsible under what law, and derives the questions nobody has asked of this site. Includes
-        &sect;1.7, the only result calculated here rather than retrieved.</td>
-        <td>Q1&ndash;Q13, Methods 0&ndash;5</td>
-      </tr>
-      <tr>
-        <td><a href="PRECEDENT-AND-MATERIALS.md"><strong>PRECEDENT-AND-MATERIALS.md</strong></a></td>
-        <td><strong>What has the world already built?</strong> Elevated-transit noise mitigation
-        precedent from Japan, China, Sweden, Germany, Hong Kong, Australia and Chicago, plus materials
-        and robotics to 2026 &mdash; and what actually transfers to a 1909 suspension bridge.</td>
-        <td>Q14&ndash;Q22, Methods 6&ndash;10</td>
-      </tr>
-      <tr>
-        <td><a href="WILLIAMSBURG-COMPARATOR.md"><strong>WILLIAMSBURG-COMPARATOR.md</strong></a></td>
-        <td><strong>There is a second bridge with the same owner, operator, rolling stock and statute.
-        What does it already tell us?</strong> A two-site comparative survey of the public outdoor
-        space beneath both East River subway bridges.</td>
-        <td>Q23&ndash;Q31, Methods 11&ndash;14</td>
-      </tr>
-      <tr>
-        <td><a href="VISUAL-MODEL-FRAMEWORK.md"><strong>VISUAL-MODEL-FRAMEWORK.md</strong></a></td>
-        <td><strong>Every argument above is about a cross-section nobody has drawn.</strong> Can that
-        drawing be built from open data and open tools &mdash; and can it be made to admit what it
-        does not know?</td>
-        <td>Q32&ndash;Q41, Methods 15&ndash;20</td>
-      </tr>
-      <tr>
-        <td><a href="FIELD-CAPTURE-PROTOCOL.md"><strong>FIELD-CAPTURE-PROTOCOL.md</strong></a></td>
-        <td><strong>Every acoustic claim beyond the published levels is invented. Can a consumer phone
-        fix that this month?</strong> A capture protocol targeting the four things the MTA's
-        five-number table discarded, all of which survive an uncalibrated recording chain.</td>
-        <td>Captures C1&ndash;C5</td>
-      </tr>
-      <tr>
-        <td><a href="COMMUNITY-EVIDENCE-AUDIT.md"><strong>COMMUNITY-EVIDENCE-AUDIT.md</strong></a></td>
-        <td><strong>Residents have complained since 2008. What have they recorded, and why can nobody
-        find it?</strong> Finds no recording &mdash; and finds the structural reason why the city's
-        instruments cannot represent the problem.</td>
-        <td>Q42&ndash;Q51, Methods 21&ndash;25, 31</td>
-      </tr>
-      <tr>
-        <td><a href="data-collection/README.md"><strong>data-collection/README.md</strong></a></td>
-        <td><strong>How many trains, how many people, and for how long?</strong> Five runnable scripts,
-        four traps that each silently produce a plausible wrong number, and the cohort model that
-        establishes its own non-identifiability.</td>
-        <td>Methods 26&ndash;29</td>
-      </tr>
-    </tbody>
-  </table>
+<h2>The research documents</h2>
+<p>Rendered here for reading. The markdown files in the repository remain authoritative, and each rendered page links back to its source.</p>
+<div class="tw"><table><thead><tr><th>Document</th><th>What it asks</th><th style="white-space:nowrap">Words</th></tr></thead><tbody>
+<tr><td style="white-space:nowrap"><a href="read/readme.html"><b>Repository README</b></a><br><code style="font-size:0.78em">README.md</code></td><td>The argument in brief, the document index, and the method register with its honest status column.</td><td>12,754</td></tr>
+<tr><td style="white-space:nowrap"><a href="read/idea-concept.html"><b>1. Idea and concept</b></a><br><code style="font-size:0.78em">IDEA-CONCEPT.md</code></td><td>What is the problem? Defines it from agency evidence, establishes who is responsible under what law, and derives the questions nobody has asked of this site.</td><td>20,979</td></tr>
+<tr><td style="white-space:nowrap"><a href="read/precedent-and-materials.html"><b>2. Precedent and materials</b></a><br><code style="font-size:0.78em">PRECEDENT-AND-MATERIALS.md</code></td><td>What has the world already built? Elevated-transit noise mitigation in Japan, China, Sweden, Germany, Hong Kong, Australia and Chicago - and what actually transfers to a 1909 suspension bridge.</td><td>11,470</td></tr>
+<tr><td style="white-space:nowrap"><a href="read/williamsburg-comparator.html"><b>3. Williamsburg comparator</b></a><br><code style="font-size:0.78em">WILLIAMSBURG-COMPARATOR.md</code></td><td>There is a second bridge with the same owner, operator, rolling stock and statute. What does it already tell us, and what would measuring it establish?</td><td>12,757</td></tr>
+<tr><td style="white-space:nowrap"><a href="read/visual-model-framework.html"><b>4. Visual model framework</b></a><br><code style="font-size:0.78em">VISUAL-MODEL-FRAMEWORK.md</code></td><td>Every argument in the first three documents is an argument about a cross-section nobody has drawn. Can that drawing be built from open data - and made to admit what it does not know?</td><td>12,458</td></tr>
+<tr><td style="white-space:nowrap"><a href="read/field-capture-protocol.html"><b>5. Field capture protocol</b></a><br><code style="font-size:0.78em">FIELD-CAPTURE-PROTOCOL.md</code></td><td>Every acoustic claim beyond the published levels is invented. Can a consumer phone fix that this month?</td><td>7,145</td></tr>
+<tr><td style="white-space:nowrap"><a href="read/community-evidence-audit.html"><b>6. Community evidence audit</b></a><br><code style="font-size:0.78em">COMMUNITY-EVIDENCE-AUDIT.md</code></td><td>The people who live under it have been complaining since 2008. What have they already recorded, and why can nobody find it?</td><td>10,300</td></tr>
+<tr><td style="white-space:nowrap"><a href="read/data-collection.html"><b>7. Data collection</b></a><br><code style="font-size:0.78em">data-collection/README.md</code></td><td>How many trains, how many people, and for how long? Runnable scripts against MTA and NYC open data - and the traps that each silently produce a plausible wrong number.</td><td>6,915</td></tr>
+</tbody></table></div>
 </div>
-
-<div class="card" id="data">
-  <h2>Data and code</h2>
-  <p>
-    Five Python scripts. <strong>No API key, no account, no payment method</strong>, and everything but
-    the realtime poller uses only the standard library.
-  </p>
-  <table>
-    <thead><tr><th>Script</th><th>Answers</th><th>Cost</th></tr></thead>
-    <tbody>
-      <tr><td><a href="data-collection/bridge_schedule.py"><code>bridge_schedule.py</code></a></td>
-        <td>What is scheduled, by hour and day type</td><td>One 5&nbsp;MB download, about a minute</td></tr>
-      <tr><td><a href="data-collection/bridge_realtime.py"><code>bridge_realtime.py</code></a></td>
-        <td>What actually ran</td><td>Polls and de-duplicates; a week takes a week</td></tr>
-      <tr><td><a href="data-collection/build_dashboard_data.py"><code>build_dashboard_data.py</code></a></td>
-        <td>Per-event train data for the dashboard</td><td>Seconds</td></tr>
-      <tr><td><a href="data-collection/build_pedestrian_data.py"><code>build_pedestrian_data.py</code></a></td>
-        <td>How many people arrive in the corridor, and when</td><td>Four API pulls, about a minute</td></tr>
-      <tr><td><a href="data-collection/build_cohort_model.py"><code>build_cohort_model.py</code></a></td>
-        <td>How long they stay &mdash; and how badly that is identified</td><td>About six minutes of arithmetic</td></tr>
-    </tbody>
-  </table>
-  <p>
-    The generated data is committed alongside the scripts so that the artifacts can be audited without
-    re-running anything: <a href="data-collection/dashboard-data.json"><code>dashboard-data.json</code></a>,
-    <a href="data-collection/pedestrian-data.json"><code>pedestrian-data.json</code></a> and
-    <a href="data-collection/cohort-data.json"><code>cohort-data.json</code></a>.
-  </p>
-  <div class="note warn">
-    <strong>The most dangerous single fact in the data work.</strong> MTA hourly ridership counts
-    <em>entries</em> &mdash; people <em>leaving</em> the corridor. Over a whole day entries and
-    arrivals roughly balance, so a daily total looks correct. <strong>By hour they are close to
-    opposite.</strong> Building an exposure curve on entries would have put the peak in the wrong
-    place while looking more rigorous than anything preceding it.
-  </div>
+<div class="card" id="code">
+<h2>Data and code</h2>
+<p>Every script runs against live public feeds and can be re-run from scratch by anyone. The schedule figures they produce are rated 5/5 &mdash; read directly from the MTA's own published feed.</p>
+<div class="tw"><table><thead><tr><th>Script</th><th>What it does</th><th style="white-space:nowrap">Size</th></tr></thead><tbody>
+<tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/bridge_schedule.py"><code>bridge_schedule.py</code></a></td><td>Counts scheduled Manhattan Bridge traversals from the MTA GTFS static feed, by hour, route and direction.</td><td>5&nbsp;KB</td></tr>
+<tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/bridge_realtime.py"><code>bridge_realtime.py</code></a></td><td>Polls GTFS-realtime for actual traversals. Built and verified; the week-long run has not been done.</td><td>7&nbsp;KB</td></tr>
+<tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/build_dashboard_data.py"><code>build_dashboard_data.py</code></a></td><td>Assembles the frequency dashboard's dataset, including the coincidence analysis that exposed the feed's 30-second quantisation.</td><td>4&nbsp;KB</td></tr>
+<tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/build_pedestrian_data.py"><code>build_pedestrian_data.py</code></a></td><td>Derives arrival rate, departure rate, walkway flow and resident count from four public datasets. Disproved this repository's own claim about which hour is worst.</td><td>17&nbsp;KB</td></tr>
+<tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/build_cohort_model.py"><code>build_cohort_model.py</code></a></td><td>Fits four population cohorts to the observed departure curve and reports the range across every parameter set that fits equally well - which is how the non-identifiability result was found.</td><td>43&nbsp;KB</td></tr>
+<tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/dashboard-data.json"><code>dashboard-data.json</code></a></td><td>Traversal counts by hour, route, direction and period.</td><td>33&nbsp;KB</td></tr>
+<tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/pedestrian-data.json"><code>pedestrian-data.json</code></a></td><td>Turnstile entries, origin-destination arrivals, walkway counts, residents.</td><td>8&nbsp;KB</td></tr>
+<tr><td style="white-space:nowrap"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/cohort-data.json"><code>cohort-data.json</code></a></td><td>The admissible cohort parameter family and the presence ranges it implies.</td><td>13&nbsp;KB</td></tr>
+</tbody></table></div>
+<div class="note warn"><strong>The trap that took three attempts to find.</strong> The MTA's turnstile feed publishes <code>entries</code> at a station, which sounds like people arriving in the neighbourhood and is the exact opposite: an entry is somebody going <em>down into</em> the system and <em>leaving</em>. Reading it the natural way inverts the daily curve, and it will look entirely plausible while doing so. That directional trap and three others are documented in <a href="read/data-collection.html">the data-collection notes</a>.</div>
 </div>
-
-<div class="card" id="discipline">
-  <h2>How to read anything in here</h2>
-  <p>
-    This programme has failed adversarial review five times, always the same way:
-    <strong>over-claiming from abstract-level reading.</strong> The conventions below exist because of
-    those failures, not in anticipation of them.
-  </p>
-  <ul>
-    <li><strong>Every quantitative claim carries a &ldquo;locus&rdquo;</strong> &mdash; the exact
-    passage it rests on, quoted. If a claim has no locus it is an inference and is labelled as one.</li>
-    <li><strong>Every source is rated 1&ndash;5 and marked</strong>
-    <span class="tag v">VERIFIED</span> <span class="tag d">SNIPPET</span>
-    <span class="tag u">UNVERIFIED</span>. A 5/5 is a primary agency measurement read in full. A 1/5
-    is a search-engine snippet.</li>
-    <li><strong>Errors are corrected in place, not deleted.</strong> The wrong claim is quoted as a
-    blockquote and followed by the words <em>&ldquo;That is withdrawn&rdquo;</em>. The dashboard
-    carries three of them. A repository that silently edits its mistakes is asking to be trusted about
-    the ones it has not found yet.</li>
-    <li><strong>Every document ends with &ldquo;where this document is likely to be wrong.&rdquo;</strong>
-    Those sections are the best guide to how much weight any of it will bear.</li>
-    <li><strong>Synthetic is labelled synthetic, on the artifact itself.</strong> Not in a footnote,
-    not in a README somewhere else &mdash; in the interface, where someone screenshotting it will
-    capture the caveat along with the picture.</li>
-  </ul>
+<div class="card" id="conventions">
+<h2>How to read anything in here</h2>
+<p class="lede">Five conventions apply across every document and every artifact. They exist because this programme has failed adversarial review repeatedly, and always the same way: <strong>over-claiming from abstract-level reading.</strong></p>
+<ol>
+<li><strong>Every number carries its locus.</strong> Not a citation - the actual quoted sentence the number came from. If a claim has no locus, it is an inference and is labelled as one.</li>
+<li><strong>Sources are rated 1 to 5 and marked VERIFIED, SNIPPET or UNVERIFIED.</strong> VERIFIED means the full text was read. SNIPPET means only an abstract or search result was seen. Most over-claiming in this programme has come from treating a SNIPPET as if it were VERIFIED.</li>
+<li><strong>Errors are quoted in place, not deleted.</strong> When something here turns out to be wrong, the original wording is left visible as a blockquote and followed by the words <i>that is withdrawn</i>. A research record that hides its own corrections is not a research record.</li>
+<li><strong>Every document ends by attacking itself.</strong> A section titled <i>where this document is likely to be wrong</i>, written by the authors, naming the specific claim they would attack first.</li>
+<li><strong>Synthetic is labelled synthetic, in the interface.</strong> The 3D model contains zero measured elements. The audio is synthesised, not recorded. The agent model's itineraries are invented. Each says so on its own face rather than in a footnote somewhere else.</li>
+</ol>
 </div>
-
-<div class="card" id="gaps">
-  <h2>What is missing, stated plainly</h2>
-  <div class="note bad">
-    <strong>Nobody from this programme has stood in Brooklyn Bridge Park with an instrument.</strong>
-    Thirty-two methods are specified. Two have been executed and one partially. Everything else here
-    is a statement about documents and datasets.
-  </div>
-  <p>The four cheapest things that would move this the furthest, in order:</p>
-  <ol>
-    <li><strong>Method 21 &mdash; the taxonomy-blindness test.</strong> A database query against an API
-    already used here, testing whether elevated-adjacent census tracts show different 311 complaint
-    patterns. An afternoon. Free. <em>Publishable whichever way it comes out.</em></li>
-    <li><strong>Method 31 &mdash; the decay transect.</strong> Walk outward from the bridge with a
-    meter and establish where the affected zone ends. Nobody has ever done this, and that boundary
-    sizes the denominator for every exposure figure in the repository. One afternoon.</li>
-    <li><strong>Method 28 &mdash; measure dwell time.</strong> A timed cordon count with a clicker.
-    Presence is arrival rate multiplied by dwell; only the arrival rate has been measured, and the
-    cohort model proved that no amount of further arithmetic will supply the rest.</li>
-    <li><strong>Q42 &mdash; is this preempted or merely unregulated?</strong> If elevated rapid transit
-    is <em>not</em> federally preempted from local noise regulation, then the City could regulate it
-    and has chosen not to &mdash; which inverts the entire advocacy strategy from seeking a federal
-    waiver to amending a municipal form. <strong>One competent lawyer, one day.</strong> The
-    highest-value open question in the programme.</li>
-  </ol>
-</div>
-
 <div class="card" id="help">
-  <h2>How to help</h2>
-  <p>
-    In rough order of value. The full list is in the
-    <a href="README.md#contributing">README's contributing section</a>.
-  </p>
-  <ul>
-    <li><strong>Post a recording.</strong> If you have ever recorded a train crossing the Manhattan
-    Bridge from Brooklyn Bridge Park, DUMBO or the Williamsburg Bridge walkway, that recording is more
-    useful to this programme than anything currently in it. The bar is far lower than people assume:
-    <strong>spectral shape and event timing survive an uncalibrated phone</strong>, which is what
-    <a href="FIELD-CAPTURE-PROTOCOL.md">FIELD-CAPTURE-PROTOCOL.md</a> is about.</li>
-    <li><strong>Falsify a &ldquo;not found&rdquo; claim.</strong> Five have already failed. The prior
-    on others failing is not low.</li>
-    <li><strong>Execute any method.</strong> Several cost an email, a form, or an afternoon.</li>
-    <li><strong>Challenge the arithmetic.</strong> The event-duration derivation, the cohort
-    identifiability result and the propagation rejection are all arithmetic, and each is either right
-    or wrong. None has been reviewed by anyone. Three issues exist specifically to attack them:
-    <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/26">#26</a>
-    (cohort model),
-    <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/27">#27</a>
-    (agent model),
-    <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/28">#28</a>
-    (propagation).</li>
-    <li><strong>Reclassify a component's provenance.</strong> Anyone with structural knowledge of
-    riveted lattice trusses will find misclassifications in the 3D model, and finding them is the
-    point of publishing the classification.</li>
-  </ul>
-  <div class="note good">
-    <strong>One standing condition.</strong> The people who live under this bridge have been asking
-    for help since 2008. Any contact with them must offer something before it asks for anything, must
-    not represent this programme as more established than it is, and must make clear that its central
-    artifacts are <strong>synthetic</strong>. Over-claiming to a community in that position would be a
-    different and worse kind of error than the ones already made here.
-  </div>
+<h2>How to help</h2>
+<p>This is a working research repository, not a publication. Corrections are more valuable than agreement.</p>
+<ul><li><strong>Post a recording.</strong> See <a href="read/field-capture-protocol.html">the field capture protocol</a> for what makes one usable.</li><li><strong>Falsify a &ldquo;not found&rdquo; claim.</strong> Five have already failed. The prior on others failing is not low.</li><li><strong>Execute any method.</strong> Several cost an email, a form, or an afternoon.</li><li><strong>Challenge the arithmetic.</strong> The event-duration derivation, the cohort identifiability result and the propagation rejection are each either right or wrong, and none has been reviewed by anyone. Issues <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/26">#26</a>, <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/27">#27</a> and <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/28">#28</a> exist specifically to attack them.</li><li><strong>Reclassify a component's provenance.</strong> Anyone with structural knowledge of riveted lattice trusses will find misclassifications in the 3D model, and finding them is the point of publishing the classification.</li></ul>
+<div class="note good"><strong>One standing condition.</strong> The people who live under this bridge have been asking for help since 2008. Any contact with them must offer something before it asks for anything, must not represent this programme as more established than it is, and must make clear that its central artifacts are <strong>synthetic</strong>. Over-claiming to a community in that position would be a different and worse kind of error than the ones already made here.</div>
 </div>
-
-<p class="foot">
-  <strong>Silencing the Span: Defining the Manhattan Bridge Rail-Noise Problem in DUMBO for a
-  Design-Build Intervention.</strong> Ethical Tech CoLab, 2026.
-  Research content released under <a href="LICENSE">CC BY 4.0</a>.
-  Not peer-reviewed. No option in any document is recommended for procurement.
-  <br><br>
-  <a href="README.md">Repository README</a> &middot;
-  <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo">GitHub</a> &middot;
-  <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues">Open issues</a>
-</p>
-
+<p class="foot"><strong>Silencing the Span: Defining the Manhattan Bridge Rail-Noise Problem in DUMBO for a Design-Build Intervention.</strong> Ethical Tech CoLab. Research content released under <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/LICENSE">CC BY 4.0</a>. Not peer-reviewed. No option in any document is recommended for procurement.<br><br>This page was generated by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> from commit <code>12ccc54</code> on 2026-08-02. <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo">Repository</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/">Open issues</a></p>
 </div>
 </body>
 </html>

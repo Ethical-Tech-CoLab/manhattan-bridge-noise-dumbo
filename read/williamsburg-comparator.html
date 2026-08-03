@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3. Williamsburg comparator &mdash; Silencing the Span</title>
+<meta name="description" content="Rendered copy of WILLIAMSBURG-COMPARATOR.md from the Manhattan Bridge rail-noise research repository.">
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, kbd, pre {
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 4px;
+  padding: 0.1em 0.36em;
+}
+pre {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre code { background: none; border: 0; padding: 0; }
+
+/* ---- top bar ---- */
+.bar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--cp-panel-strong);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border);
+}
+.bar .in {
+  max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
+.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
+.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.bar nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  border-radius: 999px; white-space: nowrap;
+}
+.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
+
+h1 { font-size: 2.15rem; line-height: 1.18; margin: 0 0 10px; letter-spacing: -0.01em; }
+h2 { font-size: 1.42rem; margin: 0 0 14px; letter-spacing: -0.005em; }
+h3 { font-size: 1.08rem; margin: 26px 0 8px; }
+p { margin: 0 0 14px; }
+.lede { font-size: 1.06rem; color: var(--cp-text-muted); }
+.sub { color: var(--cp-text-muted); font-size: 1.02rem; margin: 0 0 4px; }
+
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin: 0 0 22px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.hero { background: var(--cp-bg-elevated); }
+
+.statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+.s {
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+  font-size: 0.78rem; color: var(--cp-text-muted);
+}
+.s .k { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.s .big { font-size: 1.9rem; font-weight: 700; color: var(--cp-accent); line-height: 1.1; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 14px; }
+.tile {
+  display: block; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 16px 18px; color: var(--cp-text); transition: border-color .15s, transform .15s;
+}
+.tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
+.tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
+.tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.tile .look {
+  font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
+  border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
+}
+.tile .look b { color: var(--cp-text); }
+
+.badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 999px; vertical-align: middle;
+  border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted);
+}
+.badge.ok { border-color: var(--cp-success); color: var(--cp-success); }
+.badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
+.badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
+.badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+
+.note {
+  border-left: 3px solid var(--cp-accent);
+  background: var(--cp-accent-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  padding: 13px 17px; margin: 16px 0; font-size: 0.92rem;
+}
+.note.bad { border-left-color: var(--cp-danger); background: rgba(220,38,38,0.07); }
+.note.good { border-left-color: var(--cp-success); background: rgba(22,163,74,0.07); }
+.note.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,0.09); }
+
+.tw { overflow-x: auto; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td {
+  border: 1px solid var(--cp-border); padding: 8px 11px;
+  text-align: left; vertical-align: top;
+}
+th { background: var(--cp-surface-soft); font-weight: 700; }
+tbody tr:nth-child(even) td { background: var(--cp-surface-soft); }
+
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li { margin-bottom: 7px; }
+
+blockquote {
+  margin: 16px 0; padding: 10px 18px;
+  border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  color: var(--cp-text-muted);
+}
+
+hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
+
+.foot {
+  color: var(--cp-text-soft); font-size: 0.83rem;
+  border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 30px;
+}
+
+/* ---- work queue ---- */
+.q { border-top: 1px solid var(--cp-border); padding: 15px 0; display: grid;
+     grid-template-columns: 132px 1fr; gap: 18px; }
+.q:first-of-type { border-top: 0; }
+.q .lab { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+          font-weight: 700; padding-top: 3px; }
+.q .h { font-weight: 700; margin-bottom: 2px; }
+.q .cost { font-size: 0.8rem; color: var(--cp-text-soft); margin-bottom: 7px;
+           font-family: Consolas, "Courier New", monospace; }
+.q .why { font-size: 0.9rem; color: var(--cp-text-muted); }
+.lab.blocking { color: var(--cp-danger); }
+.lab.cheap { color: var(--cp-success); }
+.lab.field { color: var(--cp-accent); }
+.lab.review { color: var(--cp-warning); }
+.lab.gate { color: var(--cp-text-muted); }
+
+/* ---- rendered document pages ---- */
+.doclayout { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
+.toc { position: sticky; top: 76px; max-height: calc(100vh - 100px); overflow-y: auto;
+       font-size: 0.84rem; padding-right: 6px; }
+.toc .h { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+          color: var(--cp-text-soft); font-weight: 700; margin-bottom: 8px; }
+.toc a { display: block; padding: 3px 0 3px 9px; color: var(--cp-text-muted);
+         border-left: 2px solid var(--cp-border); line-height: 1.35; }
+.toc a:hover { color: var(--cp-accent); border-left-color: var(--cp-accent); text-decoration: none; }
+.toc a.l3 { padding-left: 20px; font-size: 0.95em; color: var(--cp-text-soft); }
+.doc { min-width: 0; }
+.doc h1 { font-size: 1.95rem; margin-top: 0; }
+.doc h2 { font-size: 1.38rem; margin: 34px 0 12px; padding-bottom: 6px;
+          border-bottom: 1px solid var(--cp-border); }
+.doc h3 { font-size: 1.1rem; margin: 26px 0 8px; }
+.doc h4 { font-size: 0.98rem; margin: 20px 0 6px; color: var(--cp-text-muted); }
+.doc img { max-width: 100%; }
+
+@media (max-width: 980px) {
+  .statrow { grid-template-columns: repeat(2, 1fr); }
+  .doclayout { grid-template-columns: 1fr; }
+  .toc { position: static; max-height: none; margin-bottom: 26px; }
+  .q { grid-template-columns: 1fr; gap: 4px; }
+  .wrap { padding: 22px 16px 70px; }
+  .card { padding: 20px 18px; }
+}
+@media (max-width: 560px) {
+  .statrow { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bar"><div class="in"><a class="home" href="../index.html">Silencing the Span</a><nav><a href="readme.html">README</a><a href="idea-concept.html">1. Concept</a><a href="precedent-and-materials.html">2. Precedent</a><a href="williamsburg-comparator.html" class="on">3. Comparator</a><a href="visual-model-framework.html">4. Visual model</a><a href="field-capture-protocol.html">5. Field capture</a><a href="community-evidence-audit.html">6. Community</a><a href="data-collection.html">7. Data</a></nav></div></div>
+<div class="wrap">
+<div class="doclayout">
+<aside class="toc"><div class="h">On this page</div><a href="#a-two-site-comparative-survey-of-received-rail-noise-in-the-public-outdoor-space-beneath-the-williamsburg-and-manhattan-bridges">A Two-Site Comparative Survey of Received Rail Noise in the Public Outdoor Space Beneath the Williamsburg and Manhattan Bridges</a><a href="#0-about-this-document">0. About this document</a><a class="l3" href="#01-relationship-to-the-companion-documents">0.1 Relationship to the companion documents</a><a class="l3" href="#02-method">0.2 Method</a><a class="l3" href="#03-notation">0.3 Notation</a><a href="#part-1--why-this-bridge-and-why-this-is-not-merely-another-case-study">Part 1 — Why this bridge, and why this is not merely "another case study"</a><a class="l3" href="#11-the-problem-with-a-single-site">1.1 The problem with a single site</a><a class="l3" href="#12-what-the-williamsburg-bridge-holds-constant">1.2 What the Williamsburg Bridge holds constant</a><a class="l3" href="#13-the-variable-of-interest-and-why-it-is-worth-surveying">1.3 The variable of interest, and why it is worth surveying</a><a class="l3" href="#14-the-honest-limits-of-the-pairing">1.4 The honest limits of the pairing</a><a href="#part-2--what-the-two-bridges-actually-are">Part 2 — What the two bridges actually are</a><a class="l3" href="#21-an-asymmetry-worth-stating-up-front">2.1 An asymmetry worth stating up front</a><a class="l3" href="#22-the-williamsburg-bridge-from-the-primary-source">2.2 The Williamsburg Bridge, from the primary source</a><a class="l3" href="#23-the-manhattan-bridge-and-one-very-important-recent-finding">2.3 The Manhattan Bridge, and one very important recent finding</a><a href="#part-3--what-data-already-exists-for-the-williamsburg-bridge">Part 3 — What data already exists for the Williamsburg Bridge</a><a class="l3" href="#31-measured-sound-levels-on-the-bridge--the-domino-sugar-feis">3.1 Measured sound levels on the bridge — the Domino Sugar FEIS</a><a class="l3" href="#32-the-mtas-own-statutory-noise-report">3.2 The MTA's own statutory noise report</a><a class="l3" href="#33-community-evidence">3.3 Community evidence</a><a class="l3" href="#34-what-is-explicitly-not-available">3.4 What is explicitly not available</a><a href="#part-4--the-regulatory-finding-outdoor-space-is-orphaned">Part 4 — The regulatory finding: outdoor space is orphaned</a><a class="l3" href="#41-what-the-city-actually-did-about-williamsburg-bridge-noise">4.1 What the city actually did about Williamsburg Bridge noise</a><a class="l3" href="#42-and-for-the-park-nothing">4.2 And for the park, nothing</a><a class="l3" href="#43-why-this-is-the-right-frame-for-a-design-build-proposal">4.3 Why this is the right frame for a design-build proposal</a><a href="#part-5--designing-the-inference">Part 5 — Designing the inference</a><a class="l3" href="#51-what-kind-of-study-this-is">5.1 What kind of study this is</a><a class="l3" href="#52-the-right-question">5.2 The right question</a><a class="l3" href="#53-the-metric-why-sel-is-necessary-and-why-it-is-not-sufficient">5.3 The metric: why SEL is necessary, and why it is not sufficient</a><a class="l3" href="#54-matching-concretely">5.4 Matching, concretely</a><a class="l3" href="#55-what-would-falsify-what">5.5 What would falsify what</a><a href="#part-6--the-measurement-protocol">Part 6 — The measurement protocol</a><a class="l3" href="#61-instrumentation">6.1 Instrumentation</a><a class="l3" href="#62-locations">6.2 Locations</a><a class="l3" href="#63-timing">6.3 Timing</a><a class="l3" href="#64-separating-rail-from-road--the-defect-in-every-prior-study">6.4 Separating rail from road — the defect in every prior study</a><a class="l3" href="#65-cost-and-access">6.5 Cost and access</a><a href="#part-7--the-questions-this-opens">Part 7 — The questions this opens</a><a href="#part-8--methods">Part 8 — Methods</a><a href="#part-9--where-this-document-is-likely-to-be-wrong">Part 9 — Where this document is likely to be wrong</a><a href="#part-10--sources">Part 10 — Sources</a><a class="l3" href="#101-verified-primary-sources">10.1 Verified primary sources</a><a class="l3" href="#102-retrieval-priority">10.2 Retrieval priority</a><a class="l3" href="#103-explicitly-not-found">10.3 Explicitly not found</a><a href="#provenance">Provenance</a></aside>
+<main class="doc">
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/WILLIAMSBURG-COMPARATOR.md"><code>WILLIAMSBURG-COMPARATOR.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 12,757 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<h1 id="the-bridge-next-door">The Bridge Next Door</h1>
+<h2 id="a-two-site-comparative-survey-of-received-rail-noise-in-the-public-outdoor-space-beneath-the-williamsburg-and-manhattan-bridges">A Two-Site Comparative Survey of Received Rail Noise in the Public Outdoor Space Beneath the Williamsburg and Manhattan Bridges</h2>
+<p><strong>Ethical Tech CoLab — Research Programme, Document 3</strong>
+Draft v1.1 · August 2026 · revised after adversarial review</p>
+<hr />
+<h2 id="0-about-this-document">0. About this document</h2>
+<h3 id="01-relationship-to-the-companion-documents">0.1 Relationship to the companion documents</h3>
+<p>This is the third document in a series.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Asks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IDEA-CONCEPT.md</code></td>
+<td>What is the problem in DUMBO, who is responsible, and what has never been asked?</td>
+</tr>
+<tr>
+<td><code>PRECEDENT-AND-MATERIALS.md</code></td>
+<td>What has the world already built, and what transfers to a suspension bridge?</td>
+</tr>
+<tr>
+<td><strong><code>WILLIAMSBURG-COMPARATOR.md</code></strong></td>
+<td><strong>There is a second bridge with the same owner, the same operator, the same division of rolling stock and the same statute. What does it already tell us, and what would measuring it establish?</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><code>PRECEDENT-AND-MATERIALS.md</code> §8.3 recorded a gap it could not close:</p>
+<blockquote>
+<p>No quantified acoustic result from any rail-carrying suspension bridge was located anywhere in this survey.</p>
+</blockquote>
+<p>It then named the obvious place to look and admitted it had not looked:</p>
+<blockquote>
+<p>If any comparator exists, it is that one — and this survey did not look.</p>
+</blockquote>
+<p>This document looks.</p>
+<h3 id="02-method">0.2 Method</h3>
+<p>Same method as the companions, and the same rubric.</p>
+<p><strong>Source credibility, 1–5.</strong> 5 = peer-reviewed or primary agency/statutory document. 4 = technical report from a research institution. 3 = conference paper, trade technical press, agency secondary. 2 = advocacy, vendor, or enthusiast-technical. 1 = tertiary encyclopaedia, news aggregation, social media.</p>
+<p><strong>One declared exception.</strong> Haight &amp; Patel (2005) is a conference paper, which the rubric places at 3. It is rated <strong>5/5</strong> here because its second author is the Director of East River Bridges at NYCDOT — the owner of both structures — writing about work he directed, which makes it a primary account by the responsible agency rather than third-party commentary. The exception is declared rather than applied silently, and a reader who disagrees should read every claim sourced to it at 3/5.</p>
+<p><strong>Verification state.</strong> <code>VERIFIED</code> = the source was opened and the passage supporting the claim was read. <code>SNIPPET</code> = only an abstract, search result or quoted excerpt was seen. <code>UNVERIFIED</code> = the citation is recorded but nothing was read.</p>
+<p><strong>Locus.</strong> New in this document, and adopted from the methodological finding filed as issue #11 against the previous two. Every quantitative or dispositive claim below states <strong>which passage of the source it comes from</strong>, and quotes it. The finding that prompted this: <em>all five errors found across the first two documents had a single cause — a source summarised from its abstract rather than read to its conclusions.</em> A verification state that records retrieval but not depth of reading did not catch any of them. Quoting the locus is the cheap control.</p>
+<p><strong>A note on what this document is not.</strong> It is not a measurement report. <strong>No measurements were taken.</strong> It is a design for a study, plus an inventory of what already exists. Every number below came from somebody else's instrument, and the central argument is precisely that the measurement that would settle the question has not been made by anyone.</p>
+<h3 id="03-notation">0.3 Notation</h3>
+<p>Acoustic quantities are written in code style to keep them out of the prose and out of the markdown:</p>
+<ul>
+<li><code>Leq</code> — equivalent continuous sound level, energy average over a stated period.</li>
+<li><code>Leq(1)</code> — the above over one hour.</li>
+<li><code>L10(1)</code>, <code>L50</code>, <code>L90</code> — levels exceeded 10%, 50%, 90% of the time in one hour. <code>L90</code> approximates the residual background. <code>L10(1)</code> is the CEQR metric.</li>
+<li><code>Lmax</code> — maximum level during an event.</li>
+<li><code>SEL</code> — sound exposure level: the total acoustic energy of a single event, normalised to one second. <strong>The critical metric in this document</strong>, for reasons given in §5.3.</li>
+<li><code>dB(A)</code> — A-weighted. <code>dB(lin)</code> — unweighted. These are not interchangeable and the difference is enormous at low frequency: A-weighting discards <strong>50.4 dB at 20 Hz</strong> and <strong>30.2 dB at 50 Hz</strong>.</li>
+<li><code>TL</code>, <code>IL</code> — transmission loss, insertion loss.</li>
+</ul>
+<p>Structural and institutional abbreviations: <strong>NYCDOT</strong> (owns both bridges), <strong>NYCT</strong> (MTA New York City Transit, operates the trains), <strong>C&amp;D</strong> (MTA Construction &amp; Development), <strong>CEQR</strong> (City Environmental Quality Review), <strong>PAL § 1204-a</strong> (N.Y. Public Authorities Law § 1204-a, the Rapid Transit Noise Code), <strong>HAER</strong> (Historic American Engineering Record), <strong>MHW</strong> (mean high water).</p>
+<hr />
+<h2 id="part-1--why-this-bridge-and-why-this-is-not-merely-another-case-study">Part 1 — Why this bridge, and why this is not merely "another case study"</h2>
+<h3 id="11-the-problem-with-a-single-site">1.1 The problem with a single site</h3>
+<p>Everything established in <code>IDEA-CONCEPT.md</code> describes one bridge. That is a fundamental methodological weakness and it has a specific consequence: <strong>for every causal claim about why DUMBO is loud, there is no counterfactual.</strong></p>
+<p>The document asserts, with reasonable evidence, that the Manhattan Bridge is loud because it is an open-deck, unballasted, direct-fastened steel structure with jointed rail, described by an environmental impact statement as an "efficient radiator," discharging into a hard-surfaced street canyon. Every one of those is plausible. <strong>None is isolated.</strong> They co-occur. With one site and one set of measurements there is no way to attribute the received level among them, and <code>PRECEDENT-AND-MATERIALS.md</code> Part 2 had to downgrade an entire "bridge penalty" argument from a quantified class to qualitative risk factors for exactly this reason.</p>
+<p>A second site does not fix this by itself. A second site that holds most variables constant and moves one does.</p>
+<h3 id="12-what-the-williamsburg-bridge-holds-constant">1.2 What the Williamsburg Bridge holds constant</h3>
+<p>This is the point. The comparison is unusually clean, and the reason is institutional rather than scientific: both bridges happen to be owned, operated, maintained, regulated and litigated by the same entities.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Manhattan Bridge</th>
+<th>Williamsburg Bridge</th>
+<th>Held?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bridge owner</td>
+<td>NYCDOT</td>
+<td>NYCDOT</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Rail operator</td>
+<td>MTA NYCT</td>
+<td>MTA NYCT</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Rolling stock division</td>
+<td>B Division</td>
+<td>B Division</td>
+<td><strong>Yes — but see below</strong></td>
+</tr>
+<tr>
+<td>Maintenance regime</td>
+<td>NYCT Maintenance of Way</td>
+<td>NYCT Maintenance of Way</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Governing noise statute</td>
+<td>PAL § 1204-a</td>
+<td>PAL § 1204-a</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Municipal noise code</td>
+<td>NYC Noise Control Code</td>
+<td>NYC Noise Control Code</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Environmental review regime</td>
+<td>CEQR</td>
+<td>CEQR</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Structure type</td>
+<td>Suspension</td>
+<td>Suspension</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Crossing</td>
+<td>East River</td>
+<td>East River</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Era</td>
+<td>Opened 1909</td>
+<td>Opened 1903</td>
+<td>Near</td>
+</tr>
+<tr>
+<td>Major reconstruction</td>
+<td>c. 1982–2004</td>
+<td>c. 1990–2006, ongoing</td>
+<td>Near</td>
+</tr>
+<tr>
+<td>Deck type at track</td>
+<td>Open, unballasted steel</td>
+<td>Open, unballasted steel</td>
+<td>Near — <strong>to be verified</strong></td>
+</tr>
+<tr>
+<td>Regional climate</td>
+<td>Identical</td>
+<td>Identical</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Receptor land use</td>
+<td>Dense residential waterfront + signature park</td>
+<td>Dense residential waterfront + signature park</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td><strong>Track position</strong></td>
+<td><strong>Outboard, cantilevered, 2 per side</strong></td>
+<td><strong>Central, between two roadways</strong></td>
+<td><strong>NO</strong></td>
+</tr>
+<tr>
+<td><strong>Track count</strong></td>
+<td><strong>4</strong></td>
+<td><strong>2</strong></td>
+<td><strong>NO</strong></td>
+</tr>
+<tr>
+<td>Car class and consist length</td>
+<td>Unknown</td>
+<td>Unknown</td>
+<td><strong>UNKNOWN — not held</strong></td>
+</tr>
+<tr>
+<td>Speed over structure</td>
+<td>Unknown</td>
+<td>Unknown</td>
+<td><strong>UNKNOWN — not held</strong></td>
+</tr>
+<tr>
+<td>Service frequency</td>
+<td>Unknown</td>
+<td>Unknown</td>
+<td><strong>UNKNOWN — not held</strong></td>
+</tr>
+<tr>
+<td>Rail and wheel condition, joint inventory</td>
+<td>Partially documented</td>
+<td>Undocumented</td>
+<td><strong>UNKNOWN — not held</strong></td>
+</tr>
+<tr>
+<td>Structural mobility and damping</td>
+<td>Undocumented</td>
+<td>Undocumented</td>
+<td><strong>UNKNOWN — not held</strong></td>
+</tr>
+<tr>
+<td>Approach geometry, curvature</td>
+<td>Undocumented</td>
+<td>Documented profile kink at towers</td>
+<td><strong>NO</strong></td>
+</tr>
+<tr>
+<td>Receptor distance, height, local propagation field</td>
+<td>Open waterfront and street canyon</td>
+<td>Open waterfront and street canyon</td>
+<td><strong>Similar in kind, not matched</strong></td>
+</tr>
+<tr>
+<td>Road traffic on the structure</td>
+<td>Present</td>
+<td>Present, 8 lanes</td>
+<td><strong>NO — not matched</strong></td>
+</tr>
+<tr>
+<td>Services</td>
+<td>B, D, N, Q</td>
+<td>J, M, Z</td>
+<td>No</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>What this table is, and what it is not.</strong> It is the strongest institutional and regulatory control available between any two rail structures anywhere in the surveyed literature. It is <strong>not</strong> a controlled experiment, and the two blocks of rows below the double line are the reason.</p>
+<p>The nine "not held" and "unknown" rows are not confounds that careful design removes. They are <strong>inseparable from bridge identity</strong>. Fleet assignment, speed, consist length, rail condition, joint count, structural mobility, road traffic and receptor geometry all change together with the bridge, and no amount of <code>SEL</code> normalisation constructs the counterfactual in which the Williamsburg Bridge has outboard tracks.</p>
+<p><strong>Therefore: this document proposes a two-site comparative survey, not a matched-pair natural experiment.</strong> A between-bridge difference cannot be attributed to track position. What the survey can do is (a) establish the magnitude and character of received rail noise in a second piece of public outdoor space under the same operator and statute, (b) test whether the DUMBO levels are exceptional or typical, and (c) determine whether a difference exists that is <em>large enough to be worth explaining</em> — which is the precondition for, not a substitute for, an identification study.</p>
+<p><strong>This framing is a correction.</strong> Draft v1.0 of this document called the design a matched pair and described the bottom rows as "the experiment." An adversarial review identified that as the document's central error, and it is left visible here rather than quietly rewritten. The original sentence read: <em>"The three rows at the bottom are the experiment. Everything above them is the control."</em> It was wrong, and it was wrong in the direction that flatters the study.</p>
+<h3 id="13-the-variable-of-interest-and-why-it-is-worth-surveying">1.3 The variable of interest, and why it is worth surveying</h3>
+<p><strong>Track position is the most consequential geometric difference between these two bridges, and it is the exact variable on which the worldwide literature is silent.</strong></p>
+<p>On the Manhattan Bridge the four subway tracks are the <strong>outermost elements of the structure</strong>. They are carried on cantilevered framing outboard of the trusses, they overhang toward the neighbourhoods on both sides, and their loading is eccentric — which is the documented origin of the bridge's twenty-two-year torsional pathology.</p>
+<p>On the Williamsburg Bridge the two subway tracks are in the <strong>dead centre</strong>, flanked on both sides by four-lane roadways which were reconstructed with <strong>closed-rib orthotropic steel deck</strong>, and outboard of those by the stiffening truss, and outboard of that by the footwalks.</p>
+<p>Stated as a hypothesis rather than a fact: <strong>the Williamsburg Bridge's flanking roadway decks may interrupt part of the path from rail source to receptor, where the Manhattan Bridge's outboard tracks have nothing between them and the neighbourhood.</strong></p>
+<p>Three qualifications have to travel with that sentence and did not in draft v1.0.</p>
+<p><strong>First, the geometry is unverified.</strong> Whether a horizontal deck at approximately rail elevation stands in any sightline to a receptor below depends on relative <em>vertical</em> positions that no located source states. <code>VISUAL-MODEL-FRAMEWORK.md</code> §3.2 exists to resolve exactly this, and until it does, the hypothesis is geometric speculation.</p>
+<p><strong>Second, a deck is not a barrier.</strong> Barrier performance depends on wavelength, edge path difference, source height, receiver angle and source extent. At low frequencies diffraction around the deck edge will substantially defeat any shielding. At higher frequencies a deck may block direct wheel–rail radiation while itself becoming a structure-borne radiator, and the truss is open, so paths remain. A steel deck rigidly connected to the same floor system that carries the track is as plausibly a <em>radiator</em> as a shield.</p>
+<p><strong>Third, and decisively, a difference would not identify the mechanism.</strong> Fleet spectrum, rail roughness, joint condition, speed and structural mobility can all produce a Williamsburg advantage of any size and any spectral shape. The survey cannot separate them.</p>
+<p>If the flanking decks are doing acoustic work, the Williamsburg Bridge is a <strong>full-scale, in-service, century-old instance of an incidental shielding geometry</strong> of the kind <code>PRECEDENT-AND-MATERIALS.md</code> §3.5 and §3.6 could only discuss from foreign viaduct literature — worth characterising even though the survey cannot prove causation.</p>
+<p>And if it is <em>not</em> — if South Williamsburg is just as loud at matched distance — the conclusion is narrower than draft v1.0 claimed. <strong>A null result would say only that this particular incidental geometry, an uninstrumented 1903 arrangement of vibrating steel decks at unknown elevations, is not delivering measurable benefit.</strong> It would say nothing about a purpose-designed barrier, screen or enclosure, which is a different object with different edge geometry, different mass, different damping and different placement. Draft v1.0 wrote that a null result would mean "the option class should be de-prioritised." That inference does not follow and is withdrawn.</p>
+<p><strong>Either result changes what should be built. That is the test of a worthwhile experiment.</strong></p>
+<h3 id="14-the-honest-limits-of-the-pairing">1.4 The honest limits of the pairing</h3>
+<p>Three differences are not controlled and must be handled analytically rather than pretended away.</p>
+<ol>
+<li>
+<p><strong>Service frequency and consist differ.</strong> J/M/Z headways and train lengths are not B/D/N/Q headways and train lengths. This <strong>fatally contaminates any comparison of <code>Leq</code> or <code>L10(1)</code></strong> between the two sites, because those metrics integrate over time and therefore reward or punish a site for how many trains run. §5.3 addresses this and it is the single most important methodological point in the document.</p>
+</li>
+<li>
+<p><strong>Track count differs, 4 versus 2.</strong> More tracks means more source, but also a wider structure and different modal behaviour. Track count and track position are <strong>partially confounded</strong> in this pairing and cannot be fully separated by two sites alone.</p>
+</li>
+<li>
+<p><strong>Receptor geometry differs.</strong> DUMBO's receptors sit in a street canyon close to and below the Brooklyn approach. South Williamsburg's sit across an open waterfront. This is not a nuisance variable to be eliminated — it is itself one of the things worth measuring — but it means "which neighbourhood is louder" is the <strong>wrong question</strong>. The right question is posed in §5.2.</p>
+</li>
+</ol>
+<hr />
+<h2 id="part-2--what-the-two-bridges-actually-are">Part 2 — What the two bridges actually are</h2>
+<h3 id="21-an-asymmetry-worth-stating-up-front">2.1 An asymmetry worth stating up front</h3>
+<p><strong>The comparator is better documented than the subject.</strong></p>
+<p><code>IDEA-CONCEPT.md</code> §13 concedes that its structural description of the Manhattan Bridge rests on a <strong>tertiary source rated 1/5</strong> — a well-referenced encyclopaedia article whose own primaries were never opened. For the Williamsburg Bridge, this document located a conference paper <strong>co-authored by the Director of East River Bridges at NYCDOT</strong>, which is a 5/5 primary-agency source, <code>VERIFIED</code>, read in full.</p>
+<p>That is an uncomfortable position: the study now knows more about the bridge it is using as a control than about the bridge it is trying to fix. It is also an argument for doing this work, because the Williamsburg paper demonstrates that documentation at this quality <strong>exists for East River bridges</strong> and therefore probably exists for the Manhattan Bridge too, in a form that has simply not been retrieved.</p>
+<h3 id="22-the-williamsburg-bridge-from-the-primary-source">2.2 The Williamsburg Bridge, from the primary source</h3>
+<blockquote>
+<p><strong>Source.</strong> Haight, R. and Patel, J., <em>Reconstruction of the Williamsburg Bridge.</em> Roger Haight, P.E., Project Manager, Parsons Corporation; <strong>Jay Patel, P.E., Director of East River Bridges, New York City Department of Transportation.</strong> Published by AISC (World Steel Bridge Symposium, 2005). <strong>Rubric 5/5. <code>VERIFIED</code> — full text read.</strong></p>
+</blockquote>
+<p><strong>Locus — overall geometry.</strong> Verbatim:</p>
+<blockquote>
+<p>"The main suspended span is 1,600 feet long, with side spans each 596.5 feet... The anchorages are each 114.25 feet long. The Manhattan Approach viaduct is the longer of the two approach viaducts at 2,090.25 feet; the Brooklyn Approach viaduct is approximately 1,557 feet long. Four cables suspend the stiffening truss approximately 135 feet above mean high water level in the East River. <strong>The stiffening truss is 67 feet wide and approximately 40 feet deep and is pinned at each main tower.</strong>"</p>
+</blockquote>
+<p><strong>Locus — the track position claim, which is load-bearing for this entire document.</strong> Verbatim:</p>
+<blockquote>
+<p>"<strong>The central section of the bridge, which contains two subway lines</strong>, underwent a track/signal and structural support steel rehabilitation as well."</p>
+</blockquote>
+<p>and</p>
+<blockquote>
+<p>"<strong>Two subway tracks cross the Williamsburg Bridge</strong> from the first subterranean station in Manhattan to the first elevated station in Brooklyn."</p>
+</blockquote>
+<p>and, from the figure annotation of the main span section drawing, listing elements across the section:</p>
+<blockquote>
+<p>"NORTH FOOTWALK · CL.TRK J1 · CL.TRK J2 · NEW STIFFENERS (TYP) · <strong>NEW BMT TRACKS</strong> · SOUTH PEDESTRIAN WALKWAY · <strong>NEW TRACK STRINGER COLUMN AND BRACING</strong> · REPAIR FLOORBEAM, TRUSS BOTTOM CHORD, LATERAL BRACING (TYP)"</p>
+</blockquote>
+<p>Two tracks, centre section, carried on <strong>track stringers</strong> on <strong>stringer columns and bracing</strong> — not on ballast. Centreline designations J1 and J2.</p>
+<p><strong>Locus — the flanking roadways.</strong> Verbatim:</p>
+<blockquote>
+<p>"The North and South Roadways each consist of four lanes... The existing roadways were constructed of open steel grid deck and concrete-filled grid deck at various locations... replaced with a <strong>closed rib orthotropic deck system</strong>."</p>
+</blockquote>
+<p>This matters acoustically in two opposite directions and the document should not pretend otherwise. A closed-rib orthotropic deck is a <strong>large, stiff, continuous steel plate</strong>, and orthotropic decks are themselves known radiators of traffic-induced noise. So the flanking structure is simultaneously a <strong>potential shield</strong> for rail noise and a <strong>potential source</strong> of road noise. Disentangling them is a measurement problem, addressed in §6.4.</p>
+<p><strong>Locus — the track geometry defect and the speed restriction.</strong> Verbatim:</p>
+<blockquote>
+<p>"the dead load on the main suspended span has increased since the bridge was first built, and the profile has flattened, causing a <strong>slight kink in the subway track profile at each main tower</strong>... <strong>Subway trains were required to reduce speed when riding over these profile kinks.</strong>"</p>
+</blockquote>
+<p>and the remedy:</p>
+<blockquote>
+<p>"Ten passes, for a total of <strong>1,116 adjustments</strong>, were required to raise the profile 21 inches at midspan."</p>
+</blockquote>
+<p><strong>Locus — an NYCT track geometry tolerance, quotable and rare.</strong> Verbatim:</p>
+<blockquote>
+<p>"NYCT specifies that the <strong>maximum curvature in a 31-foot chord (the centerline-to-centerline distance of the wheel trucks) is +/-1/4 inch</strong>."</p>
+</blockquote>
+<p>This is a hard number from the operator on allowable track geometry deviation. <code>IDEA-CONCEPT.md</code> Q2 asks for the joint and fixation inventory; this is the adjacent tolerance against which any such inventory would be judged, and it was not previously in the corpus.</p>
+<p><strong>Locus — and the finding with the largest practical consequence in this section.</strong> Verbatim:</p>
+<blockquote>
+<p>"<strong>Two traveling maintenance platforms were installed for inspection and maintenance of the main span. The traveling maintenance platforms are approximately 119 feet wide and 17 feet long</strong>, in order to inspect one complete panel point without needing to move the platform."</p>
+</blockquote>
+<p><code>PRECEDENT-AND-MATERIALS.md</code> Part 7 concluded that <strong>access, not acoustics, is the scarce resource</strong>, and Part 10 Method 10 asks for an access and approval matrix because no option is approval-free. The sister bridge, owned by the same agency, <strong>already has a permanent, powered, 119-foot-wide traveling under-deck platform system running on installed rails.</strong> Whatever the acoustic result turns out to be, this is a directly relevant precedent for how you get people, sensors or equipment under an East River suspension bridge on a routine basis — and it is NYCDOT's own.</p>
+<p>Other verified figures: four main cables of <strong>7,696 wires each</strong>; <strong>815,000 lb</strong> of steel plating added to strengthen the main towers; rocker arms replaced with <strong>2,500 kip</strong> pot/sliding bearings designed for <strong>±16 inches</strong> of longitudinal movement; anchorage bearings <strong>1,200 kip</strong>; over <strong>7,000,000 lb</strong> of steel replaced or added; total reconstruction cost <strong>approximately $900 million</strong>.</p>
+<h3 id="23-the-manhattan-bridge-and-one-very-important-recent-finding">2.3 The Manhattan Bridge, and one very important recent finding</h3>
+<p>The structural description remains as recorded in <code>IDEA-CONCEPT.md</code> §4.1 at rubric 1/5 and is not restated here. But this review located a source that document did not have, and it is significant enough to change priorities.</p>
+<blockquote>
+<p><strong>Source.</strong> Rutgers Center for Advanced Infrastructure and Transportation (CAIT), <em>CAIT Research Helps NYC Engineers Monitor Structural Health of Manhattan Bridge</em>, 3 June 2021. Research leads <strong>Dr. Franklin Moon</strong> and <strong>Dr. Sougata Roy</strong>, Rutgers Dept. of Civil and Environmental Engineering; project funded through a National University Transportation Center grant; <strong>conducted with NYCDOT</strong>. <strong>Rubric 3/5</strong> — institutional research communication, not the underlying paper. <strong><code>VERIFIED</code> — full page read.</strong> The underlying technical report was <strong>not</strong> retrieved and is retrieval priority 1 (§10.2).</p>
+</blockquote>
+<p>This matters for four reasons.</p>
+<p><strong>First, it partially answers Q2 — and Q2 was rated blocking.</strong> <code>IDEA-CONCEPT.md</code> §4.2 could establish only that a systemwide MTA policy statement made continuous welded rail <em>unlikely</em> on elevated structures, and stated plainly that the bridge's actual joint inventory was undocumented in any located source. CAIT went and measured it. Verbatim:</p>
+<blockquote>
+<p>"the team performed limited vibration tests at the Manhattan Approach, <strong>on each of the transit beams that support a set of rails</strong>. The goal of this study was to characterize the response of the bridge due to the <strong>misalignment of bolted rail joints</strong>, which introduced strong vibration as trains crossed them."</p>
+</blockquote>
+<p><strong>Bolted rail joints exist on the Manhattan Bridge and they are misaligned.</strong> That is no longer an inference from policy.</p>
+<p><strong>Second, a severity classification and a magnitude already exist.</strong> Verbatim:</p>
+<blockquote>
+<p>"the researchers examined the bridge response using <strong>magnetically mounted accelerometers</strong>. The accelerometers were roved around to identify different levels of vibration associated with various bolted rail joints. Based on these results, they developed a criteria and organized the various rail joints into <strong>fair, poor, and severe</strong>... the more severely misaligned splices resulted in more vibration on the bridge, <strong>almost double that of the fair splices</strong>. This was further corroborated by the long-term stress measurements."</p>
+</blockquote>
+<p>A factor of approximately two in structural vibration response between a <em>fair</em> joint and a <em>severe</em> one, on this bridge, measured. <strong>This is an association between joint-condition class and structural response — not a demonstrated treatment effect.</strong> CAIT ran no before-and-after maintenance trial, isolated no causal path, and reported no acoustic outcome. What it establishes is that the variation exists and is large, which is the precondition for asking whether treating it would help, not an answer to that question. It is also, notably, <strong>the same thing the DUMBO residents' original 2022 suggestion was about</strong>, which the MTA declined as infeasible (<code>IDEA-CONCEPT.md</code> §5.5).</p>
+<p>The claim must be bounded honestly, and draft v1.0 did not bound it enough. This is <strong>structural vibration on transit beams</strong>, not radiated sound at a receptor, and the two are related by a radiation efficiency that nobody has measured. A 2:1 vibration ratio does not entail 6 dB at the Archway; it need not entail any change at the Archway. Draft v1.0 called this "the strongest quantitative evidence yet located that a purely maintenance-based intervention has meaningful headroom." <strong>That is withdrawn.</strong> The correct statement is that it is the strongest quantitative evidence yet located that <strong>joint condition on this bridge varies enough to be worth testing acoustically</strong> — which makes Method 12 and Q25 more valuable, and makes no claim about efficacy.</p>
+<p><strong>Third, it describes a self-accelerating degradation loop.</strong> Dr. Roy, verbatim:</p>
+<blockquote>
+<p>"Rails at joints always get hammered by crossing wheels and experience more wear. The rail wear increases hammering. Repeated hammering loosens the bolted rail joints, increases stress fluctuations in the bolts, and the bolts fail in fatigue. With lost bolts the rails go more out of alignment — increasing vibration."</p>
+</blockquote>
+<p>If correct, <strong>the structural response from this mechanism degrades progressively between maintenance interventions.</strong> Draft v1.0 wrote that "noise from this mechanism gets worse monotonically," which the quoted passage does not support — it describes a structural wear loop, not a monotonic receptor-noise trajectory, and receptor noise depends on radiation efficiency, other sources and propagation as well. What can be said is that residents' reports of worsening conditions, recorded in <code>IDEA-CONCEPT.md</code> Part 2 and generally treated as subjective, have <strong>a documented physical mechanism that is consistent with them.</strong></p>
+<p><strong>Fourth, and most disruptive to the existing programme: the problem may not be on the span at all.</strong> Dr. Moon, verbatim:</p>
+<blockquote>
+<p>"Often times when people think about signature bridges they focus mainly on the signature spans. It turns out that <strong>many of the problems these days are actually on the approach spans</strong>."</p>
+</blockquote>
+<p>CAIT's tests were performed <strong>at the Manhattan Approach</strong>. The Manhattan Bridge's Brooklyn approach viaduct is the structure that runs directly over and alongside DUMBO. <code>IDEA-CONCEPT.md</code> and <code>PRECEDENT-AND-MATERIALS.md</code> have both been organised implicitly around the suspended span.</p>
+<p><strong>If the receptor-relevant noise in DUMBO is dominated by the approach viaduct rather than the suspended span, then <code>PRECEDENT-AND-MATERIALS.md</code> issue #9 — the suspension-bridge literature gap — is substantially less damaging than it appeared</strong>, because an approach viaduct is a conventional steel elevated structure of exactly the type the worldwide literature does cover. This would be good news, and it is testable. It is posed as Q23.</p>
+<p>And a scale figure, verbatim: the bridge "carries approximately <strong>1,000 trains</strong> and hundreds of thousands of passengers daily."</p>
+<hr />
+<h2 id="part-3--what-data-already-exists-for-the-williamsburg-bridge">Part 3 — What data already exists for the Williamsburg Bridge</h2>
+<p>This part answers the question as asked: <em>what is available by doing deep research?</em> The short answer is <strong>more than expected, none of it fit for purpose, and the gaps are informative.</strong></p>
+<h3 id="31-measured-sound-levels-on-the-bridge--the-domino-sugar-feis">3.1 Measured sound levels on the bridge — the Domino Sugar FEIS</h3>
+<p>This is the most substantial existing dataset located.</p>
+<blockquote>
+<p><strong>Source.</strong> <em>Domino Sugar Rezoning Final Environmental Impact Statement, Chapter 20: Noise.</em> New York City Department of City Planning / applicant, 2010. Field measurements by <strong>AKRF, Inc.</strong>, October 2007 and February–March 2010. <strong>Rubric 5/5</strong> — primary CEQR document. <strong><code>VERIFIED</code> — chapter read in full.</strong></p>
+</blockquote>
+<p><strong>Locus — instrumentation, quoted so that a replication can match it:</strong></p>
+<blockquote>
+<p>"a Brüel &amp; Kjær Type 4189 ½-inch microphone connected to a Brüel &amp; Kjær Model 2260 Type 1 (according to ANSI Standard S1.4-1983) sound level meter. This assembly was mounted at a height of <strong>5 feet above the ground surface</strong> on a tripod and at least 6 feet away from any large sound-reflecting surface... Measured quantities included Leq, L1, L10, L50, and L90... All measurement procedures conformed to the requirements of ANSI Standard S1.13-1971 (R2005)."</p>
+</blockquote>
+<p><strong>Locus — the measurement on the bridge itself. Table 20-7, Site 10:</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Site</th>
+<th>Location</th>
+<th>Period</th>
+<th><code>Leq</code></th>
+<th><code>L1</code></th>
+<th><code>L10</code></th>
+<th><code>L50</code></th>
+<th><code>L90</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td><strong>Pedestrian walkway of Williamsburg Bridge</strong></td>
+<td>Weekday PM</td>
+<td><strong>82.5</strong></td>
+<td><strong>92.3</strong></td>
+<td><strong>86.5</strong></td>
+<td><strong>78.6</strong></td>
+<td><strong>75.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>All values dB(A). For orientation, <code>IDEA-CONCEPT.md</code> §1.2 records MTA measurements near the Manhattan Bridge Brooklyn anchorage in the <strong>81–87 dB(A) <code>Leq</code></strong> range with maxima near 98 dB.</p>
+<p><strong>The <code>L90</code> of 75.7 dB(A) is the most striking number in the table.</strong> It says that on the Williamsburg Bridge walkway, the level exceeded ninety percent of the time is itself approaching the level at which the CEQR machinery starts imposing 30+ dB of façade attenuation on new housing. There is effectively no quiet interval. Note that at a position on a bridge carrying eight lanes of road traffic, <code>L90</code> is simply the lower-percentile ambient — it should <strong>not</strong> be read as a train-free or road-free background, and the report gives no basis for decomposing it.</p>
+<p><strong>Locus — the derived level at bridge height, and the assumptions inside it:</strong></p>
+<blockquote>
+<p>"the L10(1) was determined at the location on the project site closest to the bridge, which would be the southern façade of Site D at a height level with the bridge. This L10(1) was determined in two ways: (1) projecting the value measured at Site 11 south and up to Site D, and (2) projecting the value measured at Site 10 north to Site D. In both cases <strong>it was assumed that the measured levels were dominated by noise generated by the Williamsburg Bridge and a 3 dBA drop-off per doubling of distance from the bridge</strong>. These methods yielded L10(1) values of <strong>74.6 and 73.5</strong>, respectively."</p>
+</blockquote>
+<p>Two independent projections agreeing within 1.1 dB is reassuring about internal consistency and says nothing about accuracy, since both used the same assumed propagation law. A 3 dB per doubling law is a <strong>line-source</strong> assumption. It is defensible for a long train on a long bridge and it is an assumption, not a measurement.</p>
+<p><strong>Locus — and here is the disqualifying limitation, stated by the authors themselves:</strong></p>
+<blockquote>
+<p>"<strong>Traffic was the dominant noise source at all eleven sites</strong>, and the values shown reflect the level of vehicular activity on the adjacent streets."</p>
+</blockquote>
+<p>and, on the purpose of the two bridge-related sites:</p>
+<blockquote>
+<p>"in order to determine the maximum noise that would result from <strong>automobile and subway traffic</strong> on the Williamsburg Bridge... Sites 10 and 11 were used <strong>solely for the purpose of determining the building attenuation required</strong> by reason of their proximity to the Williamsburg Bridge, and are therefore <strong>not presented in the No Action and future with the proposed project scenarios</strong>."</p>
+</blockquote>
+<p><strong>The subway is never separated from the road traffic.</strong> Site 10 is on the bridge walkway, metres from four lanes of moving vehicles, measuring both. The number is a combined level.</p>
+<p>This is precisely the same defect that <code>IDEA-CONCEPT.md</code> Q1 identifies in the DUMBO evidence base, arrived at independently on a different bridge by a different consultant fifteen years earlier. <strong>Neither of New York's two rail-carrying suspension bridges has a published measurement that isolates the rail contribution.</strong> That is a striking gap, it is now documented on both bridges, and it is the reason §6 is built around event-synchronous measurement.</p>
+<h3 id="32-the-mtas-own-statutory-noise-report">3.2 The MTA's own statutory noise report</h3>
+<blockquote>
+<p><strong>Source.</strong> <em>New York City Transit Noise Reduction Report</em>, MTA, prepared pursuant to the Rapid Transit Noise Code and <strong>Public Authorities Law § 1204-a</strong>. Covering 2023 with 2024 projections. <strong>Rubric 5/5</strong> — primary agency document filed under statutory duty. <strong><code>VERIFIED</code> — full text read.</strong></p>
+</blockquote>
+<p>This is the report the statute compels. Its own abstract states the duty, verbatim:</p>
+<blockquote>
+<p>"<strong>Any and all subway noise measurements made during the previous period shall be included</strong>, with, whenever possible, analyses of such measurements."</p>
+</blockquote>
+<p><strong>Finding: the Williamsburg Bridge appears zero times.</strong></p>
+<p>A term-frequency count of the full report text: <code>Williamsburg</code> — <strong>0</strong>. <code>Manhattan Bridge</code> — <strong>8</strong>. <code>DUMBO</code> — <strong>6</strong>.</p>
+<p>The DUMBO matter is documented at length, including the entire internal referral chain, because a State Assembly Member wrote to the Chairman and CEO. The report also contains a complete measurement memorandum for a different site entirely, verbatim:</p>
+<blockquote>
+<p>"In response to noise complaints from residents at Brightwater Towers Condominium, on August 2, 2023, Environmental Services collected noise measurements of passing subway trains on the elevated structures for the F and Q lines... The average <code>LEQ</code> for the F trains on the Jamaica-179th street bound track... is <strong>85.1 dB(A)</strong>, with an average <code>LMAX</code> of <strong>94.6 dB(A)</strong>. The highest <code>LEQ</code> measured was <strong>87.8 dB(A)</strong> and the highest <code>LMAX</code> measured was <strong>97.1 dB(A)</strong>. The F train produces elevated peaks on the <strong>400 Hz, 500 Hz, 2kHz, and 6.3kHz</strong> bands during screeching... the background <code>LEQ</code> was measured at <strong>56.3 dB(A)</strong> for a three-and-a-half-minute lull between train arrivals."</p>
+</blockquote>
+<p>Three things follow.</p>
+<p><strong>One — this is spectral data from the operator on an open steel elevated structure</strong>, and the named bands are consistent with the rail-damper target range that <code>PRECEDENT-AND-MATERIALS.md</code> §4.1 identifies as 400 Hz to 2 kHz. It is the only MTA spectral information located in three documents of research.</p>
+<p><strong>Two — it demonstrates the measurement is trivial for them.</strong> One field engineer, one afternoon, one location, a Type 1 meter. The barrier to measuring the Williamsburg Bridge is not cost, capability or access. In 2023 they responded to <strong>14</strong> noise and vibration complaints across Brooklyn and Queens.</p>
+<p><strong>Three — the absence of Williamsburg is evidence about this report, and at most about complaint routing. It is not evidence about the noise.</strong> The § 1204-a report is complaint-driven and escalation-driven. DUMBO appears in it because a resident wrote in, an Assembly Member escalated to the Chairman, and Government &amp; Community Relations became involved. A zero term count in one reporting year cannot establish that no complaint or request about the Williamsburg Bridge was ever made — only that none surfaced in the reviewed report. Q28 turns the underlying issue into a research question, because how environmental attention gets allocated is a question with a literature.</p>
+<p><strong>Also verified from this report</strong>, because it bears on the companion documents:</p>
+<ul>
+<li>MTA's own abatement effectiveness figures: traction motor retrofit <strong>5–7 dB(A)</strong>; <strong>"resilient rail fastener installation on steel elevated structures (3–5 dBA noise reduction)"</strong>; ring damped wheels <strong>15–20 dB(A)</strong> on screech; rail welding <strong>9–10 dB(A)</strong>. The 3–5 figure is one side of the contradiction recorded at <code>IDEA-CONCEPT.md</code> §5.1.</li>
+<li>Flat wheels: "In some cases, the increase can be <strong>as great as 10 dBA</strong>."</li>
+<li>Programme spend: <strong>$32,849,385.24 materials and $124,800,000.00 labour</strong> in the reporting year; projected <strong>$32,882,460.52 and $162,240,000.00</strong>. A labour-to-materials ratio of <strong>3.8:1 rising to 4.9:1</strong>, which independently corroborates the 4–6× ratio recorded at <code>IDEA-CONCEPT.md</code> §9.3 from a different source.</li>
+<li>MTA organises noise into four categories: "1) in-car, 2) <strong>elevated structures</strong>, 3) curve and brake screech and 4) stations." <strong>There is no bridge category.</strong> A suspension bridge carrying four tracks is administratively an "elevated structure," the same as a conventional viaduct.</li>
+</ul>
+<h3 id="33-community-evidence">3.3 Community evidence</h3>
+<blockquote>
+<p><strong>Source.</strong> <em>Reduce Williamsburg Bridge Subway Noise for South Williamsburg &amp; Domino Park</em>, Change.org petition, started by Shane Barratt, Williamsburg resident. Created <strong>16 June 2026</strong>; <strong>16 signatures</strong> at retrieval. <strong>Rubric 2/5</strong> — advocacy. <strong><code>VERIFIED</code>.</strong></p>
+</blockquote>
+<p>Cited not as evidence of noise level but as evidence that <strong>the same complaint exists at the second site</strong>, which is a precondition for the comparison being socially as well as physically meaningful. Verbatim:</p>
+<blockquote>
+<p>"Excessive subway noise from trains crossing the Williamsburg Bridge is adversely affecting residents, families, workers, and visitors around Domino Square and the South Williamsburg waterfront. The J/M/Z trains pass over the bridge frequently, including early mornings, late nights, and peak commuting hours. For people living near the bridge, <strong>using Domino Square Park, walking dogs, working from home, visiting local businesses, or spending time with children outdoors</strong>, the repeated <strong>screeching and rumbling</strong> is disruptive and, at times, overwhelming."</p>
+</blockquote>
+<p>The requested actions are worth recording because they were arrived at independently by a resident and they map closely onto the option classes the research programme reached by literature survey: track inspection and maintenance, <strong>rail grinding or welding</strong>, <strong>lubrication on curves</strong>, noise and vibration studies, <strong>sound-dampening materials</strong>, and "evaluation of modern noise-reduction technologies used on other elevated rail systems."</p>
+<p>Named decision-makers: Antonio Reynoso (former Brooklyn Borough President), <strong>Emily Gallagher (NY Assembly District 50)</strong>, <strong>Julia Salazar (NY Senate District 18)</strong>, <strong>Lincoln Restler (NYC Council District 33)</strong>.</p>
+<p><strong>A political observation with practical consequence.</strong> The DUMBO matter escalated through <strong>Assembly Member Jo Anne Simon, AD-52</strong>. The Williamsburg matter names <strong>AD-50</strong>. But <strong>Council Member Lincoln Restler, District 33, represents both</strong> DUMBO and this stretch of Williamsburg waterfront. There is therefore <strong>one elected official with a constituency interest in both bridges</strong>, which is the natural sponsor for a two-site study and, as far as this review can determine, has not been approached as such.</p>
+<p>The petition's scale — 16 signatures — should be read carefully. It is two months old at the time of writing. It is weak evidence of prevalence and strong evidence of existence.</p>
+<h3 id="34-what-is-explicitly-not-available">3.4 What is explicitly not available</h3>
+<p>Recorded so that the next researcher does not repeat the search.</p>
+<ul>
+<li><strong>No noise measurement isolating subway from road traffic on either bridge</strong>, from any source, at any date.</li>
+<li><strong>No Williamsburg Bridge entry in the MTA § 1204-a report</strong> for the reviewed year.</li>
+<li><strong>No vibration or modal study of the Williamsburg Bridge</strong> located. The CAIT work is Manhattan Bridge only.</li>
+<li><strong>No published sound measurement in Domino Park itself</strong> — the FEIS measured the bridge walkway and surrounding streets before the park existed.</li>
+<li><strong>No spectral data of any kind for the Williamsburg Bridge.</strong></li>
+<li><strong>No <code>SEL</code> or event-based metric for either bridge, anywhere.</strong> Every located measurement is <code>Leq</code>, <code>L10</code>, <code>L50</code>, <code>L90</code> or <code>Lmax</code>.</li>
+<li>The USDOT report <strong>"Performance of Rail Fastening Systems on an Open-Deck Bridge"</strong> (ROSA-P <code>dot/35570</code>, 1 Feb 2018) is directly on point for both bridges and <strong>could not be retrieved</strong> — the repository returned HTTP 403 on the PDF. <strong><code>SNIPPET</code></strong>, retrieval priority 2.</li>
+</ul>
+<hr />
+<h2 id="part-4--the-regulatory-finding-outdoor-space-is-orphaned">Part 4 — The regulatory finding: outdoor space is orphaned</h2>
+<p>This part was not planned. It emerged from reading the Domino FEIS against the DUMBO material and it is, in this author's judgement, the most consequential non-acoustic finding in the document.</p>
+<h3 id="41-what-the-city-actually-did-about-williamsburg-bridge-noise">4.1 What the city actually did about Williamsburg Bridge noise</h3>
+<p>It required thicker windows. Verbatim, from the FEIS:</p>
+<blockquote>
+<p>"<strong>With the resultant noise level from the Williamsburg Bridge of 74.6 being very close to the 75 dBA threshold, the south and west facades would require 31 dBA of attenuation rather than 30 dBA.</strong>"</p>
+</blockquote>
+<p>That is the whole of it. The determination that the bridge produces roughly 74.6 dB(A) <code>L10(1)</code> at the façade of a new residential building triggered a <strong>building envelope specification</strong>, enforced through a Restrictive Declaration on the developer, requiring <strong>31 dB(A)</strong> of composite window-and-wall attenuation to hold interiors at or below 45 dB(A).</p>
+<p>Nothing was asked of the bridge. Nothing was asked of the operator. The noise source was treated, correctly under the rules as written, as an immutable environmental given — and the entire regulatory response was to require <strong>a private party to buy better glazing</strong>.</p>
+<h3 id="42-and-for-the-park-nothing">4.2 And for the park, nothing</h3>
+<p>Here is the gap. <strong>CEQR's attenuation machinery only operates on building envelopes.</strong> A park has no envelope. Domino Park, Domino Square, the Archway, the Brooklyn Bridge Park lawns and the DUMBO dog run cannot be issued a Restrictive Declaration requiring 31 dB(A) of window attenuation, because they have no windows.</p>
+<p>For outdoor space the guidance offers a target and then, in the same breath, excuses itself from it:</p>
+<blockquote>
+<p>"While the 55 dBA L10(1) guideline is a worthwhile goal for outdoor areas requiring serenity and quiet, due to the level of activity present at most open space areas and parks throughout New York City (except for areas far away from traffic..."</p>
+<p><strong>Source.</strong> NYC Parks, Chapter 13: Noise, FEIS for a Queens parks project (<code>12DPR005Q</code>). <strong>Rubric 4/5.</strong> <strong><code>SNIPPET</code></strong> — this passage was seen in a search result and <strong>the document was not opened.</strong> Flagged for retrieval; the sentence is truncated mid-clause and its completion materially affects how strong this finding is. <strong>Do not cite this further until it is read.</strong></p>
+</blockquote>
+<p>The structure of the outcome, however, does not depend on that one quotation, because it is visible directly in the Domino FEIS: <strong>Site 10 and Site 11 were used "solely for the purpose of determining the building attenuation required"</strong> and were explicitly excluded from the No Action and With Action analyses. The bridge's contribution was measured <strong>only</strong> to size windows.</p>
+<p><strong>So: the loudest identified source in the study area was measured, quantified at 82.5 dB(A) <code>Leq</code> on the structure, projected to 74.6 dB(A) <code>L10(1)</code> at the new façades — and the sole regulatory consequence was one additional decibel of required glazing performance.</strong></p>
+<p>The people in the park are outside the analysis. Literally.</p>
+<h3 id="43-why-this-is-the-right-frame-for-a-design-build-proposal">4.3 Why this is the right frame for a design-build proposal</h3>
+<p><code>IDEA-CONCEPT.md</code> Part 3 establishes that responsibility for the Manhattan Bridge is split between NYCDOT and NYCT with no party owning the received noise. This part adds a complementary observation on the receptor side, and it must be stated at the scope the evidence actually supports:</p>
+<blockquote>
+<p><strong>In the one environmental review examined here, the identified consequence of 82.5 dB(A) on the Williamsburg Bridge was façade attenuation on a private developer. No outdoor-source mitigation was identified, and the two bridge-side monitoring positions were excluded from the impact analysis by design.</strong></p>
+</blockquote>
+<p>Draft v1.0 generalised this to "the environmental review system that governs everything built near these bridges has no mechanism to protect outdoor public space, and knows it." <strong>That is withdrawn.</strong> It rests on one project outcome plus a truncated search-result snippet from a parks FEIS that was never opened, and it is exactly the locus failure this document's method note claims to have eliminated. One project outcome establishes what happened in that project. It does not establish that no CEQR provision, parks policy, health regulation, nuisance doctrine or other instrument exists.</p>
+<p><strong>Whether the generalisation is true is Q29, and Method 14 exists to answer it.</strong> Until that review is done, the finding is a single documented instance, and it should be presented as one.</p>
+<p>Even at that reduced scope it is useful, because the instance is directly on point: the receptor of concern is a park, the source is a subway on a suspension bridge, and the regulatory output was a window specification.</p>
+<p>That is the gap a design-build project would plausibly be filling. Not a code violation — there is no violated code, which is exactly <code>IDEA-CONCEPT.md</code> Q11 and the § 1204-a Category IV blank.</p>
+<p>And it is why the measurement proposed in Part 6 should be taken <strong>in the parks, at ear height, where people actually sit</strong> — not only at façades. Every existing measurement on both bridges was taken either on the structure or at a building line, because those are the places the rules care about.</p>
+<hr />
+<h2 id="part-5--designing-the-inference">Part 5 — Designing the inference</h2>
+<h3 id="51-what-kind-of-study-this-is">5.1 What kind of study this is</h3>
+<p>A <strong>two-site observational comparison</strong>, not an experiment, because the difference of interest — track position — was fixed in 1903 and cannot be randomised, reversed or replicated.</p>
+<p>Draft v1.0 called this "a natural experiment with a single treated and single control unit." <strong>That framing is withdrawn.</strong> A natural experiment requires that assignment be plausibly independent of the outcome and that everything else be comparable. Here everything else is <em>not</em> comparable: fleet, speed, consist, service frequency, rail and joint condition, structural mobility, damping, approach geometry, road traffic and receptor propagation field all change together with the bridge, and §1.2 now lists them. There is no counterfactual and no identification strategy.</p>
+<p>What the survey can actually deliver, stated at the level the design supports:</p>
+<ol>
+<li><strong>Magnitude.</strong> What people in a second piece of public outdoor space, under the same operator and the same statute, are actually exposed to. Currently unknown; no measurement exists in Domino Park.</li>
+<li><strong>Character.</strong> Matched event spectra from two structures of the same class. This is where the diagnostic value lies, and it is descriptive value, not causal value.</li>
+<li><strong>A screening result.</strong> Whether a difference exists that is large enough to be worth explaining. If the two sites are within a couple of decibels at matched geometry, no expensive identification study is warranted. If they differ by 10 dB, one is.</li>
+</ol>
+<p>It cannot deliver "outboard track position costs X dB," and any output phrased that way is a misuse of the data.</p>
+<h3 id="52-the-right-question">5.2 The right question</h3>
+<p>Not <em>"is DUMBO louder than South Williamsburg?"</em> That confounds source, path, distance, service and receptor geometry, and would produce a headline with no engineering content.</p>
+<p>The question is:</p>
+<blockquote>
+<p><strong>At matched slant distance from the nearest rail, matched elevation relative to the track, and matched propagation path class, does a single train event on the Manhattan Bridge deliver more acoustic energy to a receptor than a single train event on the Williamsburg Bridge — and if so, in which frequency bands, and does that difference survive normalisation for car class, consist length, axle count and speed?</strong></p>
+</blockquote>
+<p>The "in which bands" clause is the payload, and it is a <strong>diagnostic</strong> payload, not a proof. If the flanking decks shield, the difference should be selective rather than flat — a barrier of any geometry attenuates short wavelengths more effectively than long ones. A selective difference is therefore <em>consistent with</em> shielding and would justify the instrumented apportionment study that could test it. A spectrally flat difference would point away from a geometric path effect and toward a source-side difference such as fleet, rail condition or joint count. No difference would remove the motivation for either.</p>
+<p>None of these outcomes identifies a mechanism, for the reason given in §1.2 and §5.1. Fleet spectra differ; rail roughness differs; structural mobility differs. The survey narrows the hypothesis space; it does not close it.</p>
+<h3 id="53-the-metric-why-sel-is-necessary-and-why-it-is-not-sufficient">5.3 The metric: why <code>SEL</code> is necessary, and why it is not sufficient</h3>
+<p><strong>This is the most important methodological point in the document, and draft v1.0 overstated it.</strong></p>
+<p>Every existing measurement located on both bridges — MTA's, AKRF's, the CEQR framework itself — reports <code>Leq</code>, <code>L10(1)</code>, <code>L50</code>, <code>L90</code> or <code>Lmax</code>.</p>
+<p><code>Leq</code> integrates energy over a period, so it rises when more trains run. The B/D/N/Q services over the Manhattan Bridge and the J/M/Z services over the Williamsburg Bridge do not run at the same frequency or the same consist length. <strong>A difference in <code>Leq</code> between the two sites would be substantially a measure of the timetable.</strong> That is a real limitation for the question asked here, and it is not a defect in the metric: <code>Leq</code> is the correct measure of <em>exposure</em>, which is what health guidance and most regulation are about.</p>
+<p><code>L10(1)</code> is a <strong>percentile</strong>, not a time-integrated energy quantity — draft v1.0 grouped it with <code>Leq</code> under "time-integrated," which is wrong. It is the level exceeded 10% of the hour, and it is the CEQR metric, so it must continue to be reported whatever else is measured.</p>
+<p><code>Lmax</code> avoids the timetable problem but discards nearly all the information in the event — it is one sample of one instant and is heavily influenced by a single flat wheel.</p>
+<p>The metric this survey needs in addition is <strong><code>SEL</code></strong>, the sound exposure level of a single train passage: the total A-weighted, and separately unweighted third-octave, energy of the event normalised to one second. <code>SEL</code> characterises <strong>the event</strong>, independent of how often events occur.</p>
+<p><strong>And here is the qualification draft v1.0 omitted entirely.</strong> <code>SEL</code> does not isolate "the bridge." Event <code>SEL</code> depends on consist length, axle count, speed, traction or coasting state, wheel roughness, joint crossings within the measurement window, and the analyst's choice of event window. A longer train produces a higher <code>SEL</code> at identical per-axle emission. Raw <code>SEL</code> compared between two bridges running different services would substitute a fleet-and-consist confound for a timetable confound.</p>
+<p>So the requirement is <code>SEL</code> <strong>plus covariates recorded per event</strong>: car class, consist length, axle count, direction, track, speed, and whether the pass-by was under power. Comparison is then made within matched strata, or <code>SEL</code> is modelled with those covariates as terms. Both are standard; neither is optional.</p>
+<p>Draft v1.0 asserted that "the entire New York evidence base on these two bridges is expressed in units that cannot support a cross-site comparison." <strong>That is withdrawn.</strong> The correct statement is narrower:</p>
+<blockquote>
+<p>No located document on either bridge reports <code>SEL</code>, which is standard practice in rail noise assessment internationally. Without it, the existing <code>Leq</code> and <code>L10(1)</code> records cannot be used to compare per-event emission between the two sites — though they remain valid and legally operative measures of exposure, and must be reported alongside any <code>SEL</code> survey rather than replaced by it.</p>
+</blockquote>
+<h3 id="54-matching-concretely">5.4 Matching, concretely</h3>
+<p>Receptor pairs must be matched on:</p>
+<ol>
+<li><strong>Slant distance</strong> from nearest running rail, ±10%.</li>
+<li><strong>Vertical angle</strong> to the track, since the outboard/central difference is expressed largely in elevation angle and shielding geometry.</li>
+<li><strong>Path class</strong> — direct line-of-sight, singly diffracted, or reflected. These must not be mixed within a pair.</li>
+<li><strong>Ground and façade context</strong> — hard urban surface versus open water frontage. Where this cannot be matched, it must be recorded and the pair analysed separately.</li>
+<li><strong>Height above grade</strong> — one pair at 1.5 m for outdoor public space, one at a residential façade height.</li>
+</ol>
+<p>Pairs should be <strong>replicated at three distances</strong> on each bridge so that a propagation slope is measured rather than assumed. The Domino FEIS assumed 3 dB per doubling; nobody has checked it on either bridge.</p>
+<h3 id="55-what-would-falsify-what">5.5 What would falsify what</h3>
+<p>Stated in advance, per the method note in <code>IDEA-CONCEPT.md</code> §0.1 and the pre-declaration principle in <code>PRECEDENT-AND-MATERIALS.md</code> Method 7.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Hypothesis</th>
+<th>Consistent with</th>
+<th>Inconsistent with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>H1</strong> Central track position with flanking decks provides material shielding</td>
+<td><code>SEL</code> difference favours Williamsburg at matched geometry, with the difference growing at frequencies whose wavelength is small relative to the calculated edge path difference — a threshold that must be computed from the section once §3.2 of the visual framework establishes it, not assumed</td>
+<td>Difference is null, or favours Manhattan Bridge, or is spectrally flat</td>
+</tr>
+<tr>
+<td><strong>H2</strong> The outboard cantilever radiates more low-frequency energy</td>
+<td>Manhattan Bridge shows relatively more energy below ~125 Hz at matched geometry</td>
+<td>Low-frequency content is comparable</td>
+</tr>
+<tr>
+<td><strong>H3</strong> Jointed-rail impact dominates the receptor-relevant signature</td>
+<td>Event spectra show broadband impulsive structure correlating with joint crossings; <code>SEL</code> varies markedly between trains matched on class, consist and speed</td>
+<td>Spectra are dominated by steady rolling and screech components</td>
+</tr>
+<tr>
+<td><strong>H4</strong> The receptor-relevant noise in DUMBO comes mainly from the approach viaduct, not the suspended span</td>
+<td>Levels along the Brooklyn approach exceed those at matched distance from the suspended span</td>
+<td>The suspended span dominates</td>
+</tr>
+<tr>
+<td><strong>H5</strong> Track/joint condition, not structure, drives the difference</td>
+<td>Within-bridge variation across joint condition classes is comparable to between-bridge variation</td>
+<td>Between-bridge variation dominates</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>A warning that applies to all five.</strong> These are consistency tests, not identification tests. Per §1.2, every one of the confounds listed in the "not held" block of the control table could produce the pattern in the "consistent with" column without the hypothesis being true. Draft v1.0 headed these columns "Supported if" and "Falsified if"; that overstated what a two-site survey can do and the headings are corrected. H1 in particular cannot be established by this survey at all — only rendered plausible or implausible enough to justify the instrumented apportionment study that would actually test it.</p>
+<p>The 250 Hz threshold that appeared in draft v1.0's H1 row was <strong>not sourced from anything</strong> and is withdrawn. Barrier performance is governed by the Fresnel number, which depends on wavelength and the path-difference geometry; with the section geometry unknown, no crossover frequency can be stated.</p>
+<p><strong>H5 deserves emphasis because it is the cheap outcome.</strong> If CAIT's fair-to-severe factor of two in structural response translates to a comparable spread in radiated <code>SEL</code>, then the <em>within</em>-bridge variation caused by maintenance state could be as large as anything track position explains — and the intervention would be a maintenance programme, not a construction project. That result would be inconvenient for a design-build proposal and would be the most valuable result the study could produce.</p>
+<hr />
+<h2 id="part-6--the-measurement-protocol">Part 6 — The measurement protocol</h2>
+<p>Deliberately specified to be executable by a two-person team with commodity equipment, because §3.2 establishes that the MTA does this work in an afternoon and the barrier is therefore not technical.</p>
+<h3 id="61-instrumentation">6.1 Instrumentation</h3>
+<ul>
+<li><strong>Two matched Type 1 sound level meters</strong>, third-octave capable, 20 Hz to 10 kHz, synchronised clocks, simultaneous unweighted and A-weighted capture. Matching the Domino FEIS instrument class (B&amp;K 2260 or modern equivalent) preserves comparability with the 2007–2010 baseline.</li>
+<li><strong>Continuous raw audio capture</strong> alongside the meter, so that events can be re-analysed, mis-triggered events rejected, and third-octave <code>SEL</code> recomputed later. The absence of raw time histories is the specific defect that <code>IDEA-CONCEPT.md</code> §3.2 files a FOIL request over; do not reproduce it.</li>
+<li><strong>Triaxial accelerometers</strong>, magnetically mounted, on the structure where accessible — the same technique CAIT used, chosen deliberately for comparability with their dataset.</li>
+<li><strong>Event log</strong>: time, service, direction, track, consist length, and observed speed.</li>
+<li><strong>Weather</strong>: wind speed, direction, temperature, humidity, per the ANSI conditions the FEIS records.</li>
+</ul>
+<h3 id="62-locations">6.2 Locations</h3>
+<p><strong>Williamsburg Bridge, Brooklyn side.</strong> Domino Park and Domino Square at ear height where people sit; the South Williamsburg waterfront at three slant distances; a residential façade on the south-facing frontage nearest the bridge — ideally the same Site D geometry the FEIS projected to, which converts a projection into a measurement.</p>
+<p><strong>Williamsburg Bridge, Manhattan side.</strong> The Lower East Side approach, which is a control for a different receptor geometry under the same structure.</p>
+<p><strong>Manhattan Bridge, Brooklyn side.</strong> The Archway, the dog run, the library forecourt and Front/Pine — the receptors already named in <code>IDEA-CONCEPT.md</code> — plus matched distances beneath and alongside the <strong>Brooklyn approach viaduct</strong> specifically, to test H4.</p>
+<p><strong>Both bridges.</strong> A walkway position replicating Domino FEIS Site 10, since that is the only existing point with a published historical value. Re-occupying it gives a <strong>nineteen-year repeat observation</strong> — not a change measurement. Instrument, road traffic volume and mix, fleet, rail condition, season, weather and time of day all differ, and none of the 2007 covariates were published. Any difference must be reported as an observation requiring comparability controls, not attributed to time.</p>
+<p><strong>Controls.</strong> At least one position per neighbourhood shielded from the bridge but otherwise comparable, to establish the residual background that <code>L90</code> only approximates.</p>
+<h3 id="63-timing">6.3 Timing</h3>
+<p>Both bridges within the same week, ideally the same day using two teams, under comparable weather. Include a <strong>late-night window</strong>, because the petitions on both bridges emphasise early morning and late night, service frequency is lower, road traffic is much lower, and <strong>rail noise is therefore best isolated from road noise in the small hours</strong> without needing any modelling assumption.</p>
+<h3 id="64-separating-rail-from-road--the-defect-in-every-prior-study">6.4 Separating rail from road — the defect in every prior study</h3>
+<p>The Domino FEIS's own limitation, stated by its authors, was that "traffic was the dominant noise source at all eleven sites" and that the subway was never separated from it. Doing better is not difficult; it is simply never done. But draft v1.0 claimed more for this protocol than it can deliver, and the claim is corrected below.</p>
+<ol>
+<li><strong>Event-gating with background subtraction.</strong> Train passages are discrete, identifiable and loggable. Compute <code>SEL</code> over the event window, compute the energy in the inter-event intervals, and <strong>subtract the background energy from the event window</strong> rather than reporting the gated total. Without that subtraction the gated event still contains whatever road traffic was present during it. Road traffic is quasi-stationary; rail is transient; but "transient" does not mean "alone."</li>
+<li><strong>Simultaneous road-vehicle logging</strong> at each position, so that event windows contaminated by a heavy vehicle, a motorcycle or a siren can be excluded rather than averaged in. This is the item that actually does most of the work and it was missing from draft v1.0.</li>
+<li><strong>Night measurement</strong>, where road flow is minimal — a check on items 1 and 2, not a substitute for them.</li>
+<li><strong>Speed and axle detection</strong> per event, so that <code>SEL</code> can be normalised per §5.3.</li>
+<li><strong>Near-source microphones</strong>, positioned on the walkway close to the track, to characterise the emission independently of the receptor-side mixture.</li>
+<li><strong>Spectral discrimination.</strong> Road traffic and rail differ in spectral signature, and the MTA's own 400 Hz / 500 Hz / 2 kHz / 6.3 kHz screech peaks are a useful rail indicator. They are an <em>indicator</em>, not a fingerprint: braking road vehicles and structural resonances also produce mid- and high-frequency tonal content.</li>
+<li><strong>Structure-mounted accelerometers</strong>, for transfer-path work.</li>
+</ol>
+<p><strong>A correction on what item 7 can show.</strong> Draft v1.0 stated: <em>"Signal arriving at the receptor that is coherent with rail-induced structural vibration is rail-borne. This is the definitive discriminator."</em> <strong>That is physically wrong and is withdrawn.</strong></p>
+<p>Airborne wheel–rail noise and structure-radiated noise are driven by the <em>same</em> excitation — the train. Both will be coherent with a structure-mounted accelerometer during a pass-by. Coherence demonstrates <strong>common excitation, not propagation path</strong>. It separates train-caused energy from road-caused energy, which is useful, but it does not separate airborne rail noise from structural radiation, which is the apportionment question <code>IDEA-CONCEPT.md</code> Q1 actually asks.</p>
+<p>Separating those two paths requires measured accelerometer-to-microphone transfer functions, ideally with independent structural excitation while no train is present, and realistically requires the beamforming or near-field array methods of <code>IDEA-CONCEPT.md</code> Method 1. It is out of scope for a survey conducted from public space.</p>
+<p>Draft v1.0 concluded: <em>"All four together settle it."</em> <strong>They do not.</strong> Items 1 through 6 give a defensible separation of <strong>train-caused from road-caused</strong> energy, which is more than any prior study of either bridge achieved and is sufficient for the survey's purpose. They do not settle source apportionment within the train-caused component.</p>
+<h3 id="65-cost-and-access">6.5 Cost and access</h3>
+<p>No access to the track, the structure, or any MTA or NYCDOT property is required for the microphone positions — all are public parks, sidewalks and publicly accessible bridge walkways. <strong>This is the only part of the entire research programme that requires no agency permission</strong>, which is a notable contrast with every option in <code>PRECEDENT-AND-MATERIALS.md</code> Part 3 and 4.</p>
+<p>Accelerometer mounting on the structure <strong>does</strong> require NYCDOT permission and should be treated as a separable phase-2 enhancement, not a precondition. If it cannot be obtained, items 1 through 6 of §6.4 still stand — and per the correction in §6.4, they are the items doing the work in any case.</p>
+<hr />
+<h2 id="part-7--the-questions-this-opens">Part 7 — The questions this opens</h2>
+<p>Continuing the numbering from <code>PRECEDENT-AND-MATERIALS.md</code>, which ended at Q22.</p>
+<p><strong>On the word "novel."</strong> Draft v1.0 attached phrases like "not found posed anywhere" to several of these. That claim is narrowed here, following the same narrowing applied to <code>IDEA-CONCEPT.md</code> Part 10 after its own review. Several of the questions below are <strong>standard questions in railway acoustics</strong> — source apportionment between rail and structure, the effect of joint and rail condition on radiated noise, empirical propagation laws, single-event <code>SEL</code> characterisation. Railway acoustics has asked all of these for decades. What is not found is any instance of them being <strong>asked of these two structures</strong>, in this city, at these receptors, with a comparison between the pair. That is a claim about a gap in the record for a specific pair of assets, not a claim of conceptual originality, and it is the only claim a search of this scope can support. Q31 is not a research question at all — it is an asset-inventory request, and it is listed here because it gates several of the others. Absence claims below are bounded by the searches recorded in Part 10.</p>
+<p><strong>Q23 — Is DUMBO's received noise dominated by the suspended span or by the Brooklyn approach viaduct?</strong> CAIT's finding that "many of the problems these days are actually on the approach spans," combined with the fact that their Manhattan Bridge tests were performed at the Manhattan Approach, makes this the highest-value question in this document. <strong>If the approach dominates, the suspension-bridge literature gap largely dissolves and the worldwide elevated-transit precedent becomes directly applicable.</strong> Not found posed for this structure.</p>
+<p><strong>Q24 — Does the Williamsburg Bridge's central track position, flanked by orthotropic roadway decks, produce a measurable shielding benefit, and with what spectral shape?</strong> The incidental-enclosure question. Draft v1.0 claimed that "no study of any bridge located anywhere addresses shielding by a co-located roadway deck" — an unbounded negative that no search can support, and it is withdrawn. The bounded form: no such study was located in this survey, and none was located for either East River structure. Note also that this question cannot be answered by the survey in Part 6; answering it requires the geometry to be drawn and the paths to be separated.</p>
+<p><strong>Q25 — How much of the received level is attributable to rail joint condition rather than to structure?</strong> A standard question in railway acoustics, asked here of a specific pair of assets. CAIT establishes a factor of about two in structural response between fair and severe joints. The translation from that to radiated sound at a receptor is unmeasured <strong>at these sites</strong> and is the difference between a maintenance programme and a capital project.</p>
+<p><strong>Q26 — What is the actual propagation law from each bridge to its receptors?</strong> Standard method, site-specific gap. Both the Domino FEIS and, by implication, the DUMBO analyses assume simple geometric spreading. On a structure this long, this high, over water, into a street canyon on one side and open frontage on the other, this is an assumption nobody has tested at either site.</p>
+<p><strong>Q27 — What is the <code>SEL</code> signature of a single train event on each bridge?</strong> <code>SEL</code> is the standard single-event metric in transit noise assessment, including in FTA guidance. It is trivial to obtain, has not been obtained at either site in any located record, and is the only basis on which the two sites can be compared at all.</p>
+<p><strong>Q28 — Why was DUMBO measured and Williamsburg not, and what does the answer say about how environmental attention is allocated?</strong> The § 1204-a report is complaint- and escalation-driven. DUMBO reached the Chairman's office via an Assembly Member. This is a procedural-justice question with a real literature, and it is directly answerable from agency records. <strong>It is also the question most likely to be uncomfortable and most likely to change behaviour.</strong></p>
+<p><strong>Q29 — Does any mechanism in New York environmental review protect outdoor public space from a pre-existing transportation noise source?</strong> Part 4 suggests the answer is no: the machinery acts on building envelopes, and parks have none. If confirmed against the statute and the CEQR Technical Manual rather than inferred from two FEIS chapters, this is a legal finding of some weight, and it is the natural companion to the § 1204-a Category IV blank in <code>IDEA-CONCEPT.md</code> Q11.</p>
+<p><strong>Q30 — Has the level at the Williamsburg Bridge walkway changed since 2007?</strong> Re-occupying Domino FEIS Site 10 yields a nineteen-year repeat observation at near-zero marginal cost. It is a repeat observation and not a change measurement: the 2007 instrument, exact position, height, weather and traffic conditions are not recoverable from the FEIS, so any difference confounds real change with methodological difference. Given CAIT's self-accelerating joint-degradation mechanism a measurable increase is a plausible prediction, and a repeat observation is the cheapest way to see whether one is worth pursuing properly.</p>
+<p><strong>Q31 — Can the Williamsburg Bridge's existing traveling maintenance platforms serve as the access model, or even the physical platform, for under-deck acoustic work on either bridge?</strong> Not a research question — an asset-inventory and feasibility question, listed here because it gates the cost of almost every physical option in <code>PRECEDENT-AND-MATERIALS.md</code>. NYCDOT already owns and operates two 119-foot-wide traveling platforms on the sister structure, and that survey concluded access is the binding constraint. The two facts were not found connected in any located document; they may well be connected inside NYCDOT, which is what makes Method 15 worth filing.</p>
+<hr />
+<h2 id="part-8--methods">Part 8 — Methods</h2>
+<p>Continuing from Methods 6–10 in <code>PRECEDENT-AND-MATERIALS.md</code>.</p>
+<p><strong>Method 11 — The two-site <code>SEL</code> survey.</strong> Part 6 as specified. Two people, two meters, one week, no agency permission for the core protocol. <strong>This is the cheapest decision-relevant measurement available anywhere in the programme</strong> and it addresses Q23, Q24, Q26, Q27 and Q30 simultaneously — as a screening and characterisation exercise, not as an identification study.</p>
+<p><strong>Method 12 — Retrieve the CAIT technical report and, if possible, the underlying data.</strong> The news item is rubric 3/5 and reports a study whose full results are not public in the located material. The accelerometer dataset from the Manhattan Approach transit beams, if obtainable, is directly relevant to Method 6 (modal and radiation survey) and may reduce its scope substantially. Contact points are named: Dr. Franklin Moon and Dr. Sougata Roy, Rutgers CAIT. <strong>Cost: an email.</strong></p>
+<p><strong>Method 13 — The § 1204-a attention audit.</strong> Request, under FOIL, the complaint and measurement records underlying the annual reports across all filed years, for all locations. Establishes the trigger threshold empirically and answers Q28. Extends the existing FOIL in <code>IDEA-CONCEPT.md</code> §3.2 rather than duplicating it.</p>
+<p><strong>Method 14 — The outdoor-space regulatory review.</strong> Desk research against the CEQR Technical Manual, the NYC Noise Control Code and PAL § 1204-a to test Q29 properly. Requires a lawyer or a careful reader, no fieldwork, and it is the finding most likely to have consequences outside this project.</p>
+<p><strong>Sequencing.</strong> Methods 12 and 14 are desk work and should start immediately; neither has a dependency. Method 11 is the field core. Method 13 is slow — FOIL responses take months — so it should be filed first and read last.</p>
+<hr />
+<h2 id="part-9--where-this-document-is-likely-to-be-wrong">Part 9 — Where this document is likely to be wrong</h2>
+<p>Written before external review, in the format the companions use. <strong>Draft v1.1 note:</strong> an adversarial review of v1.0 returned <em>not fit to publish</em> with eight blocking issues. All are incorporated in the body above, with the original wording quoted in place rather than deleted. Items 1, 2, 4, 5 and 8 below were already self-declared in v1.0 and the reviewer independently reached most of them; items 9 through 12 are new and come from the review.</p>
+<ol>
+<li>
+<p><strong>The shielding hypothesis may be naive.</strong> Treating flanking orthotropic roadway decks as a "barrier" assumes a geometry that has not been drawn, let alone modelled. The decks are at approximately track level, not above it; the receptor is far below and to the side; the dominant path may pass beneath the deck entirely, through the truss, in which case the decks shield nothing and H1 was never plausible. A deck rigidly connected to the floor system carrying the track may also be a <em>radiator</em> rather than a shield. <strong>This is the weakest link in Part 1 and it should be checked against a section drawing before any measurement is funded.</strong> It is also precisely what the visualization companion is for.</p>
+</li>
+<li>
+<p><strong>"Same trains" was asserted in v1.0 and is not established.</strong> Both services are B Division and therefore share a car gauge, but B/D/N/Q and J/M/Z do not necessarily run the same car classes, and car class affects wheel condition, damping, truck design, consist length and event duration. <strong>This should have been checked and was not.</strong> v1.1 removes the claim from the subtitle, §0.1 and the control table, and adds car class and consist length to the protocol as per-event covariates. Until an inventory exists, fleet is an uncontrolled variable, not a control.</p>
+</li>
+<li>
+<p><strong>The Williamsburg trackform is inferred, not documented.</strong> The AISC paper establishes "track stringers" and a "track stringer column and bracing" system, and Contract 6 rehabilitated "track stringers and support system, signal system, and rails." That is strong evidence of an unballasted, stringer-supported, direct-fastened arrangement. It is <strong>not</strong> a fastening specification, and the fastener type is the single most acoustically relevant detail. <code>IDEA-CONCEPT.md</code> Q2 asks this of the Manhattan Bridge; it must be asked of both.</p>
+</li>
+<li>
+<p><strong>Part 4's regulatory finding rests partly on a <code>SNIPPET</code>.</strong> The NYC Parks FEIS quotation is truncated mid-sentence and was not opened. v1.0 generalised from it to a claim about the whole review system; v1.1 withdraws that generalisation and reduces the finding to the single documented Domino instance. The strength of any broader claim should be re-assessed only once Method 14 is complete.</p>
+</li>
+<li>
+<p><strong>The CAIT finding is reported at one remove.</strong> Everything in §2.3 comes from an institutional news article about a study, not the study. Rubric 3/5. The "almost double" figure, the fair/poor/severe classification and the approach-span claim are all as reported by the researchers to a communications office. They are plausible and consistent, and they are <strong>not</strong> the primary record. Method 12 exists to fix this. v1.1 additionally withdraws v1.0's inference that this demonstrates maintenance "headroom" — it is an association between condition class and structural response, with no treatment trial and no acoustic outcome.</p>
+</li>
+<li>
+<p><strong><code>SEL</code> may be harder to obtain cleanly than §5.3 implies.</strong> On a bridge carrying road traffic continuously, defining the event window and the baseline to subtract is not trivial, and at a site with an <code>L90</code> of 75.7 dB(A) the residual may be high enough to contaminate the event integral. The night-measurement provision mitigates this and does not eliminate it.</p>
+</li>
+<li>
+<p><strong>One elected official covering both sites is a convenience, not a finding.</strong> §3.3's observation about Council District 33 is a political opportunity, not evidence, and it is included because it is actionable — not because it is research.</p>
+</li>
+<li>
+<p><strong>Two units is two units, and this is the objection that matters most.</strong> No amount of careful matching turns a comparison of one structure against another into an estimate of a causal effect. Source, structure and path all change together with bridge identity. <strong>A between-bridge <code>SEL</code> difference cannot identify track position, shielding, or a "bridge penalty," and v1.0's framing as a matched-pair experiment claimed that it could.</strong> v1.1 reframes the design as a two-site comparative survey throughout. The survey establishes magnitude, character and whether a difference exists large enough to be worth explaining. It does not construct the counterfactual, and no design available to an unfunded researcher does.</p>
+</li>
+<li>
+<p><strong>The hypothesis table's frequency threshold was invented.</strong> v1.0's H1 row specified a shielding effect "concentrated above ~250 Hz." No source supports that number and it is withdrawn. A crossover frequency follows from the Fresnel number, which requires the path-difference geometry, which is unknown.</p>
+</li>
+<li>
+<p><strong>Coherence was misdescribed as a path discriminator.</strong> v1.0 claimed that receptor signal coherent with structural vibration is structure-borne. It is not: airborne and structure-borne components share the same excitation and both will cohere with a structure-mounted accelerometer. §6.4 is corrected and the claim that the four techniques "settle it" is withdrawn.</p>
+</li>
+<li>
+<p><strong>A null result would not condemn the shielding option class.</strong> v1.0 said that if South Williamsburg is as loud at matched distance, "the option class should be de-prioritised." An incidental 1903 arrangement of vibrating steel decks at unknown elevations is not a purpose-designed barrier, and its failure would not generalise. Withdrawn in §1.3.</p>
+</li>
+<li>
+<p><strong>The question set is less novel than the phrasing implies.</strong> Several of Q23–Q31 are conventional railway-acoustics questions (notably Q25, Q26, Q27, Q30) or asset-inventory requests rather than research questions (Q31). Methods 11–14 are conventional survey, records-request and legal-review methods. The defensible claim throughout is <strong>"not found asked of these two sites,"</strong> which is how <code>IDEA-CONCEPT.md</code> Part 10 was itself narrowed after its own red team, and the same narrowing applies here.</p>
+</li>
+</ol>
+<hr />
+<h2 id="part-10--sources">Part 10 — Sources</h2>
+<h3 id="101-verified-primary-sources">10.1 Verified primary sources</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Source</th>
+<th>Rubric</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Haight, R. &amp; Patel, J. (NYCDOT Director of East River Bridges), <em>Reconstruction of the Williamsburg Bridge</em>, AISC / World Steel Bridge Symposium, 2005</td>
+<td>5</td>
+<td><code>VERIFIED</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><em>Domino Sugar Rezoning FEIS, Ch. 20: Noise</em>, NYC DCP / AKRF Inc., 2010</td>
+<td>5</td>
+<td><code>VERIFIED</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><em>New York City Transit Noise Reduction Report</em>, MTA, pursuant to PAL § 1204-a, 2023 reporting year</td>
+<td>5</td>
+<td><code>VERIFIED</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Rutgers CAIT, <em>CAIT Research Helps NYC Engineers Monitor Structural Health of Manhattan Bridge</em>, 3 June 2021 (Moon &amp; Roy)</td>
+<td>3</td>
+<td><code>VERIFIED</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Change.org, <em>Reduce Williamsburg Bridge Subway Noise for South Williamsburg &amp; Domino Park</em>, 16 June 2026</td>
+<td>2</td>
+<td><code>VERIFIED</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Library of Congress HAER collection metadata, surveys <code>ny1263</code> (Williamsburg, HAER NY-165), <code>ny0980</code> (Manhattan, HAER NY-164), <code>ny1234</code> (Brooklyn)</td>
+<td>5</td>
+<td><code>VERIFIED</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="102-retrieval-priority">10.2 Retrieval priority</h3>
+<ol>
+<li><strong>The CAIT technical report</strong> behind source 4. Everything in §2.3 depends on it, and §2.3 is the most consequential section in the document.</li>
+<li><strong>USDOT, <em>Performance of Rail Fastening Systems on an Open-Deck Bridge</em></strong>, ROSA-P <code>dot/35570</code>, 1 Feb 2018. Directly on point for both bridges. HTTP 403 on retrieval. <code>SNIPPET</code>.</li>
+<li><strong>NYC Parks FEIS <code>12DPR005Q</code> Ch. 13</strong> — to complete the truncated quotation underlying Part 4. <code>SNIPPET</code>.</li>
+<li><strong>NYCDOT Contract 6 record drawings</strong> (Williamsburg subway reconstruction) and the equivalent Manhattan Bridge track drawings — the fastening specification for both bridges. Records request, not literature.</li>
+<li><strong>NYCDOT bridge condition reports</strong> for both structures.</li>
+</ol>
+<h3 id="103-explicitly-not-found">10.3 Explicitly not found</h3>
+<p>Searched for and not located. Each is a falsifiable claim; per <code>IDEA-CONCEPT.md</code> §14 and repository issue #5, the prior on these failing is not low.</p>
+<ul>
+<li>Any measurement, anywhere, separating subway from roadway noise on either bridge.</li>
+<li>Any <code>SEL</code> or event-normalised metric for either bridge.</li>
+<li>Any third-octave spectrum for the Williamsburg Bridge.</li>
+<li>Any modal, damping or vibration study of the Williamsburg Bridge.</li>
+<li>Any sound measurement taken inside Domino Park.</li>
+<li>Any two-bridge comparative study of NYC East River rail crossings.</li>
+<li><strong>Any HAER measured drawing for either the Williamsburg or the Manhattan Bridge</strong> — see the visualization companion, §2.</li>
+</ul>
+<hr />
+<h2 id="provenance">Provenance</h2>
+<p><strong>Claims made in this document, and what each rests on.</strong></p>
+<ol>
+<li><em>Williamsburg carries two central tracks; Manhattan carries four outboard tracks.</em> — Williamsburg side <code>VERIFIED</code> at 5/5 from source 1, three independent loci including a section-drawing annotation. <strong>Manhattan side rests on <code>IDEA-CONCEPT.md</code> §4.1, rubric 1/5.</strong> Asymmetric and stated as such in §2.1.</li>
+<li><em>Site 10, Williamsburg Bridge walkway, <code>Leq</code> 82.5 dB(A).</em> — <code>VERIFIED</code>, source 2, Table 20-7, quoted.</li>
+<li><em>The measurement does not separate rail from road.</em> — <code>VERIFIED</code>, source 2, authors' own words, quoted twice.</li>
+<li><em>Williamsburg appears zero times in the MTA § 1204-a report.</em> — <code>VERIFIED</code>, source 3, full-text term count. <strong>Scope limit: one reporting year.</strong> Other years were not obtained and may differ.</li>
+<li><em>Bolted rail joints on the Manhattan Bridge are misaligned; severe joints roughly double the vibration of fair ones.</em> — Source 4, rubric 3/5, one remove from the primary. Quoted verbatim. <strong>Do not treat as a measured acoustic result.</strong></li>
+<li><em>The regulatory response to Williamsburg Bridge noise was 31 dB(A) of façade attenuation and nothing else.</em> — <code>VERIFIED</code> from source 2. The generalisation to "outdoor space is unprotected" is <strong>partly</strong> <code>SNIPPET</code>-supported and flagged in Part 9 item 4.</li>
+<li><em>NYCDOT operates two 119-ft traveling maintenance platforms on the Williamsburg Bridge.</em> — <code>VERIFIED</code>, source 1, quoted.</li>
+<li><em>No <code>SEL</code> metric exists for either bridge.</em> — A negative claim from an exhaustive-intent search. <strong>Falsifiable and probably the easiest claim in this document to disprove.</strong></li>
+</ol>
+<p><strong>What this document does not contain.</strong> No measurements. No cost figures. No recommended intervention. No claim that either bridge violates any standard, because <code>IDEA-CONCEPT.md</code> Q11 establishes that for elevated structures there is no standard to violate. <strong>And, as of v1.1, no claim that the comparison identifies a cause.</strong></p>
+<p><strong>Claims withdrawn between v1.0 and v1.1.</strong> All are quoted in place in the body rather than deleted, and all are restated in Part 9.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Withdrawn claim</th>
+<th>Where</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>The study is a "matched-pair" natural experiment that can falsify a mechanism</td>
+<td>Title, §1.2, §5.1</td>
+<td>Source, structure and path all change with bridge identity; there is no counterfactual</td>
+</tr>
+<tr>
+<td>2</td>
+<td>The two bridges run "the same trains"</td>
+<td>Subtitle, §0.1, §1.2</td>
+<td>B Division is a loading gauge, not a fleet assignment</td>
+</tr>
+<tr>
+<td>3</td>
+<td>"The entire New York evidence base is in the wrong units"</td>
+<td>§5.3</td>
+<td><code>Leq</code>, <code>L10</code>, <code>L90</code> are correct for their regulatory purpose; <code>SEL</code> is additionally necessary, not a replacement</td>
+</tr>
+<tr>
+<td>4</td>
+<td>A shielding effect "concentrated above ~250 Hz"</td>
+<td>§5.5</td>
+<td>No source; a crossover frequency requires the path-difference geometry, which is unknown</td>
+</tr>
+<tr>
+<td>5</td>
+<td>A null Williamsburg result would justify de-prioritising the shielding option class</td>
+<td>§1.3</td>
+<td>An incidental 1903 arrangement is not a purpose-designed barrier</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Accelerometer/microphone coherence discriminates structure-borne from airborne paths</td>
+<td>§6.4</td>
+<td>Both components share the train as excitation and both will cohere</td>
+</tr>
+<tr>
+<td>7</td>
+<td>The environmental review system "has no mechanism to protect outdoor public space, and knows it"</td>
+<td>§4.3</td>
+<td>Rests on one FEIS outcome plus an unopened snippet; scoped to that instance pending Method 14</td>
+</tr>
+<tr>
+<td>8</td>
+<td>CAIT demonstrates maintenance "headroom" and a monotonic condition-response relation</td>
+<td>§2.3</td>
+<td>No treatment trial, no acoustic outcome, three ordered classes</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Q24's "no study of any bridge located anywhere"</td>
+<td>Q24</td>
+<td>Unbounded negative; narrowed to the searches recorded in Part 10</td>
+</tr>
+<tr>
+<td>10</td>
+<td>A "nineteen-year change measurement for free"</td>
+<td>§6.2, Q30</td>
+<td>Repeat observation; the 2007 instrument, position and conditions are not recoverable</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Method note.</strong> Per issue #11, every quantitative claim above carries a quoted locus. Two claims in this document could not be given one — the NYC Parks quotation (truncated, unopened) and the Manhattan Bridge structural figures (inherited at 1/5) — and both are named in Part 9 rather than smoothed over.</p>
+<p><strong>Review note.</strong> Draft v1.0 was submitted to an adversarial review that returned <em>not fit to publish</em> with eight blocking issues, on the same pattern as the reviews of <code>IDEA-CONCEPT.md</code> and <code>PRECEDENT-AND-MATERIALS.md</code>. The recurring cause identified in issue #11 — reading at abstract level rather than at the locus — is not the cause here. <strong>The cause in this document is different, and worth recording separately: over-claiming inferential strength from a design that does not support it.</strong> v1.0 knew the design was weak, said so in Part 9 item 8, and then wrote the rest of the document as though it were strong. That failure mode is filed as its own methodological finding.</p>
+<hr />
+<p><em>Ethical Tech CoLab. Released under CC BY 4.0. Not peer-reviewed. Part 9 is the best guide to how much to trust the rest.</em></p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/WILLIAMSBURG-COMPARATOR.md">Source on GitHub</a> &middot; Built from <code>12ccc54</code> on 2026-08-02.</p>
+</main>
+</div>
+
+</div>
+</body>
+</html>

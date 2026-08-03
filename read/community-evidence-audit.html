@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6. Community evidence audit &mdash; Silencing the Span</title>
+<meta name="description" content="Rendered copy of COMMUNITY-EVIDENCE-AUDIT.md from the Manhattan Bridge rail-noise research repository.">
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, kbd, pre {
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 4px;
+  padding: 0.1em 0.36em;
+}
+pre {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre code { background: none; border: 0; padding: 0; }
+
+/* ---- top bar ---- */
+.bar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--cp-panel-strong);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border);
+}
+.bar .in {
+  max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
+.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
+.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.bar nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  border-radius: 999px; white-space: nowrap;
+}
+.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
+
+h1 { font-size: 2.15rem; line-height: 1.18; margin: 0 0 10px; letter-spacing: -0.01em; }
+h2 { font-size: 1.42rem; margin: 0 0 14px; letter-spacing: -0.005em; }
+h3 { font-size: 1.08rem; margin: 26px 0 8px; }
+p { margin: 0 0 14px; }
+.lede { font-size: 1.06rem; color: var(--cp-text-muted); }
+.sub { color: var(--cp-text-muted); font-size: 1.02rem; margin: 0 0 4px; }
+
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin: 0 0 22px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.hero { background: var(--cp-bg-elevated); }
+
+.statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+.s {
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+  font-size: 0.78rem; color: var(--cp-text-muted);
+}
+.s .k { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.s .big { font-size: 1.9rem; font-weight: 700; color: var(--cp-accent); line-height: 1.1; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 14px; }
+.tile {
+  display: block; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 16px 18px; color: var(--cp-text); transition: border-color .15s, transform .15s;
+}
+.tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
+.tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
+.tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.tile .look {
+  font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
+  border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
+}
+.tile .look b { color: var(--cp-text); }
+
+.badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 999px; vertical-align: middle;
+  border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted);
+}
+.badge.ok { border-color: var(--cp-success); color: var(--cp-success); }
+.badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
+.badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
+.badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+
+.note {
+  border-left: 3px solid var(--cp-accent);
+  background: var(--cp-accent-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  padding: 13px 17px; margin: 16px 0; font-size: 0.92rem;
+}
+.note.bad { border-left-color: var(--cp-danger); background: rgba(220,38,38,0.07); }
+.note.good { border-left-color: var(--cp-success); background: rgba(22,163,74,0.07); }
+.note.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,0.09); }
+
+.tw { overflow-x: auto; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td {
+  border: 1px solid var(--cp-border); padding: 8px 11px;
+  text-align: left; vertical-align: top;
+}
+th { background: var(--cp-surface-soft); font-weight: 700; }
+tbody tr:nth-child(even) td { background: var(--cp-surface-soft); }
+
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li { margin-bottom: 7px; }
+
+blockquote {
+  margin: 16px 0; padding: 10px 18px;
+  border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  color: var(--cp-text-muted);
+}
+
+hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
+
+.foot {
+  color: var(--cp-text-soft); font-size: 0.83rem;
+  border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 30px;
+}
+
+/* ---- work queue ---- */
+.q { border-top: 1px solid var(--cp-border); padding: 15px 0; display: grid;
+     grid-template-columns: 132px 1fr; gap: 18px; }
+.q:first-of-type { border-top: 0; }
+.q .lab { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+          font-weight: 700; padding-top: 3px; }
+.q .h { font-weight: 700; margin-bottom: 2px; }
+.q .cost { font-size: 0.8rem; color: var(--cp-text-soft); margin-bottom: 7px;
+           font-family: Consolas, "Courier New", monospace; }
+.q .why { font-size: 0.9rem; color: var(--cp-text-muted); }
+.lab.blocking { color: var(--cp-danger); }
+.lab.cheap { color: var(--cp-success); }
+.lab.field { color: var(--cp-accent); }
+.lab.review { color: var(--cp-warning); }
+.lab.gate { color: var(--cp-text-muted); }
+
+/* ---- rendered document pages ---- */
+.doclayout { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
+.toc { position: sticky; top: 76px; max-height: calc(100vh - 100px); overflow-y: auto;
+       font-size: 0.84rem; padding-right: 6px; }
+.toc .h { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+          color: var(--cp-text-soft); font-weight: 700; margin-bottom: 8px; }
+.toc a { display: block; padding: 3px 0 3px 9px; color: var(--cp-text-muted);
+         border-left: 2px solid var(--cp-border); line-height: 1.35; }
+.toc a:hover { color: var(--cp-accent); border-left-color: var(--cp-accent); text-decoration: none; }
+.toc a.l3 { padding-left: 20px; font-size: 0.95em; color: var(--cp-text-soft); }
+.doc { min-width: 0; }
+.doc h1 { font-size: 1.95rem; margin-top: 0; }
+.doc h2 { font-size: 1.38rem; margin: 34px 0 12px; padding-bottom: 6px;
+          border-bottom: 1px solid var(--cp-border); }
+.doc h3 { font-size: 1.1rem; margin: 26px 0 8px; }
+.doc h4 { font-size: 0.98rem; margin: 20px 0 6px; color: var(--cp-text-muted); }
+.doc img { max-width: 100%; }
+
+@media (max-width: 980px) {
+  .statrow { grid-template-columns: repeat(2, 1fr); }
+  .doclayout { grid-template-columns: 1fr; }
+  .toc { position: static; max-height: none; margin-bottom: 26px; }
+  .q { grid-template-columns: 1fr; gap: 4px; }
+  .wrap { padding: 22px 16px 70px; }
+  .card { padding: 20px 18px; }
+}
+@media (max-width: 560px) {
+  .statrow { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bar"><div class="in"><a class="home" href="../index.html">Silencing the Span</a><nav><a href="readme.html">README</a><a href="idea-concept.html">1. Concept</a><a href="precedent-and-materials.html">2. Precedent</a><a href="williamsburg-comparator.html">3. Comparator</a><a href="visual-model-framework.html">4. Visual model</a><a href="field-capture-protocol.html">5. Field capture</a><a href="community-evidence-audit.html" class="on">6. Community</a><a href="data-collection.html">7. Data</a></nav></div></div>
+<div class="wrap">
+<div class="doclayout">
+<aside class="toc"><div class="h">On this page</div><a href="#part-0--the-question-and-the-answer">Part 0 — The question, and the answer</a><a class="l3" href="#01-what-was-asked">0.1 What was asked</a><a class="l3" href="#02-what-was-found">0.2 What was found</a><a class="l3" href="#03-the-finding">0.3 The finding</a><a class="l3" href="#04-why-this-matters-more-than-a-recording-would-have">0.4 Why this matters more than a recording would have</a><a class="l3" href="#05-source-ratings-used-here">0.5 Source ratings used here</a><a href="#part-1--method">Part 1 — Method</a><a class="l3" href="#11-what-was-searched">1.1 What was searched</a><a class="l3" href="#12-what-found-would-have-meant">1.2 What "found" would have meant</a><a class="l3" href="#13-a-limitation-to-state-at-the-top">1.3 A limitation to state at the top</a><a href="#part-2--the-structural-finding">Part 2 — The structural finding</a><a class="l3" href="#21-what-is-claimed">2.1 What is claimed</a><a class="l3" href="#22-nyc-311--the-query-and-the-answer">2.2 NYC 311 — the query and the answer</a><a class="l3" href="#23-sonyc--the-same-gap-inherited">2.3 SONYC — the same gap, inherited</a><a class="l3" href="#231-the-bias-sonyc-set-out-to-fix-and-the-deeper-one-it-inherited">2.3.1 The bias SONYC set out to fix, and the deeper one it inherited</a><a class="l3" href="#24-the-mechanism--stated-as-a-question-not-a-finding">2.4 The mechanism — stated as a question, not a finding</a><a href="#part-3--what-does-exist-the-inventory">Part 3 — What does exist: the inventory</a><a class="l3" href="#31-the-nyc-dep-citizen-science-dataset--right-park-wrong-end">3.1 The NYC DEP citizen-science dataset — right park, wrong end</a><a class="l3" href="#32-resident-testimony--an-eighteen-year-record">3.2 Resident testimony — an eighteen-year record</a><a class="l3" href="#33-the-petitions--residents-converging-on-the-engineering">3.3 The petitions — residents converging on the engineering</a><a class="l3" href="#34-social-video-and-uncalibrated-db-claims">3.4 Social video and uncalibrated dB claims</a><a class="l3" href="#35-direct-field-observation-by-the-author-of-this-repository">3.5 Direct field observation by the author of this repository</a><a href="#part-4--what-this-changes">Part 4 — What this changes</a><a class="l3" href="#41-for-the-field-capture-protocol">4.1 For the field capture protocol</a><a class="l3" href="#42-for-the-argument-as-a-whole">4.2 For the argument as a whole</a><a href="#part-5--new-questions">Part 5 — New questions</a><a href="#part-6--new-methods">Part 6 — New methods</a><a href="#part-7--where-this-document-is-likely-to-be-wrong">Part 7 — Where this document is likely to be wrong</a><a href="#part-8--status">Part 8 — Status</a></aside>
+<main class="doc">
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/COMMUNITY-EVIDENCE-AUDIT.md"><code>COMMUNITY-EVIDENCE-AUDIT.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 10,300 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<h1 id="community-evidence-audit">Community Evidence Audit</h1>
+<p><strong>What the people who live under it have already recorded, said and filed — and why almost none of it is in a form anyone can measure</strong></p>
+<p>Document 6 of the DUMBO rail-noise research programme.
+Version 1.0. Questions Q42–Q50. Methods 21–25.</p>
+<hr />
+<h2 id="part-0--the-question-and-the-answer">Part 0 — The question, and the answer</h2>
+<h3 id="01-what-was-asked">0.1 What was asked</h3>
+<blockquote>
+<p>Look carefully at Reddit and other local resident resources where someone may have crowd-sourced recordings of train noise while in the Brooklyn Bridge Park under the Manhattan Bridge.</p>
+</blockquote>
+<p>The premise is a good one. <a href="field-capture-protocol.html"><code>FIELD-CAPTURE-PROTOCOL.md</code></a> argues that four properties of this soundscape survive an uncalibrated recording chain — <strong>spectral shape, temporal envelope, headway distribution and train attribution</strong> — because each is either a <em>ratio</em> or a <em>timestamp</em>, and an unknown fixed gain cancels out of a ratio and does not touch a timestamp. If that argument is right, then somebody's phone video, shot for entirely unrelated reasons, is a partial substitute for captures C1, C2 and C3 at zero cost and zero delay.</p>
+<p>So the search was worth running.</p>
+<h3 id="02-what-was-found">0.2 What was found</h3>
+<p><strong>No public, locatable, crowd-sourced audio recording of the Manhattan Bridge train pass-by, made in Brooklyn Bridge Park or anywhere else in DUMBO, exists in any repository this search could reach.</strong> Not on Reddit, not on Freesound, not in the NYU sensor-network corpus, not in any municipal dataset. Consumer video exists in quantity, but none of it is indexed, described or licensed in a way that makes it findable <em>as an acoustic record</em> rather than as a picture of a bridge.</p>
+<p>That is a negative result, and this programme registered <a href="readme.html">Method 20</a> — a deliberate negative-result search — precisely because absence of evidence is a finding rather than a failure.</p>
+<p><strong>But the interesting part is not the absence. It is the reason for the absence.</strong></p>
+<h3 id="03-the-finding">0.3 The finding</h3>
+<blockquote>
+<p><strong>Three independent instruments for recording urban noise in New York City — the city's complaint system, the city's flagship acoustic research corpus, and the city's noise code — each contain no category for rail.</strong></p>
+<p>The absence is not a coincidence of three organisations. It is one absence, inherited three times, because the second and third were both built from the first.</p>
+</blockquote>
+<p>Rail noise in New York City is not under-reported. It is <strong>unreportable</strong>. A resident standing in Brooklyn Bridge Park under a train measured by the MTA itself at <strong>87.50 dB(A) equivalent level and 98.90 dB(A) maximum</strong> cannot file a complaint that names what they are hearing, because the complaint form has no box for it. A machine-listening model trained on 18,510 annotated clips from a 55-sensor citywide network cannot label the sound, because the label does not exist in the taxonomy. And the taxonomy does not contain it because — in the authors' own words — it was constructed "through consultation with the New York Department of Environmental Protection <strong>and the New York noise code</strong>."</p>
+<p>This is the same shape as the finding already recorded in <a href="idea-concept.html"><code>IDEA-CONCEPT.md</code></a>: the MTA's own governing statute, Public Authorities Law § 1204-a, has a category for elevated structures and <strong>no standard in it</strong>. That was one blank cell in one statute. This document establishes that the blank cell propagated.</p>
+<p><strong>Four instruments. Same gap. One of them is the reason for the other three.</strong></p>
+<h3 id="04-why-this-matters-more-than-a-recording-would-have">0.4 Why this matters more than a recording would have</h3>
+<p>A found recording would have been useful. This is more useful, for a reason specific to how this programme argues.</p>
+<p>Every document here has had to explain why a problem this loud has produced so little documentation. The available explanations were unsatisfying — institutional inattention, jurisdictional buck-passing, the general difficulty of measuring things. Those are motives, and motives are weak evidence.</p>
+<p>This is a <strong>mechanism</strong>. It is specific, it is verifiable, and it makes a prediction that can be checked: if the taxonomy is the constraint, then complaint volume about elevated rail should be near zero <em>everywhere in the city</em>, including under the elevated lines in Queens, Brooklyn and the Bronx where hundreds of thousands of people live — and it should be near zero <em>regardless of how bad the noise is</em>, because the variable being measured is the form, not the phenomenon.</p>
+<p>That is testable. See <strong>Method 21</strong>.</p>
+<h3 id="05-source-ratings-used-here">0.5 Source ratings used here</h3>
+<p>Same scale as the rest of the programme. Credibility <strong>1</strong> (an anonymous forum post) to <strong>5</strong> (a primary agency document, a primary dataset queried directly, or a peer-reviewed measurement). Depth of reading marked <strong>VERIFIED</strong> (read in full, or in the case of a dataset, queried directly by this programme), <strong>SNIPPET</strong> (search extract only) or <strong>UNVERIFIED</strong>.</p>
+<p><strong>Two claims in this document are rated 5/5 <code>VERIFIED</code> on the strength of queries this programme ran itself</strong> against the NYC Open Data Socrata API. The queries are printed in full in Part 2 so that anyone can re-run them and get the same answer, or a different one. That is a stronger warrant than this programme usually has, and it is confined to Part 2. Everything in Part 3 is weaker and is rated accordingly.</p>
+<p><strong>One claim is deliberately left as an open question rather than asserted.</strong> The legal mechanism in Part 2.4 — why the noise code omits rail — is the kind of claim that requires a lawyer reading primary statute, and this programme is not that. It is written as Q42, not as a finding.</p>
+<hr />
+<h2 id="part-1--method">Part 1 — Method</h2>
+<h3 id="11-what-was-searched">1.1 What was searched</h3>
+<p>Fourteen searches through the Tavily API, plus two direct queries against the NYC Open Data Socrata endpoint, plus direct content extraction from nine pages.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Searched</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reddit</td>
+<td>Domain-restricted search, plus the direct JSON API</td>
+<td>Threads exist; <strong>no recordings</strong>. See 1.3 for a caveat about access.</td>
+</tr>
+<tr>
+<td>Freesound.org</td>
+<td>Tag and text search for NYC subway, elevated, Manhattan Bridge</td>
+<td>Subway interiors and generic NYC transit only. Nothing located under the Manhattan Bridge.</td>
+</tr>
+<tr>
+<td>SONYC / NYU acoustic sensor network</td>
+<td>Project pages, both dataset papers, the Zooniverse citizen-science portal</td>
+<td>150M+ clips exist. <strong>No rail class in the taxonomy.</strong> Part 2.3.</td>
+</tr>
+<tr>
+<td>NYC Open Data 311</td>
+<td>Socrata API, queried directly, citywide and geographically</td>
+<td><strong>No rail complaint category exists.</strong> Part 2.2.</td>
+</tr>
+<tr>
+<td>NYC DEP education programme</td>
+<td>The Sound and Noise Education Module and its ArcGIS StoryMap</td>
+<td>A real 12-site citizen-science dataset <strong>in the wrong end of the park.</strong> Part 3.1.</td>
+</tr>
+<tr>
+<td>Local press</td>
+<td>Brooklyn Paper, Brooklyn Bridge Parents, Brownstoner, Patch</td>
+<td>Substantial resident testimony, 2008 to 2025. Part 3.2.</td>
+</tr>
+<tr>
+<td>Petitions</td>
+<td>Change.org</td>
+<td>Three relevant petitions, one specific to this bridge. Part 3.3.</td>
+</tr>
+<tr>
+<td>Social video</td>
+<td>Instagram, YouTube, travel blogs</td>
+<td>Uncalibrated dB claims and one useful qualitative observation. Part 3.4.</td>
+</tr>
+<tr>
+<td>Community governance</td>
+<td>Brooklyn Community Board 2, DUMBO Neighborhood Alliance, DUMBO Action Committee</td>
+<td>Named actors identified; minutes not retrieved. Method 24.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="12-what-found-would-have-meant">1.2 What "found" would have meant</h3>
+<p>A recording counts as usable to this programme if it is (a) publicly retrievable, (b) locatable to a receptor position with better than about 50 m confidence, (c) long enough to contain at least one complete pass-by including both tails, and (d) accompanied by enough description to establish that the loud thing in it is a train rather than a truck, a boat or the wind.</p>
+<p><strong>Nothing found meets all four.</strong> Several items meet (a) and (d). None meets (c) with any confidence, because none is described as a recording at all — they are videos of a view, which happen to have a train in them.</p>
+<h3 id="13-a-limitation-to-state-at-the-top">1.3 A limitation to state at the top</h3>
+<p><strong>Reddit was not fully searched, and this document should not be read as having cleared it.</strong></p>
+<p>Direct programmatic access returned HTTP 403, and the interactive fetch returned an interstitial verification page. Reddit's public JSON endpoints now reject unauthenticated automated requests. What was searched was Tavily's index <em>of</em> Reddit, which is a snapshot of what a crawler saw, not the live site, and it does not include comment trees — which is exactly where a link to a recording would be posted.</p>
+<p>So the honest statement is: <strong>no recording surfaced through a search of Reddit's indexed post titles and bodies.</strong> A human being logged in, reading comment threads in r/AskNYC, r/Brooklyn, r/nyc and r/NYCapartments, might well find one. That is <strong>Method 23</strong>, and it is cheap.</p>
+<p>The threads that did surface are consistent in tone and content — see Part 3.2 — but none contains a recording, and this programme has not read their comments.</p>
+<hr />
+<h2 id="part-2--the-structural-finding">Part 2 — The structural finding</h2>
+<h3 id="21-what-is-claimed">2.1 What is claimed</h3>
+<p>Three claims, in descending order of how well this programme can support them:</p>
+<ol>
+<li><strong>NYC 311 has no complaint category for rail or subway noise, citywide.</strong> Rated <strong>5/5 <code>VERIFIED</code></strong> — queried directly, query printed below.</li>
+<li><strong>The SONYC urban sound taxonomy has no rail class</strong>, and its authors state it was built from the NYC DEP and the New York noise code. Rated <strong>4/5 <code>VERIFIED</code></strong> for the taxonomy, <strong>5/5 <code>VERIFIED</code></strong> for the quoted derivation.</li>
+<li><strong>The reason both are true is that the NYC Noise Code does not reach the MTA.</strong> Rated <strong>2/5 <code>UNVERIFIED</code></strong> and written as <strong>Q42</strong>, not as a finding.</li>
+</ol>
+<h3 id="22-nyc-311--the-query-and-the-answer">2.2 NYC 311 — the query and the answer</h3>
+<p>The 311 Service Requests dataset is the city's primary record of what New Yorkers complain about. It is the dataset that gets cited when anyone says noise is New York's number one quality-of-life complaint.</p>
+<p><strong>Query 1 — what noise categories exist in DUMBO's ZIP code.</strong></p>
+<pre><code>https://data.cityofnewyork.us/resource/erm2-nwe9.json
+  ?$select=complaint_type,count(unique_key)
+  &amp;$where=incident_zip='11201'
+      and complaint_type like 'Noise%'
+      and created_date&gt;'2020-01-01T00:00:00'
+  &amp;$group=complaint_type
+  &amp;$order=count_unique_key DESC
+</code></pre>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Complaint type</th>
+<th>Count, ZIP 11201, since 2020</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Noise - Residential</td>
+<td>25,545</td>
+</tr>
+<tr>
+<td>Noise</td>
+<td>8,113</td>
+</tr>
+<tr>
+<td>Noise - Street/Sidewalk</td>
+<td>7,989</td>
+</tr>
+<tr>
+<td><strong>Noise - Helicopter</strong></td>
+<td><strong>4,990</strong></td>
+</tr>
+<tr>
+<td>Noise - Vehicle</td>
+<td>3,659</td>
+</tr>
+<tr>
+<td>Noise - Commercial</td>
+<td>3,346</td>
+</tr>
+<tr>
+<td>Noise - Park</td>
+<td>285</td>
+</tr>
+<tr>
+<td>Noise - House of Worship</td>
+<td>24</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Helicopters have their own category. Houses of worship have their own category. Rail does not appear.</strong></p>
+<p>The generic <code>Noise</code> bucket does not rescue it. Its descriptors, same ZIP and period, are: construction before/after hours (3,893), construction equipment (1,237), air conditioning and ventilation (698), barking dog (696), jackhammering (502), alarms (473), <strong>ice cream truck (180)</strong>, lawn care equipment (175), private carting (151), manufacturing (54), boat engine or music (22), other animals (9), and "other noise sources, use comments" (4).</p>
+<p><strong>There is a descriptor for ice cream trucks and a descriptor for other animals. There is none for trains.</strong></p>
+<p><strong>Query 2 — is this a Brooklyn artefact, or is it citywide?</strong></p>
+<pre><code>https://data.cityofnewyork.us/resource/erm2-nwe9.json
+  ?$select=complaint_type,descriptor,count(unique_key)
+  &amp;$where=created_date&gt;'2020-01-01T00:00:00'
+      and (upper(descriptor) like '%SUBWAY%'
+        or upper(descriptor) like '%TRAIN%'
+        or upper(descriptor) like '%RAIL%'
+        or upper(complaint_type) like '%SUBWAY%'
+        or upper(complaint_type) like '%TRAIN%')
+  &amp;$group=complaint_type,descriptor
+  &amp;$order=count_unique_key DESC
+</code></pre>
+<p>Citywide, all complaint types, since 2020, every category whose name contains "subway", "train" or "rail":</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Complaint type</th>
+<th>Descriptor</th>
+<th>Count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Illegal Parking</td>
+<td>Detached Trailer</td>
+<td>9,571</td>
+</tr>
+<tr>
+<td>General Construction/Plumbing</td>
+<td>Safety Netting/Guard Rails — Damaged/Inadequate/None (6 storeys or less)</td>
+<td>1,175</td>
+</tr>
+<tr>
+<td>Street Condition</td>
+<td>Guard Rail — Street</td>
+<td>812</td>
+</tr>
+<tr>
+<td>BEST/Site Safety</td>
+<td>Safety Netting/Guard Rails — Damaged/Inadequate/None (over 6 storeys)</td>
+<td>679</td>
+</tr>
+<tr>
+<td>Highway Condition</td>
+<td>Guard Rail — Highway</td>
+<td>173</td>
+</tr>
+<tr>
+<td>Sewer</td>
+<td>Damage Structure/Railing</td>
+<td>61</td>
+</tr>
+<tr>
+<td>Bridge Condition</td>
+<td>Guard Rail — Bridge</td>
+<td>56</td>
+</tr>
+<tr>
+<td>Street Condition</td>
+<td>Guide Rail</td>
+<td>1</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Every match is a guard rail or a trailer.</strong> There is no rail-transit category anywhere in the New York City 311 taxonomy, for any complaint type, citywide.</p>
+<p><strong>Query 3 — the geography that makes it concrete.</strong></p>
+<p>Within a 500 m circle centred on the Brooklyn Bridge Park Main Street section and the Manhattan Bridge Brooklyn anchorage — a circle that contains the dog run where the MTA measured <strong>87.50 dB(A) Leq</strong> and <strong>98.90 dB(A) Lmax</strong>, and the DUMBO Archway where it measured <strong>81.33</strong> and <strong>91.80</strong> — there have been <strong>4,055 noise complaints since 2020</strong>.</p>
+<p>The top categories are loud music and parties (720 on streets, 395 commercial, 369 residential), engine idling (588), construction (261), car and truck music (220), banging and pounding (190), loud talking (169), helicopters (133), <strong>ice cream trucks (117)</strong>, and <strong>barking dogs (95)</strong>.</p>
+<blockquote>
+<p><strong>In the 500 m around the loudest measurement in this entire research programme, four thousand and fifty-five noise complaints have been filed since 2020, and not one of them can be about the train.</strong></p>
+<p><strong>The dog run generated 95 complaints about barking dogs. The MTA measured 98.90 dB(A) peaks from trains at that same dog run. The dogs are complainable. The trains are not.</strong></p>
+</blockquote>
+<p><em>Query rated 5/5 <code>VERIFIED</code>. Run 2026 against the live Socrata endpoint. Counts will drift as the dataset grows; the presence or absence of a category will not.</em></p>
+<p><strong>A caveat that must travel with this.</strong> The absence of a category does not mean no resident ever complained about a train. It means that when they did, the complaint was either refused, or absorbed into a category that misdescribes it, or — most likely — routed to the MTA's own customer channels, which are not public data. The MTA's own § 1204-a report was triggered by a letter from an elected official's office, not by a 311 record, and the report itself states the office "has been in contact with the MTA New York City Transit (NYCT) since 2022." <strong>The complaints exist. The public record of them does not.</strong> Where they went instead is <strong>Method 22</strong>.</p>
+<h3 id="23-sonyc--the-same-gap-inherited">2.3 SONYC — the same gap, inherited</h3>
+<p>Sounds of New York City is the most serious attempt anyone has made to measure this city's noise continuously and at scale. It is an NYU-led, NSF-funded project with collaborators at Ohio State, it has deployed <strong>more than 55 low-cost acoustic sensor nodes</strong> across Manhattan, Brooklyn and Queens, and it has recorded <strong>more than 150 million 10-second audio clips since 2016</strong>.</p>
+<p>It is exactly the resource the user's question was reaching for: a genuine, large, public, citizen-annotated corpus of New York City sound, with volunteers from the Zooniverse platform doing the labelling.</p>
+<p><strong>Its taxonomy has eight coarse classes and twenty-three fine classes. None of them is rail.</strong></p>
+<p>The eight coarse classes, from the published baseline results table:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Coarse class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>engine</td>
+</tr>
+<tr>
+<td>2</td>
+<td>machinery-impact</td>
+</tr>
+<tr>
+<td>3</td>
+<td>non-machinery-impact</td>
+</tr>
+<tr>
+<td>4</td>
+<td>powered-saw</td>
+</tr>
+<tr>
+<td>5</td>
+<td>alert-signal</td>
+</tr>
+<tr>
+<td>6</td>
+<td>music</td>
+</tr>
+<tr>
+<td>7</td>
+<td>human-voice</td>
+</tr>
+<tr>
+<td>8</td>
+<td>dog</td>
+</tr>
+</tbody>
+</table></div>
+<p><em>Rated 4/5 <code>VERIFIED</code> — read from the DCASE 2020 SONYC-UST-V2 paper (Cartwright et al.) and cross-checked against the DCASE 2019 challenge results and the project's own baseline repository, which list the identical eight.</em></p>
+<p>And the derivation, quoted exactly from the SONYC-UST v1 paper (Cartwright et al., 2019):</p>
+<blockquote>
+<p>"Through consultation with the New York Department of Environmental Protection (DEP) and the New York noise code, we constructed a small, two-level urban sound taxonomy [...] consisting of 8 coarse-level and 23 fine-level sound categories, e.g., the coarse <code>alert signals</code> category contains four fine-level categories: <code>reverse beeper</code>, <code>car alarm</code>, <code>car horn</code>, <code>siren</code>."</p>
+</blockquote>
+<p>And, two sentences later, the mechanism stated outright:</p>
+<blockquote>
+<p>"<strong>The chosen sound categories map to categories of interest in the noise code</strong>; they were limited to those that seem likely discernible by novice annotators; and we kept the number of categories small enough so that they can all be visible at once in an annotation interface."</p>
+</blockquote>
+<p><em>Both rated 5/5 <code>VERIFIED</code> — the paper was extracted and these passages read directly.</em></p>
+<p><strong>This is the transmission mechanism, stated by the authors themselves.</strong> The researchers did the responsible thing — they aligned their labels to the city's own regulatory categories so that their output would be actionable by the agency that enforces them. They say so explicitly, and they were right to. The consequence is that the corpus inherited the code's blind spot. A sensor placed in DUMBO would record the trains faithfully at 10-second resolution, forever, and every clip would be annotated as <code>engine</code>, or as <code>machinery-impact</code>, or as nothing at all.</p>
+<p><strong>The same paper independently corroborates the 311 finding</strong>, in its own account of what the noise code covers:</p>
+<blockquote>
+<p>"For example, jackhammers can only operate on weekdays; pet owners are held accountable for their animals' noises; ice cream trucks may only play their jingles while in motion; blasting a car horn is restricted to situations of imminent danger."</p>
+</blockquote>
+<p>Jackhammers, pets, ice cream trucks, car horns. Those are — exactly, and in the same order of prominence — four of the 311 descriptors tabulated in 2.2: <em>Noise: Jack Hammering (NC2)</em>, <em>Noise, Barking Dog (NR5)</em>, <em>Noise, Ice Cream Truck (NR4)</em>, <em>Car/Truck Horn</em>. <strong>The chain from noise code to complaint form to research taxonomy is visible in the vocabulary itself.</strong></p>
+<h3 id="231-the-bias-sonyc-set-out-to-fix-and-the-deeper-one-it-inherited">2.3.1 The bias SONYC set out to fix, and the deeper one it inherited</h3>
+<p>SONYC's own stated motivation makes the finding sharper. From the same paper:</p>
+<blockquote>
+<p>"After a city resident complains about noise, the New York City Department of Environmental Protection (DEP) sends an inspector to investigate the complaint. [...] <strong>Unfortunately, this complaint-driven enforcement approach results in a mitigation response biased to neighborhoods who complain the most, not necessarily the areas in which noise causes the most harm.</strong>"</p>
+</blockquote>
+<p>That is an excellent diagnosis and the project was built to correct it — replace complaint-driven attention with continuous sensing, so that noise gets measured where it is worst rather than where people are loudest about it.</p>
+<blockquote>
+<p><strong>But the correction only reaches sources the taxonomy can name.</strong></p>
+<p><strong>SONYC set out to remove the bias toward neighbourhoods that complain, and inherited a deeper bias toward sources that <em>can be</em> complained about. For a source with no category, continuous sensing produces exactly as much evidence as the complaint system did: none.</strong></p>
+</blockquote>
+<p>This is not a criticism of SONYC, which is a serious project that made its derivation explicit in print — which is the only reason this finding is available at all. It is an observation about what happens when a measurement system is aligned to an enforcement schema: <strong>it inherits the schema's silences along with its priorities.</strong></p>
+<p>Two further observations, both rated <strong>3/5</strong> and both flagged as inference rather than finding:</p>
+<ul>
+<li><strong>Sensor placement.</strong> The papers state sensors are in Manhattan, Brooklyn and Queens with "the highest concentration around New York University's Manhattan campus." Whether any sensor was ever within earshot of an elevated structure is not established here and is <strong>Method 25</strong>. The spatial metadata is quantised to a city block and released, so this is answerable from the public dataset without contacting anyone.</li>
+<li><strong>The audio may still be there.</strong> 150 million clips is a very large number and the sensors ran continuously. If any node was within range of an elevated line, the <em>sound</em> of elevated rail is almost certainly in the corpus. It is simply <strong>unfindable by label</strong>, which for a dataset of that size is operationally the same as not existing — unless someone searches it by acoustic similarity instead. That is a real, tractable, and rather interesting piece of work, and it is <strong>Method 25</strong>.</li>
+</ul>
+<p><strong>On inter-annotator agreement.</strong> The V2 paper reports Krippendorff's alpha of <strong>0.36</strong> for the crowdsourced annotations, which the authors themselves call "rather low," attributing it to distant events with poor signal-to-noise and the difficulty of disambiguating sounds without visual confirmation. This is relevant beyond SONYC: it is a quantified estimate of how unreliable crowd annotation of urban sound is even when the annotators are motivated volunteers working from a fixed taxonomy. It is a reason to be sceptical of <em>any</em> crowd-sourced acoustic claim, including the ones inventoried in Part 3.</p>
+<h3 id="24-the-mechanism--stated-as-a-question-not-a-finding">2.4 The mechanism — stated as a question, not a finding</h3>
+<p>Why does the New York City Noise Code not reach elevated rail?</p>
+<p>The apparent answer has two independent limbs, and <strong>this programme cannot responsibly assert either</strong>:</p>
+<ul>
+<li><strong>The MTA is a New York State public benefit corporation, not a city agency</strong>, and the general position is that city ordinances do not bind state authorities in the exercise of their statutory functions. This is why § 1204-a exists at all: the State legislature had to write the MTA its own noise statute, because the city's did not apply. The blank cell for elevated structures in that statute is documented in <a href="idea-concept.html"><code>IDEA-CONCEPT.md</code></a>.</li>
+<li><strong>Federal preemption under the Noise Control Act of 1972</strong> removes rail noise from state and local control — but the implementing regulation, <strong>40 CFR Part 201</strong>, is titled <em>Noise Emission Standards for Transportation Equipment; </em><em>Interstate Rail Carriers</em>**. A rapid transit system operating wholly within one state is not obviously an interstate rail carrier. So preemption may not apply, which would mean the gap is not federally required but merely inherited.</li>
+</ul>
+<p>If the second limb is right, the position is worse than "nobody is allowed to regulate this." It is <strong>"somebody could, and nobody has."</strong></p>
+<p>That distinction decides whether this programme's eventual recommendation is a request for a federal waiver or a request that the city amend a form. Those are wildly different asks. <strong>Q42</strong> and <strong>Method 24</strong>.</p>
+<p><em>Rated 2/5 <code>UNVERIFIED</code>. Assembled from secondary summaries and the title of one federal regulation. No primary statute was read in full. A reader with legal training should assume this paragraph is wrong until they have checked it, and this programme would like to be told.</em></p>
+<hr />
+<h2 id="part-3--what-does-exist-the-inventory">Part 3 — What does exist: the inventory</h2>
+<p>Nothing here is a usable recording. All of it is evidence of something.</p>
+<h3 id="31-the-nyc-dep-citizen-science-dataset--right-park-wrong-end">3.1 The NYC DEP citizen-science dataset — right park, wrong end</h3>
+<p><strong>This is the single most important item in the inventory, and the most dangerous.</strong></p>
+<p>The NYC Department of Environmental Protection runs a <strong>Sound and Noise Education Module</strong> with a published lesson, "Conducting a Case Study: Brooklyn Bridge Park," backed by an ArcGIS StoryMap containing a real, geolocated, twelve-site noise dataset collected in Brooklyn Bridge Park.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Publisher</td>
+<td>NYC Department of Environmental Protection, Education Office</td>
+</tr>
+<tr>
+<td>Published</td>
+<td>24 August 2022</td>
+</tr>
+<tr>
+<td>Data collected</td>
+<td><strong>19 July 2019, 12:00–13:00</strong></td>
+</tr>
+<tr>
+<td>Sites</td>
+<td><strong>12</strong>, around Pier 3 and Pier 4</td>
+</tr>
+<tr>
+<td>Instrument</td>
+<td><strong>Arduino Science Journal</strong> (a phone app)</td>
+</tr>
+<tr>
+<td>Mean outside berm</td>
+<td><strong>52 dB</strong></td>
+</tr>
+<tr>
+<td>Mean inside berm</td>
+<td><strong>48 dB</strong></td>
+</tr>
+<tr>
+<td>Range outside berm</td>
+<td><strong>48 to 65 dB</strong></td>
+</tr>
+<tr>
+<td>Range inside berm</td>
+<td><strong>41 to 54 dB</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><em>Rated 4/5 <code>VERIFIED</code> — the StoryMap was extracted and read in full. Rated 4 rather than 5 because it is an education product rather than a measurement report: no instrument calibration, no weighting network, no averaging time, and no integration period are stated anywhere.</em></p>
+<p><strong>Why it is important:</strong> it is proof that municipally-sanctioned, phone-based, citizen-collected acoustic data in Brooklyn Bridge Park already exists, is publishable, and is considered legitimate by the city's own environmental agency. Every objection this programme has raised about phone measurement, the DEP has already waved through in a lesson plan for schoolchildren. <strong>That is a precedent worth having</strong> when proposing Methods 11 and 21. It also happens to endorse the same two tools <a href="field-capture-protocol.html"><code>FIELD-CAPTURE-PROTOCOL.md</code></a> discusses, noting that "while both applications can be used, the Arduino Science Journal is more student friendly, while the NIOSH application provides the most accurate data."</p>
+<p><strong>Why it is dangerous:</strong> it measures the wrong end of the park, and it does not say so in a way anyone would notice.</p>
+<p>Brooklyn Bridge Park is <strong>85 acres and roughly 1.3 miles long</strong>. The DEP study sites are at <strong>Pier 3 and Pier 4</strong>, at the <em>southern</em> end, where the dominant source is the Brooklyn–Queens Expressway and the object of study is the sound-attenuation berm. The Manhattan Bridge crosses the <em>northern</em> end, about <strong>a mile away</strong>, past Piers 2 and 1, past the Fulton Ferry landing, past Jane's Carousel. The MTA's dog run measurement is in the Main Street section, at the far northern tip.</p>
+<blockquote>
+<p><strong>Two published, official, geolocated noise datasets both describe "Brooklyn Bridge Park."</strong></p>
+<p><strong>One says 48 to 52 dB. The other says 87.50 dB(A) Leq with 98.90 dB(A) peaks.</strong></p>
+<p><strong>They differ by about 35 dB — a factor of over three thousand in sound energy — and both are correct, because they are a mile apart and measuring different sources.</strong></p>
+</blockquote>
+<p>Anyone who searches for noise data in Brooklyn Bridge Park will find the DEP StoryMap first. It is an official city product, it has a map, it has charts, it is written for a general audience, and it is optimised for search. The MTA memorandum is a scanned internal document numbered 138061. <strong>The finding of record for this park, as far as the open web is concerned, is that it is a quiet place where a clever berm solved the noise problem.</strong></p>
+<p>This is not a criticism of the DEP lesson, which is good and does what it set out to do. It is an observation about what happens when a park is treated as a unit of analysis and it is a mile long. <strong>Q43.</strong></p>
+<h3 id="32-resident-testimony--an-eighteen-year-record">3.2 Resident testimony — an eighteen-year record</h3>
+<p>The strongest crowd-sourced material found is not acoustic. It is testimonial, and it is remarkably consistent across two decades.</p>
+<p><strong>Brooklyn Paper, "Deaf in DUMBO," by Sarah Portlock, 2008.</strong> Rated <strong>3/5 <code>VERIFIED</code></strong> — local press, read in full, no methodology, but it quotes named officeholders on the record.</p>
+<blockquote>
+<p>"I've lost some hearing as a result [of working and living here]," said DUMBO Neighborhood Association President Karen Johnson, who used to live on Plymouth Street, hard by the Manhattan Bridge with its truck traffic and B, D, N, and Q trains.</p>
+<p>"I moved out of DUMBO because the noise was too much," she said.</p>
+</blockquote>
+<p><strong>The president of the neighbourhood association moved out of the neighbourhood.</strong> That is not a decibel level, and this programme should not pretend it is one. It is a datum of a different kind, and the same article supplies several more:</p>
+<ul>
+<li>A resident posted a copy of the Brooklyn Bridge Park environmental study in a grocery store window at Washington and Front Streets under the heading <strong>"Deaf and DUMBO."</strong> Resident-led dissemination of agency evidence, in 2008, by hand, in a shop window.</li>
+<li><strong>DumboNYC.com maintained a running list of contractors who could insulate apartments against the noise.</strong> This is crowd-sourced mitigation: the community organised its own private, per-household, self-funded response, because no public one was available. Every double-glazed window in DUMBO is a privately financed noise barrier, and nobody has ever added up what they cost. <strong>Q44.</strong></li>
+<li>Furniture maker Eric Manigan: the noise "rocks the whole neighborhood [...] There's a serious noise issue, especially in the summer when people want to sleep with their windows open. If the noise wakes you up one or two times a night, you're ragged."</li>
+<li>And the observation that matters most for the design brief, from then-DUMBO Improvement District Executive Director Kate Kerrigan, on the district's effort to reclaim the spaces under and around the bridge as public areas:</li>
+</ul>
+<blockquote>
+<p>"<strong>the main problem is the cacophony</strong>"</p>
+<p><strong>The noise is not merely a nuisance in the public space under the bridge. It is the binding constraint on creating public space under the bridge at all.</strong></p>
+</blockquote>
+<p>That reframes the design problem. Mitigation is not only about relieving the people already there — it is about <strong>how much unusable land it unlocks</strong>, in one of the most valuable waterfront districts in the United States. That is a quantity an economist could estimate, and it is the argument most likely to move a capital budget. <strong>Q45, Method 24.</strong></p>
+<p>Kerrigan also supplies the acclimatisation observation, which recurs throughout this literature and bears directly on why the problem persists:</p>
+<blockquote>
+<p>"it's always interesting to hear other people's reactions to the noise, because when you're living or working down here you get used to it."</p>
+</blockquote>
+<p><strong>Reddit threads.</strong> Rated <strong>1/5 <code>SNIPPET</code></strong> — titles and indexed excerpts only, comments not read, see 1.3.</p>
+<ul>
+<li>r/AskNYC, "Living next to Manhattan bridge — train noise" (2019) — a prospective tenant in Two Bridges, the Manhattan side of the same bridge, asking how bad it is.</li>
+<li>r/NYCapartments, "How bad is it to live next to the train tracks in Brooklyn?" — indexed excerpt: "No amount of soundproofing or insulation will really dampen the sound and if you work from home you'll constantly be apologizing about the [noise]."</li>
+</ul>
+<p>These are worth <strong>nothing</strong> as measurement and are worth <strong>something</strong> as evidence that the question is asked repeatedly by people about to sign a lease. <strong>This programme should not cite them for any physical claim.</strong></p>
+<h3 id="33-the-petitions--residents-converging-on-the-engineering">3.3 The petitions — residents converging on the engineering</h3>
+<p>Three Change.org petitions were located. One is specific to this bridge.</p>
+<p><strong>"Reduce noise pollution in DUMBO from Manhattan Bridge train."</strong> Started <strong>16 November 2025</strong> by Katy Gaul-Stigge. <strong>98 verified signatures</strong> as of this search. Addressed to the DUMBO Action Committee (Elizabeth Johnson) and the DUMBO Neighborhood Alliance (Doreen Gallo). Rated <strong>3/5 <code>VERIFIED</code></strong> — read in full; a petition is self-reported and unrefereed, but it is a primary statement of resident position and the signature count is platform-verified.</p>
+<p>The petition proposes five mitigations. They are listed here <strong>exactly as written by the resident</strong>:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Resident's proposal</th>
+<th>What the engineering literature calls it</th>
+<th>Covered in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Welding the tracks"</td>
+<td>Continuous welded rail; elimination of joint impact</td>
+<td><code>PRECEDENT-AND-MATERIALS.md</code></td>
+</tr>
+<tr>
+<td>"Lubrication of the tracks"</td>
+<td>Top-of-rail friction modifiers; gauge-face lubrication for curve squeal</td>
+<td><code>PRECEDENT-AND-MATERIALS.md</code></td>
+</tr>
+<tr>
+<td>"Rubber insulation on tracks and wheels"</td>
+<td>Resilient fastenings, rail dampers, resilient wheels</td>
+<td><code>PRECEDENT-AND-MATERIALS.md</code></td>
+</tr>
+<tr>
+<td>"Insulation and covering below of the tracks (could also reduce hazards from falling from the tracks)"</td>
+<td>Under-deck absorptive treatment and shrouding</td>
+<td><code>PRECEDENT-AND-MATERIALS.md</code>, Track A</td>
+</tr>
+<tr>
+<td>"Use of lighter cars"</td>
+<td>Unsprung mass reduction</td>
+<td><code>PRECEDENT-AND-MATERIALS.md</code></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>A resident with no stated engineering training, writing a petition, independently produced substantially the same intervention list that this programme assembled from the international elevated-transit literature.</strong></p>
+</blockquote>
+<p>This is worth saying plainly for two reasons. First, it is a <strong>check on the programme</strong>: the design space is not exotic or contrarian, and an interested layperson reaches the same five levers. Second, it disposes of a familiar deflection. The community is not asking for the impossible, and it is not asking for the line to be closed. It is asking for <strong>welded rail, lubrication, resilient components, under-deck treatment and lighter vehicles</strong> — every one of which is standard practice somewhere in the world, and several of which the MTA already does elsewhere on its own system.</p>
+<p>The parenthesis is worth noting too: <em>"could also reduce hazards from falling from the tracks."</em> The resident has independently identified that an under-deck treatment is also a debris-containment measure, which is a co-benefit that materially changes the cost case because it can be charged partly to a different budget line. That is a sophisticated observation and this programme had not made it. <strong>Q46.</strong></p>
+<p><strong>Two claims in the petition need correcting, and the corrections matter.</strong></p>
+<p><strong>Claim 1: "passing every five minutes during peak hours."</strong></p>
+<p>The MTA's own session data gives mean headways across all four tracks of <strong>85.3 s at the DUMBO Archway, 87.1 s at the dog run, and 126.2 s at the Adams Street Library</strong> — that is, roughly <strong>1.4 to 2.1 minutes</strong>. The resident's estimate is <strong>two to three times too long</strong>.</p>
+<p>The resident is under-reporting the frequency of the thing they are complaining about. This is a mild but real finding about perception: what is recalled as an intermittent intrusion every five minutes is, by measurement, an event every ninety seconds. (A partial explanation: a resident may be counting only trains on one line, or in one direction, while the MTA counted every train on all four tracks. The perceptual point stands regardless.) <strong>Q47.</strong></p>
+<p><strong>Claim 2: "often exceeding OSHA safe noise levels of 90 decibels."</strong></p>
+<p>The <strong>OSHA permissible exposure limit of 90 dBA is an eight-hour time-weighted average</strong> for occupational exposure, not an instantaneous ceiling. Peaks of 98.90 dB(A) lasting a few seconds every ninety seconds do not straightforwardly "exceed OSHA," and an unsympathetic reader will use that to dismiss the whole petition. <strong>This programme should not repeat the claim in that form.</strong></p>
+<p>But the reach for OSHA is itself the finding.</p>
+<blockquote>
+<p><strong>The resident reached for an occupational standard — written for paid workers, in an employment relationship, protected by a mandated hearing-conservation programme, who go home at the end of a shift — because there is no civilian standard that applies to a person sitting in a public park under a state authority's railway.</strong></p>
+<p><strong>The rhetorical reach for OSHA is direct evidence of the regulatory vacuum described in Part 2.4. They cited the wrong standard because the right one does not exist.</strong></p>
+</blockquote>
+<p>That is the more interesting version of the observation, and it is more useful to the residents than a correction would be. <strong>Q48.</strong></p>
+<p><strong>Two further petitions</strong>, both rated <strong>2/5 <code>SNIPPET</code></strong>, not read in full:</p>
+<ul>
+<li><strong>"DUMBO Residents Demand a Follow-Up Town Hall, Accountability, and Change!"</strong> — <strong>508 verified signatures</strong>, addressed to Governor Kathy Hochul and Senators Schumer and Gillibrand. Five times the signature count of the noise-specific petition, and escalated to the state and federal level. The relationship between this and the noise petition is not established. <strong>Method 24.</strong></li>
+<li><strong>"SILENCE THE SCREECH! Demanding MTA Immediate Subway Track Lubrication Implementation (NYC)"</strong> — citywide rather than DUMBO-specific, and notable because it isolates <em>one</em> of the five interventions as the immediate ask. Whether the MTA has responded to it anywhere is not established.</li>
+</ul>
+<p><strong>And the corroborating institutional record.</strong> The MTA's own § 1204-a report states that the elected official's office "has been in contact with the MTA New York City Transit (NYCT) since 2022." Combined with the 2008 Brooklyn Paper article and the 2025 petition, the documented complaint record runs <strong>2008 → 2022 → 2023–24 measurements → November 2025 petition → 2026</strong>. Rated <strong>5/5 <code>VERIFIED</code></strong> for the MTA document, <strong>3/5</strong> for the chain.</p>
+<p><strong>Eighteen years of continuous, documented, unresolved complaint.</strong> During which the city's complaint system acquired a dedicated category for helicopters.</p>
+<h3 id="34-social-video-and-uncalibrated-db-claims">3.4 Social video and uncalibrated dB claims</h3>
+<p><strong>Instagram reel, <code>newyorklab.co</code>, video credited to Jack Klein, November 2025.</strong> Indexed caption: <em>"Trains clock in at 80-90 decibels every time they pass over Dumbo on the [Manhattan Bridge]."</em> Rated <strong>2/5 <code>SNIPPET</code></strong> — caption only, retrieved through search indexing; the video itself was not viewed and Instagram requires login.</p>
+<p>The stated range of <strong>80–90 dB</strong> brackets the MTA's <strong>81.33 dB(A)</strong> at the DUMBO Archway and sits below the <strong>87.50</strong> at the dog run. That is an uncalibrated phone measurement by a member of the public landing in the same band as an agency instrument.</p>
+<p><strong>This is weak corroboration and must be labelled as such.</strong> The weighting, the averaging time, the app, the position and the gain are all unknown, and <a href="field-capture-protocol.html"><code>FIELD-CAPTURE-PROTOCOL.md</code></a> Part 4 sets out at length why a phone SPL reading in the 80–99 dB regime is the least trustworthy thing a phone produces — the <em>Cureus</em> 2025 evaluation of ten free Android meter apps found specifically that "accuracy declined at higher noise levels." <strong>The agreement is very likely a coincidence of two numbers in the same decade.</strong> It is recorded because it is the only independent quantitative statement by a member of the public that this search found, and because it is a lead: the poster made a measurement, which means the poster has a recording.</p>
+<p><strong>Travel blog, Rachel's Ruminations, "Walking across the Manhattan Bridge &amp; the Brooklyn Bridge."</strong> Rated <strong>2/5 <code>VERIFIED</code></strong> — read in full. Contains video of a pass-by taken from the pedestrian walkway. Useless for level. But it contains one sentence that is worth more than its rating:</p>
+<blockquote>
+<p>"Walking across the Manhattan Bridge was a pleasant experience on a Saturday morning, except when subway trains passed. The video below gives you an idea of how loud they are. <strong>What it can't show is that the whole structure shakes when they pass.</strong>"</p>
+</blockquote>
+<p>An untrained observer, unprompted, identified the exact limitation of consumer capture: <strong>the structure-borne component does not record.</strong></p>
+<p>That is not a small point. This programme's working physical model is that the bridge steel is itself a radiating surface — that the problem is not only wheel-rail noise propagating through air, but a 1909 structure being driven into vibration across a large area and re-radiating. <strong>Every consumer recording ever made of this bridge is missing that entire limb of the phenomenon</strong>, not because of gain or codec or AGC, but because a phone microphone in the air cannot capture what a hand on a railing can feel.</p>
+<p>So even a perfect crowd-sourced recording would have been systematically incomplete in the one dimension this programme most needs. It is an argument for accelerometry — the S23+ has an accelerometer, and while it is a poor one, a <strong>simultaneous accelerometer and audio recording placed in contact with bridge steel or a park railing</strong> would establish whether the two are correlated at pass-by. That costs nothing and nobody appears to have done it. <strong>Method 21b, folded into Method 21.</strong></p>
+<h3 id="35-direct-field-observation-by-the-author-of-this-repository">3.5 Direct field observation by the author of this repository</h3>
+<p>Everything above is somebody else's testimony, retrieved. This section is the repository's own, and it is recorded here rather than in a methods document because it is <strong>evidence of exactly the same kind and quality as everything else in Part 3</strong> — an unaided human report, unlogged, uninstrumented, made by someone with an interest in the answer. It is rated the same way testimony is rated and it is not upgraded for being ours.</p>
+<p>Rated <strong>2/5 <code>UNVERIFIED</code></strong> — first-hand, repeated over many occasions, no instrument, no log, no date, no position, and made by a party who is not disinterested.</p>
+<blockquote>
+<p>The walk from the York Street F station down to the water and into Brooklyn Bridge Park is loud for its whole length. It stays loud along the waterfront and continues south past the Manhattan Bridge on the path. It does not improve until you are a considerable distance from the bridge.</p>
+</blockquote>
+<p>Two things in that observation are worth separating, because one is new and one is not.</p>
+<p><strong>What is not new: the level.</strong> No number is claimed and none should be inferred. The MTA's instrumented sessions already establish the levels at four points and are rated 5/5.</p>
+<p><strong>What is new: the extent.</strong> This is a claim about <strong>where the affected zone ends</strong>, and it is the only statement in this repository, from any source, that addresses that question at all. Every measured point in the record — the Archway, Adams Street Library, Front and Pine Street, the Main Street park section — sits within a few hundred metres of the structure. <strong>Nothing has ever been measured at the edge of the affected zone, because nobody has established where the edge is.</strong></p>
+<p>That matters because it is the parameter that sizes the denominator. The corridor boxes used in <a href="data-collection.html"><code>data-collection/README.md</code></a> to count residents were drawn from judgement, not from an isopleth. If the affected zone extends materially further south along the Brooklyn Bridge Park path than those boxes assume, the resident and visitor counts are <strong>understated</strong>, and understated in the direction that flatters the case being argued — which is the direction this programme is required to be most suspicious of.</p>
+<p>It also independently corroborates the anomaly found while building the agent model: the site furthest from the structure with clear line of sight across open water is the <em>loudest</em> of the four measured, not the quietest. Distance does not order the measurements. An observation that the noise "does not improve until you are quite far away" is consistent with that and inconsistent with a simple distance-decay picture. <strong>Neither is evidence for the other. Two weak signals pointing the same way are still two weak signals</strong>, and the reason to record it is that a linear transect with a meter would settle it in one afternoon. <strong>Q51, Method 31.</strong></p>
+<p><strong>On the health remark.</strong> A guest of the author, on first exposure, described the noise as a material risk to mental health and wellbeing. That reaction is recorded because first-exposure reactions are precisely what acclimatised residents can no longer supply — Kerrigan's observation in 3.2 says so directly — and because it is the kind of statement this programme is most likely to over-read.</p>
+<p>So it is bounded here explicitly. The WHO Environmental Noise Guidelines for the European Region rate the evidence for <strong>annoyance</strong> from transportation noise as of moderate quality and recommend against exposures above the guideline values on that basis; annoyance is a recognised health-relevant outcome in its own right. The evidence linking transportation noise to <strong>depression and anxiety</strong> is rated by the same guidelines as of <strong>very low quality</strong>. Rated <strong>3/5 <code>SNIPPET</code></strong> — the guideline's structure and the direction of its ratings are read from secondary summaries, not from the full document.</p>
+<p><strong>Therefore:</strong> this repository may say that residents and visitors report the noise as highly annoying, and that annoyance is a recognised outcome with a defensible evidence base. It may <strong>not</strong> say, and must not be quoted as saying, that the Manhattan Bridge causes depression, anxiety or psychiatric harm. Upgrading a guest's remark into a clinical claim would be the same over-reading failure this programme has already committed five times, in a new and more damaging place — because a health over-claim, once found to be unsupported, discredits the measured acoustic work alongside it.</p>
+<hr />
+<h2 id="part-4--what-this-changes">Part 4 — What this changes</h2>
+<h3 id="41-for-the-field-capture-protocol">4.1 For the field capture protocol</h3>
+<p><a href="field-capture-protocol.html"><code>FIELD-CAPTURE-PROTOCOL.md</code></a> proposed five captures on the assumption that no prior material existed. That assumption is now tested and holds — <strong>with three amendments</strong>:</p>
+<ol>
+<li><strong>C3 (headway distribution) has a partial free substitute and a target.</strong> The MTA's counts give mean headway. The resident petition gives <em>perceived</em> headway, and the two differ by a factor of two to three. C3 should now be designed to measure <strong>the distribution, not just the mean</strong>, because the gap between measured regularity and perceived irregularity is itself the finding. A distribution with a long tail feels different from a metronome at the same mean.</li>
+<li><strong>A sixth capture is warranted: C6, simultaneous vibration and audio.</strong> Justified in 3.4. It is nearly free, uses a sensor already in the handset, and addresses the one limb of the phenomenon that no crowd-sourced recording can ever contain.</li>
+<li><strong>The DEP precedent should be cited when proposing any phone-based measurement.</strong> The city's own environmental agency publishes phone-collected noise data from this park, in this park, as an official educational product. That materially lowers the barrier to this programme doing the same, provided it is at least as transparent about method — which, given the DEP lesson states neither weighting nor averaging time, is not a demanding bar.</li>
+</ol>
+<h3 id="42-for-the-argument-as-a-whole">4.2 For the argument as a whole</h3>
+<p>The programme's central difficulty has been explaining the <strong>documentation gap</strong>: why a problem this loud, this old and this well-attested has produced so little measurement. Until now the answer was a list of plausible motives.</p>
+<p>There is now a mechanism, and it is better than the motives because it is impersonal. Nobody decided to ignore elevated rail noise. <strong>The category was never created</strong>, and every downstream instrument that inherited the category inherited the absence — the complaint form, the research corpus, the machine-learning taxonomy, and the statutory standard.</p>
+<p>That is a more precise claim, a more testable one, and a considerably more actionable one. <strong>"Amend the taxonomy" is a smaller ask than "solve the noise", it costs almost nothing, and it would begin generating the missing evidence immediately and at no cost to this programme or anyone else.</strong></p>
+<p>It is also, notably, the first thing this programme has found that a resident could act on this month.</p>
+<hr />
+<h2 id="part-5--new-questions">Part 5 — New questions</h2>
+<p>Continuing the series. Q1–Q41 are in Documents 1–4.</p>
+<p><strong>Q42.</strong> Is elevated rapid-transit noise in New York City <em>preempted</em> from local regulation by the Noise Control Act of 1972, or is it merely <em>unregulated</em>? 40 CFR Part 201 is titled for <strong>interstate rail carriers</strong>; a rapid transit system operating wholly within one state may not be one. If it is not preempted, the City could regulate it and has chosen not to — which makes the remedy a municipal one and changes the entire advocacy strategy. <strong>This is the highest-value unanswered question in the programme, and it is a desk question answerable by one competent lawyer in a day.</strong></p>
+<p><strong>Q43.</strong> What is the correct spatial unit for a soundscape claim? Two official datasets describe "Brooklyn Bridge Park" and differ by 35 dB because they are a mile apart. How many other municipal noise findings are unit-of-analysis artefacts of exactly this kind, and is there a defensible minimum reporting requirement — a receptor coordinate rather than a park name?</p>
+<p><strong>Q44.</strong> What has DUMBO already spent, privately, on noise mitigation? Every acoustic window, every insulated wall, every contractor on the DumboNYC list represents private capital deployed against a public externality. <strong>Nobody has summed it.</strong> If the figure approaches the cost of source-side mitigation, the entire economic argument inverts — the neighbourhood has already paid for the fix, in the least efficient possible way, one apartment at a time.</p>
+<p><strong>Q45.</strong> How much land under and around the Manhattan Bridge is unusable <em>because of noise alone</em>? The DUMBO Improvement District's own executive director named "the cacophony" as the main obstacle to reclaiming those spaces. Value that acreage at DUMBO waterfront rates and the mitigation cost may be trivially recovered — which converts this from a quality-of-life request into a land-value proposition.</p>
+<p><strong>Q46.</strong> Can under-deck acoustic treatment be co-justified as debris containment? A resident raised it unprompted. If a single intervention satisfies both an acoustic objective and a falling-object safety objective, it can draw on two budget lines and two regulatory rationales, and its cost-effectiveness threshold falls accordingly.</p>
+<p><strong>Q47.</strong> Why do residents perceive a 90-second headway as five minutes? Is the mechanism habituation, recall bias, per-line rather than per-track counting, or a genuine perceptual property of intermittent high-level events? This matters because <strong>mitigation that reduces peak level but not event frequency may be perceived very differently from mitigation that does the reverse</strong> — and nobody has established which residents would prefer.</p>
+<p><strong>Q48.</strong> What standard <em>should</em> apply to a person in a public park beneath a state authority's elevated railway? The resident petition reached for OSHA, an occupational standard, because nothing else was available. CEQR outdoor-serenity criteria apply to discretionary city actions, not to ongoing transit operation. <strong>The gap is real, and naming the standard that ought to fill it is a legitimate research output.</strong></p>
+<p><strong>Q49.</strong> Does the SONYC corpus contain elevated rail? 150 million clips, 55+ sensors, spatial metadata released at city-block resolution. If any sensor was within range of an elevated structure, the audio exists and is merely unlabelled. Retrieving it by acoustic similarity rather than by label would produce, at a stroke, the largest corpus of elevated-rail noise recordings in existence — from data that has already been collected, already been paid for, and already been published.</p>
+<p><strong>Q50.</strong> Where did the complaints actually go? 311 cannot receive them. The MTA's § 1204-a report was triggered by an elected official's letter and references contact "since 2022." <strong>The complaint record exists inside the MTA and inside council offices, and it is not public.</strong> What is its volume, and what is its distribution over time?</p>
+<p><strong>Q51.</strong> <strong>Where does the affected zone end?</strong> Every level in the record — all four MTA sites — sits within a few hundred metres of the structure, and the corridor boxes used to count residents were drawn from judgement rather than from an isopleth. Nothing has ever been measured at the boundary, because no boundary has ever been established. This is the parameter that sizes the denominator, and getting it wrong in the generous direction would inflate every exposure figure this programme produces. <strong>A single linear transect settles it.</strong> See 3.5 and Method 31.</p>
+<hr />
+<h2 id="part-6--new-methods">Part 6 — New methods</h2>
+<p>Continuing the register. Methods 0–20 are in Documents 1–5. <strong>None of Methods 0–20 has been executed.</strong> These five are added in full awareness of that.</p>
+<p><strong>Method 21 — The taxonomy-blindness test.</strong> <em>Desk. Hours. Free. Answers Q42 partially and tests the core claim of Part 2.</em></p>
+<p>Query the 311 dataset for noise complaint density in census tracts adjacent to elevated structures citywide — the Astoria line, the Brighton line, the Jamaica line, the Flushing line, the Bronx elevateds — and compare against matched tracts with no elevated structure. <strong>The prediction of Part 2 is that there is no difference</strong>, because the variable being measured is the availability of a complaint category, not the presence of noise. If elevated-adjacent tracts <em>do</em> show elevated complaint volume in some proxy category, the taxonomy is being worked around and the workaround is itself the signal, which is arguably more useful. Either result is publishable. This is the cheapest high-value method in the entire programme and it requires nothing but the API already used in Part 2.</p>
+<p><strong>Method 22 — FOIL the complaint record.</strong> <em>Desk. Weeks. Free. Answers Q50.</em></p>
+<p>Freedom of Information Law request to MTA New York City Transit for the volume and dates of customer complaints referencing Manhattan Bridge noise, 2015 to present, and to the relevant Council and State Senate district offices for constituent correspondence on the same. The § 1204-a report already establishes that such contact exists and dates it to 2022, which makes the request specific and hard to refuse as overbroad.</p>
+<p><strong>Method 23 — Read the comment threads.</strong> <em>Desk. Hours. Free. Closes the gap declared in 1.3.</em></p>
+<p>A logged-in human reading r/AskNYC, r/Brooklyn, r/nyc, r/NYCapartments and r/BrooklynBridgePark for recordings, and the DUMBO Neighborhood Alliance and DUMBO Action Committee channels for the same. <strong>This document explicitly did not do this and should not be read as having cleared it.</strong> If a usable recording exists anywhere, this is where it is.</p>
+<p><strong>Method 24 — Contact the named actors.</strong> <em>Correspondence. Weeks. Free.</em></p>
+<p>Katy Gaul-Stigge (petition author), Doreen Gallo (DUMBO Neighborhood Alliance), Elizabeth Johnson (DUMBO Action Committee), the DUMBO Improvement District, and Brooklyn Community Board 2. Purposes: establish whether recordings exist in community hands; establish what the MTA said at the York Street town hall; retrieve CB2 minutes and testimony; and open the possibility that this programme's outputs are useful to the people who would have to use them.</p>
+<p><strong>A standing condition on this method.</strong> These are residents, not subjects. Any contact must offer something before it asks for anything, must not represent this programme as more established than it is, and must make clear that its central artifacts are <strong>synthetic</strong> — the 3D model contains zero measured elements and the audio demonstration reproduces a mean rather than a sound. The programme has failed red-team review five times for over-claiming from thin reading. <strong>Doing that to a community that has been asking for help since 2008 would be a different and worse kind of error.</strong></p>
+<p><strong>Method 25 — Interrogate the SONYC corpus.</strong> <em>Desk to research collaboration. Months. Free to low cost. Answers Q49.</em></p>
+<p>Two stages. First, from the released spatial metadata, determine whether any sensor was ever within acoustic range of an elevated structure — answerable from public data alone. If yes, second: retrieve candidate clips by acoustic similarity rather than by label, using the same OpenL3 embeddings the project's own baseline uses. Contact the SONYC team at NYU regardless of the outcome, because the taxonomy finding in Part 2.3 is something they would want to know and they are the people best placed to fix it.</p>
+<p><strong>Method 31 — The decay transect.</strong> <em>Field. One afternoon. Free if a meter is borrowed. Answers Q51 and tests the anomaly in 3.5.</em></p>
+<p>Walk a straight line outward from the structure and take a fixed-duration measurement at marked intervals — say every 25 m to 150 m, then every 50 m to 500 m — logging position by GPS and by tape where GPS is unreliable. Repeat on two bearings: one along the Brooklyn Bridge Park path heading south, which is the direction the field observation in 3.5 describes, and one inland through the street grid, where buildings should shield.</p>
+<p><strong>This is designed to be able to fail informatively.</strong> Three outcomes and all three are worth having:</p>
+<ol>
+<li>Level falls monotonically with distance on both bearings. The field observation in 3.5 is habituation or salience bias, the corridor boxes are about right, and the programme has corrected one of its own claims at a cost of one afternoon.</li>
+<li>Level falls inland but not along the water. The waterfront path is an acoustically distinct receptor and the affected zone is far larger than assumed in one direction only — which is exactly what the 17 dB excess at the Main Street park site implies, arrived at independently.</li>
+<li>Level does not order by distance on either bearing. Then the geometry is being dominated by something the record does not contain — deck radiation over a broad area, reflection off the water, or the structure acting as a distributed rather than a line source — and <strong>no distance-based mitigation argument in this programme survives without revision.</strong></li>
+</ol>
+<p>The equipment bar is low and the pitfalls are documented at length in <a href="field-capture-protocol.html"><code>FIELD-CAPTURE-PROTOCOL.md</code></a> Part 4: use a windscreen, run the AGC bench test first, and record time-aligned so that pass-bys can be identified rather than averaged into the background. A relative transect is precisely the case where a phone's unknown fixed gain cancels, which is why this method is cheap.</p>
+<hr />
+<h2 id="part-7--where-this-document-is-likely-to-be-wrong">Part 7 — Where this document is likely to be wrong</h2>
+<p><strong>1. Reddit was not properly searched.</strong> Stated in 1.3 and repeated here because it is the single largest hole. The user asked specifically about Reddit; automated access was blocked; what was searched was a crawler's index of post titles and bodies, not comment trees, and comment trees are where links live. <strong>A negative result on Reddit has not been established.</strong> Method 23.</p>
+<p><strong>2. "No recording exists" is unprovable and is not what is claimed.</strong> What is claimed is that none surfaced through fourteen searches across nine channels. Instagram, TikTok and YouTube are all substantially opaque to text search for acoustic content — a video of a train passing overhead is described by its view, not its sound. <strong>There is almost certainly usable audio on those platforms right now, and it is unfindable by the methods used here.</strong> Locating it needs a human scrolling, or a platform API, or acoustic search. This is a limitation of method, not a property of the world.</p>
+<p><strong>3. The legal mechanism in Part 2.4 is the weakest thing here and is doing significant load-bearing work.</strong> It is rated 2/5 <code>UNVERIFIED</code> and written as a question. But the whole narrative of Part 2 leans on it: the <em>reason</em> the taxonomies lack rail is asserted to be the noise code, and the reason the noise code lacks rail is asserted to be preemption or state-authority status. <strong>If that is wrong, the finding degrades from a causal chain to a correlation between three lists.</strong> The 311 and SONYC observations survive independently; the story connecting them may not. Q42, Method 24.</p>
+<p><strong>4. The SONYC taxonomy claim is well-supported at the coarse level and only partly at the fine level.</strong> The eight coarse classes were read from a results table and cross-checked across three independent sources. The derivation from the noise code is quoted twice, directly, from the authors. <strong>But the twenty-three fine classes were not individually enumerated</strong> — only the four under <code>alert-signal</code> are quoted, because the full taxonomy is published as a figure rather than as text and the extraction returned no image. The absence of a rail class at fine level is therefore inferred from the coarse structure, from the four fine classes that are visible, and from the absence of any rail mention anywhere in either paper. <strong>That is strong but not conclusive</strong>, and it should be checked against the dataset's own annotation schema — which is public — before the claim is repeated. Folded into Method 25.</p>
+<p><strong>5. The 311 finding proves the absence of a category, not the absence of complaints.</strong> Stated in 2.2 and worth restating, because the rhetorical temptation to elide the two is strong and the elision would be a serious error. Residents complained; the record went elsewhere. The correct statement is <strong>"the public complaint record is structurally incapable of representing this problem,"</strong> not "nobody complained."</p>
+<p><strong>6. The 500 m circle is a judgement, not a boundary.</strong> It was chosen to contain the dog run, the Archway and the Brooklyn anchorage. A larger radius would sweep in more of Brooklyn Heights and Vinegar Hill and change every count. <strong>The counts are illustrative; the categorical absence is not sensitive to the radius</strong>, and it is the categorical absence that carries the argument.</p>
+<p><strong>7. The petition is treated generously.</strong> It has 98 signatures. This document quotes it at length, tabulates its proposals against the engineering literature, and draws two findings from its errors. A hostile reader would say 98 signatures in a neighbourhood of roughly 5,000 people is weak evidence of community priority, and they would have a point. <strong>It is quoted because of what it says, not because of how many signed it</strong>, and the number is stated plainly for that reason. The 508-signature town hall petition is larger but was not read in full, and its relationship to the noise issue is not established.</p>
+<p><strong>8. The 2008 Brooklyn Paper article is eighteen years old.</strong> Karen Johnson and Kate Kerrigan may no longer hold those positions or those views. The buildings named have been joined by others. <strong>What the article establishes is that the complaint is old, not that its current form matches its 2008 form.</strong> The article is also a newspaper feature, not a study; its "80 decibels at John and Adams" figure is attributed to the Brooklyn Bridge Park environmental study rather than independently measured, and that study is already in this programme's evidence base at a higher rating.</p>
+<p><strong>9. The DEP dataset critique may be unfair in one direction.</strong> The lesson is explicit that it studies Pier 3 and the berm, and it never claims to characterise the whole park. <strong>The failure mode described in 3.1 is a search-and-citation failure, not an authoring failure</strong>, and the criticism is of how the document will be found and used rather than of what it says. It is included because the misuse is foreseeable and this programme would rather flag it than be the one to commit it.</p>
+<p><strong>10. The convergence between the petition's five proposals and the engineering literature is presented as a check on the programme.</strong> It is at least as likely that the resident read a news article about noise mitigation, or asked a search engine, in which case the two lists share a source and the convergence is not independent. <strong>This is not a validation.</strong> It is presented as one, mildly, and the reader should discount it accordingly.</p>
+<p><strong>11. Everything here is a search result.</strong> Not a single claim in Parts 3 to 6 rests on anyone from this programme standing in Brooklyn Bridge Park. The programme's standing remains what it was: <strong>a desk study that has not measured anything.</strong> This document adds two directly-queried datasets to that, which is genuine progress, and it does not change the fundamental position.</p>
+<p><strong>12. Section 3.5 is our own testimony and we are not disinterested.</strong> It is rated 2/5, the same as any other unaided report, and it is the only item in Part 3 whose author has an interest in the conclusion. It is included because excluding it would be worse — the observation is real, it bears directly on the denominator, and quietly acting on it without recording it would be the least honest option available. <strong>A reader is entitled to discount it more heavily than the rest of Part 3, and should.</strong></p>
+<p><strong>13. The health framing in 3.5 is deliberately conservative and may be too conservative.</strong> The WHO ratings are read from secondary summaries at 3/5, and guideline evidence ratings are not the whole literature. There may be stronger recent evidence on sleep disturbance and cardiovascular outcomes that this document does not reach. <strong>Erring toward under-claiming on health is a deliberate choice</strong>, made because a health over-claim that fails would discredit the acoustic work alongside it — but it is a choice, and it is not the same thing as being right.</p>
+<hr />
+<h2 id="part-8--status">Part 8 — Status</h2>
+<p><strong>Version 1.0. Not red-teamed.</strong></p>
+<p>Every prior document in this programme failed its first red-team review, and always in the same way: <strong>over-claiming from abstract-level reading</strong>. This document has a specific exposure to that failure mode, and it is worth naming it before someone else does.</p>
+<p>The finding in Part 2 is genuinely satisfying. It explains something that needed explaining, it is elegant, it connects four institutions, and it arrived unexpectedly from a search for something else. <strong>Those are precisely the conditions under which this programme has previously over-claimed.</strong> The 311 and SONYC observations are solid and were verified directly. <strong>The causal chain joining them is not</strong>, and if the chain breaks, what remains is three lists that happen to lack the same item.</p>
+<p>The document has been written to fail safely if that happens. But it should be attacked at that joint first.</p>
+<hr />
+<p><em>Document 6 of the DUMBO rail-noise research programme. See <a href="readme.html"><code>README.md</code></a> for the full index.</em></p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/COMMUNITY-EVIDENCE-AUDIT.md">Source on GitHub</a> &middot; Built from <code>12ccc54</code> on 2026-08-02.</p>
+</main>
+</div>
+
+</div>
+</body>
+</html>

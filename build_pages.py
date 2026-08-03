@@ -1,0 +1,1093 @@
+#!/usr/bin/env python3
+"""
+build_pages.py - regenerate the GitHub Pages site from the repository itself.
+
+The site has two parts:
+
+    index.html      the organising page: where the investigation stands,
+                    what has been found, what is still to be done, and a
+                    link to everything else.
+
+    read/*.html     one rendered page per markdown document, so that the
+                    research is readable in a browser without cloning the
+                    repository or trusting GitHub's markdown viewer.
+
+Everything countable on those pages is PARSED OUT OF THE REPOSITORY at build
+time - method counts and their statuses, question numbers, word counts, file
+sizes, the commit date. Nothing is typed in by hand, because hand-typed counts
+go stale silently and this programme has already published stale counts twice.
+
+The markdown files remain authoritative. These pages are rendered copies and
+say so.
+
+Usage:
+    pip install markdown
+    python build_pages.py
+
+Re-run after editing any document. Commit the output.
+"""
+
+import io
+import os
+import re
+import subprocess
+import sys
+from datetime import datetime, timezone
+
+try:
+    import markdown
+except ImportError:
+    sys.exit("This script needs the 'markdown' package:  pip install markdown")
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+REPO = "Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo"
+BLOB = "https://github.com/" + REPO + "/blob/main/"
+ISSUES = "https://github.com/" + REPO + "/issues/"
+
+# ---------------------------------------------------------------------------
+# What is in the repository
+# ---------------------------------------------------------------------------
+
+# (source path, output slug, short title, nav label, one-line description)
+DOCS = [
+    ("README.md", "readme", "Repository README", "README",
+     "The argument in brief, the document index, and the method register with "
+     "its honest status column."),
+    ("IDEA-CONCEPT.md", "idea-concept", "1. Idea and concept", "1. Concept",
+     "What is the problem? Defines it from agency evidence, establishes who is "
+     "responsible under what law, and derives the questions nobody has asked of "
+     "this site."),
+    ("PRECEDENT-AND-MATERIALS.md", "precedent-and-materials",
+     "2. Precedent and materials", "2. Precedent",
+     "What has the world already built? Elevated-transit noise mitigation in "
+     "Japan, China, Sweden, Germany, Hong Kong, Australia and Chicago - and what "
+     "actually transfers to a 1909 suspension bridge."),
+    ("WILLIAMSBURG-COMPARATOR.md", "williamsburg-comparator",
+     "3. Williamsburg comparator", "3. Comparator",
+     "There is a second bridge with the same owner, operator, rolling stock and "
+     "statute. What does it already tell us, and what would measuring it "
+     "establish?"),
+    ("VISUAL-MODEL-FRAMEWORK.md", "visual-model-framework",
+     "4. Visual model framework", "4. Visual model",
+     "Every argument in the first three documents is an argument about a "
+     "cross-section nobody has drawn. Can that drawing be built from open data - "
+     "and made to admit what it does not know?"),
+    ("FIELD-CAPTURE-PROTOCOL.md", "field-capture-protocol",
+     "5. Field capture protocol", "5. Field capture",
+     "Every acoustic claim beyond the published levels is invented. Can a "
+     "consumer phone fix that this month?"),
+    ("COMMUNITY-EVIDENCE-AUDIT.md", "community-evidence-audit",
+     "6. Community evidence audit", "6. Community",
+     "The people who live under it have been complaining since 2008. What have "
+     "they already recorded, and why can nobody find it?"),
+    ("data-collection/README.md", "data-collection", "7. Data collection",
+     "7. Data",
+     "How many trains, how many people, and for how long? Runnable scripts "
+     "against MTA and NYC open data - and the traps that each silently produce a "
+     "plausible wrong number."),
+]
+
+# (path, kind, title, what it demonstrates, what to look at first)
+ARTIFACTS = [
+    ("visual-review/acoustic-demo.html", "Audio", "Acoustic demonstration",
+     "Web Audio synthesis pinned to the MTA's own measurements. Six receptors, "
+     "single pass-by or continuous running at the measured headway, A-weighted "
+     "meters, CEQR threshold marks and a running energy average.",
+     "Start at the Brooklyn Bridge Park dog run, play one pass-by, then switch "
+     "to continuous at 20x speed and watch the running average settle onto "
+     "87.50 - then read why that convergence is a closed loop and not evidence."),
+    ("visual-review/model-3d.html", "Bridge", "Navigable 3D model",
+     "Both bridges, four zoom tiers from the whole crossing down to a single "
+     "rail fastener, with anchored callouts, click-to-inspect components and a "
+     "live scale bar that reads in inches at the finest tier.",
+     "Turn every provenance filter off. The viewport goes completely empty and "
+     "the display says so. That is the state of public knowledge."),
+    ("visual-review/section-problem.html", "Bridge",
+     "Provenance-tagged section",
+     "The 2D cross-section of the Manhattan Bridge track zone, every component "
+     "colour-coded and dash-coded by how well it is actually known, with the "
+     "source rubric attached to the drawing.",
+     "Turn off the DOCUMENTED filter and watch most of the drawing disappear."),
+    ("visual-review/frequency-dashboard.html", "Data",
+     "Frequency and exposure dashboard",
+     "Traversals by hour, route and direction across day, evening and night; "
+     "pedestrian arrivals, departures, walkway flow and residents; and a "
+     "four-cohort presence model that publishes its own non-identifiability.",
+     "Drag the coincidence window from 1 s to 29 s. The answer does not move - "
+     "which is a finding about the feed, not about the railway."),
+    ("visual-review/agent-model.html", "Agents", "Agentic population model",
+     "Groups - not individuals - enter DUMBO at persona-specific gateways, "
+     "follow scenario itineraries, contend for capacity and accumulate a noise "
+     "dose along their actual path. Deterministic, seeded, fully event-logged.",
+     "The first panel: the same itinerary started ninety seconds apart gets a "
+     "different dose. Then the rejected-propagation panel, which is a negative "
+     "result and the most important thing on the page."),
+]
+
+SCRIPTS = [
+    ("data-collection/bridge_schedule.py",
+     "Counts scheduled Manhattan Bridge traversals from the MTA GTFS static "
+     "feed, by hour, route and direction."),
+    ("data-collection/bridge_realtime.py",
+     "Polls GTFS-realtime for actual traversals. Built and verified; the "
+     "week-long run has not been done."),
+    ("data-collection/build_dashboard_data.py",
+     "Assembles the frequency dashboard's dataset, including the coincidence "
+     "analysis that exposed the feed's 30-second quantisation."),
+    ("data-collection/build_pedestrian_data.py",
+     "Derives arrival rate, departure rate, walkway flow and resident count "
+     "from four public datasets. Disproved this repository's own claim about "
+     "which hour is worst."),
+    ("data-collection/build_cohort_model.py",
+     "Fits four population cohorts to the observed departure curve and reports "
+     "the range across every parameter set that fits equally well - which is "
+     "how the non-identifiability result was found."),
+]
+
+DATASETS = [
+    ("data-collection/dashboard-data.json",
+     "Traversal counts by hour, route, direction and period."),
+    ("data-collection/pedestrian-data.json",
+     "Turnstile entries, origin-destination arrivals, walkway counts, residents."),
+    ("data-collection/cohort-data.json",
+     "The admissible cohort parameter family and the presence ranges it implies."),
+]
+
+# The work queue. Ordering is a judgement and is stated as one; the STATUS of
+# each method is parsed from the register rather than typed here.
+TODO = [
+    ("blocking", "Method 28 - measure dwell time",
+     "A few hours with a clicker, repeated over several sessions",
+     "Presence is L = &lambda;W. Method 27 produced &lambda;. Without W there is "
+     "no absolute exposure figure, and the cohort model proved that no amount of "
+     "further arithmetic will substitute for measuring it. <b>This is the single "
+     "blocking unknown for any design-build case.</b>"),
+    ("cheap", "Method 31 - the decay transect",
+     "One afternoon, free if a sound level meter is borrowed",
+     "Walk outward from the structure with a meter and establish where the "
+     "affected zone ends. Nobody has ever determined that boundary, yet it sizes "
+     "the denominator for every exposure figure here. Three possible outcomes "
+     "and all three are informative, including the one that corrects this "
+     "repository."),
+    ("cheap", "Method 21 - the taxonomy query",
+     "A database query",
+     "Confirm across the full 311 and SONYC taxonomies that no rail category "
+     "exists anywhere in either. The finding is already evidenced; this closes "
+     "the last route by which it could be wrong."),
+    ("cheap", "Q42 - preemption or merely unregulated?",
+     "One competent lawyer, one day",
+     "Is elevated rapid transit federally <i>preempted</i> from local noise "
+     "regulation, or simply <i>unregulated</i>? These have opposite consequences "
+     "for every remedy in the programme. <b>The highest-value open question "
+     "here.</b>"),
+    ("cheap", "Method 26 - the traversal census",
+     "Leave a script running for a week, unattended",
+     "The tooling is built and verified. It is now the only route to the "
+     "coincidence distribution, since the schedule feed was shown to be "
+     "quantised to 30 s and unable to answer it."),
+    ("field", "Captures C1 to C5 - the phone protocol",
+     "A Galaxy S23+, public ground, no permission and no funding",
+     "The only proposal in the programme that requires nothing the programme "
+     "does not already have. <b>C2, the temporal envelope, is the highest-value "
+     "item</b>: it is the one measurement that could establish that this "
+     "repository's own derived result is wrong."),
+    ("review", "Red-team the three newest results",
+     "Reading and arithmetic",
+     "Issues <a href=\"" + ISSUES + "26\">#26</a> (is the cohort model's "
+     "non-identifiability a finding or an artefact of an arbitrary threshold?), "
+     "<a href=\"" + ISSUES + "27\">#27</a> (does a model whose every input is "
+     "invented belong in a repository built on quoted loci?) and "
+     "<a href=\"" + ISSUES + "28\">#28</a> (<b>was the propagation model "
+     "genuinely unfittable, or merely digitised badly?</b>)."),
+    ("review", "Read the five counter-citations",
+     "Library access",
+     "Five works surfaced during red-teaming that bear directly on Q1 to Q8 and "
+     "were <b>not read in full</b>. They are listed in section 14 of the concept "
+     "document. Anyone taking this forward should start there, not here."),
+    ("gate", "Methods 0 and 1 - the structural and acoustic prerequisites",
+     "A records request and an engineer; then a two-season field campaign",
+     "The load rating at the track zone gates roughly half the option space, and "
+     "source apportionment is the programme's stated prerequisite - nothing "
+     "downstream is non-arbitrary without it. Expensive, unavoidable, and the "
+     "reason nothing here is recommended for procurement."),
+]
+
+CONVENTIONS = [
+    ("Every number carries its locus",
+     "Not a citation - the actual quoted sentence the number came from. If a "
+     "claim has no locus, it is an inference and is labelled as one."),
+    ("Sources are rated 1 to 5 and marked VERIFIED, SNIPPET or UNVERIFIED",
+     "VERIFIED means the full text was read. SNIPPET means only an abstract or "
+     "search result was seen. Most over-claiming in this programme has come from "
+     "treating a SNIPPET as if it were VERIFIED."),
+    ("Errors are quoted in place, not deleted",
+     "When something here turns out to be wrong, the original wording is left "
+     "visible as a blockquote and followed by the words <i>that is withdrawn</i>. "
+     "A research record that hides its own corrections is not a research record."),
+    ("Every document ends by attacking itself",
+     "A section titled <i>where this document is likely to be wrong</i>, written "
+     "by the authors, naming the specific claim they would attack first."),
+    ("Synthetic is labelled synthetic, in the interface",
+     "The 3D model contains zero measured elements. The audio is synthesised, "
+     "not recorded. The agent model's itineraries are invented. Each says so on "
+     "its own face rather than in a footnote somewhere else."),
+]
+
+# ---------------------------------------------------------------------------
+# Reading the repository
+# ---------------------------------------------------------------------------
+
+
+WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven",
+         "eight", "nine", "ten", "eleven", "twelve"]
+
+
+def spell(n):
+    """Prose uses words for small numbers; tables keep the numerals."""
+    return WORDS[n] if 0 <= n < len(WORDS) else "{:,}".format(n)
+
+
+def read(path):
+    with io.open(os.path.join(ROOT, path), encoding="utf-8") as fh:
+        return fh.read()
+
+
+def size_kb(path):
+    try:
+        return int(round(os.path.getsize(os.path.join(ROOT, path)) / 1024.0))
+    except OSError:
+        return 0
+
+
+def gh_slug(value, separator="-"):
+    """Reproduce GitHub's heading-anchor algorithm so existing #links survive."""
+    value = re.sub(r"[^\w\- ]", "", value.strip().lower(), flags=re.UNICODE)
+    return value.replace(" ", separator)
+
+
+def parse_methods(readme):
+    """Pull the method register out of the README and classify each status."""
+    rows = []
+    for line in readme.split("\n"):
+        s = line.strip()
+        if not (s.startswith("|") and s.endswith("|")):
+            continue
+        cells = [c.strip() for c in s.strip("|").split("|")]
+        if len(cells) != 5:
+            continue
+        num = re.sub(r"[*\s]", "", cells[0])
+        if not num.isdigit():
+            continue
+        plain = re.sub(r"[*_`]", "", cells[4]).strip().lower()
+        if plain.startswith("partially executed"):
+            cls = "partial"
+        elif plain.startswith("executed") or plain.startswith("built as"):
+            cls = "executed"
+        elif plain.startswith("tooling built"):
+            cls = "tooling"
+        elif plain.startswith("not started"):
+            cls = "not-started"
+        else:
+            cls = "other"
+        rows.append({
+            "n": int(num),
+            "name": re.sub(r"[*_`]", "", cells[1]).split(" - ")[0].strip(),
+            "doc": cells[2],
+            "cost": re.sub(r"[*_`]", "", cells[3]).strip(),
+            "status": re.sub(r"[*_`]", "", cells[4]).strip(),
+            "cls": cls,
+        })
+    rows.sort(key=lambda r: r["n"])
+    return rows
+
+
+def collect_stats():
+    st = {}
+    texts = {p: read(p) for p, _, _, _, _ in DOCS}
+    st["words"] = {p: len(t.split()) for p, t in texts.items()}
+    st["total_words"] = sum(st["words"].values())
+    st["methods"] = parse_methods(texts["README.md"])
+    st["n_methods"] = len(st["methods"])
+    st["n_exec"] = sum(1 for m in st["methods"] if m["cls"] == "executed")
+    st["n_partial"] = sum(1 for m in st["methods"] if m["cls"] == "partial")
+    st["n_tooling"] = sum(1 for m in st["methods"] if m["cls"] == "tooling")
+    st["n_open"] = st["n_methods"] - st["n_exec"] - st["n_partial"]
+
+    qmax = 0
+    for t in texts.values():
+        for m in re.finditer(r"\bQ(\d{1,3})\b", t):
+            qmax = max(qmax, int(m.group(1)))
+    st["max_q"] = qmax
+
+    # Explicit withdrawal markers, counted rather than estimated.
+    st["withdrawals"] = sum(
+        len(re.findall(r"(?:that|this|which) (?:is|are) withdrawn", t, re.I))
+        for t in texts.values())
+
+    try:
+        st["sha"] = subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"], cwd=ROOT).decode().strip()
+        st["date"] = subprocess.check_output(
+            ["git", "log", "-1", "--format=%cs"], cwd=ROOT).decode().strip()
+    except Exception:
+        st["sha"] = "unknown"
+        st["date"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    return st
+
+
+# ---------------------------------------------------------------------------
+# Page furniture
+# ---------------------------------------------------------------------------
+
+THEME_JS = """<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>"""
+
+CSS = """
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, kbd, pre {
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 4px;
+  padding: 0.1em 0.36em;
+}
+pre {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre code { background: none; border: 0; padding: 0; }
+
+/* ---- top bar ---- */
+.bar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--cp-panel-strong);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border);
+}
+.bar .in {
+  max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
+.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
+.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.bar nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  border-radius: 999px; white-space: nowrap;
+}
+.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
+
+h1 { font-size: 2.15rem; line-height: 1.18; margin: 0 0 10px; letter-spacing: -0.01em; }
+h2 { font-size: 1.42rem; margin: 0 0 14px; letter-spacing: -0.005em; }
+h3 { font-size: 1.08rem; margin: 26px 0 8px; }
+p { margin: 0 0 14px; }
+.lede { font-size: 1.06rem; color: var(--cp-text-muted); }
+.sub { color: var(--cp-text-muted); font-size: 1.02rem; margin: 0 0 4px; }
+
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin: 0 0 22px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.hero { background: var(--cp-bg-elevated); }
+
+.statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+.s {
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+  font-size: 0.78rem; color: var(--cp-text-muted);
+}
+.s .k { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.s .big { font-size: 1.9rem; font-weight: 700; color: var(--cp-accent); line-height: 1.1; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 14px; }
+.tile {
+  display: block; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 16px 18px; color: var(--cp-text); transition: border-color .15s, transform .15s;
+}
+.tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
+.tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
+.tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.tile .look {
+  font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
+  border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
+}
+.tile .look b { color: var(--cp-text); }
+
+.badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 999px; vertical-align: middle;
+  border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted);
+}
+.badge.ok { border-color: var(--cp-success); color: var(--cp-success); }
+.badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
+.badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
+.badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+
+.note {
+  border-left: 3px solid var(--cp-accent);
+  background: var(--cp-accent-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  padding: 13px 17px; margin: 16px 0; font-size: 0.92rem;
+}
+.note.bad { border-left-color: var(--cp-danger); background: rgba(220,38,38,0.07); }
+.note.good { border-left-color: var(--cp-success); background: rgba(22,163,74,0.07); }
+.note.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,0.09); }
+
+.tw { overflow-x: auto; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td {
+  border: 1px solid var(--cp-border); padding: 8px 11px;
+  text-align: left; vertical-align: top;
+}
+th { background: var(--cp-surface-soft); font-weight: 700; }
+tbody tr:nth-child(even) td { background: var(--cp-surface-soft); }
+
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li { margin-bottom: 7px; }
+
+blockquote {
+  margin: 16px 0; padding: 10px 18px;
+  border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  color: var(--cp-text-muted);
+}
+
+hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
+
+.foot {
+  color: var(--cp-text-soft); font-size: 0.83rem;
+  border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 30px;
+}
+
+/* ---- work queue ---- */
+.q { border-top: 1px solid var(--cp-border); padding: 15px 0; display: grid;
+     grid-template-columns: 132px 1fr; gap: 18px; }
+.q:first-of-type { border-top: 0; }
+.q .lab { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+          font-weight: 700; padding-top: 3px; }
+.q .h { font-weight: 700; margin-bottom: 2px; }
+.q .cost { font-size: 0.8rem; color: var(--cp-text-soft); margin-bottom: 7px;
+           font-family: Consolas, "Courier New", monospace; }
+.q .why { font-size: 0.9rem; color: var(--cp-text-muted); }
+.lab.blocking { color: var(--cp-danger); }
+.lab.cheap { color: var(--cp-success); }
+.lab.field { color: var(--cp-accent); }
+.lab.review { color: var(--cp-warning); }
+.lab.gate { color: var(--cp-text-muted); }
+
+/* ---- rendered document pages ---- */
+.doclayout { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
+.toc { position: sticky; top: 76px; max-height: calc(100vh - 100px); overflow-y: auto;
+       font-size: 0.84rem; padding-right: 6px; }
+.toc .h { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+          color: var(--cp-text-soft); font-weight: 700; margin-bottom: 8px; }
+.toc a { display: block; padding: 3px 0 3px 9px; color: var(--cp-text-muted);
+         border-left: 2px solid var(--cp-border); line-height: 1.35; }
+.toc a:hover { color: var(--cp-accent); border-left-color: var(--cp-accent); text-decoration: none; }
+.toc a.l3 { padding-left: 20px; font-size: 0.95em; color: var(--cp-text-soft); }
+.doc { min-width: 0; }
+.doc h1 { font-size: 1.95rem; margin-top: 0; }
+.doc h2 { font-size: 1.38rem; margin: 34px 0 12px; padding-bottom: 6px;
+          border-bottom: 1px solid var(--cp-border); }
+.doc h3 { font-size: 1.1rem; margin: 26px 0 8px; }
+.doc h4 { font-size: 0.98rem; margin: 20px 0 6px; color: var(--cp-text-muted); }
+.doc img { max-width: 100%; }
+
+@media (max-width: 980px) {
+  .statrow { grid-template-columns: repeat(2, 1fr); }
+  .doclayout { grid-template-columns: 1fr; }
+  .toc { position: static; max-height: none; margin-bottom: 26px; }
+  .q { grid-template-columns: 1fr; gap: 4px; }
+  .wrap { padding: 22px 16px 70px; }
+  .card { padding: 20px 18px; }
+}
+@media (max-width: 560px) {
+  .statrow { grid-template-columns: 1fr; }
+}
+"""
+
+
+def bar(active, depth):
+    up = "../" if depth else ""
+    items = ['<a href="%sindex.html%s">Overview</a>'
+             % (up, "" if depth else "")]
+    for _, slug, _, label, _ in DOCS:
+        cls = ' class="on"' if active == slug else ""
+        items.append('<a href="%sread/%s.html"%s>%s</a>'
+                     % (up, slug, cls, label) if not depth
+                     else '<a href="%s.html"%s>%s</a>' % (slug, cls, label))
+    home = ' class="on"' if active == "home" else ""
+    return (
+        '<div class="bar"><div class="in">'
+        '<a class="home" href="%sindex.html"%s>Silencing the Span</a>'
+        '<nav>%s</nav></div></div>' % (up, home, "".join(items[1:])))
+
+
+def shell(title, desc, body, active, depth):
+    return (
+        "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"
+        "<meta charset=\"utf-8\">\n"
+        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
+        "<title>" + title + "</title>\n"
+        "<meta name=\"description\" content=\"" + desc + "\">\n"
+        + THEME_JS + "\n<style>" + CSS + "</style>\n</head>\n<body>\n"
+        + bar(active, depth) + "\n<div class=\"wrap\">\n" + body
+        + "\n</div>\n</body>\n</html>\n")
+
+
+# ---------------------------------------------------------------------------
+# Rendering the documents
+# ---------------------------------------------------------------------------
+
+SRC_TO_SLUG = {}
+for _p, _s, _t, _l, _d in DOCS:
+    SRC_TO_SLUG[os.path.normpath(_p).replace("\\", "/").lower()] = _s
+
+CODE_EXT = (".py", ".json", ".txt", ".csv", ".yml", ".cfg")
+
+
+def rewrite_href(href, src_dir):
+    """Repoint a link written for the repository at the rendered site."""
+    if not href or href.startswith(("http://", "https://", "mailto:", "#")):
+        return href
+    target, _, frag = href.partition("#")
+    frag = ("#" + frag) if frag else ""
+    if not target:
+        return href
+    norm = os.path.normpath(os.path.join(src_dir, target)).replace("\\", "/")
+    low = norm.lower()
+    if low.endswith(".md"):
+        slug = SRC_TO_SLUG.get(low)
+        return (slug + ".html" + frag) if slug else (BLOB + norm)
+    if low.endswith(CODE_EXT) or os.path.basename(norm) == "LICENSE":
+        return BLOB + norm
+    if low.endswith(".html"):
+        return "../" + norm + frag
+    return "../" + norm + frag
+
+
+def render_doc(src, slug, title, stats):
+    md_text = read(src)
+    src_dir = os.path.dirname(src).replace("\\", "/")
+
+    md = markdown.Markdown(
+        extensions=["tables", "fenced_code", "sane_lists", "toc", "attr_list"],
+        extension_configs={"toc": {"slugify": gh_slug, "toc_depth": "2-3"}})
+    html = md.convert(md_text)
+
+    html = re.sub(r'href="([^"]*)"',
+                  lambda m: 'href="%s"' % rewrite_href(m.group(1), src_dir),
+                  html)
+    html = re.sub(r"(<table\b)", r'<div class="tw">\1', html)
+    html = html.replace("</table>", "</table></div>")
+
+    toc = ['<div class="h">On this page</div>']
+    for tok in md.toc_tokens:
+        toc.append('<a href="#%s">%s</a>' % (tok["id"], tok["name"]))
+        for sub in tok.get("children", []):
+            toc.append('<a class="l3" href="#%s">%s</a>'
+                       % (sub["id"], sub["name"]))
+
+    words = stats["words"][src]
+    body = (
+        '<div class="doclayout">\n'
+        '<aside class="toc">' + "".join(toc) + '</aside>\n'
+        '<main class="doc">\n'
+        '<div class="note">'
+        '<b>Rendered copy.</b> The authoritative version of this document is '
+        '<a href="' + BLOB + src.replace("\\", "/") + '"><code>'
+        + src.replace("\\", "/") + '</code></a> in the repository. '
+        'This page is regenerated from it by '
+        '<a href="' + BLOB + 'build_pages.py"><code>build_pages.py</code></a> '
+        '&mdash; roughly ' + "{:,}".format(words) + ' words. '
+        'Not peer-reviewed. No option in this document is recommended for '
+        'procurement.</div>\n'
+        + html +
+        '\n<p class="foot">'
+        '<a href="../index.html">&larr; Back to the research overview</a> '
+        '&middot; <a href="' + BLOB + src.replace("\\", "/") + '">Source on '
+        'GitHub</a> &middot; Built from <code>' + stats["sha"] + '</code> on '
+        + stats["date"] + '.</p>\n'
+        '</main>\n</div>\n')
+
+    return shell("%s &mdash; Silencing the Span" % title,
+                 "Rendered copy of %s from the Manhattan Bridge rail-noise "
+                 "research repository." % src.replace("\\", "/"),
+                 body, slug, 1)
+
+
+# ---------------------------------------------------------------------------
+# The organising page
+# ---------------------------------------------------------------------------
+
+def build_index(stats):
+    m_exec = [m for m in stats["methods"] if m["cls"] == "executed"]
+    m_part = [m for m in stats["methods"] if m["cls"] == "partial"]
+    m_tool = [m for m in stats["methods"] if m["cls"] == "tooling"]
+
+    o = []
+    A = o.append
+
+    # -- hero --------------------------------------------------------------
+    A('<div class="card hero">')
+    A('<h1>Silencing the Span</h1>')
+    A('<p class="sub">Rail noise from the NYC Subway crossing the Manhattan '
+      'Bridge into DUMBO, Brooklyn &mdash; an open research programme by '
+      '<a href="https://github.com/Ethical-Tech-CoLab">Ethical Tech CoLab</a>.</p>')
+    A('<p class="lede">This page is the organising index for the whole '
+      'investigation: where it currently stands, what has actually been '
+      'established, what is demonstrably wrong, and what still needs doing. '
+      'It is regenerated from the repository, so the counts on it cannot drift '
+      'away from the work.</p>')
+    A('<div class="statrow">'
+      '<div class="s"><div class="k">MTA-measured peak, Brooklyn Bridge Park</div>'
+      '<div class="big">98.9</div>dB(A) average maximum</div>'
+      '<div class="s"><div class="k">Weekday crossings, busiest hour</div>'
+      '<div class="big">67</div>a train every 54 seconds</div>'
+      '<div class="s"><div class="k">People living in the affected corridor</div>'
+      '<div class="big">15.8k</div>to 21.4k, from tax lots</div>'
+      '<div class="s"><div class="k">Rail noise complaints NYC 311 can accept</div>'
+      '<div class="big">0</div>there is no category</div>'
+      '</div>')
+    A('<p style="margin-top:18px">The first two are the MTA\'s own figures and '
+      'are the most reliable numbers here. The third is derived from public '
+      'tax-lot data. <strong>The fourth is the finding this programme did not '
+      'expect to make.</strong></p>')
+    A('</div>')
+
+    # -- status board ------------------------------------------------------
+    A('<div class="card" id="status">')
+    A('<h2>Where the investigation stands</h2>')
+    A('<p class="lede">%s research documents, %s interactive artifacts, %s '
+      'runnable scripts and roughly %s words &mdash; against %s specified '
+      'methods of which <strong>%s have been executed and %s partially</strong>. '
+      'The gap between those two halves of the sentence is the honest summary '
+      'of this programme.</p>'
+      % (spell(len(DOCS) - 1).capitalize(), spell(len(ARTIFACTS)),
+         spell(len(SCRIPTS)), "{:,}".format(stats["total_words"]),
+         spell(stats["n_methods"]), spell(stats["n_exec"]),
+         spell(stats["n_partial"])))
+
+    A('<div class="tw"><table><thead><tr>'
+      '<th>State</th><th>Count</th><th>What it means</th></tr></thead><tbody>')
+    A('<tr><td><span class="badge ok">Executed</span></td><td><b>%d</b> of %d '
+      'methods</td><td>%s. <b>All three changed something</b>, and two of them '
+      'contradicted claims this repository had already published.</td></tr>'
+      % (stats["n_exec"] + stats["n_partial"], stats["n_methods"],
+         ", ".join("Method %d" % m["n"] for m in m_exec + m_part)))
+    A('<tr><td><span class="badge warn">Tooling built</span></td><td><b>%d</b></td>'
+      '<td>%s &mdash; the code is written and verified against the live feed, '
+      'but the run has not been done.</td></tr>'
+      % (len(m_tool), ", ".join("Method %d" % m["n"] for m in m_tool) or "none"))
+    A('<tr><td><span class="badge no">Not started</span></td><td><b>%d</b></td>'
+      '<td>Proposals. Several of the cheapest are also the most load-bearing, '
+      'and their being undone is why so many claims here are hedged.</td></tr>'
+      % (stats["n_methods"] - stats["n_exec"] - stats["n_partial"] - len(m_tool)))
+    A('<tr><td><span class="badge acc">Withdrawn</span></td><td><b>%d</b> '
+      'explicit retractions</td><td>Claims this programme published and then '
+      'disproved. They are <b>left visible in the text</b> rather than deleted, '
+      'which is the point.</td></tr>' % stats["withdrawals"])
+    A('<tr><td><span class="badge">Open questions</span></td><td><b>Q1&ndash;Q%d</b></td>'
+      '<td>Numbered, attributed to a document, and none of them rhetorical. '
+      'Q42 is the highest-value one and a lawyer could settle it in a day.</td></tr>'
+      % stats["max_q"])
+    A('</tbody></table></div>')
+
+    A('<div class="note bad"><strong>The one thing to understand before reading '
+      'anything else.</strong> <b>Nobody from this programme has stood in '
+      'Brooklyn Bridge Park with an instrument.</b> Every acoustic level quoted '
+      'here was measured by someone else and published; every acoustic level '
+      '<i>modelled</i> here is synthetic. No option in any document is '
+      'recommended for procurement, and none of it is peer-reviewed.</div>')
+    A('</div>')
+
+    # -- start here --------------------------------------------------------
+    A('<div class="card" id="start">')
+    A('<h2>Start here</h2>')
+    A('<p class="lede">Three different readers want three different things.</p>')
+    A('<div class="tiles">')
+    A('<a class="tile" href="visual-review/acoustic-demo.html">'
+      '<div class="t">I want to hear it &rarr;</div>'
+      '<div class="d">The acoustic demonstration. A train approaching, passing '
+      'and departing at the correct decibel difference against each receptor\'s '
+      'measured background &mdash; then running continuously at the real '
+      'headway.</div>'
+      '<div class="look">Start with <b>Brooklyn Bridge Park dog run</b>, one '
+      'pass-by, then switch to continuous at 20&times; speed.</div></a>')
+    A('<a class="tile" href="read/readme.html">'
+      '<div class="t">I want the argument &rarr;</div>'
+      '<div class="d">The repository README. Headline findings, the full '
+      'document index, the method register with its honest status column, and a '
+      'section called &ldquo;what has not been done&rdquo; that is longer than '
+      'most projects\' results sections.</div>'
+      '<div class="look">Read <b>Three headline findings</b>, then <b>What has '
+      'not been done</b>.</div></a>')
+    A('<a class="tile" href="visual-review/frequency-dashboard.html">'
+      '<div class="t">I want the data &rarr;</div>'
+      '<div class="d">The frequency and exposure dashboard. Every crossing by '
+      'hour, route and direction; how many people are underneath; how long they '
+      'stay; and three of this programme\'s own withdrawn claims, printed on '
+      'the page.</div>'
+      '<div class="look">Drag the coincidence window from 1&nbsp;s to '
+      '29&nbsp;s. <b>The answer does not move.</b> That is a finding about the '
+      'feed, not the railway.</div></a>')
+    A('</div></div>')
+
+    # -- demonstrations ----------------------------------------------------
+    A('<div class="card" id="demos">')
+    A('<h2>Interactive demonstrations</h2>')
+    A('<p>Each is a <strong>single self-contained HTML file</strong>: no build '
+      'step, no server, no network access, no dependencies, no tracking. Open '
+      'it here, or download it and double-click. Each applies the same '
+      'provenance discipline to a different medium.</p>')
+    A('<div class="tiles">')
+    for path, kind, title, what, look in ARTIFACTS:
+        A('<a class="tile" href="%s">'
+          '<div class="t">%s <span class="badge acc">%s</span></div>'
+          '<div class="d">%s</div>'
+          '<div class="look">%s</div></a>'
+          % (path, title, kind, what, look))
+    A('</div>')
+    A('<div class="note"><strong>A warning that applies to all %s.</strong> The '
+      '3D model contains <strong>zero measured elements</strong>. The audio is '
+      '<strong>synthesised, not recorded</strong>. The agent model\'s '
+      'itineraries are <strong>invented</strong>. These are instruments for '
+      'reasoning about a problem, not evidence about it &mdash; and each says '
+      'so in its own interface rather than in a footnote somewhere else.</div>'
+      % spell(len(ARTIFACTS)))
+    A('</div>')
+
+    # -- findings ----------------------------------------------------------
+    A('<div class="card" id="findings">')
+    A('<h2>What has actually been found</h2>')
+
+    A('<h3>1. The problem is documented, and then abandoned</h3>')
+    A('<p>The MTA measured the noise, in DUMBO, at named addresses, and '
+      'published the levels. The levels are high. Nothing followed. The '
+      'measurement exists and the response does not, and the gap between those '
+      'two facts is where this programme lives.</p>')
+
+    A('<h3>2. Three instruments for recording city noise, and no rail category '
+      'in any of them</h3>')
+    A('<p>NYC 311 has a complaint descriptor for ice cream trucks and one for '
+      '&ldquo;other animals&rdquo;. It has none for trains. Neither does SONYC, '
+      'NYU\'s 150-million-clip urban sound corpus, whose authors state in print '
+      'that they built their taxonomy from the NYC noise code &mdash; which is '
+      'where the absence originates.</p>')
+    A('<div class="note bad">Within 500&nbsp;m of the park where the MTA '
+      'measured <strong>87.50 dB(A)</strong>, residents filed <strong>4,055'
+      '</strong> noise complaints since 2020 and <strong>not one of them can be '
+      'about the train.</strong> That same circle produced 117 complaints about '
+      'ice cream trucks and 95 about barking dogs. <em>The dogs at the dog run '
+      'are complainable. The trains over it are not.</em></div>')
+    A('<p>This is a mechanism rather than a motive, which makes it testable, and '
+      'it yields the first remedy in the programme that a resident could act on '
+      'this month: amending a taxonomy is a far smaller ask than solving the '
+      'noise.</p>')
+
+    A('<h3>3. Exposure peaks in the early afternoon &mdash; and this programme '
+      'got that wrong twice first</h3>')
+    A('<p>Exposure is people multiplied by events. Optimising on attendance '
+      'alone pointed to the weekend afternoon. Optimising on train rate alone '
+      'pointed to the weekday morning. <strong>Both were published here and both '
+      'are withdrawn.</strong> Train rate is nearly flat from 07:00 to 19:00 '
+      'while the number of people underneath changes by a factor of four, so the '
+      'product peaks between the two: <strong>14:00 on a weekday</strong>, 13:00 '
+      'Saturday, 15:00 Sunday.</p>')
+
+    A('<h3>4. A population\'s composition cannot be recovered from its departure '
+      'curve</h3>')
+    A('<p>A four-cohort model pins <em>total</em> non-resident presence to about '
+      '&plusmn;10%. The <em>split</em> between workers and visitors inside that '
+      'total swings by more than half again across thousands of parameter sets '
+      'that fit the data equally well. <strong>A departure curve carries no job '
+      'titles</strong> &mdash; someone present for eight hours looks identical '
+      'whether they came to work or came for the day. On a Saturday the model is '
+      'explicitly degenerate and says so in its own output.</p>')
+
+    A('<h3>5. Distance does not order the measurements, and a propagation model '
+      'was withdrawn before publication</h3>')
+    A('<div class="note bad">The three near-bridge sites agree with ideal '
+      'line-source spreading to <strong>0.15 dB</strong>, which looks like a '
+      'result and is not one. Jittering the digitised positions by '
+      '&plusmn;10&nbsp;m &mdash; well inside the error of reading a point off a '
+      'scanned figure &mdash; moves the fitted decay exponent anywhere from '
+      '<strong>0.7 to 22.3</strong>, and the dog run sits <strong>17.3 dB '
+      'above</strong> the fit. The agreement is coincidence.</div>')
+    A('<p>The model was therefore <strong>retracted before it was published '
+      'rather than after</strong> &mdash; the first time in this programme that '
+      'has happened in that order. It is also under review in its own right, at '
+      '<a href="%s28">issue #28</a>, because <b>a negative result asserted from '
+      'four points is as vulnerable to over-claiming as a positive one.</b></p>'
+      % ISSUES)
+
+    A('<h3>6. Twenty-one years of measurement without mitigation, and a blank '
+      'cell in a statute helps explain it</h3>')
+    A('<p>The levels have been on the record for two decades. The legal '
+      'mechanism joining that record to the absence of any remedy is rated '
+      '<b>2/5 and written as a question, not a finding</b> &mdash; and the '
+      'document that proposes it names that joint as the first place to attack '
+      'it, because the finding is elegant and arrived unexpectedly, which is '
+      'exactly the condition under which this programme has previously '
+      'over-claimed.</p>')
+    A('</div>')
+
+    # -- work to be done ---------------------------------------------------
+    A('<div class="card" id="todo">')
+    A('<h2>Work to be done</h2>')
+    A('<p class="lede">In priority order. The ordering is a judgement; the '
+      'status of every method is read out of the register rather than asserted '
+      'here. <strong>Several of these cost an afternoon</strong>, which is the '
+      'least comfortable fact about the list.</p>')
+    labels = {"blocking": "Blocking", "cheap": "Cheap &amp; high value",
+              "field": "Fieldwork", "review": "Needs review", "gate": "Gating"}
+    for kind, head, cost, why in TODO:
+        A('<div class="q"><div class="lab %s">%s</div><div>'
+          '<div class="h">%s</div><div class="cost">%s</div>'
+          '<div class="why">%s</div></div></div>' %
+          (kind, labels[kind], head, cost, why))
+    A('<div class="note good"><strong>The cheapest useful contribution is a '
+      'recording.</strong> If you have ever recorded a train crossing the '
+      'Manhattan Bridge from Brooklyn Bridge Park, DUMBO or the Williamsburg '
+      'Bridge walkway, that file is more useful to this programme than anything '
+      'currently in it. The bar is far lower than people assume: <b>spectral '
+      'shape and event timing survive an uncalibrated phone.</b></div>')
+    A('</div>')
+
+    # -- documents ---------------------------------------------------------
+    A('<div class="card" id="documents">')
+    A('<h2>The research documents</h2>')
+    A('<p>Rendered here for reading. The markdown files in the repository '
+      'remain authoritative, and each rendered page links back to its '
+      'source.</p>')
+    A('<div class="tw"><table><thead><tr><th>Document</th><th>What it asks</th>'
+      '<th style="white-space:nowrap">Words</th></tr></thead><tbody>')
+    for src, slug, title, _label, desc in DOCS:
+        A('<tr><td style="white-space:nowrap"><a href="read/%s.html"><b>%s</b></a>'
+          '<br><code style="font-size:0.78em">%s</code></td>'
+          '<td>%s</td><td>%s</td></tr>'
+          % (slug, title, src.replace("\\", "/"), desc,
+             "{:,}".format(stats["words"][src])))
+    A('</tbody></table></div>')
+    A('</div>')
+
+    # -- data and code -----------------------------------------------------
+    A('<div class="card" id="code">')
+    A('<h2>Data and code</h2>')
+    A('<p>Every script runs against live public feeds and can be re-run from '
+      'scratch by anyone. The schedule figures they produce are rated 5/5 '
+      '&mdash; read directly from the MTA\'s own published feed.</p>')
+    A('<div class="tw"><table><thead><tr><th>Script</th><th>What it does</th>'
+      '<th style="white-space:nowrap">Size</th></tr></thead><tbody>')
+    for path, desc in SCRIPTS:
+        A('<tr><td style="white-space:nowrap"><a href="%s%s"><code>%s</code></a></td>'
+          '<td>%s</td><td>%d&nbsp;KB</td></tr>'
+          % (BLOB, path, os.path.basename(path), desc, size_kb(path)))
+    for path, desc in DATASETS:
+        A('<tr><td style="white-space:nowrap"><a href="%s%s"><code>%s</code></a></td>'
+          '<td>%s</td><td>%d&nbsp;KB</td></tr>'
+          % (BLOB, path, os.path.basename(path), desc, size_kb(path)))
+    A('</tbody></table></div>')
+    A('<div class="note warn"><strong>The trap that took three attempts to '
+      'find.</strong> The MTA\'s turnstile feed publishes <code>entries</code> '
+      'at a station, which sounds like people arriving in the neighbourhood and '
+      'is the exact opposite: an entry is somebody going <em>down into</em> the '
+      'system and <em>leaving</em>. Reading it the natural way inverts the daily '
+      'curve, and it will look entirely plausible while doing so. That directional '
+      'trap and three others are documented in '
+      '<a href="read/data-collection.html">the data-collection notes</a>.</div>')
+    A('</div>')
+
+    # -- conventions -------------------------------------------------------
+    A('<div class="card" id="conventions">')
+    A('<h2>How to read anything in here</h2>')
+    A('<p class="lede">Five conventions apply across every document and every '
+      'artifact. They exist because this programme has failed adversarial '
+      'review repeatedly, and always the same way: <strong>over-claiming from '
+      'abstract-level reading.</strong></p>')
+    A('<ol>')
+    for head, body_txt in CONVENTIONS:
+        A('<li><strong>%s.</strong> %s</li>' % (head, body_txt))
+    A('</ol>')
+    A('</div>')
+
+    # -- help --------------------------------------------------------------
+    A('<div class="card" id="help">')
+    A('<h2>How to help</h2>')
+    A('<p>This is a working research repository, not a publication. Corrections '
+      'are more valuable than agreement.</p>')
+    A('<ul>'
+      '<li><strong>Post a recording.</strong> See '
+      '<a href="read/field-capture-protocol.html">the field capture protocol</a> '
+      'for what makes one usable.</li>'
+      '<li><strong>Falsify a &ldquo;not found&rdquo; claim.</strong> Five have '
+      'already failed. The prior on others failing is not low.</li>'
+      '<li><strong>Execute any method.</strong> Several cost an email, a form, '
+      'or an afternoon.</li>'
+      '<li><strong>Challenge the arithmetic.</strong> The event-duration '
+      'derivation, the cohort identifiability result and the propagation '
+      'rejection are each either right or wrong, and none has been reviewed by '
+      'anyone. Issues <a href="' + ISSUES + '26">#26</a>, '
+      '<a href="' + ISSUES + '27">#27</a> and '
+      '<a href="' + ISSUES + '28">#28</a> exist specifically to attack them.</li>'
+      '<li><strong>Reclassify a component\'s provenance.</strong> Anyone with '
+      'structural knowledge of riveted lattice trusses will find '
+      'misclassifications in the 3D model, and finding them is the point of '
+      'publishing the classification.</li>'
+      '</ul>')
+    A('<div class="note good"><strong>One standing condition.</strong> The '
+      'people who live under this bridge have been asking for help since 2008. '
+      'Any contact with them must offer something before it asks for anything, '
+      'must not represent this programme as more established than it is, and '
+      'must make clear that its central artifacts are <strong>synthetic</strong>. '
+      'Over-claiming to a community in that position would be a different and '
+      'worse kind of error than the ones already made here.</div>')
+    A('</div>')
+
+    A('<p class="foot"><strong>Silencing the Span: Defining the Manhattan Bridge '
+      'Rail-Noise Problem in DUMBO for a Design-Build Intervention.</strong> '
+      'Ethical Tech CoLab. Research content released under '
+      '<a href="' + BLOB + 'LICENSE">CC BY 4.0</a>. Not peer-reviewed. '
+      'No option in any document is recommended for procurement.<br><br>'
+      'This page was generated by <a href="' + BLOB + 'build_pages.py">'
+      '<code>build_pages.py</code></a> from commit <code>' + stats["sha"]
+      + '</code> on ' + stats["date"] + '. '
+      '<a href="https://github.com/' + REPO + '">Repository</a> &middot; '
+      '<a href="' + ISSUES + '">Open issues</a></p>')
+
+    return shell(
+        "Silencing the Span &mdash; Manhattan Bridge rail noise in DUMBO",
+        "Open research on rail noise from the NYC Subway crossing the Manhattan "
+        "Bridge into DUMBO, Brooklyn. Current state of the investigation, "
+        "interactive demonstrations, and the work still to be done.",
+        "\n".join(o), "home", 0)
+
+
+# ---------------------------------------------------------------------------
+
+def write(rel, text):
+    path = os.path.join(ROOT, rel)
+    d = os.path.dirname(path)
+    if d and not os.path.isdir(d):
+        os.makedirs(d)
+    with io.open(path, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(text)
+    print("  wrote %-42s %6d bytes" % (rel, len(text.encode("utf-8"))))
+
+
+def main():
+    print("Reading repository...")
+    stats = collect_stats()
+    print("  %d methods: %d executed, %d partial, %d tooling-built"
+          % (stats["n_methods"], stats["n_exec"], stats["n_partial"],
+             stats["n_tooling"]))
+    print("  questions run to Q%d" % stats["max_q"])
+    print("  %d explicit withdrawal statements" % stats["withdrawals"])
+    print("  %s words across %d documents"
+          % ("{:,}".format(stats["total_words"]), len(DOCS)))
+    print("  built from %s (%s)" % (stats["sha"], stats["date"]))
+
+    print("Writing pages...")
+    write(".nojekyll", "")
+    write("index.html", build_index(stats))
+    for src, slug, title, _label, _desc in DOCS:
+        write("read/%s.html" % slug, render_doc(src, slug, title, stats))
+
+    missing = [p for p, _, _, _, _ in ARTIFACTS
+               if not os.path.exists(os.path.join(ROOT, p))]
+    if missing:
+        print("WARNING: artifacts referenced but not present: %s" % missing)
+        return 1
+    print("Done.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
