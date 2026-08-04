@@ -835,6 +835,9 @@ Along the 1,482 m walk from the York Street F platform to Pier 1,
 as wide as the position uncertainty in the MTA memos rather than as points.
 
 ---
+
+```bash
+# What is scheduled. No dependencies beyond the standard library.
 python bridge_schedule.py
 
 # What is running right now.
