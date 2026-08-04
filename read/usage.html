@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8. Usage and cost &mdash; Silencing the Span</title>
+<meta name="description" content="Rendered copy of usage/README.md from the Manhattan Bridge rail-noise research repository.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b11f4b'/%3E%3Cpath d='M3 22h26' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M9 8v14M23 8v14' stroke='%23fff' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M3 14L9 8Q16 17 23 8L29 14' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, kbd, pre {
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 4px;
+  padding: 0.1em 0.36em;
+}
+pre {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre code { background: none; border: 0; padding: 0; }
+
+/* ---- top bar ---- */
+.bar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--cp-panel-strong);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border);
+}
+.bar .in {
+  max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
+.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
+.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.bar nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  border-radius: 999px; white-space: nowrap;
+}
+.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
+
+h1 { font-size: 2.15rem; line-height: 1.18; margin: 0 0 10px; letter-spacing: -0.01em; }
+h2 { font-size: 1.42rem; margin: 0 0 14px; letter-spacing: -0.005em; }
+h3 { font-size: 1.08rem; margin: 26px 0 8px; }
+p { margin: 0 0 14px; }
+.lede { font-size: 1.06rem; color: var(--cp-text-muted); }
+.sub { color: var(--cp-text-muted); font-size: 1.02rem; margin: 0 0 4px; }
+
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin: 0 0 22px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.hero { background: var(--cp-bg-elevated); }
+
+/* -- above the fold ------------------------------------------------------ */
+/* The hero image is grayscale by construction so the theme, not the JPEG,
+   decides what colour it is. */
+.hb {
+  position: relative; border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--cp-border); margin: 0 0 22px;
+  background: #101010; isolation: isolate;
+}
+.hb .pic {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 62% 46%; z-index: 0;
+  opacity: 0.95;
+}
+.hb .tint {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(16,16,16,0.94) 0%, rgba(16,16,16,0.86) 34%,
+                    rgba(16,16,16,0.42) 62%, rgba(16,16,16,0.20) 100%),
+    linear-gradient(0deg, var(--cp-highlight), var(--cp-highlight));
+}
+.hb .hin { position: relative; z-index: 2; padding: 44px 40px 30px; color: #f2efea; }
+.hb .kicker {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--cp-accent); font-weight: 700; margin: 0 0 10px;
+}
+html[data-theme="light"] .hb .kicker { color: #fd8ea1; }
+.hb h1 { font-size: 2.5rem; margin: 0 0 10px; letter-spacing: -0.02em; color: #fff; }
+.hb .sub { font-size: 1.06rem; margin: 0 0 6px; max-width: 44rem; color: #e6e1da; }
+.hb .sub a { color: #ffd0da; }
+.hb .lede { font-size: 0.95rem; margin: 0; max-width: 44rem; color: #bdb7b0; }
+.hb .cred {
+  position: relative; z-index: 2; margin: 22px 0 0; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.14);
+  font-size: 0.7rem; color: rgba(255,255,255,0.52); line-height: 1.5;
+}
+.hb .cred a { color: rgba(255,255,255,0.74); }
+
+/* the statement carousel */
+.wc { position: relative; z-index: 2; margin: 26px 0 34px; min-height: 148px; }
+.wc .wcslide {
+  position: absolute; inset: 0; opacity: 0; transition: opacity .5s ease;
+  pointer-events: none; display: block; color: inherit;
+}
+.wc .wcslide.on { opacity: 1; pointer-events: auto; }
+.wc .wcslide:hover { text-decoration: none; }
+.wc .n {
+  font-size: clamp(3rem, 8.5vw, 5.4rem); font-weight: 700; line-height: 0.94;
+  letter-spacing: -0.035em; color: #fff; display: block;
+}
+.wc .u {
+  font-size: 0.96rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--cp-accent); margin: 8px 0 6px;
+}
+html[data-theme="light"] .wc .u { color: #ff9bad; }
+.wc .l { font-size: 0.98rem; color: #ded8d1; max-width: 40rem; }
+.wc .wcslide:hover .n { color: #ffd0da; }
+.wcnav { position: relative; z-index: 2; display: flex; align-items: center; gap: 8px; }
+.wcnav button {
+  width: 30px; height: 6px; border-radius: 3px; border: 0; cursor: pointer;
+  background: rgba(255,255,255,0.26); padding: 0;
+}
+.wcnav button[aria-current="true"] { background: var(--cp-accent); }
+.wcnav button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.wcnav .pp {
+  width: auto; height: auto; border-radius: 0.625rem; padding: 4px 10px;
+  font: inherit; font-size: 0.74rem; color: #ded8d1;
+  background: rgba(255,255,255,0.12); margin-left: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wc .wcslide { transition: none; }
+}
+@media (max-width: 760px) {
+  .hb .hin { padding: 28px 20px 22px; }
+  .hb h1 { font-size: 1.8rem; }
+  .hb .cred { position: static; max-width: none; text-align: left; }
+  .wc { min-height: 190px; }
+}
+
+.statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+.s {
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+  font-size: 0.78rem; color: var(--cp-text-muted);
+}
+.s .k { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.s .big { font-size: 1.9rem; font-weight: 700; color: var(--cp-accent); line-height: 1.1; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 14px; }
+.tile {
+  display: block; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 16px 18px; color: var(--cp-text); transition: border-color .15s, transform .15s;
+}
+.tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
+.tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
+.tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.tile .look {
+  font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
+  border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
+}
+.tile .look b { color: var(--cp-text); }
+
+.badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 999px; vertical-align: middle;
+  border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted);
+}
+.badge.ok { border-color: var(--cp-success); color: var(--cp-success); }
+.badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
+.badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
+.badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+
+.note {
+  border-left: 3px solid var(--cp-accent);
+  background: var(--cp-accent-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  padding: 13px 17px; margin: 16px 0; font-size: 0.92rem;
+}
+.note.bad { border-left-color: var(--cp-danger); background: rgba(220,38,38,0.07); }
+.note.good { border-left-color: var(--cp-success); background: rgba(22,163,74,0.07); }
+.note.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,0.09); }
+
+.tw { overflow-x: auto; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td {
+  border: 1px solid var(--cp-border); padding: 8px 11px;
+  text-align: left; vertical-align: top;
+}
+th { background: var(--cp-surface-soft); font-weight: 700; }
+tbody tr:nth-child(even) td { background: var(--cp-surface-soft); }
+
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li { margin-bottom: 7px; }
+
+blockquote {
+  margin: 16px 0; padding: 10px 18px;
+  border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  color: var(--cp-text-muted);
+}
+
+hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
+
+.foot {
+  color: var(--cp-text-soft); font-size: 0.83rem;
+  border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 30px;
+}
+
+/* ---- work queue ---- */
+.q { border-top: 1px solid var(--cp-border); padding: 15px 0; display: grid;
+     grid-template-columns: 132px 1fr; gap: 18px; }
+.q:first-of-type { border-top: 0; }
+.q .lab { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+          font-weight: 700; padding-top: 3px; display: flex;
+          align-items: flex-start; gap: 8px; line-height: 1.35; }
+.q .h { font-weight: 700; margin-bottom: 2px; }
+.q .cost { font-size: 0.8rem; color: var(--cp-text-soft); margin-bottom: 7px;
+           font-family: Consolas, "Courier New", monospace; }
+.q .why { font-size: 0.9rem; color: var(--cp-text-muted); }
+.lab.blocking { color: var(--cp-danger); }
+.lab.cheap { color: var(--cp-success); }
+.lab.field { color: var(--cp-accent); }
+.lab.review { color: var(--cp-warning); }
+.lab.gate { color: var(--cp-text-muted); }
+.lab.done { color: var(--cp-success); }
+
+/* A tick and an empty box, so done and not-done are distinguishable without
+   relying on colour alone. Both are drawn, not typed, so neither depends on
+   an emoji font being present. */
+.mk { display: inline-block; width: 17px; height: 17px; border-radius: 4px;
+      position: relative; flex: 0 0 17px; margin-top: 1px; }
+.mk.on { background: var(--cp-success); }
+.mk.on::after { content: ""; position: absolute; left: 5px; top: 1.5px;
+                width: 4px; height: 9px; border: solid #fff;
+                border-width: 0 2px 2px 0; transform: rotate(42deg); }
+/* Indeterminate: the work was done, the result was not obtained. A full tick
+   next to "the week has not been run" would overstate it. */
+.mk.half { border: 2px solid var(--cp-success); }
+.mk.half::after { content: ""; position: absolute; left: 2.5px; top: 5.5px;
+                  width: 8px; height: 2px; background: var(--cp-success); }
+.mk.off { border: 2px solid var(--cp-border-strong); }
+.q .h { display: block; }
+.qdone { margin-bottom: 6px; }
+.qdone .h { color: var(--cp-text); }
+.qdone .why { color: var(--cp-text-soft); }
+.donehead { display: flex; align-items: baseline; justify-content: space-between;
+            gap: 14px; flex-wrap: wrap; margin: 26px 0 4px; }
+.donehead h3 { margin: 0; }
+.donehead .cnt { font-size: 0.82rem; color: var(--cp-text-muted);
+                 font-family: Consolas, "Courier New", monospace; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 14px 0 2px;
+          font-size: 0.84rem; color: var(--cp-text-muted); }
+.legend > span { display: flex; align-items: flex-start; gap: 8px; }
+
+/* ---- rendered document pages ---- */
+.doclayout { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
+.toc { position: sticky; top: 76px; max-height: calc(100vh - 100px); overflow-y: auto;
+       font-size: 0.84rem; padding-right: 6px; }
+.toc .h { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+          color: var(--cp-text-soft); font-weight: 700; margin-bottom: 8px; }
+.toc a { display: block; padding: 3px 0 3px 9px; color: var(--cp-text-muted);
+         border-left: 2px solid var(--cp-border); line-height: 1.35; }
+.toc a:hover { color: var(--cp-accent); border-left-color: var(--cp-accent); text-decoration: none; }
+.toc a.l3 { padding-left: 20px; font-size: 0.95em; color: var(--cp-text-soft); }
+.doc { min-width: 0; }
+.doc h1 { font-size: 1.95rem; margin-top: 0; }
+.doc h2 { font-size: 1.38rem; margin: 34px 0 12px; padding-bottom: 6px;
+          border-bottom: 1px solid var(--cp-border); }
+.doc h3 { font-size: 1.1rem; margin: 26px 0 8px; }
+.doc h4 { font-size: 0.98rem; margin: 20px 0 6px; color: var(--cp-text-muted); }
+.doc img { max-width: 100%; }
+
+@media (max-width: 980px) {
+  .statrow { grid-template-columns: repeat(2, 1fr); }
+  .doclayout { grid-template-columns: 1fr; }
+  .toc { position: static; max-height: none; margin-bottom: 26px; }
+  .q { grid-template-columns: 1fr; gap: 4px; }
+  .wrap { padding: 22px 16px 70px; }
+  .card { padding: 20px 18px; }
+}
+@media (max-width: 560px) {
+  .statrow { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bar"><div class="in"><a class="home" href="../index.html">Silencing the Span</a><nav><a href="readme.html">README</a><a href="idea-concept.html">1. Concept</a><a href="precedent-and-materials.html">2. Precedent</a><a href="williamsburg-comparator.html">3. Comparator</a><a href="visual-model-framework.html">4. Visual model</a><a href="field-capture-protocol.html">5. Field capture</a><a href="community-evidence-audit.html">6. Community</a><a href="data-collection.html">7. Data</a><a href="usage.html" class="on">8. Usage</a></nav></div></div>
+<div class="wrap">
+<div class="doclayout">
+<aside class="toc"><div class="h">On this page</div><a href="#the-correction-this-directory-opens-with">The correction this directory opens with</a><a href="#where-the-numbers-come-from">Where the numbers come from</a><a class="l3" href="#the-unit">The unit</a><a class="l3" href="#the-rule-the-generator-enforces">The rule the generator enforces</a><a href="#four-traps-in-the-style-of-the-seven-in-data-collection">Four traps, in the style of the seven in data-collection</a><a href="#three-findings-that-were-not-the-point-of-the-exercise">Three findings that were not the point of the exercise</a><a href="#two-numbers-and-why-both-have-to-be-quoted">Two numbers, and why both have to be quoted</a><a href="#energy">Energy</a><a href="#where-this-is-likely-to-be-wrong">Where this is likely to be wrong</a></aside>
+<main class="doc">
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md"><code>usage/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 1,553 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<h1 id="usage-what-this-investigation-cost-and-how-that-was-established">Usage: what this investigation cost, and how that was established</h1>
+<p><strong>Dashboard:</strong> <a href="../usage/usage-dashboard.html"><code>usage-dashboard.html</code></a> &middot;
+<strong>Data:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/usage-data.json"><code>usage-data.json</code></a> &middot;
+<strong>Generator:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/build_usage_data.py"><code>build_usage_data.py</code></a></p>
+<p>This directory answers a question about the study rather than a question about
+the bridge: what did producing this repository consume, and what would have to
+be instrumented to answer that properly next time.</p>
+<p>It is deliberately separable. Nothing in <code>build_usage_data.py</code> knows about the
+Manhattan Bridge. Point it at another working directory and it produces the
+same JSON and the same page.</p>
+<pre><code>python usage/build_usage_data.py                # this repository
+python usage/build_usage_data.py --list         # every session in the store
+python usage/build_usage_data.py --cwd C:\Dev\Other
+python usage/build_usage_data.py --session &lt;uuid&gt; --no-inject
+</code></pre>
+<h2 id="the-correction-this-directory-opens-with">The correction this directory opens with</h2>
+<p>The first conclusion reached about this project's own usage was that there was
+none to read. The VS Code extension writes a debug log at
+<code>%APPDATA%\Code\User\workspaceStorage\&lt;hash&gt;\GitHub.copilot-chat\debug-logs\&lt;session&gt;\main.jsonl</code>,
+and that file was inspected and found to contain nineteen <code>session_start</code>
+records and nothing else. The conclusion drawn from it was:</p>
+<blockquote>
+<p>There are no per-request rows, no model names, no token counts, no costs.
+The environment does not record the thing that is being asked for, so the
+dashboard's first job is to say so.</p>
+</blockquote>
+<p>That is withdrawn. It was the wrong file. The Copilot CLI keeps a separate
+store at <code>~/.copilot/session-store.db</code>, and its <code>assistant_usage_events</code> table
+carries one row per request issued to a model, with the model id, the token
+count on each billing channel, the cost, the wall duration, the turn index and
+the id of the tool call that spawned any sub-agent request.</p>
+<p>The error is recorded rather than quietly fixed because of what it nearly
+produced. "The data does not exist" is a comfortable finding: it is
+unfalsifiable, it flatters the investigator, and it would have been published
+as the central result of a case study whose entire purpose was measurement.</p>
+<h2 id="where-the-numbers-come-from">Where the numbers come from</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Source</th>
+<th>Rating</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Requests, models, tokens, cost, duration, turn, sub-agent id</td>
+<td><code>~/.copilot/session-store.db</code>, table <code>assistant_usage_events</code></td>
+<td>5/5 VERIFIED</td>
+</tr>
+<tr>
+<td>Per-model token prices</td>
+<td><code>models.json</code>, written beside the client's debug log</td>
+<td>5/5 VERIFIED</td>
+</tr>
+<tr>
+<td>One AIU = one US cent</td>
+<td>Inferred by matching the above against vendor list prices</td>
+<td>4/5, see below</td>
+</tr>
+<tr>
+<td>Commits, line counts, file counts, word counts</td>
+<td><code>git</code> in this repository</td>
+<td>5/5 VERIFIED</td>
+</tr>
+<tr>
+<td>Energy per request</td>
+<td>Oviedo et al., <em>Joule</em>, 2025</td>
+<td>5/5 for the figure, 2/5 applied here</td>
+</tr>
+<tr>
+<td>Household electricity</td>
+<td>US EIA, <em>Electricity use in homes</em></td>
+<td>5/5 VERIFIED</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="the-unit">The unit</h3>
+<p>The store prices each request in <strong>nano-AIU</strong>. Nothing states what an AIU is.
+It is taken here to be one US cent, on four independent agreements:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Catalogue rate, in / out</th>
+<th>Vendor list price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>claude-sonnet-4.5</code></td>
+<td>300 / 1500</td>
+<td>$3.00 / $15.00 per 1M</td>
+</tr>
+<tr>
+<td><code>claude-haiku-4.5</code></td>
+<td>100 / 500</td>
+<td>$1.00 / $5.00 per 1M</td>
+</tr>
+<tr>
+<td><code>claude-opus-4.6</code></td>
+<td>500 / 2500</td>
+<td>$5.00 / $25.00 per 1M</td>
+</tr>
+<tr>
+<td>cache channels, all Anthropic models</td>
+<td>0.1x base read, 1.25x base write</td>
+<td>the published cache multiples</td>
+</tr>
+</tbody>
+</table></div>
+<p>Three separate models and both cache ratios land on the cent. That is a strong
+inference. It is still an inference, and the dashboard says so where it prints
+a dollar sign.</p>
+<h3 id="the-rule-the-generator-enforces">The rule the generator enforces</h3>
+<p>Cost and token totals are read from <code>token_details_json</code>, <strong>not</strong> from the
+<code>input_tokens</code> and <code>cache_write_tokens</code> columns beside it. The script recomputes
+the cost of every row from the details and refuses to write output if any row
+disagrees with the cost the client recorded. On the current data all rows
+reconcile exactly.</p>
+<h2 id="four-traps-in-the-style-of-the-seven-in-data-collection">Four traps, in the style of the seven in <code>data-collection</code></h2>
+<p><strong>Trap 1: the obvious log is the wrong log.</strong> <code>main.jsonl</code> in the extension's
+debug directory is not the usage record; it holds session lifecycle events. It
+is easy to find, it looks authoritative, and a search that stops there concludes
+that no usage data exists. The store is in <code>~/.copilot</code>, not in
+<code>%APPDATA%\Code</code>.</p>
+<p><strong>Trap 2: the columns and the details disagree, silently.</strong> For rows where the
+initiator is <code>compaction</code>, <code>cache_write_tokens</code> is <code>0</code> while
+<code>token_details_json</code> records the real figure &mdash; in this project's data,
+several hundred thousand tokens on some rows. Summing the columns produces a
+number with no error and no warning that under-counts both tokens and cost. Only
+the details reconcile to <code>total_nano_aiu</code>.</p>
+<p><strong>Trap 3: <code>input_tokens</code> is not the fresh prompt.</strong> It is
+<code>fresh + cache_read + cache_write</code>. Subtracting only <code>cache_read</code> and then
+adding a cache-write charge double-counts the written tokens; in this data that
+inflates the total by about fourteen per cent while looking entirely reasonable.
+The fresh-input figure lives only in the details, under <code>tokenType: "input"</code>.</p>
+<p><strong>Trap 4: summing <code>duration_ms</code> over-counts wall time.</strong> Sub-agents run beside
+the main agent, so their durations overlap it. The generator merges the
+intervals instead: here the sum is about nine per cent above the union. Report
+the union, or say which one is being reported.</p>
+<h2 id="three-findings-that-were-not-the-point-of-the-exercise">Three findings that were not the point of the exercise</h2>
+<p><strong>1. Compaction is a first-class cost centre.</strong> It is invisible in every other
+account. The requests whose only job is to summarise the conversation so it
+keeps fitting in a context window cost more than every request the user typed,
+and several times everything delegated to sub-agents. It produces no output
+anyone reads. It is the strongest argument in this data for keeping sessions
+short and scoped, and no interface surfaces it.</p>
+<p><strong>2. Reading is voluminous and cheap; writing is tiny and expensive.</strong> Cache
+reads are the overwhelming majority of tokens billed and roughly half the money.
+Output is well under one per cent of tokens and about a fifth of the money.
+Fresh, uncached input &mdash; what a reader intuitively pictures as "the prompt"
+&mdash; is a rounding error. Any cost model built on prompt length is modelling
+the wrong quantity.</p>
+<p><strong>3. Almost all engaged time was spent waiting for a model.</strong> Two independent
+measurements agree: engaged time inferred from gaps between requests, and busy
+time computed from request durations, land within about ten per cent of each
+other. Budgeting this class of work in person-hours budgets the wrong resource.</p>
+<h2 id="two-numbers-and-why-both-have-to-be-quoted">Two numbers, and why both have to be quoted</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>List-price token cost</strong></td>
+<td>what the tokens would cost at the published per-model rates</td>
+</tr>
+<tr>
+<td><strong>Premium requests</strong></td>
+<td>what a Copilot subscription actually bills, one per user-initiated turn, at the recorded multiplier</td>
+</tr>
+</tbody>
+</table></div>
+<p>These differ by more than two orders of magnitude, and they cannot be
+reconciled: <strong>nothing available to a client maps one onto the other.</strong> Quoting
+the first alone overstates what anyone paid. Quoting the second alone hides what
+was consumed. The dashboard prints both, adjacent, and refuses to derive a third
+number from them.</p>
+<h2 id="energy">Energy</h2>
+<p>No joules reach a client. The energy panel multiplies a published per-query
+figure by an exact request count, which makes it an estimate stapled to a fact.</p>
+<blockquote>
+<p>we estimate a median energy per query of 0.34 Wh (IQR: 0.18-0.67) for
+frontier-scale models (&gt;200 billion parameters) ... Extending to test-time
+scaling scenarios with 15x more tokens per typical query, the median energy
+rises 13-fold to 4.32 Wh</p>
+</blockquote>
+<p>&mdash; Oviedo, Kazhamiaka, Choukse, Kim, Luers, Nakagawa, Bianchini and Lavista
+Ferres, <em>Energy Use of AI Inference: Efficiency Pathways and Test-Time Compute</em>,
+<em>Joule</em>, 2025.
+<a href="https://www.microsoft.com/en-us/research/publication/energy-use-of-ai-inference-efficiency-pathways-and-test-time-compute">Publication page.</a></p>
+<p><strong>Neither published regime describes this workload.</strong> The regimes are separated
+by output length. These requests are short in output and extremely long in
+input, and nearly all of that input is served from a prompt cache, which is a
+different computation from a fresh prefill. The bracket spans a factor of
+twenty-four and no arithmetic available here narrows it. What would narrow it is
+a per-request energy figure returned by the server, which is the one item on the
+instrumentation list a client cannot supply for itself.</p>
+<h2 id="where-this-is-likely-to-be-wrong">Where this is likely to be wrong</h2>
+<ol>
+<li><strong>The dollar figure is a list-price equivalent, not a bill.</strong> See "two
+   numbers" above. If one figure from this work is quoted, both should be.</li>
+<li><strong>The AIU-to-cent identification is inferred.</strong> Four agreements is strong
+   evidence and not documentation.</li>
+<li><strong>Engaged time cannot distinguish thinking from absence.</strong> It also cannot see
+   time spent reading output after the last request of a sitting, which is
+   exactly when a reader of a research document would spend it.</li>
+<li><strong>The energy panel applies a source outside its stated domain.</strong> Rated 2/5 as
+   applied, and the bracket is reported instead of a point estimate for that
+   reason.</li>
+<li><strong>The output side counts artifacts and appraises nothing.</strong> This repository
+   has withdrawn several published claims; each withdrawal improved the work and
+   reduced the word count. A cost-per-word figure prices typing.</li>
+<li><strong>The instrument measures itself.</strong> Building this dashboard cost requests
+   that appear in the next run of the generator, so the totals were already
+   stale when they rendered. A self-measuring instrument cannot record its own
+   last measurement.</li>
+<li><strong>Retention is not guaranteed.</strong> The store held one project cleanly. Nothing
+   promises it will next month, and a case study whose evidence expires is an
+   anecdote.</li>
+</ol>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md">Source on GitHub</a> &middot; Built from <code>c7a83f2</code> on 2026-08-04.</p>
+</main>
+</div>
+
+</div>
+</body>
+</html>

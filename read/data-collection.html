@@ -368,12 +368,12 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 </style>
 </head>
 <body>
-<div class="bar"><div class="in"><a class="home" href="../index.html">Silencing the Span</a><nav><a href="readme.html">README</a><a href="idea-concept.html">1. Concept</a><a href="precedent-and-materials.html">2. Precedent</a><a href="williamsburg-comparator.html">3. Comparator</a><a href="visual-model-framework.html">4. Visual model</a><a href="field-capture-protocol.html">5. Field capture</a><a href="community-evidence-audit.html">6. Community</a><a href="data-collection.html" class="on">7. Data</a></nav></div></div>
+<div class="bar"><div class="in"><a class="home" href="../index.html">Silencing the Span</a><nav><a href="readme.html">README</a><a href="idea-concept.html">1. Concept</a><a href="precedent-and-materials.html">2. Precedent</a><a href="williamsburg-comparator.html">3. Comparator</a><a href="visual-model-framework.html">4. Visual model</a><a href="field-capture-protocol.html">5. Field capture</a><a href="community-evidence-audit.html">6. Community</a><a href="data-collection.html" class="on">7. Data</a><a href="usage.html">8. Usage</a></nav></div></div>
 <div class="wrap">
 <div class="doclayout">
 <aside class="toc"><div class="h">On this page</div><a href="#why-not-google-maps">Why not Google Maps</a><a href="#the-premise-correction">The premise correction</a><a href="#four-traps-all-of-which-silently-produce-a-wrong-number">Four traps, all of which silently produce a wrong number</a><a href="#the-result">The result</a><a class="l3" href="#by-noise-period">By noise period</a><a class="l3" href="#the-dashboard">The dashboard</a><a href="#three-findings-that-were-not-being-looked-for">Three findings that were not being looked for</a><a class="l3" href="#1-peak-park-use-and-peak-train-frequency-are-out-of-phase---narrowed">1. Peak park use and peak train frequency are out of phase - narrowed</a><a class="l3" href="#2-the-mtas-own-train-counts-do-not-match-the-mtas-own-schedule">2. The MTA's own train counts do not match the MTA's own schedule</a><a class="l3" href="#3-explanation-3-would-undermine-this-programmes-own-derived-result">3. Explanation 3 would undermine this programme's own derived result</a><a class="l3" href="#what-can-honestly-be-said-instead">What can honestly be said instead</a><a href="#what-these-scripts-still-do-not-give-you">What these scripts still do not give you</a><a href="#counting-the-denominator">Counting the denominator</a><a class="l3" href="#the-direction-trap">The direction trap</a><a class="l3" href="#four-sources-none-of-which-counts-a-pedestrian">Four sources, none of which counts a pedestrian</a><a class="l3" href="#what-it-found">What it found</a><a class="l3" href="#the-corridor-fills-in-the-morning-and-empties-in-the-evening">The corridor fills in the morning and empties in the evening</a><a class="l3" href="#a-cross-check-that-was-not-designed-in">A cross-check that was not designed in</a><a class="l3" href="#residents">Residents</a><a class="l3" href="#littles-law-half-solved">Little's Law, half solved</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong">Where this section is likely to be wrong</a><a href="#who-is-actually-here-hour-by-hour">Who is actually here, hour by hour</a><a class="l3" href="#the-model">The model</a><a class="l3" href="#what-it-is-fitted-to">What it is fitted to</a><a class="l3" href="#the-visitor-prior-and-what-it-costs">The visitor prior, and what it costs</a><a class="l3" href="#the-finding-cohort-labels-are-not-identifiable">The finding: cohort labels are not identifiable</a><a class="l3" href="#the-other-thing-the-curve-is-not">The other thing the curve is not</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong_1">Where this section is likely to be wrong</a><a href="#where-the-people-go-not-merely-how-many-there-are">Where the people go, not merely how many there are</a><a href="#what-shape-of-space-they-are-standing-in">What shape of space they are standing in</a></aside>
 <main class="doc">
-<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md"><code>data-collection/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 7,524 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md"><code>data-collection/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 7,535 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
 <h1 id="establishing-train-frequency-over-the-manhattan-bridge-and-who-is-under-it">Establishing train frequency over the Manhattan Bridge, and who is under it</h1>
 <p>Six scripts that answer four questions this programme had been asserting
 answers to without ever deriving them: how many trains actually cross the
@@ -1847,36 +1847,44 @@ which is the honest rendering, and is also the argument.</p>
 <strong>347 m lies within a measured band - 23.4 per cent</strong> - and those bands are drawn
 as wide as the position uncertainty in the MTA memos rather than as points.</p>
 <hr />
-<p>python bridge_schedule.py</p>
-<h1 id="what-is-running-right-now">What is running right now.</h1>
-<p>pip install gtfs-realtime-bindings protobuf
-python bridge_realtime.py --once</p>
-<h1 id="what-actually-ran-over-a-week-resumable---re-running-with-the-same">What actually ran, over a week. Resumable - re-running with the same</h1>
-<h1 id="--out-file-reloads-and-continues">--out file reloads and continues.</h1>
-<p>python bridge_realtime.py --poll 30 --out bridge_week.csv</p>
-<h1 id="who-is-underneath-four-public-datasets-no-api-key-no-dependencies">Who is underneath. Four public datasets, no API key, no dependencies</h1>
-<h1 id="beyond-the-standard-library-writes-pedestrian-datajson-and-injects">beyond the standard library. Writes pedestrian-data.json and injects</h1>
-<h1 id="it-into-the-dashboard">it into the dashboard.</h1>
-<p>python build_pedestrian_data.py</p>
-<h1 id="per-event-train-data-for-the-dashboard">Per-event train data for the dashboard.</h1>
-<p>python build_dashboard_data.py</p>
-<h1 id="who-is-here-at-each-hour-and-for-how-long-fits-four-cohorts-to-the">Who is here at each hour, and for how long. Fits four cohorts to the</h1>
-<h1 id="observed-departure-curve-sweeps-for-identifiability-writes">observed departure curve, sweeps for identifiability, writes</h1>
-<h1 id="cohort-datajson-and-injects-it-into-the-dashboard-takes-about-six">cohort-data.json and injects it into the dashboard. Takes about six</h1>
-<h1 id="minutes---no-inject-writes-the-json-only">minutes; --no-inject writes the JSON only.</h1>
-<p>python build_cohort_model.py</p>
-<h1 id="what-shape-of-space-they-are-standing-in-building-footprints-with">What shape of space they are standing in. Building footprints with</h1>
-<h1 id="surveyed-roof-heights-and-the-street-park-water-and-footway-network">surveyed roof heights, and the street, park, water and footway network.</h1>
-<h1 id="writes-geobuildingsjson-and-geoosmjson">Writes geo/buildings.json and geo/osm.json.</h1>
-<p>python fetch_geodata.py</p>
-<h1 id="then-from-the-repository-root-draw-the-corridor-from-that-geodata">Then, from the repository root, draw the corridor from that geodata.</h1>
-<p>cd ..
+<pre><code class="language-bash"># What is scheduled. No dependencies beyond the standard library.
+python bridge_schedule.py
+
+# What is running right now.
+pip install gtfs-realtime-bindings protobuf
+python bridge_realtime.py --once
+
+# What actually ran, over a week. Resumable - re-running with the same
+# --out file reloads and continues.
+python bridge_realtime.py --poll 30 --out bridge_week.csv
+
+# Who is underneath. Four public datasets, no API key, no dependencies
+# beyond the standard library. Writes pedestrian-data.json and injects
+# it into the dashboard.
+python build_pedestrian_data.py
+
+# Per-event train data for the dashboard.
+python build_dashboard_data.py
+
+# Who is here at each hour, and for how long. Fits four cohorts to the
+# observed departure curve, sweeps for identifiability, writes
+# cohort-data.json and injects it into the dashboard. Takes about six
+# minutes; --no-inject writes the JSON only.
+python build_cohort_model.py
+
+# What shape of space they are standing in. Building footprints with
+# surveyed roof heights, and the street, park, water and footway network.
+# Writes geo/buildings.json and geo/osm.json.
+python fetch_geodata.py
+
+# Then, from the repository root, draw the corridor from that geodata.
+cd ..
 python build_carousel.py
-```</p>
+</code></pre>
 <p>A 30 s poll against an 85-300 s headway samples every train several times
 before it arrives. Shorter intervals gain nothing and are less polite to a
 free public endpoint.</p>
-<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md">Source on GitHub</a> &middot; Built from <code>a22a085</code> on 2026-08-03.</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md">Source on GitHub</a> &middot; Built from <code>c7a83f2</code> on 2026-08-04.</p>
 </main>
 </div>
 
