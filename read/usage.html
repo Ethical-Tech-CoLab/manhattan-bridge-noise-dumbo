@@ -90,6 +90,8 @@ code {
   border-radius: 4px;
   padding: 0.1em 0.36em;
 }
+/* A code span inside a link must still read as a link. */
+a code { color: var(--cp-link); border-color: var(--cp-link); }
 pre {
   background: var(--cp-surface-soft);
   border: 1px solid var(--cp-border);
@@ -101,25 +103,34 @@ pre {
 pre code { background: none; border: 0; padding: 0; }
 
 /* ---- top bar ---- */
-.bar {
-  position: sticky; top: 0; z-index: 50;
+/* mh- prefixed to match the block ensure_masthead() injects into the
+   hand-written artifacts. One definition, one set of names, no collisions. */
+.mh-bar {
+  position: sticky; top: 0; z-index: 50; display: block;
   background: var(--cp-panel-strong);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--cp-border);
 }
-.bar .in {
+.mh-bar .mh-in {
   max-width: 1180px; margin: 0 auto; padding: 10px 22px;
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
 }
-.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
-.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
-.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
-.bar nav a {
-  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
-  border-radius: 999px; white-space: nowrap;
+.mh-bar .mh-home {
+  font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
+  display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
 }
-.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
-.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+.mh-bar .mh-home .mh-mark { display: block; flex: none; border-radius: 6px;
+  width: 26px; height: 26px; min-width: 26px; max-width: 26px; }
+.mh-bar .mh-home:hover { color: var(--cp-accent); text-decoration: none; }
+@media (max-width: 560px) { .mh-bar .mh-home .mh-wm { display: none; } }
+.mh-bar .mh-nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto;
+  align-items: center; }
+.mh-bar .mh-nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  display: inline-block; border-radius: 999px; white-space: nowrap;
+}
+.mh-bar .mh-nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
 
 .wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
 
@@ -236,6 +247,15 @@ html[data-theme="light"] .wc .u { color: #ff9bad; }
 .tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
 .tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
 .tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+         gap: 14px; margin-top: 18px; }
+.m { border: 1px solid var(--cp-border); border-radius: 10px; padding: 14px 16px;
+     background: var(--cp-surface-soft); }
+.m .mn { font-size: 2.1rem; font-weight: 800; line-height: 1; color: var(--cp-accent);
+         letter-spacing: -0.02em; }
+.m .mt { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em;
+         color: var(--cp-text-muted); margin: 6px 0 8px; }
+.m p { font-size: 0.88rem; margin: 0; }
 .tile .look {
   font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
   border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
@@ -368,12 +388,12 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 </style>
 </head>
 <body>
-<div class="bar"><div class="in"><a class="home" href="../index.html">Silencing the Span</a><nav><a href="readme.html">README</a><a href="idea-concept.html">1. Concept</a><a href="precedent-and-materials.html">2. Precedent</a><a href="williamsburg-comparator.html">3. Comparator</a><a href="visual-model-framework.html">4. Visual model</a><a href="field-capture-protocol.html">5. Field capture</a><a href="community-evidence-audit.html">6. Community</a><a href="data-collection.html">7. Data</a><a href="usage.html" class="on">8. Usage</a></nav></div></div>
+<div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../read/readme.html">README</a><a href="../read/idea-concept.html">1. Concept</a><a href="../read/precedent-and-materials.html">2. Precedent</a><a href="../read/williamsburg-comparator.html">3. Comparator</a><a href="../read/visual-model-framework.html">4. Visual model</a><a href="../read/field-capture-protocol.html">5. Field capture</a><a href="../read/community-evidence-audit.html">6. Community</a><a href="../read/data-collection.html">7. Data</a><a href="../read/usage.html" class="on">8. Usage</a><a href="../index.html#demos">Demos</a></nav></div></div>
 <div class="wrap">
 <div class="doclayout">
-<aside class="toc"><div class="h">On this page</div><a href="#the-correction-this-directory-opens-with">The correction this directory opens with</a><a href="#where-the-numbers-come-from">Where the numbers come from</a><a class="l3" href="#the-unit">The unit</a><a class="l3" href="#the-rule-the-generator-enforces">The rule the generator enforces</a><a href="#four-traps-in-the-style-of-the-seven-in-data-collection">Four traps, in the style of the seven in data-collection</a><a href="#three-findings-that-were-not-the-point-of-the-exercise">Three findings that were not the point of the exercise</a><a href="#two-numbers-and-why-both-have-to-be-quoted">Two numbers, and why both have to be quoted</a><a href="#energy">Energy</a><a href="#where-this-is-likely-to-be-wrong">Where this is likely to be wrong</a></aside>
+<aside class="toc"><div class="h">On this page</div><a href="#why-a-noise-study-carries-a-usage-page-at-all">Why a noise study carries a usage page at all</a><a class="l3" href="#the-unit-is-documented-and-that-is-recent">The unit is documented, and that is recent</a><a href="#where-the-numbers-come-from">Where the numbers come from</a><a class="l3" href="#the-unit">The unit</a><a class="l3" href="#the-rule-the-generator-enforces">The rule the generator enforces</a><a href="#four-traps-in-the-style-of-the-seven-in-data-collection">Four traps, in the style of the seven in data-collection</a><a href="#three-findings-that-were-not-the-point-of-the-exercise">Three findings that were not the point of the exercise</a><a href="#two-numbers-and-why-both-still-have-to-be-quoted">Two numbers, and why both still have to be quoted</a><a href="#energy">Energy</a><a href="#where-this-is-likely-to-be-wrong">Where this is likely to be wrong</a><a href="#process-note-a-claim-this-directory-made-and-withdrew">Process note: a claim this directory made and withdrew</a></aside>
 <main class="doc">
-<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md"><code>usage/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 1,553 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md"><code>usage/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 2,407 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
 <h1 id="usage-what-this-investigation-cost-and-how-that-was-established">Usage: what this investigation cost, and how that was established</h1>
 <p><strong>Dashboard:</strong> <a href="../usage/usage-dashboard.html"><code>usage-dashboard.html</code></a> &middot;
 <strong>Data:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/usage-data.json"><code>usage-data.json</code></a> &middot;
@@ -389,26 +409,70 @@ python usage/build_usage_data.py --list         # every session in the store
 python usage/build_usage_data.py --cwd C:\Dev\Other
 python usage/build_usage_data.py --session &lt;uuid&gt; --no-inject
 </code></pre>
-<h2 id="the-correction-this-directory-opens-with">The correction this directory opens with</h2>
-<p>The first conclusion reached about this project's own usage was that there was
-none to read. The VS Code extension writes a debug log at
-<code>%APPDATA%\Code\User\workspaceStorage\&lt;hash&gt;\GitHub.copilot-chat\debug-logs\&lt;session&gt;\main.jsonl</code>,
-and that file was inspected and found to contain nineteen <code>session_start</code>
-records and nothing else. The conclusion drawn from it was:</p>
+<h2 id="why-a-noise-study-carries-a-usage-page-at-all">Why a noise study carries a usage page at all</h2>
+<p><strong>From tokens to public infrastructure.</strong> Every infrastructure system becomes
+governable at the moment it becomes measurable. Electricity became governable
+through the kilowatt-hour, telecommunications through the minute and the
+megabit, cloud computing through the CPU-hour and the gigabyte of egress. The
+unit is never only a technical detail; it is the language in which allocation,
+pricing and accountability can be argued at all.</p>
+<p>Machine inference is entering that stage now, and GitHub has published the
+unit. That is what makes this page possible, and it is why the page sits inside
+a research repository about a bridge rather than in a billing tool.</p>
+<p>The connection to the rest of this work is not decorative. This programme's
+central finding about DUMBO is that
+<strong>the noise is unmeasured and therefore ungoverned</strong>
+&mdash; NYC 311 has no category that can accept a rail-noise
+complaint, so the exposure cannot be counted, so it cannot be budgeted against.
+The same argument, applied to this repository's own production, produces this
+directory. A research programme that argues measurement precedes governance and
+then declines to measure itself is making an exception for the only party it
+controls.</p>
+<p><strong>The pull quote, and it is the reason the page exists:</strong> the AI age will not
+only be defined by who has access to models. It will also be defined by who can
+afford inference, who can measure it, who can govern it, and who benefits from
+the systems built on top of it. This repository was produced for
+<strong>$236.61 of list-price inference</strong> by one person who did not have to ask
+anyone for the budget. Both halves of that sentence are the finding.</p>
+<h3 id="the-unit-is-documented-and-that-is-recent">The unit is documented, and that is recent</h3>
+<p>GitHub Docs, <em>Usage-based billing for organizations and enterprises</em>, retrieved
+4 August 2026:</p>
 <blockquote>
-<p>There are no per-request rows, no model names, no token counts, no costs.
-The environment does not record the thing that is being asked for, so the
-dashboard's first job is to say so.</p>
+<p>Each token is priced based on the model used, and the total is converted into
+AI credits, where 1 AI credit = $0.01 USD.</p>
 </blockquote>
-<p>That is withdrawn. It was the wrong file. The Copilot CLI keeps a separate
-store at <code>~/.copilot/session-store.db</code>, and its <code>assistant_usage_events</code> table
-carries one row per request issued to a model, with the model id, the token
-count on each billing channel, the cost, the wall duration, the turn index and
-the id of the tool call that spawned any sub-agent request.</p>
-<p>The error is recorded rather than quietly fixed because of what it nearly
-produced. "The data does not exist" is a comfortable finding: it is
-unfalsifiable, it flatters the investigator, and it would have been published
-as the central result of a case study whose entire purpose was measurement.</p>
+<p>The same sentence appears in <em>Models and pricing for GitHub Copilot</em>, which
+also states that all listed prices are <strong>per 1 million tokens</strong> &mdash;
+independently confirming the <code>batch_size</code> of 1,000,000 found in the client's own
+<code>models.json</code>. Both pages state that Copilot CLI usage is billed in AI credits;
+code completions are not.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Rating</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GitHub. (2026). <em>Usage-based billing for organizations and enterprises</em>. GitHub Docs. <a href="https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-organizations-and-enterprises">Link</a></td>
+<td>5/5 VERIFIED</td>
+</tr>
+<tr>
+<td>GitHub. (2026). <em>Models and pricing for GitHub Copilot</em>. GitHub Docs. <a href="https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing">Link</a></td>
+<td>5/5 VERIFIED</td>
+</tr>
+<tr>
+<td>Rodriguez, M. (2026, April 27). <em>GitHub Copilot is moving to usage-based billing</em>. The GitHub Blog. <a href="https://github.blog/news-insights/company-news/github-copilot-is-moving-to-usage-based-billing/">Link</a></td>
+<td>4/5 SNIPPET</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>The public term is AI credits.</strong> <code>nano-AIU</code>, the field this directory's
+extractor actually reads, is a telemetry subunit that appears in the local
+store and in no public billing page. It is used here because it is what the
+data contains, and it is converted to credits and to dollars for anything
+quotable. Anyone citing this work should cite credits.</p>
 <h2 id="where-the-numbers-come-from">Where the numbers come from</h2>
 <div class="tw"><table>
 <thead>
@@ -431,8 +495,8 @@ as the central result of a case study whose entire purpose was measurement.</p>
 </tr>
 <tr>
 <td>One AIU = one US cent</td>
-<td>Inferred by matching the above against vendor list prices</td>
-<td>4/5, see below</td>
+<td>GitHub Docs, quoted above; corroborated by matching against vendor list prices</td>
+<td>5/5 VERIFIED</td>
 </tr>
 <tr>
 <td>Commits, line counts, file counts, word counts</td>
@@ -452,8 +516,9 @@ as the central result of a case study whose entire purpose was measurement.</p>
 </tbody>
 </table></div>
 <h3 id="the-unit">The unit</h3>
-<p>The store prices each request in <strong>nano-AIU</strong>. Nothing states what an AIU is.
-It is taken here to be one US cent, on four independent agreements:</p>
+<p>The store prices each request in <strong>nano-AIU</strong>, and no local file states what an
+AIU is. It was originally taken here to be one US cent on the strength of four
+independent agreements with published vendor list prices:</p>
 <div class="tw"><table>
 <thead>
 <tr>
@@ -485,9 +550,18 @@ It is taken here to be one US cent, on four independent agreements:</p>
 </tr>
 </tbody>
 </table></div>
-<p>Three separate models and both cache ratios land on the cent. That is a strong
-inference. It is still an inference, and the dashboard says so where it prints
-a dollar sign.</p>
+<p>That was published as
+<strong>a strong inference and explicitly not documentation, rated 4/5.</strong>
+It has since been checked against GitHub's own billing
+documentation, quoted above, which states the identity directly. The rating is
+raised to 5/5.</p>
+<p><strong>This is not a withdrawal and should not be counted as one.</strong> The inference was
+correct; what changed is that it stopped being an inference. It is recorded here
+because a rating that silently improves is as much a drift as a rating that
+silently degrades, and because the arithmetic above is now an independent check
+on the documentation rather than a substitute for it &mdash; three models and
+both cache ratios reproduce the documented cent from a completely different
+direction.</p>
 <h3 id="the-rule-the-generator-enforces">The rule the generator enforces</h3>
 <p>Cost and token totals are read from <code>token_details_json</code>, <strong>not</strong> from the
 <code>input_tokens</code> and <code>cache_write_tokens</code> columns beside it. The script recomputes
@@ -532,7 +606,7 @@ the wrong quantity.</p>
 measurements agree: engaged time inferred from gaps between requests, and busy
 time computed from request durations, land within about ten per cent of each
 other. Budgeting this class of work in person-hours budgets the wrong resource.</p>
-<h2 id="two-numbers-and-why-both-have-to-be-quoted">Two numbers, and why both have to be quoted</h2>
+<h2 id="two-numbers-and-why-both-still-have-to-be-quoted">Two numbers, and why both still have to be quoted</h2>
 <div class="tw"><table>
 <thead>
 <tr>
@@ -542,20 +616,30 @@ other. Budgeting this class of work in person-hours budgets the wrong resource.<
 </thead>
 <tbody>
 <tr>
-<td><strong>List-price token cost</strong></td>
-<td>what the tokens would cost at the published per-model rates</td>
+<td><strong>AI-credit cost</strong></td>
+<td>tokens priced at the published per-model rates and converted at 1 credit = $0.01</td>
 </tr>
 <tr>
 <td><strong>Premium requests</strong></td>
-<td>what a Copilot subscription actually bills, one per user-initiated turn, at the recorded multiplier</td>
+<td>the older subscription unit, one per user-initiated turn, at the recorded multiplier</td>
 </tr>
 </tbody>
 </table></div>
 <p>These differ by more than two orders of magnitude, and they cannot be
 reconciled: <strong>nothing available to a client maps one onto the other.</strong> Quoting
-the first alone overstates what anyone paid. Quoting the second alone hides what
-was consumed. The dashboard prints both, adjacent, and refuses to derive a third
-number from them.</p>
+the first alone overstates what any individual subscriber paid this month.
+Quoting the second alone hides what was consumed. The dashboard prints both,
+adjacent, and refuses to derive a third number from them.</p>
+<p><strong>One thing has changed since that rule was written.</strong> GitHub announced on
+27 April 2026 that Copilot is moving to usage-based billing, and the current
+documentation describes AI credits as the billing unit. On that reading the
+credit figure is now <em>the</em> number and premium requests are legacy accounting
+retained for continuity. The rule is kept anyway, for a reason that is about
+this repository rather than about GitHub:
+<strong>the premium-request column is the only figure here that a reader can check against a bill they have seen.</strong>
+A page that dropped it would become unfalsifiable by its own audience at exactly
+the moment it started claiming a dollar total. It is demoted, not deleted, and
+the dashboard labels it as the legacy unit.</p>
 <h2 id="energy">Energy</h2>
 <p>No joules reach a client. The energy panel multiplies a published per-query
 figure by an exact request count, which makes it an estimate stapled to a fact.</p>
@@ -580,8 +664,11 @@ instrumentation list a client cannot supply for itself.</p>
 <ol>
 <li><strong>The dollar figure is a list-price equivalent, not a bill.</strong> See "two
    numbers" above. If one figure from this work is quoted, both should be.</li>
-<li><strong>The AIU-to-cent identification is inferred.</strong> Four agreements is strong
-   evidence and not documentation.</li>
+<li><strong>The credit-to-dollar conversion is documented; its application here is not.</strong>
+   GitHub states that 1 AI credit = $0.01. It does not state that the
+   <code>total_nano_aiu</code> column in a local CLI store is denominated in the same
+   credit. That step is still an inference, and it is the one an auditor should
+   attack first.</li>
 <li><strong>Engaged time cannot distinguish thinking from absence.</strong> It also cannot see
    time spent reading output after the last request of a sitting, which is
    exactly when a reader of a research document would spend it.</li>
@@ -599,7 +686,33 @@ instrumentation list a client cannot supply for itself.</p>
    promises it will next month, and a case study whose evidence expires is an
    anecdote.</li>
 </ol>
-<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md">Source on GitHub</a> &middot; Built from <code>2e8a683</code> on 2026-08-04.</p>
+<h2 id="process-note-a-claim-this-directory-made-and-withdrew">Process note: a claim this directory made and withdrew</h2>
+<p>Kept at the end rather than the beginning. It is a note about how the work was
+done, and putting it above the ledger asked every reader to absorb a retracted
+claim before reaching a single figure.</p>
+<p>The first conclusion reached about this project's own usage was that there was
+none to read. The VS Code extension writes a debug log at
+<code>%APPDATA%\Code\User\workspaceStorage\&lt;hash&gt;\GitHub.copilot-chat\debug-logs\&lt;session&gt;\main.jsonl</code>,
+and that file was inspected and found to contain nineteen <code>session_start</code>
+records and nothing else. The conclusion drawn from it was:</p>
+<blockquote>
+<p>There are no per-request rows, no model names, no token counts, no costs.
+The environment does not record the thing that is being asked for, so the
+dashboard's first job is to say so.</p>
+</blockquote>
+<p>That is withdrawn. It was the wrong file. The Copilot CLI keeps a separate
+store at <code>~/.copilot/session-store.db</code>, and its <code>assistant_usage_events</code> table
+carries one row per request issued to a model, with the model id, the token
+count on each billing channel, the cost, the wall duration, the turn index and
+the id of the tool call that spawned any sub-agent request.</p>
+<p>The error is recorded rather than quietly fixed because of what it nearly
+produced. "The data does not exist" is a comfortable finding: it is
+unfalsifiable, it flatters the investigator, and it would have been published
+as the central result of a case study whose entire purpose was measurement.
+It is also the exact inverse of the claim this page now makes &mdash; that the
+unit is documented, the ledger is readable, and the reason so little work of
+this kind is published is not that the data is missing.</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md">Source on GitHub</a> &middot; Built from <code>73f2ac3</code> on 2026-08-04.</p>
 </main>
 </div>
 

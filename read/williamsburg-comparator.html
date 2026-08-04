@@ -90,6 +90,8 @@ code {
   border-radius: 4px;
   padding: 0.1em 0.36em;
 }
+/* A code span inside a link must still read as a link. */
+a code { color: var(--cp-link); border-color: var(--cp-link); }
 pre {
   background: var(--cp-surface-soft);
   border: 1px solid var(--cp-border);
@@ -101,25 +103,34 @@ pre {
 pre code { background: none; border: 0; padding: 0; }
 
 /* ---- top bar ---- */
-.bar {
-  position: sticky; top: 0; z-index: 50;
+/* mh- prefixed to match the block ensure_masthead() injects into the
+   hand-written artifacts. One definition, one set of names, no collisions. */
+.mh-bar {
+  position: sticky; top: 0; z-index: 50; display: block;
   background: var(--cp-panel-strong);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--cp-border);
 }
-.bar .in {
+.mh-bar .mh-in {
   max-width: 1180px; margin: 0 auto; padding: 10px 22px;
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
 }
-.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
-.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
-.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
-.bar nav a {
-  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
-  border-radius: 999px; white-space: nowrap;
+.mh-bar .mh-home {
+  font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
+  display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
 }
-.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
-.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+.mh-bar .mh-home .mh-mark { display: block; flex: none; border-radius: 6px;
+  width: 26px; height: 26px; min-width: 26px; max-width: 26px; }
+.mh-bar .mh-home:hover { color: var(--cp-accent); text-decoration: none; }
+@media (max-width: 560px) { .mh-bar .mh-home .mh-wm { display: none; } }
+.mh-bar .mh-nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto;
+  align-items: center; }
+.mh-bar .mh-nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  display: inline-block; border-radius: 999px; white-space: nowrap;
+}
+.mh-bar .mh-nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
 
 .wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
 
@@ -236,6 +247,15 @@ html[data-theme="light"] .wc .u { color: #ff9bad; }
 .tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
 .tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
 .tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+         gap: 14px; margin-top: 18px; }
+.m { border: 1px solid var(--cp-border); border-radius: 10px; padding: 14px 16px;
+     background: var(--cp-surface-soft); }
+.m .mn { font-size: 2.1rem; font-weight: 800; line-height: 1; color: var(--cp-accent);
+         letter-spacing: -0.02em; }
+.m .mt { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em;
+         color: var(--cp-text-muted); margin: 6px 0 8px; }
+.m p { font-size: 0.88rem; margin: 0; }
 .tile .look {
   font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
   border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
@@ -368,7 +388,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 </style>
 </head>
 <body>
-<div class="bar"><div class="in"><a class="home" href="../index.html">Silencing the Span</a><nav><a href="readme.html">README</a><a href="idea-concept.html">1. Concept</a><a href="precedent-and-materials.html">2. Precedent</a><a href="williamsburg-comparator.html" class="on">3. Comparator</a><a href="visual-model-framework.html">4. Visual model</a><a href="field-capture-protocol.html">5. Field capture</a><a href="community-evidence-audit.html">6. Community</a><a href="data-collection.html">7. Data</a><a href="usage.html">8. Usage</a></nav></div></div>
+<div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../read/readme.html">README</a><a href="../read/idea-concept.html">1. Concept</a><a href="../read/precedent-and-materials.html">2. Precedent</a><a href="../read/williamsburg-comparator.html" class="on">3. Comparator</a><a href="../read/visual-model-framework.html">4. Visual model</a><a href="../read/field-capture-protocol.html">5. Field capture</a><a href="../read/community-evidence-audit.html">6. Community</a><a href="../read/data-collection.html">7. Data</a><a href="../read/usage.html">8. Usage</a><a href="../index.html#demos">Demos</a></nav></div></div>
 <div class="wrap">
 <div class="doclayout">
 <aside class="toc"><div class="h">On this page</div><a href="#a-two-site-comparative-survey-of-received-rail-noise-in-the-public-outdoor-space-beneath-the-williamsburg-and-manhattan-bridges">A Two-Site Comparative Survey of Received Rail Noise in the Public Outdoor Space Beneath the Williamsburg and Manhattan Bridges</a><a href="#0-about-this-document">0. About this document</a><a class="l3" href="#01-relationship-to-the-companion-documents">0.1 Relationship to the companion documents</a><a class="l3" href="#02-method">0.2 Method</a><a class="l3" href="#03-notation">0.3 Notation</a><a href="#part-1--why-this-bridge-and-why-this-is-not-merely-another-case-study">Part 1 — Why this bridge, and why this is not merely "another case study"</a><a class="l3" href="#11-the-problem-with-a-single-site">1.1 The problem with a single site</a><a class="l3" href="#12-what-the-williamsburg-bridge-holds-constant">1.2 What the Williamsburg Bridge holds constant</a><a class="l3" href="#13-the-variable-of-interest-and-why-it-is-worth-surveying">1.3 The variable of interest, and why it is worth surveying</a><a class="l3" href="#14-the-honest-limits-of-the-pairing">1.4 The honest limits of the pairing</a><a href="#part-2--what-the-two-bridges-actually-are">Part 2 — What the two bridges actually are</a><a class="l3" href="#21-an-asymmetry-worth-stating-up-front">2.1 An asymmetry worth stating up front</a><a class="l3" href="#22-the-williamsburg-bridge-from-the-primary-source">2.2 The Williamsburg Bridge, from the primary source</a><a class="l3" href="#23-the-manhattan-bridge-and-one-very-important-recent-finding">2.3 The Manhattan Bridge, and one very important recent finding</a><a href="#part-3--what-data-already-exists-for-the-williamsburg-bridge">Part 3 — What data already exists for the Williamsburg Bridge</a><a class="l3" href="#31-measured-sound-levels-on-the-bridge--the-domino-sugar-feis">3.1 Measured sound levels on the bridge — the Domino Sugar FEIS</a><a class="l3" href="#32-the-mtas-own-statutory-noise-report">3.2 The MTA's own statutory noise report</a><a class="l3" href="#33-community-evidence">3.3 Community evidence</a><a class="l3" href="#34-what-is-explicitly-not-available">3.4 What is explicitly not available</a><a href="#part-4--the-regulatory-finding-outdoor-space-is-orphaned">Part 4 — The regulatory finding: outdoor space is orphaned</a><a class="l3" href="#41-what-the-city-actually-did-about-williamsburg-bridge-noise">4.1 What the city actually did about Williamsburg Bridge noise</a><a class="l3" href="#42-and-for-the-park-nothing">4.2 And for the park, nothing</a><a class="l3" href="#43-why-this-is-the-right-frame-for-a-design-build-proposal">4.3 Why this is the right frame for a design-build proposal</a><a href="#part-5--designing-the-inference">Part 5 — Designing the inference</a><a class="l3" href="#51-what-kind-of-study-this-is">5.1 What kind of study this is</a><a class="l3" href="#52-the-right-question">5.2 The right question</a><a class="l3" href="#53-the-metric-why-sel-is-necessary-and-why-it-is-not-sufficient">5.3 The metric: why SEL is necessary, and why it is not sufficient</a><a class="l3" href="#54-matching-concretely">5.4 Matching, concretely</a><a class="l3" href="#55-what-would-falsify-what">5.5 What would falsify what</a><a href="#part-6--the-measurement-protocol">Part 6 — The measurement protocol</a><a class="l3" href="#61-instrumentation">6.1 Instrumentation</a><a class="l3" href="#62-locations">6.2 Locations</a><a class="l3" href="#63-timing">6.3 Timing</a><a class="l3" href="#64-separating-rail-from-road--the-defect-in-every-prior-study">6.4 Separating rail from road — the defect in every prior study</a><a class="l3" href="#65-cost-and-access">6.5 Cost and access</a><a href="#part-7--the-questions-this-opens">Part 7 — The questions this opens</a><a href="#part-8--methods">Part 8 — Methods</a><a href="#part-9--where-this-document-is-likely-to-be-wrong">Part 9 — Where this document is likely to be wrong</a><a href="#part-10--sources">Part 10 — Sources</a><a class="l3" href="#101-verified-primary-sources">10.1 Verified primary sources</a><a class="l3" href="#102-retrieval-priority">10.2 Retrieval priority</a><a class="l3" href="#103-explicitly-not-found">10.3 Explicitly not found</a><a href="#provenance">Provenance</a></aside>
@@ -1189,7 +1209,7 @@ Draft v1.1 · August 2026 · revised after adversarial review</p>
 <p><strong>Review note.</strong> Draft v1.0 was submitted to an adversarial review that returned <em>not fit to publish</em> with eight blocking issues, on the same pattern as the reviews of <code>IDEA-CONCEPT.md</code> and <code>PRECEDENT-AND-MATERIALS.md</code>. The recurring cause identified in issue #11 — reading at abstract level rather than at the locus — is not the cause here. <strong>The cause in this document is different, and worth recording separately: over-claiming inferential strength from a design that does not support it.</strong> v1.0 knew the design was weak, said so in Part 9 item 8, and then wrote the rest of the document as though it were strong. That failure mode is filed as its own methodological finding.</p>
 <hr />
 <p><em>Ethical Tech CoLab. Released under CC BY 4.0. Not peer-reviewed. Part 9 is the best guide to how much to trust the rest.</em></p>
-<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/WILLIAMSBURG-COMPARATOR.md">Source on GitHub</a> &middot; Built from <code>2e8a683</code> on 2026-08-04.</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/WILLIAMSBURG-COMPARATOR.md">Source on GitHub</a> &middot; Built from <code>73f2ac3</code> on 2026-08-04.</p>
 </main>
 </div>
 

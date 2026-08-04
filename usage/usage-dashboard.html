@@ -150,12 +150,54 @@ ul.tight li { margin-bottom: 9px; }
 a { color: var(--cp-link); }
 .rating { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted); margin-left: 8px; vertical-align: 2px; }
 .locus { font-size: 0.86rem; color: var(--cp-text-muted); border-left: 2px solid var(--cp-border-strong); padding-left: 14px; margin: 12px 0; font-style: italic; }
+blockquote.loc {
+  margin: 14px 0; padding: 12px 18px; border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft); border-radius: 0 0.625rem 0.625rem 0;
+  font-style: italic; font-size: 0.94rem;
+}
+blockquote.loc cite {
+  display: block; margin-top: 9px; font-style: normal; font-size: 0.8rem;
+  color: var(--cp-text-muted);
+}
+.rating.good { border-color: var(--cp-success); color: var(--cp-success); }
+p.pull {
+  font-size: 1.12rem; line-height: 1.5; font-weight: 600; color: var(--cp-accent);
+  border-left: 3px solid var(--cp-accent); padding: 4px 0 4px 18px; margin: 22px 0;
+}
 footer { color: var(--cp-text-soft); font-size: 0.84rem; border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 34px; }
 h3 { font-size: 1rem; margin: 22px 0 6px; }
 .pill { font-size: 0.72rem; padding: 2px 9px; border-radius: 999px; background: var(--cp-accent-soft); color: var(--cp-accent); font-weight: 700; }
 </style>
+<!--MASTHEAD--><style>
+/* Site masthead, injected by build_pages.py. Do not edit by hand.
+   Every class is mh- prefixed. An artifact is free to own .bar, .in, .home,
+   .mark or .nav for its own purposes, and one of them already does: the usage
+   dashboard uses .bar for its horizontal bar-chart rows, which turned an
+   un-prefixed masthead into a stacked column covering the page. */
+.mh-bar { position: sticky; top: 0; z-index: 200; display: block;
+  background: var(--cp-panel-strong); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border); }
+.mh-bar .mh-in { max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.mh-bar .mh-home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 9px;
+  white-space: nowrap; }
+.mh-bar .mh-home .mh-mark { display: block; flex: none; border-radius: 6px;
+  width: 26px; height: 26px; min-width: 26px; max-width: 26px; }
+.mh-bar .mh-home:hover { color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto;
+  align-items: center; }
+.mh-bar .mh-nav a { color: var(--cp-text-muted); font-size: 0.82rem;
+  padding: 4px 9px; display: inline-block; font-weight: 400;
+  border-radius: 999px; white-space: nowrap; text-decoration: none; border: 0; }
+.mh-bar .mh-nav a:hover { background: var(--cp-accent-soft);
+  color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+@media (max-width: 560px) { .mh-bar .mh-home .mh-wm { display: none; } }
+</style><!--/MASTHEAD-->
 </head>
 <body>
+<!--MASTHEAD--><div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../read/readme.html">README</a><a href="../read/idea-concept.html">1. Concept</a><a href="../read/precedent-and-materials.html">2. Precedent</a><a href="../read/williamsburg-comparator.html">3. Comparator</a><a href="../read/visual-model-framework.html">4. Visual model</a><a href="../read/field-capture-protocol.html">5. Field capture</a><a href="../read/community-evidence-audit.html">6. Community</a><a href="../read/data-collection.html">7. Data</a><a href="../read/usage.html">8. Usage</a><a href="../index.html#demos" class="on">Demos</a></nav></div></div><!--/MASTHEAD-->
 <header class="top">
   <div class="wrap">
     <div class="crumb"><a href="../index.html">Manhattan Bridge noise study</a> &rsaquo; usage dashboard</div>
@@ -167,17 +209,44 @@ h3 { font-size: 1rem; margin: 22px 0 6px; }
 
 <div class="wrap">
 
-  <div class="card">
-    <h2>A correction, before any of the numbers</h2>
-    <p class="sub">This dashboard began by concluding that the data it needed did not exist.</p>
-    <blockquote class="wrong" id="wrongclaim"></blockquote>
-    <p><span class="withdrawn">That is withdrawn.</span> <span id="withdrawtext"></span></p>
-    <div class="note"><strong>Why it is on the page.</strong> The claim was three minutes from
-      being written up as the finding of the case study &mdash; that agentic work is
-      unmeasurable because nobody records it. It was wrong, and it was wrong in the
-      flattering direction: an absence of evidence is a much easier thing to publish than
-      a ledger that can be checked. The correction stays visible for the same reason every
-      other withdrawal in this repository does.</div>
+  <div class="card" id="why">
+    <h2>From tokens to public infrastructure</h2>
+    <p class="sub">Why a study about bridge noise carries a page about its own consumption.</p>
+    <p>Every infrastructure system becomes governable at the moment it becomes measurable.
+      Electricity became governable through the kilowatt-hour. Telecommunications became
+      governable through the minute and the megabit. Cloud computing became governable
+      through the CPU-hour and the gigabyte of egress. The unit is never only a technical
+      detail &mdash; it is the language in which allocation, pricing and accountability can
+      be argued at all.</p>
+    <p><strong>Machine inference is entering that stage now, and the unit is published.</strong>
+      GitHub Docs states it directly:</p>
+    <blockquote class="loc">Each token is priced based on the model used, and the total is
+      converted into AI credits, where 1 AI credit = $0.01 USD.
+      <cite>GitHub. (2026). <i>Usage-based billing for organizations and enterprises</i>.
+      GitHub Docs. <a href="https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-organizations-and-enterprises">Retrieved 4 August 2026.</a>
+      <span class="rating good">VERIFIED 5/5</span></cite></blockquote>
+    <p>That sentence is what makes this page possible. It is also why the page sits in a
+      research repository about a bridge rather than in a billing tool.
+      <b>This programme's central finding about DUMBO is that the noise is unmeasured and
+      therefore ungoverned</b> &mdash; New York City's 311 system has no category that can
+      accept a rail-noise complaint, so the exposure is never counted, so it is never
+      budgeted against. Applying that same argument to this repository's own production
+      is what produced this directory. A programme that argues measurement precedes
+      governance, and then declines to measure itself, is making an exception for the one
+      party it controls.</p>
+    <div class="note"><strong>The public term is <i>AI credits</i>.</strong> The field this
+      dashboard actually reads is <code>nano_aiu</code>, a telemetry subunit that appears
+      in the local session store and on no public billing page. It is used here because it
+      is what the data contains; everything quotable is converted to credits and to
+      dollars. Anyone citing this work should cite credits.</div>
+    <p class="pull">The AI age will not only be defined by who has access to models. It will
+      also be defined by who can afford inference, who can measure it, who can govern it,
+      and who benefits from the systems built on top of it.</p>
+    <p>This repository was produced for <strong id="whyusd"></strong> of list-price
+      inference by one person who did not have to ask anyone for the budget.
+      <b>Both halves of that sentence are the finding.</b> The ledger below is the first
+      half. <a href="../read/usage.html">The methods note</a> carries the second, with the
+      full citations and the ratings.</p>
   </div>
 
   <div class="card">
@@ -292,6 +361,21 @@ h3 { font-size: 1rem; margin: 22px 0 6px; }
     <ul class="tight" id="weak"></ul>
   </div>
 
+  <div class="card" id="processnote">
+    <h2>Process note: a claim this page made and withdrew</h2>
+    <p class="sub">Kept at the bottom because it is a note about method, not a number
+      anyone needs before reading the ledger. It is here at all because deleting it would
+      make the page look more certain than the work was.</p>
+    <blockquote class="wrong" id="wrongclaim"></blockquote>
+    <p><span class="withdrawn">That is withdrawn.</span> <span id="withdrawtext"></span></p>
+    <div class="note"><strong>Why it is still on the page.</strong> The claim was three
+      minutes from being written up as the finding of the case study &mdash; that agentic
+      work is unmeasurable because nobody records it. It was wrong, and it was wrong in the
+      flattering direction: an absence of evidence is a much easier thing to publish than
+      a ledger that can be checked. The correction stays visible for the same reason every
+      other withdrawal in this repository does.</div>
+  </div>
+
   <footer>
     <p id="foot"></p>
   </footer>
@@ -352,6 +436,8 @@ function render() {
     [n0(d.outputs.commit_count), "commits", n0(d.outputs.insertions) + " lines added"],
     [n0(d.outputs.markdown_words), "words published", "across " + d.outputs.files_by_ext[".md"] + " documents"]
   ].map(([b,s,e]) => `<div class="stat"><b>${b}</b><span>${s}</span><em>${e}</em></div>`).join("");
+
+  $("whyusd").textContent = usd(t.usd) + " (" + n0(Math.round(t.aiu)) + " AI credits)";
 
   // --- the withdrawal -----------------------------------------------------
   $("wrongclaim").textContent =
@@ -575,7 +661,7 @@ function render() {
   $("instrument").innerHTML = [
     ["A stable request id, exposed to the user.", "Every row already carries one internally. Surfacing it is what makes a cost figure auditable by the person who paid it rather than only by whoever can read the SQLite file."],
     ["Energy per request, reported by the server.", "This is the only item on the list that a client genuinely cannot derive. It is also the one the user asked for. Until a provider returns it, every energy number in this class of dashboard is an estimate multiplied by a count."],
-    ["A cost figure in the billing unit actually charged.", "The store prices tokens; a subscription charges premium requests. Both numbers are on this page and they differ by more than two orders of magnitude. Nothing available to a client can reconcile them."],
+    ["A cost figure in the billing unit actually charged.", "The store prices tokens in AI credits; the subscription this work ran under charged premium requests. Both numbers are on this page and they differ by more than two orders of magnitude. Nothing available to a client can reconcile them. GitHub's move to usage-based billing narrows this gap in principle, but a client still cannot see which of its own requests landed on which side of it."],
     ["Tool-call outcomes joined to the request that made them.", "The store records what was spent, never what came back. A failed command and a useful one cost the same and are indistinguishable here, so no efficiency measure is possible."],
     ["A durable sub-agent name.", "Sub-agents are identified by the id of the tool call that spawned them, which says nothing about what they were for. Their purpose has to be reconstructed by hand."],
     ["Retention long enough to matter.", "This store held one project cleanly. Nothing guarantees it will next month, and a case study whose evidence expires is an anecdote."]
@@ -583,8 +669,8 @@ function render() {
 
   // --- weaknesses -----------------------------------------------------------
   $("weak").innerHTML = [
-    "The dollar figure is a list-price equivalent, not a bill. It prices the tokens at the rates the client publishes. What was actually paid was a subscription, against which this work consumed " + n0(t.premium_requests) + " premium requests at a multiplier of " + (t.multipliers.join(", ") || "1") + ". The two numbers differ by more than two orders of magnitude and this data cannot bridge them. If you quote one figure from this page, quote both.",
-    "One AIU is taken to be one US cent. That identification is inferred, not documented: the per-model rates in the client's catalogue match three vendors' published list prices to the cent, and the cache rates sit at the published 0.1x and 1.25x multiples of base. It is a strong inference and it is still an inference.",
+    "The dollar figure is a list-price equivalent, not a bill. It prices the tokens at the rates the client publishes and converts at the documented 1 credit = $0.01. What was actually paid was a subscription, against which this work consumed " + n0(t.premium_requests) + " premium requests at a multiplier of " + (t.multipliers.join(", ") || "1") + ". Premium requests are the legacy unit - GitHub announced the move to usage-based billing in AI credits on 27 April 2026 - but they are kept on this page because they are the only figure here a reader can check against a bill they have seen. The two numbers differ by more than two orders of magnitude and this data cannot bridge them. If you quote one figure from this page, quote both.",
+    "One AIU is taken to be one US cent. GitHub's billing documentation states that 1 AI credit = $0.01 USD, and the per-model rates in the client's catalogue independently match three vendors' published list prices to the cent, with cache rates at the published 0.1x and 1.25x multiples of base. What is still inferred is the last step: that the total_nano_aiu column in a local CLI store is denominated in that same documented credit. That is the assumption an auditor should attack first.",
     "The token columns in the store disagree with the token details on the " + n0((byInit["compaction"] || {requests:0}).requests) + " compaction rows. This dashboard reads the details, which reconcile exactly to the recorded cost on every row; a dashboard that read the columns would silently under-count. Anyone rebuilding this should check that assertion still holds rather than assume it.",
     "Engaged time is inferred from gaps between requests. It cannot tell a user thinking hard about the last answer from a user who has gone to lunch, and it cannot see any time spent reading the output after the final request of a sitting.",
     "The energy panel is an estimate applied to a workload the source paper does not describe. Its own bracket spans a factor of " + n1(d.energy.spread) + ".",
@@ -596,7 +682,17 @@ function render() {
     `Generated ${esc(d.generated_at)} by <code>${esc(d.generator)}</code> from ` +
     `session <code>${esc(d.session.id)}</code>. Data: <a href="usage-data.json">usage-data.json</a>. ` +
     `Rebuild with <code>python usage/build_usage_data.py</code>; it takes a ` +
-    `<code>--cwd</code> or <code>--session</code> and works on any project.`;
+    `<code>--cwd</code> or <code>--session</code> and works on any project.` +
+    `<br><br><strong>Sources for the framing above.</strong> ` +
+    `GitHub. (2026). <i>Usage-based billing for organizations and enterprises</i>. GitHub Docs. ` +
+    `<a href="https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-organizations-and-enterprises">docs.github.com</a> &middot; ` +
+    `GitHub. (2026). <i>Models and pricing for GitHub Copilot</i>. GitHub Docs. ` +
+    `<a href="https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing">docs.github.com</a> &middot; ` +
+    `Rodriguez, M. (2026, April 27). <i>GitHub Copilot is moving to usage-based billing</i>. The GitHub Blog. ` +
+    `<a href="https://github.blog/news-insights/company-news/github-copilot-is-moving-to-usage-based-billing/">github.blog</a>. ` +
+    `The infrastructure framing is developed in <i>From Tokens to Public Infrastructure: ` +
+    `Measuring Intelligence Consumption</i>, prepared for this case study by Ethical Tech CoLab, ` +
+    `and summarised in <a href="../read/usage.html">the methods note</a>.`;
 }
 
 if (DATA) { render(); }

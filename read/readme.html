@@ -90,6 +90,8 @@ code {
   border-radius: 4px;
   padding: 0.1em 0.36em;
 }
+/* A code span inside a link must still read as a link. */
+a code { color: var(--cp-link); border-color: var(--cp-link); }
 pre {
   background: var(--cp-surface-soft);
   border: 1px solid var(--cp-border);
@@ -101,25 +103,34 @@ pre {
 pre code { background: none; border: 0; padding: 0; }
 
 /* ---- top bar ---- */
-.bar {
-  position: sticky; top: 0; z-index: 50;
+/* mh- prefixed to match the block ensure_masthead() injects into the
+   hand-written artifacts. One definition, one set of names, no collisions. */
+.mh-bar {
+  position: sticky; top: 0; z-index: 50; display: block;
   background: var(--cp-panel-strong);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--cp-border);
 }
-.bar .in {
+.mh-bar .mh-in {
   max-width: 1180px; margin: 0 auto; padding: 10px 22px;
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
 }
-.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
-.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
-.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
-.bar nav a {
-  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
-  border-radius: 999px; white-space: nowrap;
+.mh-bar .mh-home {
+  font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
+  display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
 }
-.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
-.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+.mh-bar .mh-home .mh-mark { display: block; flex: none; border-radius: 6px;
+  width: 26px; height: 26px; min-width: 26px; max-width: 26px; }
+.mh-bar .mh-home:hover { color: var(--cp-accent); text-decoration: none; }
+@media (max-width: 560px) { .mh-bar .mh-home .mh-wm { display: none; } }
+.mh-bar .mh-nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto;
+  align-items: center; }
+.mh-bar .mh-nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  display: inline-block; border-radius: 999px; white-space: nowrap;
+}
+.mh-bar .mh-nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
 
 .wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
 
@@ -236,6 +247,15 @@ html[data-theme="light"] .wc .u { color: #ff9bad; }
 .tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
 .tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
 .tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+         gap: 14px; margin-top: 18px; }
+.m { border: 1px solid var(--cp-border); border-radius: 10px; padding: 14px 16px;
+     background: var(--cp-surface-soft); }
+.m .mn { font-size: 2.1rem; font-weight: 800; line-height: 1; color: var(--cp-accent);
+         letter-spacing: -0.02em; }
+.m .mt { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em;
+         color: var(--cp-text-muted); margin: 6px 0 8px; }
+.m p { font-size: 0.88rem; margin: 0; }
 .tile .look {
   font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
   border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
@@ -368,7 +388,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 </style>
 </head>
 <body>
-<div class="bar"><div class="in"><a class="home" href="../index.html">Silencing the Span</a><nav><a href="readme.html" class="on">README</a><a href="idea-concept.html">1. Concept</a><a href="precedent-and-materials.html">2. Precedent</a><a href="williamsburg-comparator.html">3. Comparator</a><a href="visual-model-framework.html">4. Visual model</a><a href="field-capture-protocol.html">5. Field capture</a><a href="community-evidence-audit.html">6. Community</a><a href="data-collection.html">7. Data</a><a href="usage.html">8. Usage</a></nav></div></div>
+<div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../read/readme.html" class="on">README</a><a href="../read/idea-concept.html">1. Concept</a><a href="../read/precedent-and-materials.html">2. Precedent</a><a href="../read/williamsburg-comparator.html">3. Comparator</a><a href="../read/visual-model-framework.html">4. Visual model</a><a href="../read/field-capture-protocol.html">5. Field capture</a><a href="../read/community-evidence-audit.html">6. Community</a><a href="../read/data-collection.html">7. Data</a><a href="../read/usage.html">8. Usage</a><a href="../index.html#demos">Demos</a></nav></div></div>
 <div class="wrap">
 <div class="doclayout">
 <aside class="toc"><div class="h">On this page</div><a href="#what-this-is">What this is</a><a href="#three-headline-findings">Three headline findings</a><a class="l3" href="#and-one-result-derived-here-rather-than-found">And one result derived here rather than found</a><a class="l3" href="#and-one-dataset-built-here-rather-than-found">And one dataset built here rather than found</a><a class="l3" href="#and-one-claim-this-repository-disproved-by-counting">And one claim this repository disproved by counting</a><a class="l3" href="#and-one-model-that-found-the-limit-of-its-own-data">And one model that found the limit of its own data</a><a class="l3" href="#and-one-propagation-model-that-was-built-and-then-rejected">And one propagation model that was built and then rejected</a><a href="#documents">Documents</a><a href="#interactive-artifacts">Interactive artifacts</a><a class="l3" href="#the-canyon-drawings-and-how-to-change-them">The canyon drawings, and how to change them</a><a href="#data-collection">Data collection</a><a class="l3" href="#the-denominator-partly-counted">The denominator, partly counted</a><a class="l3" href="#the-cohort-model-and-the-limit-it-found">The cohort model, and the limit it found</a><a class="l3" href="#the-agent-model-and-why-exposure-needs-a-path">The agent model, and why exposure needs a path</a><a class="l3" href="#the-3d-model-in-more-detail">The 3D model, in more detail</a><a class="l3" href="#the-audio-demonstration-in-more-detail">The audio demonstration, in more detail</a><a class="l3" href="#structure-of-idea-conceptmd">Structure of IDEA-CONCEPT.md</a><a class="l3" href="#structure-of-precedent-and-materialsmd">Structure of PRECEDENT-AND-MATERIALS.md</a><a class="l3" href="#structure-of-williamsburg-comparatormd">Structure of WILLIAMSBURG-COMPARATOR.md</a><a class="l3" href="#structure-of-visual-model-frameworkmd">Structure of VISUAL-MODEL-FRAMEWORK.md</a><a href="#what-the-comparator-study-found">What the comparator study found</a><a href="#what-the-visual-framework-found">What the visual framework found</a><a href="#what-the-precedent-survey-found">What the precedent survey found</a><a href="#method">Method</a><a href="#the-red-team-found-real-errors-and-they-are-left-visible">The red team found real errors, and they are left visible</a><a href="#where-further-research-should-start">Where further research should start</a><a href="#what-has-not-been-done">What has not been done</a><a class="l3" href="#the-method-register-and-its-status">The method register, and its status</a><a class="l3" href="#retrieval-priorities-still-outstanding">Retrieval priorities still outstanding</a><a class="l3" href="#questions-marked-blocking-that-are-still-open">Questions marked blocking that are still open</a><a class="l3" href="#the-largest-single-hole-named">The largest single hole, named</a><a class="l3" href="#the-one-route-to-executing-any-of-this-cheaply">The one route to executing any of this cheaply</a><a class="l3" href="#and-one-route-that-costs-nothing-at-all">And one route that costs nothing at all</a><a href="#status">Status</a><a href="#contributing">Contributing</a><a href="#license">License</a></aside>
@@ -1545,7 +1565,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <blockquote>
 <p><em>Silencing the Span: Defining the Manhattan Bridge Rail-Noise Problem in DUMBO for a Design-Build Intervention.</em> Ethical Tech CoLab, 2026.</p>
 </blockquote>
-<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/README.md">Source on GitHub</a> &middot; Built from <code>2e8a683</code> on 2026-08-04.</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/README.md">Source on GitHub</a> &middot; Built from <code>73f2ac3</code> on 2026-08-04.</p>
 </main>
 </div>
 

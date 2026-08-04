@@ -19,28 +19,61 @@ python usage/build_usage_data.py --cwd C:\Dev\Other
 python usage/build_usage_data.py --session <uuid> --no-inject
 ```
 
-## The correction this directory opens with
+## Why a noise study carries a usage page at all
 
-The first conclusion reached about this project's own usage was that there was
-none to read. The VS Code extension writes a debug log at
-`%APPDATA%\Code\User\workspaceStorage\<hash>\GitHub.copilot-chat\debug-logs\<session>\main.jsonl`,
-and that file was inspected and found to contain nineteen `session_start`
-records and nothing else. The conclusion drawn from it was:
+**From tokens to public infrastructure.** Every infrastructure system becomes
+governable at the moment it becomes measurable. Electricity became governable
+through the kilowatt-hour, telecommunications through the minute and the
+megabit, cloud computing through the CPU-hour and the gigabyte of egress. The
+unit is never only a technical detail; it is the language in which allocation,
+pricing and accountability can be argued at all.
 
-> There are no per-request rows, no model names, no token counts, no costs.
-> The environment does not record the thing that is being asked for, so the
-> dashboard's first job is to say so.
+Machine inference is entering that stage now, and GitHub has published the
+unit. That is what makes this page possible, and it is why the page sits inside
+a research repository about a bridge rather than in a billing tool.
 
-That is withdrawn. It was the wrong file. The Copilot CLI keeps a separate
-store at `~/.copilot/session-store.db`, and its `assistant_usage_events` table
-carries one row per request issued to a model, with the model id, the token
-count on each billing channel, the cost, the wall duration, the turn index and
-the id of the tool call that spawned any sub-agent request.
+The connection to the rest of this work is not decorative. This programme's
+central finding about DUMBO is that
+**the noise is unmeasured and therefore ungoverned**
+&mdash; NYC 311 has no category that can accept a rail-noise
+complaint, so the exposure cannot be counted, so it cannot be budgeted against.
+The same argument, applied to this repository's own production, produces this
+directory. A research programme that argues measurement precedes governance and
+then declines to measure itself is making an exception for the only party it
+controls.
 
-The error is recorded rather than quietly fixed because of what it nearly
-produced. "The data does not exist" is a comfortable finding: it is
-unfalsifiable, it flatters the investigator, and it would have been published
-as the central result of a case study whose entire purpose was measurement.
+**The pull quote, and it is the reason the page exists:** the AI age will not
+only be defined by who has access to models. It will also be defined by who can
+afford inference, who can measure it, who can govern it, and who benefits from
+the systems built on top of it. This repository was produced for
+**$236.61 of list-price inference** by one person who did not have to ask
+anyone for the budget. Both halves of that sentence are the finding.
+
+### The unit is documented, and that is recent
+
+GitHub Docs, *Usage-based billing for organizations and enterprises*, retrieved
+4 August 2026:
+
+> Each token is priced based on the model used, and the total is converted into
+> AI credits, where 1 AI credit = $0.01 USD.
+
+The same sentence appears in *Models and pricing for GitHub Copilot*, which
+also states that all listed prices are **per 1 million tokens** &mdash;
+independently confirming the `batch_size` of 1,000,000 found in the client's own
+`models.json`. Both pages state that Copilot CLI usage is billed in AI credits;
+code completions are not.
+
+| Source | Rating |
+| --- | --- |
+| GitHub. (2026). *Usage-based billing for organizations and enterprises*. GitHub Docs. [Link](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-organizations-and-enterprises) | 5/5 VERIFIED |
+| GitHub. (2026). *Models and pricing for GitHub Copilot*. GitHub Docs. [Link](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing) | 5/5 VERIFIED |
+| Rodriguez, M. (2026, April 27). *GitHub Copilot is moving to usage-based billing*. The GitHub Blog. [Link](https://github.blog/news-insights/company-news/github-copilot-is-moving-to-usage-based-billing/) | 4/5 SNIPPET |
+
+**The public term is AI credits.** `nano-AIU`, the field this directory's
+extractor actually reads, is a telemetry subunit that appears in the local
+store and in no public billing page. It is used here because it is what the
+data contains, and it is converted to credits and to dollars for anything
+quotable. Anyone citing this work should cite credits.
 
 ## Where the numbers come from
 
@@ -48,15 +81,16 @@ as the central result of a case study whose entire purpose was measurement.
 | --- | --- | --- |
 | Requests, models, tokens, cost, duration, turn, sub-agent id | `~/.copilot/session-store.db`, table `assistant_usage_events` | 5/5 VERIFIED |
 | Per-model token prices | `models.json`, written beside the client's debug log | 5/5 VERIFIED |
-| One AIU = one US cent | Inferred by matching the above against vendor list prices | 4/5, see below |
+| One AIU = one US cent | GitHub Docs, quoted above; corroborated by matching against vendor list prices | 5/5 VERIFIED |
 | Commits, line counts, file counts, word counts | `git` in this repository | 5/5 VERIFIED |
 | Energy per request | Oviedo et al., *Joule*, 2025 | 5/5 for the figure, 2/5 applied here |
 | Household electricity | US EIA, *Electricity use in homes* | 5/5 VERIFIED |
 
 ### The unit
 
-The store prices each request in **nano-AIU**. Nothing states what an AIU is.
-It is taken here to be one US cent, on four independent agreements:
+The store prices each request in **nano-AIU**, and no local file states what an
+AIU is. It was originally taken here to be one US cent on the strength of four
+independent agreements with published vendor list prices:
 
 | Model | Catalogue rate, in / out | Vendor list price |
 | --- | --- | --- |
@@ -65,9 +99,19 @@ It is taken here to be one US cent, on four independent agreements:
 | `claude-opus-4.6` | 500 / 2500 | $5.00 / $25.00 per 1M |
 | cache channels, all Anthropic models | 0.1x base read, 1.25x base write | the published cache multiples |
 
-Three separate models and both cache ratios land on the cent. That is a strong
-inference. It is still an inference, and the dashboard says so where it prints
-a dollar sign.
+That was published as
+**a strong inference and explicitly not documentation, rated 4/5.**
+It has since been checked against GitHub's own billing
+documentation, quoted above, which states the identity directly. The rating is
+raised to 5/5.
+
+**This is not a withdrawal and should not be counted as one.** The inference was
+correct; what changed is that it stopped being an inference. It is recorded here
+because a rating that silently improves is as much a drift as a rating that
+silently degrades, and because the arithmetic above is now an independent check
+on the documentation rather than a substitute for it &mdash; three models and
+both cache ratios reproduce the documented cent from a completely different
+direction.
 
 ### The rule the generator enforces
 
@@ -124,18 +168,29 @@ measurements agree: engaged time inferred from gaps between requests, and busy
 time computed from request durations, land within about ten per cent of each
 other. Budgeting this class of work in person-hours budgets the wrong resource.
 
-## Two numbers, and why both have to be quoted
+## Two numbers, and why both still have to be quoted
 
 | | |
 | --- | --- |
-| **List-price token cost** | what the tokens would cost at the published per-model rates |
-| **Premium requests** | what a Copilot subscription actually bills, one per user-initiated turn, at the recorded multiplier |
+| **AI-credit cost** | tokens priced at the published per-model rates and converted at 1 credit = $0.01 |
+| **Premium requests** | the older subscription unit, one per user-initiated turn, at the recorded multiplier |
 
 These differ by more than two orders of magnitude, and they cannot be
 reconciled: **nothing available to a client maps one onto the other.** Quoting
-the first alone overstates what anyone paid. Quoting the second alone hides what
-was consumed. The dashboard prints both, adjacent, and refuses to derive a third
-number from them.
+the first alone overstates what any individual subscriber paid this month.
+Quoting the second alone hides what was consumed. The dashboard prints both,
+adjacent, and refuses to derive a third number from them.
+
+**One thing has changed since that rule was written.** GitHub announced on
+27 April 2026 that Copilot is moving to usage-based billing, and the current
+documentation describes AI credits as the billing unit. On that reading the
+credit figure is now *the* number and premium requests are legacy accounting
+retained for continuity. The rule is kept anyway, for a reason that is about
+this repository rather than about GitHub:
+**the premium-request column is the only figure here that a reader can check against a bill they have seen.**
+A page that dropped it would become unfalsifiable by its own audience at exactly
+the moment it started claiming a dollar total. It is demoted, not deleted, and
+the dashboard labels it as the legacy unit.
 
 ## Energy
 
@@ -164,8 +219,11 @@ instrumentation list a client cannot supply for itself.
 
 1. **The dollar figure is a list-price equivalent, not a bill.** See "two
    numbers" above. If one figure from this work is quoted, both should be.
-2. **The AIU-to-cent identification is inferred.** Four agreements is strong
-   evidence and not documentation.
+2. **The credit-to-dollar conversion is documented; its application here is not.**
+   GitHub states that 1 AI credit = $0.01. It does not state that the
+   `total_nano_aiu` column in a local CLI store is denominated in the same
+   credit. That step is still an inference, and it is the one an auditor should
+   attack first.
 3. **Engaged time cannot distinguish thinking from absence.** It also cannot see
    time spent reading output after the last request of a sitting, which is
    exactly when a reader of a research document would spend it.
@@ -182,3 +240,33 @@ instrumentation list a client cannot supply for itself.
 7. **Retention is not guaranteed.** The store held one project cleanly. Nothing
    promises it will next month, and a case study whose evidence expires is an
    anecdote.
+
+## Process note: a claim this directory made and withdrew
+
+Kept at the end rather than the beginning. It is a note about how the work was
+done, and putting it above the ledger asked every reader to absorb a retracted
+claim before reaching a single figure.
+
+The first conclusion reached about this project's own usage was that there was
+none to read. The VS Code extension writes a debug log at
+`%APPDATA%\Code\User\workspaceStorage\<hash>\GitHub.copilot-chat\debug-logs\<session>\main.jsonl`,
+and that file was inspected and found to contain nineteen `session_start`
+records and nothing else. The conclusion drawn from it was:
+
+> There are no per-request rows, no model names, no token counts, no costs.
+> The environment does not record the thing that is being asked for, so the
+> dashboard's first job is to say so.
+
+That is withdrawn. It was the wrong file. The Copilot CLI keeps a separate
+store at `~/.copilot/session-store.db`, and its `assistant_usage_events` table
+carries one row per request issued to a model, with the model id, the token
+count on each billing channel, the cost, the wall duration, the turn index and
+the id of the tool call that spawned any sub-agent request.
+
+The error is recorded rather than quietly fixed because of what it nearly
+produced. "The data does not exist" is a comfortable finding: it is
+unfalsifiable, it flatters the investigator, and it would have been published
+as the central result of a case study whose entire purpose was measurement.
+It is also the exact inverse of the claim this page now makes &mdash; that the
+unit is documented, the ledger is readable, and the reason so little work of
+this kind is published is not that the data is missing.

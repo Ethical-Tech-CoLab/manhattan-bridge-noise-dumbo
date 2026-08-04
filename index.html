@@ -90,6 +90,8 @@ code {
   border-radius: 4px;
   padding: 0.1em 0.36em;
 }
+/* A code span inside a link must still read as a link. */
+a code { color: var(--cp-link); border-color: var(--cp-link); }
 pre {
   background: var(--cp-surface-soft);
   border: 1px solid var(--cp-border);
@@ -101,25 +103,34 @@ pre {
 pre code { background: none; border: 0; padding: 0; }
 
 /* ---- top bar ---- */
-.bar {
-  position: sticky; top: 0; z-index: 50;
+/* mh- prefixed to match the block ensure_masthead() injects into the
+   hand-written artifacts. One definition, one set of names, no collisions. */
+.mh-bar {
+  position: sticky; top: 0; z-index: 50; display: block;
   background: var(--cp-panel-strong);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--cp-border);
 }
-.bar .in {
+.mh-bar .mh-in {
   max-width: 1180px; margin: 0 auto; padding: 10px 22px;
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
 }
-.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
-.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
-.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
-.bar nav a {
-  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
-  border-radius: 999px; white-space: nowrap;
+.mh-bar .mh-home {
+  font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
+  display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
 }
-.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
-.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+.mh-bar .mh-home .mh-mark { display: block; flex: none; border-radius: 6px;
+  width: 26px; height: 26px; min-width: 26px; max-width: 26px; }
+.mh-bar .mh-home:hover { color: var(--cp-accent); text-decoration: none; }
+@media (max-width: 560px) { .mh-bar .mh-home .mh-wm { display: none; } }
+.mh-bar .mh-nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto;
+  align-items: center; }
+.mh-bar .mh-nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  display: inline-block; border-radius: 999px; white-space: nowrap;
+}
+.mh-bar .mh-nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
 
 .wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
 
@@ -236,6 +247,15 @@ html[data-theme="light"] .wc .u { color: #ff9bad; }
 .tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
 .tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
 .tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+         gap: 14px; margin-top: 18px; }
+.m { border: 1px solid var(--cp-border); border-radius: 10px; padding: 14px 16px;
+     background: var(--cp-surface-soft); }
+.m .mn { font-size: 2.1rem; font-weight: 800; line-height: 1; color: var(--cp-accent);
+         letter-spacing: -0.02em; }
+.m .mt { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em;
+         color: var(--cp-text-muted); margin: 6px 0 8px; }
+.m p { font-size: 0.88rem; margin: 0; }
 .tile .look {
   font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
   border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
@@ -368,7 +388,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 </style>
 </head>
 <body>
-<div class="bar"><div class="in"><a class="home" href="index.html" class="on">Silencing the Span</a><nav><a href="read/readme.html">README</a><a href="read/idea-concept.html">1. Concept</a><a href="read/precedent-and-materials.html">2. Precedent</a><a href="read/williamsburg-comparator.html">3. Comparator</a><a href="read/visual-model-framework.html">4. Visual model</a><a href="read/field-capture-protocol.html">5. Field capture</a><a href="read/community-evidence-audit.html">6. Community</a><a href="read/data-collection.html">7. Data</a><a href="read/usage.html">8. Usage</a></nav></div></div>
+<div class="mh-bar"><div class="mh-in"><a class="mh-home" href="index.html" aria-current="page"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="read/readme.html">README</a><a href="read/idea-concept.html">1. Concept</a><a href="read/precedent-and-materials.html">2. Precedent</a><a href="read/williamsburg-comparator.html">3. Comparator</a><a href="read/visual-model-framework.html">4. Visual model</a><a href="read/field-capture-protocol.html">5. Field capture</a><a href="read/community-evidence-audit.html">6. Community</a><a href="read/data-collection.html">7. Data</a><a href="read/usage.html">8. Usage</a><a href="index.html#demos">Demos</a></nav></div></div>
 <div class="wrap">
 <div class="hb">
 <img class="pic" src="assets/hero-composite.jpg" alt="" srcset="assets/hero-composite-1200.jpg 1200w, assets/hero-composite.jpg 2400w" sizes="100vw" width="2400" height="1000" fetchpriority="high">
@@ -379,19 +399,19 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <p class="sub">Rail noise from the NYC Subway crossing the Manhattan Bridge into DUMBO, Brooklyn &mdash; measured by the operator, uncomplainable to the city, and unstudied where people actually are.</p>
 <div class="wc" id="wc" aria-live="polite">
 <a class="wcslide on" href="read/idea-concept.html" data-i="0"><span class="n">98.9</span><div class="u">dB(A) average maximum</div><div class="l">measured by the MTA in Brooklyn Bridge Park, at the dog run</div></a>
-<a class="wcslide" href="visual-review/frequency-dashboard.html" data-i="1"><span class="n">54</span><div class="u">seconds between trains</div><div class="l">at the weekday peak, 67 crossings in a single hour</div></a>
+<a class="wcslide" href="visual-review/frequency-dashboard.html" data-i="1"><span class="n">67</span><div class="u">trains an hour, overhead</div><div class="l">at the weekday peak, one crossing every 54 seconds</div></a>
 <a class="wcslide" href="read/community-evidence-audit.html" data-i="2"><span class="n">4,055</span><div class="u">noise complaints since 2020</div><div class="l">within 500 m of that measurement, and not one can be about the train</div></a>
 <a class="wcslide" href="visual-review/agent-model.html" data-i="3"><span class="n">17.3</span><div class="u">dB above the fit</div><div class="l">the dog run sits this far over ideal line-source spreading, so the three-point agreement that looked like a result was a coincidence</div></a>
 <a class="wcslide" href="visual-review/noise-canyon.html" data-i="4"><span class="n">23%</span><div class="u">of the walk measured</div><div class="l">four bands of instrument data along 1,482 m from the F train to the water</div></a>
-<a class="wcslide" href="#status" data-i="5"><span class="n">3</span><div class="u">claims withdrawn</div><div class="l">published here, then disproved here, and left visible in the text</div></a>
+<a class="wcslide" href="#method" data-i="5"><span class="n">54</span><div class="u">questions nobody had asked</div><div class="l">an open, unfinished investigation that works by finding the question the record skipped, then writing it so it can be proved wrong</div></a>
 </div>
 <div class="wcnav" id="wcnav">
 <button type="button" data-i="0" aria-current="true" aria-label="Statement 1 of 6: 98.9"></button>
-<button type="button" data-i="1" aria-current="false" aria-label="Statement 2 of 6: 54"></button>
+<button type="button" data-i="1" aria-current="false" aria-label="Statement 2 of 6: 67"></button>
 <button type="button" data-i="2" aria-current="false" aria-label="Statement 3 of 6: 4,055"></button>
 <button type="button" data-i="3" aria-current="false" aria-label="Statement 4 of 6: 17.3"></button>
 <button type="button" data-i="4" aria-current="false" aria-label="Statement 5 of 6: 23%"></button>
-<button type="button" data-i="5" aria-current="false" aria-label="Statement 6 of 6: 3"></button>
+<button type="button" data-i="5" aria-current="false" aria-label="Statement 6 of 6: 54"></button>
 <button type="button" class="pp" id="wcpp" aria-label="Pause the rotating statements">Pause</button>
 </div>
 <p class="lede" style="margin-top:26px">This page is the organising index for the whole investigation: where it currently stands, what has actually been established, what is demonstrably wrong, and what still needs doing. It is regenerated from the repository, so the counts on it cannot drift away from the work.</p>
@@ -421,13 +441,13 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <a class="tile" href="visual-review/frequency-dashboard.html"><div class="t">Frequency and exposure dashboard <span class="badge acc">Data</span></div><div class="d">Traversals by hour, route and direction across day, evening and night; pedestrian arrivals, departures, walkway flow and residents; and a four-cohort presence model that publishes its own non-identifiability.</div><div class="look">Drag the coincidence window from 1 s to 29 s. The answer does not move - which is a finding about the feed, not about the railway.</div></a>
 <a class="tile" href="visual-review/noise-canyon.html"><div class="t">The noise canyon <span class="badge acc">Bridge</span></div><div class="d">A five-slide picture essay drawn entirely from open data: the structure photographed, 76 surveyed buildings extruded around the alignment, a true section cut across the corridor, the ordinary walk in from the York Street F platform, and every point along it anyone has ever measured.</div><div class="look">The last slide. Four narrow bands of measured evidence against 1,482 m of walk - 23% - and the shaded field is not quiet, it is unmeasured.</div></a>
 <a class="tile" href="visual-review/agent-model.html"><div class="t">Agentic population model <span class="badge acc">Agents</span></div><div class="d">Groups - not individuals - enter DUMBO at persona-specific gateways, follow scenario itineraries, contend for capacity and accumulate a noise dose along their actual path. Deterministic, seeded, fully event-logged.</div><div class="look">The first panel: the same itinerary started ninety seconds apart gets a different dose. Then the rejected-propagation panel, which is a negative result and the most important thing on the page.</div></a>
-<a class="tile" href="usage/usage-dashboard.html"><div class="t">Usage and cost dashboard <span class="badge acc">Meta</span></div><div class="d">What this investigation cost to produce, from the tool's own per-request log: every model call priced by channel, time measured four ways that disagree by an order of magnitude, and an energy bracket that spans a factor of twenty-four because nothing here is a measured joule.</div><div class="look">The correction at the top - the first conclusion this dashboard reached about itself was that the data did not exist. Then the two bars under the ledger: what an agent reads is most of the tokens and half the money; what it writes is under one per cent of the tokens and a fifth of it.</div></a>
+<a class="tile" href="usage/usage-dashboard.html"><div class="t">Usage and cost dashboard <span class="badge acc">Meta</span></div><div class="d">What this investigation cost to produce, from the tool's own per-request log: every model call priced by channel, time measured four ways that disagree by an order of magnitude, and an energy bracket that spans a factor of twenty-four because nothing here is a measured joule.</div><div class="look">The two bars under the ledger: what an agent reads is most of the tokens and half the money; what it writes is under one per cent of the tokens and a fifth of it. Then the process note at the foot - the first conclusion this dashboard reached about itself was that the data did not exist, and that was wrong.</div></a>
 </div>
 <div class="note"><strong>A warning that applies to all seven.</strong> The 3D model contains <strong>zero measured elements</strong>. The audio is <strong>synthesised, not recorded</strong>. The agent model's itineraries are <strong>invented</strong>. These are instruments for reasoning about a problem, not evidence about it &mdash; and each says so in its own interface rather than in a footnote somewhere else.</div>
 </div>
 <div class="card" id="status">
 <h2>Where the investigation stands</h2>
-<p class="lede">Eight research documents, seven interactive artifacts, eight runnable scripts and roughly 99,179 words &mdash; against 37 specified methods of which <strong>four have been executed and one partially</strong>. The gap between those two halves of the sentence is the honest summary of this programme, and it is the reason this section sits below the demonstrations rather than above them: <b>the artifacts are the most finished thing here and the least load-bearing.</b></p>
+<p class="lede">Eight research documents, seven interactive artifacts, eight runnable scripts and roughly 100,033 words &mdash; against 37 specified methods of which <strong>four have been executed and one partially</strong>. The gap between those two halves of the sentence is the honest summary of this programme, and it is the reason this section sits below the demonstrations rather than above them: <b>the artifacts are the most finished thing here and the least load-bearing.</b></p>
 <div class="tw"><table><thead><tr><th>State</th><th>Count</th><th>What it means</th></tr></thead><tbody>
 <tr><td><span class="badge ok">Executed</span></td><td><b>5</b> of 37 methods</td><td>Method 27, Method 29, Method 30, Method 32, Method 33. <b>Every one of them changed something</b>, and two contradicted claims this repository had already published.</td></tr>
 <tr><td><span class="badge warn">Tooling built</span></td><td><b>1</b></td><td>Method 26 &mdash; the code is written and verified against the live feed, but the run has not been done.</td></tr>
@@ -495,7 +515,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <tr><td style="white-space:nowrap"><a href="read/field-capture-protocol.html"><b>5. Field capture protocol</b></a><br><code style="font-size:0.78em">FIELD-CAPTURE-PROTOCOL.md</code></td><td>Every acoustic claim beyond the published levels is invented. Can a consumer phone fix that this month?</td><td>7,145</td></tr>
 <tr><td style="white-space:nowrap"><a href="read/community-evidence-audit.html"><b>6. Community evidence audit</b></a><br><code style="font-size:0.78em">COMMUNITY-EVIDENCE-AUDIT.md</code></td><td>The people who live under it have been complaining since 2008. What have they already recorded, and why can nobody find it?</td><td>10,300</td></tr>
 <tr><td style="white-space:nowrap"><a href="read/data-collection.html"><b>7. Data collection</b></a><br><code style="font-size:0.78em">data-collection/README.md</code></td><td>How many trains, how many people, and for how long? Runnable scripts against MTA and NYC open data - and the traps that each silently produce a plausible wrong number.</td><td>8,182</td></tr>
-<tr><td style="white-space:nowrap"><a href="read/usage.html"><b>8. Usage and cost</b></a><br><code style="font-size:0.78em">usage/README.md</code></td><td>What did producing this repository consume? A per-request ledger read from the tool's own store - and the correction that the first answer, that no such data existed, was wrong.</td><td>1,553</td></tr>
+<tr><td style="white-space:nowrap"><a href="read/usage.html"><b>8. Usage and cost</b></a><br><code style="font-size:0.78em">usage/README.md</code></td><td>What did producing this repository consume? A per-request ledger read from the tool's own store, set against the argument that inference is becoming metered infrastructure - and what follows from measuring it.</td><td>2,407</td></tr>
 </tbody></table></div>
 </div>
 <div class="card" id="code">
@@ -516,6 +536,19 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 </tbody></table></div>
 <div class="note warn"><strong>The trap that took three attempts to find.</strong> The MTA's turnstile feed publishes <code>entries</code> at a station, which sounds like people arriving in the neighbourhood and is the exact opposite: an entry is somebody going <em>down into</em> the system and <em>leaving</em>. Reading it the natural way inverts the daily curve, and it will look entirely plausible while doing so. That directional trap and three others are documented in <a href="read/data-collection.html">the data-collection notes</a>.</div>
 </div>
+<div class="card" id="method">
+<h2>How this investigation works</h2>
+<p class="lede">This is an <strong>open, unfinished investigation</strong>, not a report. It is published while it is still wrong in places, because the method depends on that being visible.</p>
+<p>The programme applies the methodology from <a href="https://github.com/Ethical-Tech-CoLab/ai-research-question-assistant"><code>ai-research-question-assistant</code></a> &mdash; <i>AI-Powered Assistance in Formulating Research Questions</i> (Rhodes et al.), &sect;8. Its central move is that <strong>gap identification and contradiction detection come before question formulation.</strong> You do not start from what you want to prove. You start by reading what the record already contains, finding where it stops, and writing the question it never asked.</p>
+<div class="mgrid">
+<div class="m"><div class="mn">54</div><div class="mt">questions derived this way</div><p>Numbered Q1 to Q54 and carried across every document, so a question raised in one place can be answered or killed in another.</p></div>
+<div class="m"><div class="mn">37</div><div class="mt">methods specified to answer them</div><p>Each with a cost, a named question and an honest status. <strong>4 have been executed.</strong> The register does not hide the ratio.</p></div>
+<div class="m"><div class="mn">13</div><div class="mt">explicit retractions</div><p>Every one was published here, disproved here, and left standing in the text with the correction beneath it. <strong>That count going up is the method working, not failing.</strong></p></div>
+</div>
+<h3 style="margin-top:22px">Hypotheses, not positions</h3>
+<p>Every question here is written so that it can come back <em>no</em>. That is a deliberate constraint and it has cost this programme several of its more attractive claims &mdash; the three-site propagation fit, the peak-hour argument, and the assumption that the tool kept no record of its own cost. Each was a reasonable reading of real data. Each turned out to be wrong, and each is still on the page, because <strong>a research record that only shows its surviving claims is not showing its method.</strong></p>
+<p>What follows from that is the uncomfortable part: <b>nothing here is a finding until someone has stood under the bridge with an instrument.</b> The questions are sharp. The evidence behind them is second-hand, and every page says so where it applies. <a href="#status">Where the investigation stands</a> gives the honest ratio, and <a href="#todo">what to do next</a> lists the work that would settle it.</p>
+</div>
 <div class="card" id="conventions">
 <h2>How to read anything in here</h2>
 <p class="lede">Five conventions apply across every document and every artifact. They exist because this programme has failed adversarial review repeatedly, and always the same way: <strong>over-claiming from abstract-level reading.</strong></p>
@@ -533,7 +566,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <ul><li><strong>Post a recording.</strong> See <a href="read/field-capture-protocol.html">the field capture protocol</a> for what makes one usable.</li><li><strong>Falsify a &ldquo;not found&rdquo; claim.</strong> Five have already failed. The prior on others failing is not low.</li><li><strong>Execute any method.</strong> Several cost an email, a form, or an afternoon.</li><li><strong>Challenge the arithmetic.</strong> The event-duration derivation, the cohort identifiability result and the propagation rejection are each either right or wrong, and none has been reviewed by anyone. Issues <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/26">#26</a>, <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/27">#27</a> and <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/28">#28</a> exist specifically to attack them.</li><li><strong>Reclassify a component's provenance.</strong> Anyone with structural knowledge of riveted lattice trusses will find misclassifications in the 3D model, and finding them is the point of publishing the classification.</li></ul>
 <div class="note good"><strong>One standing condition.</strong> The people who live under this bridge have been asking for help since 2008. Any contact with them must offer something before it asks for anything, must not represent this programme as more established than it is, and must make clear that its central artifacts are <strong>synthetic</strong>. Over-claiming to a community in that position would be a different and worse kind of error than the ones already made here.</div>
 </div>
-<p class="foot"><strong>Silencing the Span: Defining the Manhattan Bridge Rail-Noise Problem in DUMBO for a Design-Build Intervention.</strong> Ethical Tech CoLab. Research content released under <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/LICENSE">CC BY 4.0</a>. Not peer-reviewed. No option in any document is recommended for procurement.<br><br>This page was generated by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> from commit <code>2e8a683</code> on 2026-08-04. <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo">Repository</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/">Open issues</a></p>
+<p class="foot"><strong>Silencing the Span: Defining the Manhattan Bridge Rail-Noise Problem in DUMBO for a Design-Build Intervention.</strong> Ethical Tech CoLab. Research content released under <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/LICENSE">CC BY 4.0</a>. Not peer-reviewed. No option in any document is recommended for procurement.<br><br>This page was generated by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> from commit <code>73f2ac3</code> on 2026-08-04. <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo">Repository</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/">Open issues</a></p>
 <script>
 (function () {
   var wc = document.getElementById("wc");

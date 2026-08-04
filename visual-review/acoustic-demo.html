@@ -120,8 +120,36 @@ ol li, ul li { margin-bottom: 6px; }
 .foot { margin-top: 34px; border-top: 1px solid var(--cp-border); padding-top: 16px; font-size: 12.5px; color: var(--cp-text-muted); }
 .calcbox { background: var(--cp-surface-soft); border: 1px solid var(--cp-border); border-radius: 8px; padding: 12px 15px; font-family: Consolas, monospace; font-size: 12.5px; margin: 10px 0; overflow-x: auto; }
 </style>
+<!--MASTHEAD--><style>
+/* Site masthead, injected by build_pages.py. Do not edit by hand.
+   Every class is mh- prefixed. An artifact is free to own .bar, .in, .home,
+   .mark or .nav for its own purposes, and one of them already does: the usage
+   dashboard uses .bar for its horizontal bar-chart rows, which turned an
+   un-prefixed masthead into a stacked column covering the page. */
+.mh-bar { position: sticky; top: 0; z-index: 200; display: block;
+  background: var(--cp-panel-strong); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border); }
+.mh-bar .mh-in { max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.mh-bar .mh-home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 9px;
+  white-space: nowrap; }
+.mh-bar .mh-home .mh-mark { display: block; flex: none; border-radius: 6px;
+  width: 26px; height: 26px; min-width: 26px; max-width: 26px; }
+.mh-bar .mh-home:hover { color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto;
+  align-items: center; }
+.mh-bar .mh-nav a { color: var(--cp-text-muted); font-size: 0.82rem;
+  padding: 4px 9px; display: inline-block; font-weight: 400;
+  border-radius: 999px; white-space: nowrap; text-decoration: none; border: 0; }
+.mh-bar .mh-nav a:hover { background: var(--cp-accent-soft);
+  color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+@media (max-width: 560px) { .mh-bar .mh-home .mh-wm { display: none; } }
+</style><!--/MASTHEAD-->
 </head>
 <body>
+<!--MASTHEAD--><div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../read/readme.html">README</a><a href="../read/idea-concept.html">1. Concept</a><a href="../read/precedent-and-materials.html">2. Precedent</a><a href="../read/williamsburg-comparator.html">3. Comparator</a><a href="../read/visual-model-framework.html">4. Visual model</a><a href="../read/field-capture-protocol.html">5. Field capture</a><a href="../read/community-evidence-audit.html">6. Community</a><a href="../read/data-collection.html">7. Data</a><a href="../read/usage.html">8. Usage</a><a href="../index.html#demos" class="on">Demos</a></nav></div></div><!--/MASTHEAD-->
 <div class="wrap">
 
 <header class="masthead">

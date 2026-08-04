@@ -87,8 +87,8 @@ DOCS = [
      "plausible wrong number."),
     ("usage/README.md", "usage", "8. Usage and cost", "8. Usage",
      "What did producing this repository consume? A per-request ledger read "
-     "from the tool's own store - and the correction that the first answer, "
-     "that no such data existed, was wrong."),
+     "from the tool's own store, set against the argument that inference is "
+     "becoming metered infrastructure - and what follows from measuring it."),
 ]
 
 # (path, kind, title, what it demonstrates, what to look at first)
@@ -138,10 +138,11 @@ ARTIFACTS = [
      "log: every model call priced by channel, time measured four ways that "
      "disagree by an order of magnitude, and an energy bracket that spans a "
      "factor of twenty-four because nothing here is a measured joule.",
-     "The correction at the top - the first conclusion this dashboard reached "
-     "about itself was that the data did not exist. Then the two bars under the "
-     "ledger: what an agent reads is most of the tokens and half the money; "
-     "what it writes is under one per cent of the tokens and a fifth of it."),
+     "The two bars under the ledger: what an agent reads is most of the tokens "
+     "and half the money; what it writes is under one per cent of the tokens "
+     "and a fifth of it. Then the process note at the foot - the first "
+     "conclusion this dashboard reached about itself was that the data did not "
+     "exist, and that was wrong."),
 ]
 
 # Above-the-fold statements on the index page.
@@ -150,14 +151,17 @@ ARTIFACTS = [
 # TO REMOVE A CARD: delete the tuple
 # TO REORDER:       move it. Order here is order on screen.
 #
+# `big` may contain {q}, {methods} or {words}, substituted from the repository
+# at build time, so a card can quote a live count without anyone maintaining it.
+#
 # Keep every one of these traceable to something on the site. A large number
 # with no destination is a poster, not a research index.
 HERO_CARDS = [
     ("98.9", "dB(A) average maximum",
      "measured by the MTA in Brooklyn Bridge Park, at the dog run",
      "read/idea-concept.html"),
-    ("54", "seconds between trains",
-     "at the weekday peak, 67 crossings in a single hour",
+    ("67", "trains an hour, overhead",
+     "at the weekday peak, one crossing every 54 seconds",
      "visual-review/frequency-dashboard.html"),
     ("4,055", "noise complaints since 2020",
      "within 500 m of that measurement, and not one can be about the train",
@@ -169,9 +173,10 @@ HERO_CARDS = [
     ("23%", "of the walk measured",
      "four bands of instrument data along 1,482 m from the F train to the water",
      "visual-review/noise-canyon.html"),
-    ("3", "claims withdrawn",
-     "published here, then disproved here, and left visible in the text",
-     "#status"),
+    ("{q}", "questions nobody had asked",
+     "an open, unfinished investigation that works by finding the question the "
+     "record skipped, then writing it so it can be proved wrong",
+     "#method"),
 ]
 
 SCRIPTS = [
@@ -580,6 +585,8 @@ code {
   border-radius: 4px;
   padding: 0.1em 0.36em;
 }
+/* A code span inside a link must still read as a link. */
+a code { color: var(--cp-link); border-color: var(--cp-link); }
 pre {
   background: var(--cp-surface-soft);
   border: 1px solid var(--cp-border);
@@ -591,25 +598,34 @@ pre {
 pre code { background: none; border: 0; padding: 0; }
 
 /* ---- top bar ---- */
-.bar {
-  position: sticky; top: 0; z-index: 50;
+/* mh- prefixed to match the block ensure_masthead() injects into the
+   hand-written artifacts. One definition, one set of names, no collisions. */
+.mh-bar {
+  position: sticky; top: 0; z-index: 50; display: block;
   background: var(--cp-panel-strong);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--cp-border);
 }
-.bar .in {
+.mh-bar .mh-in {
   max-width: 1180px; margin: 0 auto; padding: 10px 22px;
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
 }
-.bar .home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem; }
-.bar .home:hover { color: var(--cp-accent); text-decoration: none; }
-.bar nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
-.bar nav a {
-  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
-  border-radius: 999px; white-space: nowrap;
+.mh-bar .mh-home {
+  font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
+  display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
 }
-.bar nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
-.bar nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+.mh-bar .mh-home .mh-mark { display: block; flex: none; border-radius: 6px;
+  width: 26px; height: 26px; min-width: 26px; max-width: 26px; }
+.mh-bar .mh-home:hover { color: var(--cp-accent); text-decoration: none; }
+@media (max-width: 560px) { .mh-bar .mh-home .mh-wm { display: none; } }
+.mh-bar .mh-nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto;
+  align-items: center; }
+.mh-bar .mh-nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  display: inline-block; border-radius: 999px; white-space: nowrap;
+}
+.mh-bar .mh-nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
 
 .wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
 
@@ -726,6 +742,15 @@ html[data-theme="light"] .wc .u { color: #ff9bad; }
 .tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
 .tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
 .tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+         gap: 14px; margin-top: 18px; }
+.m { border: 1px solid var(--cp-border); border-radius: 10px; padding: 14px 16px;
+     background: var(--cp-surface-soft); }
+.m .mn { font-size: 2.1rem; font-weight: 800; line-height: 1; color: var(--cp-accent);
+         letter-spacing: -0.02em; }
+.m .mt { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em;
+         color: var(--cp-text-muted); margin: 6px 0 8px; }
+.m p { font-size: 0.88rem; margin: 0; }
 .tile .look {
   font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
   border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
@@ -906,20 +931,49 @@ HERO_JS = """<script>
 </script>"""
 
 
+# The same suspension bridge as the favicon, drawn at nav size. Inline rather
+# than a file so that a hand-written artifact patched with the masthead stays
+# self-contained and works from a file:// URL with no asset alongside it.
+LOGO = (
+    '<svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" '
+    'aria-hidden="true" focusable="false">'
+    '<rect width="32" height="32" rx="7" fill="var(--cp-accent)"/>'
+    '<path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" '
+    'stroke-linecap="round"/>'
+    '<path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" '
+    'stroke-linecap="round"/>'
+    '<path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" '
+    'stroke-width="2" fill="none" stroke-linecap="round" '
+    'stroke-linejoin="round"/></svg>')
+
+
 def bar(active, depth):
+    """The masthead, identical on every page of the site.
+
+    `active` is a document slug, "home", or "demos" for the hand-written
+    artifacts, which are not documents but still need to report where you are.
+    `depth` is 1 for anything in a subdirectory.
+
+    The same string is emitted for generated pages and injected into
+    hand-written ones by ensure_masthead(), so there is exactly one definition
+    of what the header is. Every class carries an mh- prefix because the
+    artifacts own their own stylesheets and at least one of them already
+    used .bar for something else entirely.
+    """
     up = "../" if depth else ""
-    items = ['<a href="%sindex.html%s">Overview</a>'
-             % (up, "" if depth else "")]
+    items = []
     for _, slug, _, label, _ in DOCS:
         cls = ' class="on"' if active == slug else ""
-        items.append('<a href="%sread/%s.html"%s>%s</a>'
-                     % (up, slug, cls, label) if not depth
-                     else '<a href="%s.html"%s>%s</a>' % (slug, cls, label))
-    home = ' class="on"' if active == "home" else ""
+        items.append('<a href="%sread/%s.html"%s>%s</a>' % (up, slug, cls, label))
+    items.append('<a href="%sindex.html#demos"%s>Demos</a>'
+                 % (up, ' class="on"' if active == "demos" else ""))
+    home = ' aria-current="page"' if active == "home" else ""
     return (
-        '<div class="bar"><div class="in">'
-        '<a class="home" href="%sindex.html"%s>Silencing the Span</a>'
-        '<nav>%s</nav></div></div>' % (up, home, "".join(items[1:])))
+        '<div class="mh-bar"><div class="mh-in">'
+        '<a class="mh-home" href="%sindex.html"%s>%s'
+        '<span class="mh-wm">Silencing the Span</span></a>'
+        '<nav class="mh-nav">%s</nav></div></div>'
+        % (up, home, LOGO, "".join(items)))
 
 
 def shell(title, desc, body, active, depth):
@@ -1083,7 +1137,11 @@ def build_index(stats):
       'uncomplainable to the city, and unstudied where people actually are.</p>')
 
     A('<div class="wc" id="wc" aria-live="polite">')
-    for i, (big, unit, line, href) in enumerate(HERO_CARDS):
+    live = {"q": stats["max_q"], "methods": stats["n_methods"],
+            "words": "{:,}".format(stats["total_words"])}
+    cards = [(str(big).format(**live) if "{" in str(big) else big, u, l, h)
+             for big, u, l, h in HERO_CARDS]
+    for i, (big, unit, line, href) in enumerate(cards):
         tag = "a" if href else "div"
         attr = ' href="%s"' % href if href else ""
         A('<%s class="wcslide%s"%s data-i="%d">'
@@ -1092,10 +1150,10 @@ def build_index(stats):
           % (tag, " on" if i == 0 else "", attr, i, big, unit, line, tag))
     A("</div>")
     A('<div class="wcnav" id="wcnav">')
-    for i, (big, _u, _l, _h) in enumerate(HERO_CARDS):
+    for i, (big, _u, _l, _h) in enumerate(cards):
         A('<button type="button" data-i="%d" aria-current="%s" '
           'aria-label="Statement %d of %d: %s"></button>'
-          % (i, "true" if i == 0 else "false", i + 1, len(HERO_CARDS), big))
+          % (i, "true" if i == 0 else "false", i + 1, len(cards), big))
     A('<button type="button" class="pp" id="wcpp" aria-label="Pause the '
       'rotating statements">Pause</button>')
     A("</div>")
@@ -1439,6 +1497,60 @@ def build_index(stats):
       '<a href="read/data-collection.html">the data-collection notes</a>.</div>')
     A('</div>')
 
+    # -- method ------------------------------------------------------------
+    A('<div class="card" id="method">')
+    A('<h2>How this investigation works</h2>')
+    A('<p class="lede">This is an <strong>open, unfinished investigation</strong>, '
+      'not a report. It is published while it is still wrong in places, because '
+      'the method depends on that being visible.</p>')
+
+    A('<p>The programme applies the methodology from '
+      '<a href="https://github.com/Ethical-Tech-CoLab/ai-research-question-assistant">'
+      '<code>ai-research-question-assistant</code></a> &mdash; '
+      '<i>AI-Powered Assistance in Formulating Research Questions</i> '
+      '(Rhodes et al.), &sect;8. Its central move is that '
+      '<strong>gap identification and contradiction detection come before '
+      'question formulation.</strong> You do not start from what you want to '
+      'prove. You start by reading what the record already contains, finding '
+      'where it stops, and writing the question it never asked.</p>')
+
+    A('<div class="mgrid">')
+    A('<div class="m"><div class="mn">%d</div>'
+      '<div class="mt">questions derived this way</div>'
+      '<p>Numbered Q1 to Q%d and carried across every document, so a question '
+      'raised in one place can be answered or killed in another.</p></div>'
+      % (stats["max_q"], stats["max_q"]))
+    A('<div class="m"><div class="mn">%d</div>'
+      '<div class="mt">methods specified to answer them</div>'
+      '<p>Each with a cost, a named question and an honest status. '
+      '<strong>%d have been executed.</strong> The register does not hide the '
+      'ratio.</p></div>' % (stats["n_methods"], stats["n_exec"]))
+    A('<div class="m"><div class="mn">%d</div>'
+      '<div class="mt">explicit retractions</div>'
+      '<p>Every one was published here, disproved here, and left standing in '
+      'the text with the correction beneath it. <strong>That count going up is '
+      'the method working, not failing.</strong></p></div>'
+      % stats["withdrawals"])
+    A('</div>')
+
+    A('<h3 style="margin-top:22px">Hypotheses, not positions</h3>')
+    A('<p>Every question here is written so that it can come back <em>no</em>. '
+      'That is a deliberate constraint and it has cost this programme several '
+      'of its more attractive claims &mdash; the three-site propagation fit, '
+      'the peak-hour argument, and the assumption that the tool kept no record '
+      'of its own cost. Each was a reasonable reading of real data. Each turned '
+      'out to be wrong, and each is still on the page, because '
+      '<strong>a research record that only shows its surviving claims is not '
+      'showing its method.</strong></p>')
+    A('<p>What follows from that is the uncomfortable part: '
+      '<b>nothing here is a finding until someone has stood under the bridge '
+      'with an instrument.</b> The questions are sharp. The evidence behind '
+      'them is second-hand, and every page says so where it applies. '
+      '<a href="#status">Where the investigation stands</a> gives the honest '
+      'ratio, and <a href="#todo">what to do next</a> lists the work that '
+      'would settle it.</p>')
+    A('</div>')
+
     # -- conventions -------------------------------------------------------
     A('<div class="card" id="conventions">')
     A('<h2>How to read anything in here</h2>')
@@ -1541,6 +1653,91 @@ def ensure_favicon(rel):
     return True
 
 
+MASTHEAD_CSS = """
+/* Site masthead, injected by build_pages.py. Do not edit by hand.
+   Every class is mh- prefixed. An artifact is free to own .bar, .in, .home,
+   .mark or .nav for its own purposes, and one of them already does: the usage
+   dashboard uses .bar for its horizontal bar-chart rows, which turned an
+   un-prefixed masthead into a stacked column covering the page. */
+.mh-bar { position: sticky; top: 0; z-index: 200; display: block;
+  background: var(--cp-panel-strong); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border); }
+.mh-bar .mh-in { max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.mh-bar .mh-home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 9px;
+  white-space: nowrap; }
+.mh-bar .mh-home .mh-mark { display: block; flex: none; border-radius: 6px;
+  width: 26px; height: 26px; min-width: 26px; max-width: 26px; }
+.mh-bar .mh-home:hover { color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto;
+  align-items: center; }
+.mh-bar .mh-nav a { color: var(--cp-text-muted); font-size: 0.82rem;
+  padding: 4px 9px; display: inline-block; font-weight: 400;
+  border-radius: 999px; white-space: nowrap; text-decoration: none; border: 0; }
+.mh-bar .mh-nav a:hover { background: var(--cp-accent-soft);
+  color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+@media (max-width: 560px) { .mh-bar .mh-home .mh-wm { display: none; } }
+"""
+
+MAST_OPEN = "<!--MASTHEAD-->"
+MAST_CLOSE = "<!--/MASTHEAD-->"
+
+
+def ensure_masthead(rel):
+    """Put the same header on a hand-written artifact page.
+
+    The artifacts are hand-written and stay that way, but navigation is not a
+    per-page decision: a reader who lands on a demonstration from a search
+    result needs the same way back that every other page offers. Before this,
+    of seven artifacts three carried a hand-rolled bar with a different nav,
+    one had a breadcrumb, one had a link at the very bottom, and two offered
+    no way back to the site at all.
+
+    Delimited by markers and rewritten in place on every run, so the header
+    tracks DOCS rather than drifting. Any pre-existing hand-rolled bar is
+    replaced, once, and its stylesheet rules are left alone - they are
+    overridden by the block inserted here, which is emitted last.
+    """
+    path = os.path.join(ROOT, rel)
+    with io.open(path, encoding="utf-8") as fh:
+        text = fh.read()
+    before = text
+
+    html = MAST_OPEN + bar("demos", 1) + MAST_CLOSE
+    css = MAST_OPEN + "<style>" + MASTHEAD_CSS + "</style>" + MAST_CLOSE
+
+    # Idempotent path: replace what a previous run inserted.
+    if MAST_OPEN in text:
+        text = re.sub(re.escape(MAST_OPEN) + r".*?" + re.escape(MAST_CLOSE),
+                      lambda m: css if "<style>" in m.group(0) else html,
+                      text, flags=re.S)
+    else:
+        # Retire any hand-rolled bar so two headers cannot stack. Matches the
+        # original hand-written markup and the un-prefixed masthead a previous
+        # version of this function emitted.
+        text = re.sub(r'<div class="(?:mh-)?bar"><div class="(?:mh-)?in">.*?</div></div>',
+                      "", text, count=1, flags=re.S)
+        m = re.search(r"</head>", text)
+        if not m:
+            print("  SKIP masthead, no </head> in %s" % rel)
+            return False
+        text = text[:m.start()] + css + "\n" + text[m.start():]
+        m = re.search(r"<body[^>]*>", text)
+        if not m:
+            print("  SKIP masthead, no <body> in %s" % rel)
+            return False
+        text = text[:m.end()] + "\n" + html + text[m.end():]
+
+    if text == before:
+        return False
+    with io.open(path, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(text)
+    print("  masthead -> %s" % rel)
+    return True
+
+
 def main():
     print("Reading repository...")
     stats = collect_stats()
@@ -1566,6 +1763,7 @@ def main():
         return 1
     for path, _, _, _, _ in ARTIFACTS:
         ensure_favicon(path)
+        ensure_masthead(path)
     print("Done.")
     return 0
 
