@@ -89,6 +89,12 @@ DOCS = [
      "What did producing this repository consume? A per-request ledger read "
      "from the tool's own store, set against the argument that inference is "
      "becoming metered infrastructure - and what follows from measuring it."),
+    ("procurement/README.md", "procurement", "9. What this would have cost to buy",
+     "9. Procurement",
+     "What would the same deliverable have cost from Accenture, EY or the "
+     "cheapest decile of the same schedule? Three instruments, reported side "
+     "by side and never averaged - and the disagreement between them is the "
+     "result."),
 ]
 
 # (path, kind, title, what it demonstrates, what to look at first)
@@ -143,6 +149,17 @@ ARTIFACTS = [
      "and a fifth of it. Then the process note at the foot - the first "
      "conclusion this dashboard reached about itself was that the data did not "
      "exist, and that was wrong."),
+    ("procurement/procurement-dashboard.html", "Meta",
+     "Procurement comparison dashboard",
+     "What this same deliverable would have cost to buy, from three "
+     "instruments that are never averaged: dollars actually obligated on 56 "
+     "federal noise-study contracts, a bottom-up build at GSA awarded ceiling "
+     "rates verified cent-for-cent against a vendor's own card, and the "
+     "metered inference ledger.",
+     "The first card, which withdraws the headline before it is made. Then "
+     "the discipline populations near the foot: 12,825 project managers "
+     "against seven acoustical engineers on the same schedule - and the "
+     "project manager costs more per hour."),
 ]
 
 # Above-the-fold statements on the index page.
@@ -293,6 +310,15 @@ DONE = [
      "MTA's five-number table discarded. <b>Marked for the protocol being "
      "finished, not for anyone having stood in the park.</b> Captures C1-C5 "
      "remain in the queue below."),
+    ("Method 37 - price the same deliverable against the market", 37,
+     "Two free federal APIs, no key",
+     "What this would have cost to buy, from three instruments reported side "
+     "by side and <b>never averaged</b>: 56 federal noise-study awards, a "
+     "bottom-up build at GSA awarded ceiling rates verified cent-for-cent "
+     "against a vendor's own card, and the metered inference ledger. "
+     "<b>Its result is the disagreement between them</b>, not a number - and "
+     "it withdraws the obvious headline before making it, because the "
+     "numerator would be measured and the denominator invented."),
 ]
 
 # The work queue. Ordering is a judgement and is stated as one; the STATUS of
@@ -1708,15 +1734,25 @@ def ensure_masthead(rel):
     html = MAST_OPEN + bar("demos", 1) + MAST_CLOSE
     css = MAST_OPEN + "<style>" + MASTHEAD_CSS + "</style>" + MAST_CLOSE
 
-    # Idempotent path: replace what a previous run inserted.
-    if MAST_OPEN in text:
+    # A page assembled by copying another page's <head> arrives carrying the
+    # CSS block and no bar. The idempotent branch below would then rewrite the
+    # stylesheet, change nothing, and report success on a page that has no
+    # header at all. Presence of a marker is not presence of a masthead:
+    # check for each block by what it contains.
+    has_css = re.search(re.escape(MAST_OPEN) + r"\s*<style>", text) is not None
+    has_bar = re.search(re.escape(MAST_OPEN) + r'\s*<div class="mh-bar"',
+                        text) is not None
+
+    if has_css and has_bar:
+        # Idempotent path: replace what a previous run inserted.
         text = re.sub(re.escape(MAST_OPEN) + r".*?" + re.escape(MAST_CLOSE),
                       lambda m: css if "<style>" in m.group(0) else html,
                       text, flags=re.S)
     else:
-        # Retire any hand-rolled bar so two headers cannot stack. Matches the
-        # original hand-written markup and the un-prefixed masthead a previous
-        # version of this function emitted.
+        # Retire any hand-rolled bar so two headers cannot stack, and any
+        # half-present block, so the insert below cannot duplicate one.
+        text = re.sub(re.escape(MAST_OPEN) + r".*?" + re.escape(MAST_CLOSE),
+                      "", text, flags=re.S)
         text = re.sub(r'<div class="(?:mh-)?bar"><div class="(?:mh-)?in">.*?</div></div>',
                       "", text, count=1, flags=re.S)
         m = re.search(r"</head>", text)
@@ -1729,6 +1765,13 @@ def ensure_masthead(rel):
             print("  SKIP masthead, no <body> in %s" % rel)
             return False
         text = text[:m.end()] + "\n" + html + text[m.end():]
+
+    # Nothing may leave this function with a stylesheet and no header.
+    if text.count(MAST_OPEN) != 2 or '<div class="mh-bar"' not in text:
+        raise SystemExit("masthead did not land correctly in %s "
+                         "(%d marker blocks, bar present: %s)"
+                         % (rel, text.count(MAST_OPEN),
+                            '<div class="mh-bar"' in text))
 
     if text == before:
         return False

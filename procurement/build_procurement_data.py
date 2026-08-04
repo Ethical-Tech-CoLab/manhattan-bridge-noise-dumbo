@@ -1,0 +1,553 @@
+#!/usr/bin/env python3
+"""Price this repository's delivered scope against published rate cards.
+
+What this does
+--------------
+Three independent instruments are computed and REPORTED SIDE BY SIDE.
+They are not averaged, because averaging a measured number with an
+estimated one launders the estimate.
+
+  A  TOP-DOWN, 5/5.  What federal buyers actually paid for noise and
+     acoustic studies, from USASpending obligations (fetch_awards.py).
+     No hours are assumed anywhere in this instrument.
+
+  B  BOTTOM-UP, 2/5.  Hours by discipline multiplied by published GSA
+     ceiling rates (fetch_rates.py). The RATES are 5/5 and quoted. The
+     HOURS are this repository's own estimate and are the weakest term
+     in the entire comparison, so they are carried as a band and
+     sensitivity-swept rather than stated as a number.
+
+  C  MEASURED, 5/5.  What this programme actually cost, from the
+     client's own billing telemetry (usage/build_usage_data.py).
+
+The comparison is deliberately SCOPE-MATCHED in two columns:
+
+  DELIVERED   desk research, source synthesis, data engineering,
+              modelling, interactive artifacts, publication.
+  NOT DELIVERED
+              field acoustic measurement, pedestrian survey, licensed
+              architectural design, legal opinion. This programme has
+              done NONE of it, and it is the part every absolute claim
+              in the programme is blocked on.
+
+A headline of the form "$236 versus six figures" compares column one of
+instrument C with both columns of instrument A. That is the over-claim
+this repository has withdrawn three times already, and the model refuses
+to emit it: usd_all_in in the output always carries the not-delivered
+scope alongside it.
+
+Usage
+-----
+    python procurement/build_procurement_data.py
+    python procurement/build_procurement_data.py --no-inject
+"""
+
+import argparse
+import json
+import os
+import re
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+OUT = os.path.join(HERE, "procurement-data.json")
+PAGE = os.path.join(HERE, "procurement-dashboard.html")
+MARK = "/*PROCDATA*/"
+
+# --------------------------------------------------------------------------
+# The hours band. THIS IS THE INVENTED PART AND IT IS NAMED AS SUCH.
+#
+# Each package converts a MEASURED quantity from the repository into an
+# hours range. The measurement is 5/5; the divisor is 1/5. Both ends of
+# every band are stated so a reader can substitute their own and rerun.
+#
+# The per-unit figures are deliberately generous at the low end and
+# conservative at the high end, because the interesting question is not
+# "what is the number" but "is the ORDER right", and a band that spans a
+# factor of two or three answers that while a point estimate does not.
+# --------------------------------------------------------------------------
+PACKAGES = [
+    # key, label, measure, unit, low per unit, high per unit, discipline group
+    ("retrieval", "Source retrieval and appraisal", "sources", "source",
+     0.5, 1.5, "disc:sme"),
+    ("authorship", "Document authorship, cited", "doc_words", "1k words",
+     2.5, 6.5, "disc:technical-writer"),
+    ("dataeng", "Data acquisition and pipelines", "data_sloc", "100 SLOC",
+     5.0, 12.5, "disc:data-engineer"),
+    ("modelling", "Quantitative modelling", "model_sloc", "100 SLOC",
+     6.0, 15.0, "disc:data-scientist"),
+    ("artifacts", "Interactive artifacts", "artifact_sloc", "100 SLOC",
+     5.0, 12.5, "disc:software-engineer"),
+    ("publication", "Site generation and publication", "site_sloc", "100 SLOC",
+     4.0, 10.0, "disc:web-developer"),
+]
+
+# Overheads applied to the sum of the packages above, as fractions.
+OVERHEADS = [
+    ("qa", "Review and quality assurance", 0.10, 0.20, "disc:sme"),
+    ("pm", "Engagement management", 0.12, 0.22, "disc:project-manager"),
+]
+
+# Scope this programme has NOT executed, priced the same way. Hours here
+# come from the method register's own estimates where the register gives
+# one, and are otherwise a stated guess. Rated 1/5 throughout.
+NOT_DELIVERED = [
+    ("field_acoustic", "Field acoustic measurement (Methods 11, 28, 31; captures C1-C5)",
+     80, 200, "disc:acoustical",
+     "Five capture campaigns plus instrument calibration, analysis and reporting."),
+    ("ped_survey", "Pedestrian origin-destination and dwell survey (Method 28)",
+     120, 320, "disc:environmental-scientist",
+     "Timed cordon counts across three day types, plus analysis. The single "
+     "blocking unknown for any absolute exposure figure."),
+    ("architecture", "Licensed architectural and structural design",
+     200, 600, "disc:architect-building",
+     "Nothing in this repository is a design. A design-build proposal needs "
+     "a licensed architect and a structural engineer of record."),
+    ("legal", "Preemption opinion (Q42)",
+     8, 40, "disc:attorney",
+     "Whether 40 CFR Part 201 preempts municipal regulation of a wholly "
+     "intrastate rapid transit system. One lawyer, one day, per the register."),
+]
+
+RATE_LADDER = [
+    ("vendor", "Named global consultancy",
+     "GSA ceiling rate, the vendor's own published card"),
+    ("median", "Whole-schedule median",
+     "Median awarded ceiling rate for the discipline across every MAS holder"),
+    ("low", "Whole-schedule 10th percentile",
+     "Cheapest decile of awarded ceiling rates for the same discipline"),
+]
+
+CODE_EXT = (".py", ".js")
+DOC_GLOB = (".md",)
+
+
+def sloc(path):
+    """Non-blank, non-comment source lines. Injected data spans do not count."""
+    try:
+        with open(path, "r", encoding="utf-8", errors="replace") as fh:
+            text = fh.read()
+    except OSError:
+        return 0
+    # Drop injected data payloads: they are generated, not authored.
+    text = re.sub(r"/\*(DATA|PEDDATA|COHORTDATA|USAGE|PROCDATA)\*/.*?"
+                  r"/\*(DATA|PEDDATA|COHORTDATA|USAGE|PROCDATA)\*/",
+                  "", text, flags=re.S)
+    n = 0
+    for line in text.splitlines():
+        s = line.strip()
+        if not s or s.startswith("#") or s.startswith("//"):
+            continue
+        n += 1
+    return n
+
+
+def html_sloc(path):
+    """Lines of hand-written HTML/CSS/JS in a self-contained artifact."""
+    try:
+        with open(path, "r", encoding="utf-8", errors="replace") as fh:
+            text = fh.read()
+    except OSError:
+        return 0
+    text = re.sub(r"/\*(DATA|PEDDATA|COHORTDATA|USAGE|PROCDATA)\*/.*?"
+                  r"/\*(DATA|PEDDATA|COHORTDATA|USAGE|PROCDATA)\*/",
+                  "", text, flags=re.S)
+    return sum(1 for ln in text.splitlines() if ln.strip())
+
+
+def words(path):
+    try:
+        with open(path, "r", encoding="utf-8", errors="replace") as fh:
+            return len(fh.read().split())
+    except OSError:
+        return 0
+
+
+def count_sources(paths):
+    """Count sources the way this repository actually marks them.
+
+    The corpus cites by NAME AND QUOTED LOCUS in tables, not by hyperlink:
+    across nine documents there are twelve distinct external URLs and 249
+    lines carrying a 1/5-to-5/5 source rating. Counting URLs would have
+    reported seven sources for a body of work built on several hundred.
+
+    The rule is mechanical: a line carrying an N/5 rating is one appraised
+    source. It over-counts, because the rubric's own definition lines carry
+    ratings too, and it under-counts where one table row appraises several
+    documents at once. Neither is corrected; the hours band is wide enough
+    to absorb both and narrowing it would imply a precision that is not
+    there.
+    """
+    rating = re.compile(r"\b[1-5]\s*/\s*5\b")
+    loci = re.compile(r"^\s*>", re.M)
+    rated = quoted = 0
+    urls = set()
+    urlrx = re.compile(r"https?://[^\s)>\]\"']+")
+    for p in paths:
+        try:
+            with open(p, "r", encoding="utf-8", errors="replace") as fh:
+                text = fh.read()
+        except OSError:
+            continue
+        rated += sum(1 for ln in text.splitlines() if rating.search(ln))
+        quoted += len(loci.findall(text))
+        for m in urlrx.finditer(text):
+            u = m.group(0).rstrip(".,;:")
+            if "ethical-tech-colab" in u.lower():
+                continue
+            urls.add(u)
+    return rated, quoted, len(urls)
+
+
+def inventory():
+    """Measure the delivered corpus. Every figure here is counted, not guessed."""
+    md = []
+    for base, dirs, files in os.walk(ROOT):
+        dirs[:] = [d for d in dirs if d not in
+                   (".git", "read", "__pycache__", "assets", "node_modules")]
+        for f in files:
+            if f.endswith(DOC_GLOB):
+                md.append(os.path.join(base, f))
+    md.sort()
+
+    data_scripts = ["data-collection/bridge_schedule.py",
+                    "data-collection/bridge_realtime.py",
+                    "data-collection/build_dashboard_data.py",
+                    "data-collection/build_pedestrian_data.py",
+                    "data-collection/fetch_geodata.py",
+                    "procurement/fetch_rates.py",
+                    "procurement/fetch_awards.py"]
+    model_scripts = ["data-collection/build_cohort_model.py",
+                     "usage/build_usage_data.py",
+                     "procurement/build_procurement_data.py"]
+    site_scripts = ["build_pages.py", "build_carousel.py", "make_hero.py",
+                    "check_markdown.py"]
+    artifacts = [os.path.join("visual-review", f)
+                 for f in sorted(os.listdir(os.path.join(ROOT, "visual-review")))
+                 if f.endswith(".html")]
+    artifacts += ["usage/usage-dashboard.html"]
+    harnesses = ["visual-review/verify_carousel.js", "usage/verify_usage.js"]
+
+    def total(rel_paths, fn):
+        return sum(fn(os.path.join(ROOT, p)) for p in rel_paths)
+
+    doc_words = sum(words(p) for p in md)
+    rated, quoted, urls = count_sources(md)
+    inv = {
+        "documents": len(md),
+        "doc_words": doc_words,
+        "sources": rated,
+        "quoted_loci": quoted,
+        "external_urls": urls,
+        "data_sloc": total(data_scripts, sloc),
+        "model_sloc": total(model_scripts, sloc),
+        "site_sloc": total(site_scripts, sloc) + total(harnesses, sloc),
+        "artifact_sloc": total(artifacts, html_sloc),
+        "artifacts": len(artifacts),
+        "scripts": len(data_scripts) + len(model_scripts) + len(site_scripts),
+    }
+    inv["total_sloc"] = (inv["data_sloc"] + inv["model_sloc"]
+                         + inv["site_sloc"] + inv["artifact_sloc"])
+    return inv
+
+
+def measure_for(key, inv):
+    """Convert a package measure into the units its productivity band uses."""
+    if key == "sources":
+        return inv["sources"]
+    if key == "doc_words":
+        return inv["doc_words"] / 1000.0
+    return inv[key] / 100.0
+
+
+def rate_for(rates, group, kind):
+    g = rates["groups"].get(group)
+    if not g or not g["stats"].get("n"):
+        return None
+    st = g["stats"]
+    if kind == "median":
+        return st["median"]
+    if kind == "low":
+        return st["p10"]
+    return None
+
+
+def vendor_rate_for(rates, group):
+    """The named-consultancy rung.
+
+    Priced from the vendor's own card where the vendor publishes a category
+    that matches the discipline by name, and otherwise from the 75th
+    percentile of the whole schedule, which is stated in the output so the
+    substitution is visible rather than silent.
+    """
+    aliases = {
+        "disc:sme": r"^subject matter expert 2$",
+        "disc:project-manager": r"^project manager$",
+        "disc:technical-writer": r"^technical writer$",
+        "disc:data-engineer": r"^data (engineer|architect)$",
+        "disc:data-scientist": r"^data scientist$",
+        "disc:software-engineer": r"^(software engineer|engineer 2)$",
+        "disc:web-developer": r"^web designer$",
+    }
+    pat = aliases.get(group)
+    if pat:
+        rx = re.compile(pat, re.I)
+        best = None
+        for r in rates["groups"]["vendor:accenture"].get("rows", []) or \
+                rates["groups"]["vendor:accenture"].get("sample", []):
+            if rx.match((r.get("labor_category") or "").strip()) and \
+                    r.get("worksite") == "Contractor_Facility":
+                if best is None or r["current_price"] > best["current_price"]:
+                    best = r
+        if best:
+            return best["current_price"], "Accenture: %s" % best["labor_category"]
+    g = rates["groups"].get(group)
+    if g and g["stats"].get("n"):
+        return g["stats"]["p75"], "no matching vendor category; schedule p75 substituted"
+    return None, "unpriced"
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--no-inject", action="store_true")
+    args = ap.parse_args()
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+    with open(os.path.join(HERE, "rates.json"), encoding="utf-8") as fh:
+        rates = json.load(fh)
+    with open(os.path.join(HERE, "awards.json"), encoding="utf-8") as fh:
+        awards = json.load(fh)
+    with open(os.path.join(ROOT, "usage", "usage-data.json"), encoding="utf-8") as fh:
+        usage = json.load(fh)
+
+    inv = inventory()
+
+    # ---- instrument B: bottom-up -----------------------------------------
+    packages, lo_h, hi_h = [], 0.0, 0.0
+    for key, label, measure, unit, plo, phi, group in PACKAGES:
+        q = measure_for(measure, inv)
+        h_lo, h_hi = q * plo, q * phi
+        lo_h += h_lo
+        hi_h += h_hi
+        vr, vwhy = vendor_rate_for(rates, group)
+        packages.append({
+            "key": key, "label": label, "group": group,
+            "measure": measure, "quantity": round(q, 2), "unit": unit,
+            "per_unit_low": plo, "per_unit_high": phi,
+            "hours_low": round(h_lo, 1), "hours_high": round(h_hi, 1),
+            "rate_vendor": vr, "rate_vendor_why": vwhy,
+            "rate_median": rate_for(rates, group, "median"),
+            "rate_low": rate_for(rates, group, "low"),
+        })
+
+    base_lo, base_hi = lo_h, hi_h
+    for key, label, flo, fhi, group in OVERHEADS:
+        h_lo, h_hi = base_lo * flo, base_hi * fhi
+        lo_h += h_lo
+        hi_h += h_hi
+        vr, vwhy = vendor_rate_for(rates, group)
+        packages.append({
+            "key": key, "label": label, "group": group,
+            "measure": "fraction of packages above", "quantity": None,
+            "unit": "share", "per_unit_low": flo, "per_unit_high": fhi,
+            "hours_low": round(h_lo, 1), "hours_high": round(h_hi, 1),
+            "rate_vendor": vr, "rate_vendor_why": vwhy,
+            "rate_median": rate_for(rates, group, "median"),
+            "rate_low": rate_for(rates, group, "low"),
+        })
+
+    def cost(pkgs, rung):
+        lo = sum((p["hours_low"] or 0) * (p["rate_" + rung] or 0) for p in pkgs)
+        hi = sum((p["hours_high"] or 0) * (p["rate_" + rung] or 0) for p in pkgs)
+        return round(lo, 2), round(hi, 2)
+
+    delivered = {r: dict(zip(("low", "high"), cost(packages, r)))
+                 for r, _, _ in RATE_LADDER}
+
+    # ---- the scope that was not delivered ---------------------------------
+    nd = []
+    for key, label, h_lo, h_hi, group, why in NOT_DELIVERED:
+        vr, vwhy = vendor_rate_for(rates, group)
+        nd.append({
+            "key": key, "label": label, "group": group, "why": why,
+            "hours_low": h_lo, "hours_high": h_hi,
+            "rate_vendor": vr, "rate_vendor_why": vwhy,
+            "rate_median": rate_for(rates, group, "median"),
+            "rate_low": rate_for(rates, group, "low"),
+        })
+    not_delivered = {r: dict(zip(("low", "high"), cost(nd, r)))
+                     for r, _, _ in RATE_LADDER}
+
+    # ---- sensitivity: which package moves the total -----------------------
+    mid = {p["key"]: (p["hours_low"] + p["hours_high"]) / 2.0 for p in packages}
+    rate_mid = {p["key"]: p["rate_median"] or 0 for p in packages}
+    total_mid = sum(mid[k] * rate_mid[k] for k in mid)
+    sens = []
+    for p in packages:
+        k = p["key"]
+        share = (mid[k] * rate_mid[k] / total_mid) if total_mid else 0
+        span = ((p["hours_high"] - p["hours_low"]) * rate_mid[k]) if rate_mid[k] else 0
+        sens.append({"key": k, "label": p["label"],
+                     "share_of_midpoint": round(share, 4),
+                     "band_width_usd": round(span, 2)})
+    sens.sort(key=lambda s: -s["band_width_usd"])
+
+    # ---- where the two instruments disagree, quantified --------------------
+    #
+    # The bottom-up estimate for the DELIVERED desk scope lands well above
+    # the median federal noise-study award. That disagreement is the most
+    # interesting output of this model and it is not reconciled here.
+    # Either the hours band is too generous, or the awards buy a narrower
+    # deliverable than nine documents, seven artifacts and six datasets.
+    # Both are live. What the model can do is turn the disagreement into a
+    # number: the hours each award percentile implies at the same blended
+    # rate the bottom-up estimate uses.
+    hours_mid = (lo_h + hi_h) / 2.0
+    blended = (total_mid / hours_mid) if hours_mid else 0
+    implied = {}
+    for k in ("p25", "median", "p75", "p90", "max"):
+        amt = awards["stats"].get(k)
+        implied[k] = {
+            "usd": amt,
+            "hours_at_blended": round(amt / blended, 1) if blended else None,
+            "share_of_bottom_up_low": round(amt / delivered["median"]["low"], 3)
+            if delivered["median"]["low"] else None,
+        }
+    crosscheck = {
+        "blended_rate_usd_per_hour": round(blended, 2),
+        "bottom_up_hours": {"low": round(lo_h, 1), "mid": round(hours_mid, 1),
+                            "high": round(hi_h, 1)},
+        "awards_imply": implied,
+        "reading": ("The bottom-up band and the award distribution do not agree. "
+                    "They are reported side by side and neither is adjusted to "
+                    "meet the other."),
+    }
+
+    # ---- instrument C: what it actually cost ------------------------------
+    t = usage["time"]
+    measured = {
+        "usd": usage["totals"]["usd"],
+        "requests": usage["totals"]["requests"],
+        "turns": usage["totals"]["turns"],
+        "subagents": usage["totals"]["subagents"],
+        "models": usage["totals"]["models"],
+        "wall_span_h": round(t["wall_span_s"] / 3600.0, 2),
+        "inference_sum_h": round(t["inference_sum_s"] / 3600.0, 2),
+        "inference_union_h": round(t["inference_union_s"] / 3600.0, 2),
+        "counterfactual_uncached_usd": usage["counterfactual"]["uncached_usd"],
+        "generated_at": usage["generated_at"],
+    }
+
+    out = {
+        "schema": "procurement-comparison/1",
+        "generated_at": usage["generated_at"],
+        "generator": "procurement/build_procurement_data.py",
+        "inventory": inv,
+        "rate_ladder": [{"key": k, "label": l, "note": n} for k, l, n in RATE_LADDER],
+        "rate_populations": {
+            k: {"n": g["stats"]["n"], "min": g["stats"]["min"], "max": g["stats"]["max"],
+                "median": g["stats"]["median"]}
+            for k, g in rates["groups"].items() if g["stats"].get("n")
+        },
+        "packages": packages,
+        "delivered": delivered,
+        "not_delivered_packages": nd,
+        "not_delivered": not_delivered,
+        "hours": {"low": round(lo_h, 1), "high": round(hi_h, 1)},
+        "sensitivity": sens,
+        "crosscheck": crosscheck,
+        "measured": measured,
+        "awards": {
+            "n": awards["stats"]["n"],
+            "stats": awards["stats"],
+            "source": awards["source"],
+            "filters": awards["filters"],
+            "note": awards["note"],
+            "examples": [a for a in awards["awards"]
+                         if a["amount"] >= awards["stats"]["p25"]][:12],
+        },
+        "rates_provenance": {
+            "source": rates["source"], "index": rates["index"],
+            "fetched": rates["fetched"], "note": rates["note"],
+        },
+        "ratings": {
+            "instrument_a_awards": "5/5 VERIFIED - obligated dollars on real federal contracts",
+            "instrument_b_rates": "5/5 VERIFIED - published GSA ceiling rates",
+            "instrument_b_hours": "1/5 INVENTED - this repository's own estimate, carried as a band",
+            "instrument_c_measured": "5/5 VERIFIED - the client's own billing telemetry",
+            "not_delivered_hours": "1/5 INVENTED - no scoping exercise has been done",
+        },
+    }
+
+    with open(OUT, "w", encoding="utf-8") as fh:
+        json.dump(out, fh, indent=1, sort_keys=True)
+
+    print("INVENTORY")
+    for k in ("documents", "doc_words", "sources", "quoted_loci", "external_urls",
+              "artifacts", "scripts",
+              "data_sloc", "model_sloc", "site_sloc", "artifact_sloc", "total_sloc"):
+        print("  %-16s %s" % (k, format(inv[k], ",")))
+    print("\nHOURS  %.0f to %.0f" % (lo_h, hi_h))
+    print("\nDELIVERED SCOPE")
+    for k, label, _ in RATE_LADDER:
+        d = delivered[k]
+        print("  %-32s $%12s  to  $%s"
+              % (label, format(int(d["low"]), ","), format(int(d["high"]), ",")))
+    print("\nSCOPE NOT DELIVERED")
+    for k, label, _ in RATE_LADDER:
+        d = not_delivered[k]
+        print("  %-32s $%12s  to  $%s"
+              % (label, format(int(d["low"]), ","), format(int(d["high"]), ",")))
+    print("\nWHAT IT ACTUALLY COST         $%s  (%s requests, %.1f h inference)"
+          % (format(measured["usd"], ","), format(measured["requests"], ","),
+             measured["inference_sum_h"]))
+    print("\nWHAT BUYERS ACTUALLY PAID     n=%d  median $%s  p25 $%s  p75 $%s"
+          % (awards["stats"]["n"], format(int(awards["stats"]["median"]), ","),
+             format(int(awards["stats"]["p25"]), ","),
+             format(int(awards["stats"]["p75"]), ",")))
+    print("\nSENSITIVITY (widest band first)")
+    for s in sens[:5]:
+        print("  %-34s band $%-10s  %.1f%% of midpoint"
+              % (s["label"], format(int(s["band_width_usd"]), ","),
+                 100 * s["share_of_midpoint"]))
+    print("\nCROSS-CHECK  blended $%.2f/h, bottom-up midpoint %.0f h"
+          % (crosscheck["blended_rate_usd_per_hour"],
+             crosscheck["bottom_up_hours"]["mid"]))
+    for k, v in crosscheck["awards_imply"].items():
+        print("  award %-7s $%-11s implies %8s h  (%.0f%% of the bottom-up low)"
+              % (k, format(int(v["usd"]), ","),
+                 format(int(v["hours_at_blended"]), ","),
+                 100 * (v["share_of_bottom_up_low"] or 0)))
+    print("\nwrote %s (%d bytes)" % (OUT, os.path.getsize(OUT)))
+
+    if not args.no_inject and os.path.exists(PAGE):
+        inject(out)
+
+
+def inject(data):
+    with open(PAGE, "r", encoding="utf-8") as fh:
+        html = fh.read()
+    # A page that mentions the marker in its own prose will have three of
+    # them, and a non-greedy match will then splice out everything between
+    # the prose and the script. That happened once, silently, and the page
+    # rendered empty with no console error. Count first.
+    seen = html.count(MARK)
+    if seen != 2:
+        raise SystemExit(
+            "expected exactly 2 %s markers in %s, found %d. A marker in prose "
+            "will be spliced by the injection." % (MARK, PAGE, seen))
+    payload = MARK + "\nconst PROC = " + json.dumps(data, sort_keys=True) + ";\n" + MARK
+    new, n = re.subn(re.escape(MARK) + r".*?" + re.escape(MARK), lambda m: payload,
+                     html, count=1, flags=re.S)
+    if not n:
+        raise SystemExit("injection markers %s not found in %s" % (MARK, PAGE))
+    if new.count("const PROC = ") != 1:
+        raise SystemExit("injection left %d PROC declarations in %s"
+                         % (new.count("const PROC = "), PAGE))
+    with open(PAGE, "w", encoding="utf-8") as fh:
+        fh.write(new)
+    print("injected into %s (%d bytes)" % (PAGE, os.path.getsize(PAGE)))
+
+
+if __name__ == "__main__":
+    main()

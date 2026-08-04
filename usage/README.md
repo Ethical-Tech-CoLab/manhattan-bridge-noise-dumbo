@@ -192,6 +192,27 @@ A page that dropped it would become unfalsifiable by its own audience at exactly
 the moment it started claiming a dollar total. It is demoted, not deleted, and
 the dashboard labels it as the legacy unit.
 
+## The number this page deliberately does not compute
+
+A cost is meaningless without a comparator, and the obvious comparator —
+what the same work would have cost from a consultancy —
+**is not computed here**,
+because doing it properly requires an entirely separate evidence base:
+published labour rates, obligated contract dollars, and a scope map from
+countable repository artifacts to billable work packages.
+
+That is [Document 9, the procurement comparison](../procurement/README.md),
+with its own dashboard at
+[`procurement-dashboard.html`](../procurement/procurement-dashboard.html).
+
+It reaches a conclusion that constrains how this page may be read.
+**The measured $236.61 on this page must never be divided into a consultancy estimate to produce a saving ratio**,
+because the numerator is 5/5 measured and
+the denominator is 1/5 invented. Document 9 states that refusal as its opening
+card. It also prices the human direction this ledger cannot see — roughly nine
+to eleven hours of active attention, which at a consultancy subject-matter-expert
+rate is about **eight and a half times the entire metered inference cost**.
+
 ## Energy
 
 No joules reach a client. The energy panel multiplies a published per-query

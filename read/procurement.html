@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9. What this would have cost to buy &mdash; Silencing the Span</title>
+<meta name="description" content="Rendered copy of procurement/README.md from the Manhattan Bridge rail-noise research repository.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b11f4b'/%3E%3Cpath d='M3 22h26' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M9 8v14M23 8v14' stroke='%23fff' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M3 14L9 8Q16 17 23 8L29 14' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, kbd, pre {
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 4px;
+  padding: 0.1em 0.36em;
+}
+/* A code span inside a link must still read as a link. */
+a code { color: var(--cp-link); border-color: var(--cp-link); }
+pre {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre code { background: none; border: 0; padding: 0; }
+
+/* ---- top bar ---- */
+/* mh- prefixed to match the block ensure_masthead() injects into the
+   hand-written artifacts. One definition, one set of names, no collisions. */
+.mh-bar {
+  position: sticky; top: 0; z-index: 50; display: block;
+  background: var(--cp-panel-strong);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border);
+}
+.mh-bar .mh-in {
+  max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.mh-bar .mh-home {
+  font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
+  display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
+}
+.mh-bar .mh-home .mh-mark { display: block; flex: none; border-radius: 6px;
+  width: 26px; height: 26px; min-width: 26px; max-width: 26px; }
+.mh-bar .mh-home:hover { color: var(--cp-accent); text-decoration: none; }
+@media (max-width: 560px) { .mh-bar .mh-home .mh-wm { display: none; } }
+.mh-bar .mh-nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto;
+  align-items: center; }
+.mh-bar .mh-nav a {
+  color: var(--cp-text-muted); font-size: 0.82rem; padding: 4px 9px;
+  display: inline-block; border-radius: 999px; white-space: nowrap;
+}
+.mh-bar .mh-nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
+
+h1 { font-size: 2.15rem; line-height: 1.18; margin: 0 0 10px; letter-spacing: -0.01em; }
+h2 { font-size: 1.42rem; margin: 0 0 14px; letter-spacing: -0.005em; }
+h3 { font-size: 1.08rem; margin: 26px 0 8px; }
+p { margin: 0 0 14px; }
+.lede { font-size: 1.06rem; color: var(--cp-text-muted); }
+.sub { color: var(--cp-text-muted); font-size: 1.02rem; margin: 0 0 4px; }
+
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin: 0 0 22px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.hero { background: var(--cp-bg-elevated); }
+
+/* -- above the fold ------------------------------------------------------ */
+/* The hero image is grayscale by construction so the theme, not the JPEG,
+   decides what colour it is. */
+.hb {
+  position: relative; border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--cp-border); margin: 0 0 22px;
+  background: #101010; isolation: isolate;
+}
+.hb .pic {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 62% 46%; z-index: 0;
+  opacity: 0.95;
+}
+.hb .tint {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(16,16,16,0.94) 0%, rgba(16,16,16,0.86) 34%,
+                    rgba(16,16,16,0.42) 62%, rgba(16,16,16,0.20) 100%),
+    linear-gradient(0deg, var(--cp-highlight), var(--cp-highlight));
+}
+.hb .hin { position: relative; z-index: 2; padding: 44px 40px 30px; color: #f2efea; }
+.hb .kicker {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--cp-accent); font-weight: 700; margin: 0 0 10px;
+}
+html[data-theme="light"] .hb .kicker { color: #fd8ea1; }
+.hb h1 { font-size: 2.5rem; margin: 0 0 10px; letter-spacing: -0.02em; color: #fff; }
+.hb .sub { font-size: 1.06rem; margin: 0 0 6px; max-width: 44rem; color: #e6e1da; }
+.hb .sub a { color: #ffd0da; }
+.hb .lede { font-size: 0.95rem; margin: 0; max-width: 44rem; color: #bdb7b0; }
+.hb .cred {
+  position: relative; z-index: 2; margin: 22px 0 0; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.14);
+  font-size: 0.7rem; color: rgba(255,255,255,0.52); line-height: 1.5;
+}
+.hb .cred a { color: rgba(255,255,255,0.74); }
+
+/* the statement carousel */
+.wc { position: relative; z-index: 2; margin: 26px 0 34px; min-height: 148px; }
+.wc .wcslide {
+  position: absolute; inset: 0; opacity: 0; transition: opacity .5s ease;
+  pointer-events: none; display: block; color: inherit;
+}
+.wc .wcslide.on { opacity: 1; pointer-events: auto; }
+.wc .wcslide:hover { text-decoration: none; }
+.wc .n {
+  font-size: clamp(3rem, 8.5vw, 5.4rem); font-weight: 700; line-height: 0.94;
+  letter-spacing: -0.035em; color: #fff; display: block;
+}
+.wc .u {
+  font-size: 0.96rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--cp-accent); margin: 8px 0 6px;
+}
+html[data-theme="light"] .wc .u { color: #ff9bad; }
+.wc .l { font-size: 0.98rem; color: #ded8d1; max-width: 40rem; }
+.wc .wcslide:hover .n { color: #ffd0da; }
+.wcnav { position: relative; z-index: 2; display: flex; align-items: center; gap: 8px; }
+.wcnav button {
+  width: 30px; height: 6px; border-radius: 3px; border: 0; cursor: pointer;
+  background: rgba(255,255,255,0.26); padding: 0;
+}
+.wcnav button[aria-current="true"] { background: var(--cp-accent); }
+.wcnav button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.wcnav .pp {
+  width: auto; height: auto; border-radius: 0.625rem; padding: 4px 10px;
+  font: inherit; font-size: 0.74rem; color: #ded8d1;
+  background: rgba(255,255,255,0.12); margin-left: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wc .wcslide { transition: none; }
+}
+@media (max-width: 760px) {
+  .hb .hin { padding: 28px 20px 22px; }
+  .hb h1 { font-size: 1.8rem; }
+  .hb .cred { position: static; max-width: none; text-align: left; }
+  .wc { min-height: 190px; }
+}
+
+.statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+.s {
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+  font-size: 0.78rem; color: var(--cp-text-muted);
+}
+.s .k { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.s .big { font-size: 1.9rem; font-weight: 700; color: var(--cp-accent); line-height: 1.1; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 14px; }
+.tile {
+  display: block; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 16px 18px; color: var(--cp-text); transition: border-color .15s, transform .15s;
+}
+.tile:hover { border-color: var(--cp-accent); text-decoration: none; transform: translateY(-2px); }
+.tile .t { font-weight: 700; margin-bottom: 6px; color: var(--cp-accent); }
+.tile .d { font-size: 0.87rem; color: var(--cp-text-muted); }
+.mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+         gap: 14px; margin-top: 18px; }
+.m { border: 1px solid var(--cp-border); border-radius: 10px; padding: 14px 16px;
+     background: var(--cp-surface-soft); }
+.m .mn { font-size: 2.1rem; font-weight: 800; line-height: 1; color: var(--cp-accent);
+         letter-spacing: -0.02em; }
+.m .mt { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em;
+         color: var(--cp-text-muted); margin: 6px 0 8px; }
+.m p { font-size: 0.88rem; margin: 0; }
+.tile .look {
+  font-size: 0.82rem; margin-top: 10px; padding-top: 10px;
+  border-top: 1px dashed var(--cp-border); color: var(--cp-text-soft);
+}
+.tile .look b { color: var(--cp-text); }
+
+.badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 999px; vertical-align: middle;
+  border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted);
+}
+.badge.ok { border-color: var(--cp-success); color: var(--cp-success); }
+.badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
+.badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
+.badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+
+.note {
+  border-left: 3px solid var(--cp-accent);
+  background: var(--cp-accent-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  padding: 13px 17px; margin: 16px 0; font-size: 0.92rem;
+}
+.note.bad { border-left-color: var(--cp-danger); background: rgba(220,38,38,0.07); }
+.note.good { border-left-color: var(--cp-success); background: rgba(22,163,74,0.07); }
+.note.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,0.09); }
+
+.tw { overflow-x: auto; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td {
+  border: 1px solid var(--cp-border); padding: 8px 11px;
+  text-align: left; vertical-align: top;
+}
+th { background: var(--cp-surface-soft); font-weight: 700; }
+tbody tr:nth-child(even) td { background: var(--cp-surface-soft); }
+
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li { margin-bottom: 7px; }
+
+blockquote {
+  margin: 16px 0; padding: 10px 18px;
+  border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft);
+  border-radius: 0 0.625rem 0.625rem 0;
+  color: var(--cp-text-muted);
+}
+
+hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
+
+.foot {
+  color: var(--cp-text-soft); font-size: 0.83rem;
+  border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 30px;
+}
+
+/* ---- work queue ---- */
+.q { border-top: 1px solid var(--cp-border); padding: 15px 0; display: grid;
+     grid-template-columns: 132px 1fr; gap: 18px; }
+.q:first-of-type { border-top: 0; }
+.q .lab { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+          font-weight: 700; padding-top: 3px; display: flex;
+          align-items: flex-start; gap: 8px; line-height: 1.35; }
+.q .h { font-weight: 700; margin-bottom: 2px; }
+.q .cost { font-size: 0.8rem; color: var(--cp-text-soft); margin-bottom: 7px;
+           font-family: Consolas, "Courier New", monospace; }
+.q .why { font-size: 0.9rem; color: var(--cp-text-muted); }
+.lab.blocking { color: var(--cp-danger); }
+.lab.cheap { color: var(--cp-success); }
+.lab.field { color: var(--cp-accent); }
+.lab.review { color: var(--cp-warning); }
+.lab.gate { color: var(--cp-text-muted); }
+.lab.done { color: var(--cp-success); }
+
+/* A tick and an empty box, so done and not-done are distinguishable without
+   relying on colour alone. Both are drawn, not typed, so neither depends on
+   an emoji font being present. */
+.mk { display: inline-block; width: 17px; height: 17px; border-radius: 4px;
+      position: relative; flex: 0 0 17px; margin-top: 1px; }
+.mk.on { background: var(--cp-success); }
+.mk.on::after { content: ""; position: absolute; left: 5px; top: 1.5px;
+                width: 4px; height: 9px; border: solid #fff;
+                border-width: 0 2px 2px 0; transform: rotate(42deg); }
+/* Indeterminate: the work was done, the result was not obtained. A full tick
+   next to "the week has not been run" would overstate it. */
+.mk.half { border: 2px solid var(--cp-success); }
+.mk.half::after { content: ""; position: absolute; left: 2.5px; top: 5.5px;
+                  width: 8px; height: 2px; background: var(--cp-success); }
+.mk.off { border: 2px solid var(--cp-border-strong); }
+.q .h { display: block; }
+.qdone { margin-bottom: 6px; }
+.qdone .h { color: var(--cp-text); }
+.qdone .why { color: var(--cp-text-soft); }
+.donehead { display: flex; align-items: baseline; justify-content: space-between;
+            gap: 14px; flex-wrap: wrap; margin: 26px 0 4px; }
+.donehead h3 { margin: 0; }
+.donehead .cnt { font-size: 0.82rem; color: var(--cp-text-muted);
+                 font-family: Consolas, "Courier New", monospace; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 14px 0 2px;
+          font-size: 0.84rem; color: var(--cp-text-muted); }
+.legend > span { display: flex; align-items: flex-start; gap: 8px; }
+
+/* ---- rendered document pages ---- */
+.doclayout { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
+.toc { position: sticky; top: 76px; max-height: calc(100vh - 100px); overflow-y: auto;
+       font-size: 0.84rem; padding-right: 6px; }
+.toc .h { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+          color: var(--cp-text-soft); font-weight: 700; margin-bottom: 8px; }
+.toc a { display: block; padding: 3px 0 3px 9px; color: var(--cp-text-muted);
+         border-left: 2px solid var(--cp-border); line-height: 1.35; }
+.toc a:hover { color: var(--cp-accent); border-left-color: var(--cp-accent); text-decoration: none; }
+.toc a.l3 { padding-left: 20px; font-size: 0.95em; color: var(--cp-text-soft); }
+.doc { min-width: 0; }
+.doc h1 { font-size: 1.95rem; margin-top: 0; }
+.doc h2 { font-size: 1.38rem; margin: 34px 0 12px; padding-bottom: 6px;
+          border-bottom: 1px solid var(--cp-border); }
+.doc h3 { font-size: 1.1rem; margin: 26px 0 8px; }
+.doc h4 { font-size: 0.98rem; margin: 20px 0 6px; color: var(--cp-text-muted); }
+.doc img { max-width: 100%; }
+
+@media (max-width: 980px) {
+  .statrow { grid-template-columns: repeat(2, 1fr); }
+  .doclayout { grid-template-columns: 1fr; }
+  .toc { position: static; max-height: none; margin-bottom: 26px; }
+  .q { grid-template-columns: 1fr; gap: 4px; }
+  .wrap { padding: 22px 16px 70px; }
+  .card { padding: 20px 18px; }
+}
+@media (max-width: 560px) {
+  .statrow { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../read/readme.html">README</a><a href="../read/idea-concept.html">1. Concept</a><a href="../read/precedent-and-materials.html">2. Precedent</a><a href="../read/williamsburg-comparator.html">3. Comparator</a><a href="../read/visual-model-framework.html">4. Visual model</a><a href="../read/field-capture-protocol.html">5. Field capture</a><a href="../read/community-evidence-audit.html">6. Community</a><a href="../read/data-collection.html">7. Data</a><a href="../read/usage.html">8. Usage</a><a href="../read/procurement.html" class="on">9. Procurement</a><a href="../index.html#demos">Demos</a></nav></div></div>
+<div class="wrap">
+<div class="doclayout">
+<aside class="toc"><div class="h">On this page</div><a href="#the-claim-this-document-exists-to-refuse">The claim this document exists to refuse</a><a href="#three-instruments-deliberately-never-averaged">Three instruments, deliberately never averaged</a><a href="#instrument-b-what-the-delivered-scope-prices-at">Instrument B: what the delivered scope prices at</a><a class="l3" href="#the-rate-source">The rate source</a><a class="l3" href="#the-rate-ladder">The rate ladder</a><a class="l3" href="#the-scope-as-work-packages">The scope, as work packages</a><a class="l3" href="#the-result">The result</a><a class="l3" href="#what-moves-it">What moves it</a><a href="#what-was-not-delivered">What was not delivered</a><a href="#instrument-a-what-buyers-actually-paid">Instrument A: what buyers actually paid</a><a href="#the-disagreement-quantified-and-unreconciled">The disagreement, quantified and unreconciled</a><a href="#the-transparency-asymmetry">The transparency asymmetry</a><a href="#twelve-thousand-project-managers-and-seven-acoustical-engineers">Twelve thousand project managers and seven acoustical engineers</a><a href="#the-human-term">The human term</a><a href="#where-this-document-is-likely-to-be-wrong">Where this document is likely to be wrong</a><a href="#the-question-this-opens">The question this opens</a><a href="#reproducing-this">Reproducing this</a></aside>
+<main class="doc">
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/README.md"><code>procurement/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 3,590 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<h1 id="9-what-this-would-have-cost-to-buy">9. What this would have cost to buy</h1>
+<p>A procurement comparison for the Manhattan Bridge / DUMBO rail-noise
+investigation. Companion to <a href="usage.html">Document 8, usage and cost</a>,
+which measured what this corpus cost to <em>produce</em>. This one asks the other
+half of the question: what would the same deliverable have cost to <em>buy</em>.</p>
+<p><strong>Interactive:</strong> <a href="../procurement/procurement-dashboard.html">procurement-dashboard.html</a></p>
+<p><strong>Data:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/rates.json">rates.json</a> - <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/awards.json">awards.json</a> -
+<a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/procurement-data.json">procurement-data.json</a></p>
+<p><strong>Scripts:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/fetch_rates.py">fetch_rates.py</a> -
+<a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/fetch_awards.py">fetch_awards.py</a> -
+<a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/build_procurement_data.py">build_procurement_data.py</a></p>
+<hr />
+<h2 id="the-claim-this-document-exists-to-refuse">The claim this document exists to refuse</h2>
+<p>There is an obvious headline available here and it is wrong.</p>
+<blockquote>
+<p>This investigation cost $236.61 in metered inference. A consultancy would
+have charged six figures for the same work. Therefore the saving is roughly
+three orders of magnitude.</p>
+</blockquote>
+<p>That is withdrawn before it is made. It fails in three independent ways, and
+each failure is large enough on its own to invalidate the ratio.</p>
+<p><strong>It compares a measured number to an invented one.</strong> The $236.61 is a
+reconciled per-request ledger rated 5/5 VERIFIED. The six-figure comparator is
+an hours estimate multiplied by a rate. The rates are 5/5.
+<strong>The hours are 1/5 INVENTED.</strong>
+Nobody has ever built a comparable corpus under a timesheet
+that this programme could read. Dividing a measured numerator by an invented
+denominator produces an invented ratio wearing a measured number's clothes.</p>
+<p><strong>It omits the human term entirely.</strong> The billing ledger prices model
+inference. It does not price the person who specified the work, rejected
+outputs, caught the errors, and made every judgement call recorded in
+<code>plan.md</code>. That person's time is the single largest cost in this project and
+it appears in the ledger as exactly zero.</p>
+<p><strong>It compares different deliverables.</strong> What a firm sells includes things this
+corpus does not contain: professional liability, a licensed signature, a
+named partner who can be deposed, and - critically - <strong>field measurement</strong>. See
+<a href="#what-was-not-delivered">what was not delivered</a>, below. Comparing a desk
+study to a contracted engagement and calling the difference a saving is
+comparing a manuscript to a building.</p>
+<p>This is the same over-claim this repository has already withdrawn three times:
+in Phase 9 (the park-phase finding), Phase 10 (the weekday-morning worst case)
+and Phase 12 (the fitted propagation model). It is recorded here in advance
+because the fourth occurrence would have been the easiest one to publish.</p>
+<hr />
+<h2 id="three-instruments-deliberately-never-averaged">Three instruments, deliberately never averaged</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>Instrument</th>
+<th>What it measures</th>
+<th>Rating</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A</strong></td>
+<td>USASpending prime awards</td>
+<td>Dollars actually obligated on federal noise-study contracts</td>
+<td>5/5 VERIFIED</td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>Hours x GSA schedule rates</td>
+<td>A bottom-up build of this scope at published rates</td>
+<td>rates 5/5, <strong>hours 1/5</strong></td>
+</tr>
+<tr>
+<td><strong>C</strong></td>
+<td>Copilot billing telemetry</td>
+<td>What the inference actually cost</td>
+<td>5/5 VERIFIED</td>
+</tr>
+</tbody>
+</table></div>
+<p>They are reported side by side and <strong>never combined into a single figure</strong>.
+A and B disagree by a factor of about three, and that disagreement is the
+result of this document, not a defect in it. Averaging them would destroy the
+only informative thing here.</p>
+<hr />
+<h2 id="instrument-b-what-the-delivered-scope-prices-at">Instrument B: what the delivered scope prices at</h2>
+<h3 id="the-rate-source">The rate source</h3>
+<p>GSA publishes awarded ceiling rates for Multiple Award Schedule contracts at
+a login-free endpoint. Index <code>ceilingrates-2026-08-04_02-00-02</code>. The rates are
+awarded ceilings on federal schedule contracts, inclusive of the Industrial
+Funding Fee, for the current contract year.</p>
+<p>Cross-validated against Accenture Federal Services' own published rate card
+(GSA MAS <code>GS-35F-540GA</code>, SIN 54151S, modification PA-0045 dated 9/25/2024,
+contract period 12 July 2022 to 11 July 2027). The card carries the note:</p>
+<blockquote>
+<p>Prices include the 0.75% Industrial Funding Fee (IFF).</p>
+</blockquote>
+<p>Year 10 OFFSITE, from the vendor's own PDF, matched against the GSA index:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Vendor card</th>
+<th>GSA index</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Subject Matter Expert 1</td>
+<td>$322.29</td>
+<td>$322.29</td>
+</tr>
+<tr>
+<td>Subject Matter Expert 2</td>
+<td>$391.45</td>
+<td>$391.45</td>
+</tr>
+<tr>
+<td>Subject Matter Expert 3</td>
+<td>$480.91</td>
+<td>$480.91</td>
+</tr>
+<tr>
+<td>Project Manager</td>
+<td>$365.72</td>
+<td>$365.72</td>
+</tr>
+<tr>
+<td>Enterprise Architect</td>
+<td>$322.29</td>
+<td>$322.29</td>
+</tr>
+<tr>
+<td>Program Manager</td>
+<td>$505.82</td>
+<td>$505.82</td>
+</tr>
+<tr>
+<td>Technical Writer</td>
+<td>$169.49</td>
+<td>$169.49</td>
+</tr>
+</tbody>
+</table></div>
+<p>Identical to the cent across seven independently checked categories. That
+raises the index from a convenient aggregate to a <strong>5/5 VERIFIED</strong> instrument
+and removes any need to parse vendor PDFs to build the model.</p>
+<h3 id="the-rate-ladder">The rate ladder</h3>
+<p>Three rungs, and one deliberately missing.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Rung</th>
+<th>Basis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Named global consultancy</td>
+<td>Accenture Federal Services awarded ceiling rates, by category</td>
+</tr>
+<tr>
+<td>Whole-schedule median</td>
+<td>Median across all awarded holders of the matching category</td>
+</tr>
+<tr>
+<td>Whole-schedule 10th percentile</td>
+<td>The cheapest decile of awarded holders on the same schedule</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>There is no nearshore rung, and its absence is deliberate.</strong> Eight sources
+were retrieved for nearshore and offshore blended rates. Every one of them was
+a marketing page published by a firm selling nearshore delivery. Not one
+carried a method, a sample size, or a definition of what was being averaged.
+A number of that provenance rated against this repository's own rubric is 1/5,
+and 1/5 numbers do not go in tables next to 5/5 numbers without a warning
+larger than the number. The whole-schedule 10th percentile is substituted and
+labelled as exactly what it is:
+<strong>the cheapest decile of firms that hold this specific schedule</strong>,
+not an offshore quote.</p>
+<h3 id="the-scope-as-work-packages">The scope, as work packages</h3>
+<p>Six packages, each sized from something countable in the repository - words of
+document, lines of code, appraised sources, artifacts - and each given a
+productivity band rather than a point rate.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Hours</th>
+<th>Discipline used for the rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Source retrieval and appraisal</td>
+<td>125 - 374</td>
+<td>Data analyst</td>
+</tr>
+<tr>
+<td>Document authorship, cited</td>
+<td>250 - 650</td>
+<td>Technical writer</td>
+</tr>
+<tr>
+<td>Data acquisition and pipelines</td>
+<td>48 - 121</td>
+<td>Data engineer</td>
+</tr>
+<tr>
+<td>Quantitative modelling</td>
+<td>102 - 254</td>
+<td>Data scientist</td>
+</tr>
+<tr>
+<td>Interactive artifacts</td>
+<td>360 - 901</td>
+<td>Software engineer</td>
+</tr>
+<tr>
+<td>Site generation and publication</td>
+<td>128 - 319</td>
+<td>Web developer</td>
+</tr>
+</tbody>
+</table></div>
+<p>Plus two overheads applied as percentages: review and quality assurance at
+10-20% (101 - 524 h, priced as a subject matter expert), and engagement
+management at 12-22% (122 - 576 h, priced as a project manager).</p>
+<p><strong>Total: 1,235 to 3,717 hours.</strong> A span of three to one. That span is honest -
+it is the width of the productivity assumptions - and it is the reason no
+point estimate appears anywhere in this document.</p>
+<h3 id="the-result">The result</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Rung</th>
+<th>Delivered scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Named global consultancy</td>
+<td>$219,377 - $686,531</td>
+</tr>
+<tr>
+<td>Whole-schedule median</td>
+<td>$177,387 - $554,466</td>
+</tr>
+<tr>
+<td>Whole-schedule 10th percentile</td>
+<td>$114,516 - $356,900</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="what-moves-it">What moves it</h3>
+<p>Sensitivity, widest band first, as a share of that package's own midpoint:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Band width</th>
+<th>Share of midpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Review and quality assurance</td>
+<td>$85,291</td>
+<td>17.2%</td>
+</tr>
+<tr>
+<td>Interactive artifacts</td>
+<td>$74,715</td>
+<td>23.8%</td>
+</tr>
+<tr>
+<td>Engagement management</td>
+<td>$69,046</td>
+<td>14.5%</td>
+</tr>
+<tr>
+<td>Source retrieval and appraisal</td>
+<td>$50,290</td>
+<td>13.7%</td>
+</tr>
+<tr>
+<td>Document authorship, cited</td>
+<td>$38,313</td>
+<td>11.8%</td>
+</tr>
+</tbody>
+</table></div>
+<p>The largest single uncertainty is <strong>not</strong> the research and not the code. It is
+<strong>how much review the work receives</strong>. That is worth stating plainly: the term
+that most changes what this would have cost to buy is the term that most
+changes whether it would have been right.</p>
+<hr />
+<h2 id="what-was-not-delivered">What was not delivered</h2>
+<p>The comparison above prices a <strong>desk study</strong>. This corpus contains no measured
+acoustic data of its own, no counted pedestrians, no licensed design and no
+legal opinion. A firm asked for "a noise study of the Manhattan Bridge in
+DUMBO" would deliver those, and a client would expect them.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Not delivered</th>
+<th>Hours</th>
+<th>Median rate</th>
+<th>Why it is missing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Field acoustic measurement (Methods 11, 28, 31; captures C1-C5)</td>
+<td>80 - 200</td>
+<td>$131.21</td>
+<td>Five capture campaigns plus instrument calibration, analysis and reporting.</td>
+</tr>
+<tr>
+<td>Pedestrian origin-destination and dwell survey (Method 28)</td>
+<td>120 - 320</td>
+<td>$108.13</td>
+<td>Timed cordon counts across three day types. The single blocking unknown for any absolute exposure figure.</td>
+</tr>
+<tr>
+<td>Licensed architectural and structural design</td>
+<td>200 - 600</td>
+<td>$142.01</td>
+<td>Nothing in this repository is a design. A design-build proposal needs a licensed architect and a structural engineer of record.</td>
+</tr>
+<tr>
+<td>Preemption opinion (Q42)</td>
+<td>8 - 40</td>
+<td>$137.66</td>
+<td>Whether 40 CFR Part 201 preempts municipal regulation of a wholly intrastate rapid transit system. One lawyer, one day.</td>
+</tr>
+</tbody>
+</table></div>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Rung</th>
+<th>Not-delivered scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Named global consultancy</td>
+<td>$71,777 - $207,785</td>
+</tr>
+<tr>
+<td>Whole-schedule median</td>
+<td>$52,975 - $151,556</td>
+</tr>
+<tr>
+<td>Whole-schedule 10th percentile</td>
+<td>$36,079 - $102,979</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>None of these four disciplines has a matching category on the vendor's own rate card.</strong>
+Accenture Federal Services publishes no acoustical engineer, no
+survey field staff, no licensed architect and no attorney. For the consultancy
+rung the model substitutes the whole-schedule 75th percentile for that
+discipline and says so in the data file (<code>rate_vendor_why</code>). That is a weaker
+figure than the delivered-scope consultancy column, which is drawn from
+matched, cent-for-cent verified categories.</p>
+<p><strong>The model refuses to emit an all-in figure.</strong> Adding the two columns would
+produce a number describing a deliverable that does not exist, and it would
+look more authoritative than either column alone. The two are reported
+separately, permanently.</p>
+<p>This is also the honest answer to "what did the money buy". The delivered
+column is what the metered inference substituted for. The not-delivered column
+is what it did not, and cannot.</p>
+<hr />
+<h2 id="instrument-a-what-buyers-actually-paid">Instrument A: what buyers actually paid</h2>
+<p>Bottom-up estimates are the weakest form of cost evidence, because the analyst
+choosing the hours already knows what answer they want. So the model carries a
+second, independent instrument that assumes no hours at all.</p>
+<p>USASpending publishes obligated dollars on real federal contracts. Filtering
+on noise and acoustic study keywords across product-service codes B (special
+studies), C (architect and engineering) and R (professional services), award
+types A-D, 2015-01-01 to 2026-08-01:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>Amount</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n</td>
+<td>56 awards</td>
+</tr>
+<tr>
+<td>minimum</td>
+<td>$5,900</td>
+</tr>
+<tr>
+<td>10th percentile</td>
+<td>$11,659</td>
+</tr>
+<tr>
+<td>25th percentile</td>
+<td>$21,579</td>
+</tr>
+<tr>
+<td><strong>median</strong></td>
+<td><strong>$68,441</strong></td>
+</tr>
+<tr>
+<td>75th percentile</td>
+<td>$201,658</td>
+</tr>
+<tr>
+<td>90th percentile</td>
+<td>$377,285</td>
+</tr>
+<tr>
+<td>maximum</td>
+<td>$1,740,857</td>
+</tr>
+<tr>
+<td>mean</td>
+<td>$186,409</td>
+</tr>
+</tbody>
+</table></div>
+<p>These are dollars that changed hands. No hours are assumed, no productivity is
+invented, and no analyst chose them.</p>
+<hr />
+<h2 id="the-disagreement-quantified-and-unreconciled">The disagreement, quantified and unreconciled</h2>
+<p>Convert the awards to implied hours at the model's own blended rate of
+$147.80/h, against a bottom-up midpoint of 2,476 hours:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Award percentile</th>
+<th>Amount</th>
+<th>Implied hours</th>
+<th>As % of bottom-up low</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>25th</td>
+<td>$21,579</td>
+<td>146</td>
+<td>12%</td>
+</tr>
+<tr>
+<td>median</td>
+<td>$68,441</td>
+<td>463</td>
+<td>39%</td>
+</tr>
+<tr>
+<td>75th</td>
+<td>$201,658</td>
+<td>1,364</td>
+<td>114%</td>
+</tr>
+<tr>
+<td>90th</td>
+<td>$377,285</td>
+<td>2,552</td>
+<td>213%</td>
+</tr>
+<tr>
+<td>maximum</td>
+<td>$1,740,857</td>
+<td>11,778</td>
+<td>981%</td>
+</tr>
+</tbody>
+</table></div>
+<p>The bottom-up low lands at about <strong>114% of the award 75th percentile</strong>. On the
+population of federal noise studies actually purchased, a corpus of this size
+prices like an <strong>upper-quartile</strong> engagement.</p>
+<p>Two readings survive this, and <strong>neither is chosen</strong>:</p>
+<ol>
+<li><strong>The hours are too generous.</strong> Nine documents and seven artifacts is a lot
+   of output, but output is not effort, and the productivity bands were set by
+   the same person who wanted the answer to be large.</li>
+<li><strong>The awards buy narrower deliverables.</strong> A $68,441 federal noise study is
+   very likely one site, one campaign, one report - not a nine-document corpus
+   with six interactive artifacts and a method register.</li>
+</ol>
+<p>Both are plausible. Resolving between them requires a timesheet from a firm
+that has built a comparable corpus, and no such document was found. The
+disagreement is therefore <strong>published as the finding</strong> rather than smoothed
+into a range.</p>
+<hr />
+<h2 id="the-transparency-asymmetry">The transparency asymmetry</h2>
+<p>Ernst &amp; Young LLP holds GSA contract <code>GS-00F-290CA</code>, period 8 September 2015
+to 7 September 2030, current through modification PS-0041 effective 2 April
+2026. Its published GSA Advantage price file is five pages long and contains
+<strong>no rates at all</strong>. Page 5 reads:</p>
+<blockquote>
+<p>Use of or reference to the rate card or any information contained herein is
+limited to EY's GPS Federal US48. Use of or reference to the rate card or any
+information contained herein by other EY BU must be approved in advance of
+such use or reference by David M. Lewandoski, Director of Federal Contract
+Management.</p>
+</blockquote>
+<p>The same contract's awarded labour categories appear in GSA's own ceiling-rate
+index - <strong>56 of them</strong>, retrievable without a login, an account or a key. Both
+facts are true simultaneously. The restriction is real and the data is public.</p>
+<p>This is not an accusation; it is a note about where public information lives.
+A researcher who accepts the vendor's own published file as the authoritative
+public record concludes that the rates are not disclosed. A researcher who
+queries the awarding agency's index concludes that they are. The second
+researcher is right, and would have had no reason to look if the first
+document had not so specifically declined to help.</p>
+<p>The same shape as the SONYC taxonomy finding in
+<a href="community-evidence-audit.html">Document 6</a> and the 1204-a blank cell in
+<a href="idea-concept.html">Document 1</a>:
+<strong>the absence is inherited, and it is findable elsewhere if you stop asking the party with the least interest in answering.</strong></p>
+<hr />
+<h2 id="twelve-thousand-project-managers-and-seven-acoustical-engineers">Twelve thousand project managers and seven acoustical engineers</h2>
+<p>Labour categories on the GSA schedule matching each discipline:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Discipline</th>
+<th>Categories on schedule</th>
+<th>Median rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Project manager</td>
+<td>12,825</td>
+<td>$151.95</td>
+</tr>
+<tr>
+<td>Subject matter expert</td>
+<td>10,330</td>
+<td>$201.97</td>
+</tr>
+<tr>
+<td>Program manager</td>
+<td>8,591</td>
+<td>$183.37</td>
+</tr>
+<tr>
+<td>Technical writer</td>
+<td>4,467</td>
+<td>$95.76</td>
+</tr>
+<tr>
+<td>Software engineer</td>
+<td>3,686</td>
+<td>$138.26</td>
+</tr>
+<tr>
+<td>Data analyst</td>
+<td>1,749</td>
+<td>$114.81</td>
+</tr>
+<tr>
+<td>Data scientist</td>
+<td>1,180</td>
+<td>$167.81</td>
+</tr>
+<tr>
+<td>Environmental scientist</td>
+<td>218</td>
+<td>$108.13</td>
+</tr>
+<tr>
+<td>Civil engineer</td>
+<td>217</td>
+<td>$117.15</td>
+</tr>
+<tr>
+<td>GIS analyst</td>
+<td>200</td>
+<td>$101.29</td>
+</tr>
+<tr>
+<td>Architect (building)</td>
+<td>46</td>
+<td>$142.01</td>
+</tr>
+<tr>
+<td><strong>Acoustical engineer</strong></td>
+<td><strong>7</strong></td>
+<td><strong>$131.21</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Seven. Across the entire federal professional-services schedule, from five
+firms, ranging $68.95 to $172.65.</p>
+<p>This is a <strong>procurement-side instance of the same taxonomy blindness</strong> this
+programme documented on the complaint side. A federal buyer who wants an
+acoustical engineer on schedule has seven categories to choose from and will
+very likely buy a "subject matter expert" or an "environmental scientist"
+instead - because those categories exist in abundance and the specific one
+barely does. The work then gets done, and gets <em>recorded</em> as something else.</p>
+<p>Consequence for Instrument A:
+<strong>the 56-award population is almost certainly an undercount</strong>,
+because acoustic work bought under a generic category is invisible
+to a keyword-and-PSC search. Direction of bias is known; magnitude is not.
+Stated, not corrected.</p>
+<p>Note also that a project manager costs more per hour than an acoustical
+engineer ($151.95 against $131.21). The scarce specialist is cheaper than the
+abundant coordinator.</p>
+<hr />
+<h2 id="the-human-term">The human term</h2>
+<p>What the billing ledger does not price:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wall-clock span of the engagement</td>
+<td>72.4 hours</td>
+</tr>
+<tr>
+<td>Metered model inference</td>
+<td>6.86 - 7.47 hours</td>
+</tr>
+<tr>
+<td>Estimated active human attention</td>
+<td>roughly 9 - 11 hours</td>
+</tr>
+</tbody>
+</table></div>
+<p>The active-attention figure is <strong>2/5 UNVERIFIED</strong>. It is derived from request
+timestamps and inter-request gaps, not from a stopwatch, and it cannot
+distinguish a person reading output carefully from a person who walked away.</p>
+<p>At the consultancy subject-matter-expert rate of $201.97/h, 10 hours of human
+direction is about <strong>$2,020</strong> - roughly <strong>eight and a half times</strong> the entire
+metered inference cost of $236.61. Any framing of this project's economics
+that reports only the inference cost is understating the true cost by close to
+an order of magnitude, before any allowance for the fact that the direction
+required domain judgement that the model demonstrably did not supply. Three
+claims in this repository were withdrawn because a human noticed they were
+wrong.</p>
+<hr />
+<h2 id="where-this-document-is-likely-to-be-wrong">Where this document is likely to be wrong</h2>
+<ol>
+<li>
+<p><strong>The hours are invented.</strong> This is the largest weakness by a wide margin
+   and it is first deliberately. Six packages, each with a productivity band,
+   each band chosen by the author. The bands are wide (three to one overall)
+   precisely because they are not knowledge, but a wide invented band is still
+   an invented band. Nothing in the delivered-scope table is stronger than
+   this term, and every dollar figure inherits it.</p>
+</li>
+<li>
+<p><strong>The scope map is arguable.</strong> Whether "interactive artifacts" is one
+   package or four, and whether a research corpus needs 10% or 20% review,
+   are judgement calls that swing the answer by more than $150,000 combined.
+   A different analyst with the same rates would produce a different number.</p>
+</li>
+<li>
+<p><strong>GSA schedule rates are ceilings, not prices.</strong> Awarded ceiling rates are
+   the maximum a holder may charge on that schedule. Actual task-order pricing
+   is routinely discounted below ceiling, and the discount is not public. The
+   consultancy rung is therefore an <strong>upper bound on that rung</strong>, not a quote.</p>
+</li>
+<li>
+<p><strong>The award population is filtered by keyword and PSC.</strong> As set out above,
+   acoustic work bought under generic labour categories does not appear. n=56
+   is a floor. It is also federal-only: this is a municipal problem, and city
+   and state procurement is not in this dataset at all.</p>
+</li>
+<li>
+<p><strong>Federal rates are not New York City rates.</strong> The GSA schedule prices work
+   for federal buyers under federal contracting overhead. A private client in
+   New York, or the MTA under its own procurement rules, faces a different
+   market. The direction of the difference is not known.</p>
+</li>
+<li>
+<p><strong>The active-human-hours figure is inferred from timestamps.</strong> 2/5. A gap
+   between requests is not proof of attention, and simultaneous attention to
+   something else is invisible. This term is load-bearing for the human-cost
+   comparison in the section above.</p>
+</li>
+<li>
+<p><strong>"Not delivered" is a list, not an estimate of a designed campaign.</strong> The
+   four items were sized by analogy, not scoped. A real field acoustic campaign
+   at this site might cost substantially more than the band shown, because
+   working over a live four-track river crossing owned by the MTA involves
+   access, flagging and insurance that a generic estimate does not capture.</p>
+</li>
+<li>
+<p><strong>This document compares a finished artifact to a hypothetical engagement, and finished artifacts flatter themselves.</strong>
+   The corpus that exists is the
+   one that survived. A firm's engagement would have included work this
+   project simply abandoned, and this project's abandoned work does not appear
+   in its own hours estimate either. The asymmetry is not quantified.</p>
+</li>
+</ol>
+<hr />
+<h2 id="the-question-this-opens">The question this opens</h2>
+<p><strong>Q55.</strong> <strong>What does a research corpus cost, and against what?</strong>
+This document establishes that the question has no single answer, because the
+three available instruments disagree by a factor of about three and each
+measures something different. A per-request billing ledger measures inference
+and nothing else. A bottom-up build at published rates measures an analyst's
+beliefs about productivity. Obligated contract dollars measure what buyers with
+budgets actually chose to pay for deliverables nobody here has seen.</p>
+<p>The open part is the one that would make this transferable:
+<strong>is there any published, methodologically stated dataset of hours-to-deliverable for research and analysis engagements?</strong>
+Eight searches for nearshore blended rates returned
+eight vendor marketing pages. Searches for consultancy timesheet data returned
+nothing usable at all. If such a dataset exists, it collapses the largest
+weakness in this document — the 1/5 hours term — into a 4/5 or 5/5 one, and
+converts a disagreement into a measurement. If it does not exist, that absence
+is itself worth recording, because it means
+<strong>every published claim about what AI-assisted research saves is resting on the same invented denominator this document refuses to hide.</strong>
+Method 37 is executed; this is what executing it found that it could not
+answer.</p>
+<hr />
+<h2 id="reproducing-this">Reproducing this</h2>
+<pre><code class="language-bash">python procurement/fetch_rates.py           # ~4 min, 346 API calls, no key
+python procurement/fetch_awards.py          # ~1 min, no key
+python usage/build_usage_data.py            # reads the local billing store
+python procurement/build_procurement_data.py
+</code></pre>
+<p>The first three write <code>rates.json</code>, <code>awards.json</code> and <code>usage/usage-data.json</code>.
+The fourth combines them, writes <code>procurement-data.json</code>, and injects the
+result into <code>procurement-dashboard.html</code>.</p>
+<p>Two silent failure modes in the GSA endpoint are guarded in <code>fetch_rates.py</code>
+and both were hit live during development:</p>
+<ul>
+<li><code>hits.total.value</code> <strong>saturates at 10,000</strong> and reports <code>relation: "gte"</code>.
+  Taken at face value it undercounts project managers by 2,913.</li>
+<li><code>page_size</code> caps near 1,000 and default ordering is price <strong>ascending</strong>, so
+  1,000 rows of a 12,913-row population is <strong>the cheapest thousand</strong>, not a
+  sample.</li>
+</ul>
+<p>Both are avoided by sweeping the price axis in bands. <code>price_range</code> is
+inclusive at both ends, so rows priced exactly on a band boundary return twice
+and are deduplicated on record id - a naive three-band probe reports 12,916
+project managers where the deduplicated sweep finds 12,913.</p>
+<p>One more, in <code>fetch_awards.py</code>: <code>curl.exe -d $body</code> in PowerShell mangles JSON
+bodies and returns a parse error from the API. Use a real HTTP client.</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/README.md">Source on GitHub</a> &middot; Built from <code>885966a</code> on 2026-08-04.</p>
+</main>
+</div>
+
+</div>
+</body>
+</html>

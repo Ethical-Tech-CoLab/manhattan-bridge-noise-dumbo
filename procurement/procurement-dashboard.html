@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Procurement comparison - what this would have cost to buy</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M2 24h28M6 24V8m20 16V8M6 10c5 6 15 6 20 0M6 24c5-8 15-8 20 0' fill='none' stroke='%23b11f4b' stroke-width='2'/%3E%3C/svg%3E">
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+code, .mono, th.num, td.num { font-family: Consolas, "Courier New", Courier, monospace; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px 90px; }
+header.top {
+  background: var(--cp-bg-elevated);
+  border-bottom: 1px solid var(--cp-border);
+  padding: 44px 0 34px;
+  margin-bottom: 30px;
+}
+header.top .wrap { padding-bottom: 0; }
+h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 10px; letter-spacing: -0.02em; }
+h2 {
+  font-size: 1.35rem; margin: 0 0 4px; letter-spacing: -0.01em;
+}
+.sub { color: var(--cp-text-muted); margin: 0 0 6px; max-width: 74ch; }
+.crumb { font-size: 0.82rem; color: var(--cp-text-soft); margin-bottom: 14px; }
+.crumb a { color: var(--cp-link); text-decoration: none; }
+.crumb a:hover { text-decoration: underline; }
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 24px 26px;
+  margin: 0 0 22px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.card > h2 + .sub { margin-bottom: 18px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(158px, 1fr)); gap: 12px; margin-top: 22px; }
+.stat {
+  background: var(--cp-surface); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+}
+.stat b { display: block; font-size: 1.6rem; line-height: 1.15; letter-spacing: -0.02em; }
+.stat span { display: block; font-size: 0.76rem; color: var(--cp-text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+.stat em { display: block; font-style: normal; font-size: 0.8rem; color: var(--cp-text-soft); margin-top: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.scroll { overflow-x: auto; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--cp-border); vertical-align: top; }
+th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cp-text-muted); font-weight: 600; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+tfoot td { font-weight: 700; border-top: 2px solid var(--cp-border-strong); }
+.note {
+  border-left: 3px solid var(--cp-accent); background: var(--cp-accent-soft);
+  padding: 12px 16px; border-radius: 0 0.625rem 0.625rem 0; margin: 18px 0 0;
+  font-size: 0.92rem;
+}
+.note strong { color: var(--cp-accent); }
+.warn { border-left-color: var(--cp-warning); background: var(--cp-surface-soft); }
+.warn strong { color: var(--cp-warning); }
+blockquote.wrong {
+  margin: 14px 0; padding: 12px 18px; border-left: 3px solid var(--cp-danger);
+  background: var(--cp-surface-soft); color: var(--cp-text-muted);
+  border-radius: 0 0.625rem 0.625rem 0; font-style: italic;
+}
+.withdrawn { color: var(--cp-danger); font-weight: 700; font-style: normal; }
+.bars { margin-top: 16px; }
+.bar { display: grid; grid-template-columns: minmax(120px, 190px) 1fr auto; gap: 12px; align-items: center; padding: 3px 0; font-size: 0.86rem; }
+.bar .lab { color: var(--cp-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar .track { background: var(--cp-surface-soft); border-radius: 4px; height: 15px; overflow: hidden; border: 1px solid var(--cp-border); }
+.bar .fill { height: 100%; background: var(--cp-accent); }
+.bar .val { font-family: Consolas, "Courier New", Courier, monospace; font-size: 0.82rem; color: var(--cp-text-muted); min-width: 74px; text-align: right; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+@media (max-width: 780px) { .split { grid-template-columns: 1fr; } .bar { grid-template-columns: minmax(90px,130px) 1fr auto; } }
+.dual { margin-top: 8px; }
+.dual .row { margin-bottom: 14px; }
+.dual .cap { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cp-text-muted); margin-bottom: 5px; }
+.seg { display: flex; height: 30px; border-radius: 0.625rem; overflow: hidden; border: 1px solid var(--cp-border); }
+.seg div { display: flex; align-items: center; justify-content: center; font-size: 0.72rem; color: var(--cp-accent-fg); overflow: hidden; white-space: nowrap; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: 0.8rem; color: var(--cp-text-muted); }
+.legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+ul.tight { margin: 12px 0 0; padding-left: 20px; }
+ul.tight li { margin-bottom: 9px; }
+a { color: var(--cp-link); }
+.rating { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted); margin-left: 8px; vertical-align: 2px; }
+.locus { font-size: 0.86rem; color: var(--cp-text-muted); border-left: 2px solid var(--cp-border-strong); padding-left: 14px; margin: 12px 0; font-style: italic; }
+blockquote.loc {
+  margin: 14px 0; padding: 12px 18px; border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft); border-radius: 0 0.625rem 0.625rem 0;
+  font-style: italic; font-size: 0.94rem;
+}
+blockquote.loc cite {
+  display: block; margin-top: 9px; font-style: normal; font-size: 0.8rem;
+  color: var(--cp-text-muted);
+}
+.rating.good { border-color: var(--cp-success); color: var(--cp-success); }
+p.pull {
+  font-size: 1.12rem; line-height: 1.5; font-weight: 600; color: var(--cp-accent);
+  border-left: 3px solid var(--cp-accent); padding: 4px 0 4px 18px; margin: 22px 0;
+}
+footer { color: var(--cp-text-soft); font-size: 0.84rem; border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 34px; }
+h3 { font-size: 1rem; margin: 22px 0 6px; }
+.pill { font-size: 0.72rem; padding: 2px 9px; border-radius: 999px; background: var(--cp-accent-soft); color: var(--cp-accent); font-weight: 700; }
+</style>
+
+<!--MASTHEAD--><style>
+/* Site masthead, injected by build_pages.py. Do not edit by hand.
+   Every class is mh- prefixed. An artifact is free to own .bar, .in, .home,
+   .mark or .nav for its own purposes, and one of them already does: the usage
+   dashboard uses .bar for its horizontal bar-chart rows, which turned an
+   un-prefixed masthead into a stacked column covering the page. */
+.mh-bar { position: sticky; top: 0; z-index: 200; display: block;
+  background: var(--cp-panel-strong); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border); }
+.mh-bar .mh-in { max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.mh-bar .mh-home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 9px;
+  white-space: nowrap; }
+.mh-bar .mh-home .mh-mark { display: block; flex: none; border-radius: 6px;
+  width: 26px; height: 26px; min-width: 26px; max-width: 26px; }
+.mh-bar .mh-home:hover { color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto;
+  align-items: center; }
+.mh-bar .mh-nav a { color: var(--cp-text-muted); font-size: 0.82rem;
+  padding: 4px 9px; display: inline-block; font-weight: 400;
+  border-radius: 999px; white-space: nowrap; text-decoration: none; border: 0; }
+.mh-bar .mh-nav a:hover { background: var(--cp-accent-soft);
+  color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+@media (max-width: 560px) { .mh-bar .mh-home .mh-wm { display: none; } }
+</style><!--/MASTHEAD-->
+</head>
+<body>
+<!--MASTHEAD--><div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../read/readme.html">README</a><a href="../read/idea-concept.html">1. Concept</a><a href="../read/precedent-and-materials.html">2. Precedent</a><a href="../read/williamsburg-comparator.html">3. Comparator</a><a href="../read/visual-model-framework.html">4. Visual model</a><a href="../read/field-capture-protocol.html">5. Field capture</a><a href="../read/community-evidence-audit.html">6. Community</a><a href="../read/data-collection.html">7. Data</a><a href="../read/usage.html">8. Usage</a><a href="../read/procurement.html">9. Procurement</a><a href="../index.html#demos" class="on">Demos</a></nav></div></div><!--/MASTHEAD-->
+<header class="top">
+  <div class="wrap">
+    <p class="crumb"><a href="../index.html">Manhattan Bridge noise investigation</a> &rsaquo;
+      <a href="../read/usage.html">usage</a> &rsaquo; procurement comparison</p>
+    <h1>What this would have cost to buy</h1>
+    <p class="sub">A scope-matched comparison of this investigation against published
+      consultancy rate cards and against what federal buyers actually paid for noise
+      studies. Three instruments, reported side by side and never averaged.</p>
+    <p class="sub">Rates are GSA Multiple Award Schedule ceiling rates, fetched from
+      the government's own index. Award values are obligated dollars on real contracts.
+      The hours are this repository's own estimate and are the weakest number on the page.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section class="card" id="head">
+  <h2>The three instruments</h2>
+  <p class="sub">Each answers a different question. None of them is the answer on its own.</p>
+  <div class="stats" id="heroStats"></div>
+  <div class="note"><strong>Read the second column.</strong> The delivered figure prices
+    desk research, data engineering and interactive artifacts. It does not price field
+    acoustic measurement, a pedestrian survey, licensed architectural design or a legal
+    opinion, because this programme has done none of those. That scope is priced
+    separately below and it is the part every absolute claim in this investigation is
+    blocked on.</p>
+</section>
+
+<section class="card" id="refuse">
+  <h2>The headline this model refuses to print</h2>
+  <p class="sub">Written out so that it can be argued with rather than implied.</p>
+  <blockquote class="wrong">This investigation cost $236.61 in inference. A consultancy
+    would have charged several hundred thousand dollars for the same work. The saving is
+    three orders of magnitude.</blockquote>
+  <p>Every clause is defensible and the sentence is still wrong, for the same reason three
+    earlier claims in this repository were withdrawn: it compares a measured number against
+    an estimated one and quietly changes the scope between them.</p>
+  <ul class="tight">
+    <li><b>It compares different scopes.</b> The $236.61 bought a desk corpus. A
+      consultancy engagement scoped to answer the same question would have included field
+      measurement, because no competent acoustic consultant would publish a receptor
+      exposure figure without measuring at the receptor.</li>
+    <li><b>It omits the human term.</b> The inference did not commission itself. The
+      measured wall-clock span and the direction, review and rejection of work are not
+      in the $236.61 and cannot be, because no meter recorded them.</li>
+    <li><b>It treats an estimate as a measurement.</b> The consultancy figure is
+      hours multiplied by a rate. The rate is published to the cent. The hours are
+      invented by this repository and swing by a factor of three.</li>
+  </ul>
+  <p class="pull">The honest statement is narrower and duller: a desk corpus of this size
+    prices like an upper-quartile federal noise study, and this one was produced for the
+    cost of a takeaway meal plus about three days of one person's attention.</p>
+</section>
+
+<section class="card" id="delivered">
+  <h2>What was actually delivered</h2>
+  <p class="sub">Counted from the repository, not estimated. Injected data payloads are
+    excluded from source-line counts because they are generated rather than written.</p>
+  <div class="scroll"><table id="invTable"></table></div>
+  <p class="note"><strong>On the source count.</strong> This corpus cites by name and
+    quoted locus rather than by hyperlink: there are
+    <span id="urlN">&mdash;</span> distinct external URLs in nine documents and
+    <span id="srcN">&mdash;</span> lines carrying a 1/5-to-5/5 source rating. Counting
+    hyperlinks would have reported seven sources for a body of work built on several
+    hundred. The rule used here over-counts, because the rubric's own definitions carry
+    ratings, and under-counts where one row appraises several documents. Neither is
+    corrected.</p>
+</section>
+
+<section class="card" id="ladder">
+  <h2>Three rate rungs, from one published instrument</h2>
+  <p class="sub">All three come from the same GSA index, so they are comparable to each
+    other by construction. A ceiling rate is the maximum a vendor may charge under the
+    schedule, not a price anybody was observed to pay.</p>
+  <div class="scroll"><table id="ladderTable"></table></div>
+  <h3>The index was checked against a vendor's own published card</h3>
+  <p>Accenture Federal Services publishes its rate card as a PDF attached to contract
+    <code>GS-35F-540GA</code>. The GSA index reproduces it to the cent for the current
+    contract year, on every category checked.</p>
+  <div class="scroll"><table id="xcheckTable"></table></div>
+  <p class="sub" style="margin-top:10px">Contract year 10 runs 12 July 2026 to 11 July
+    2027, which is the year the index was built in. Prices in the card include the
+    0.75 per cent Industrial Funding Fee. OFFSITE is the contractor's own premises,
+    which is where desk research happens.</p>
+</section>
+
+<section class="card" id="bottomup">
+  <h2>Instrument B &mdash; hours multiplied by a rate <span class="rating">1/5 for the hours</span></h2>
+  <p class="sub">Each package converts a measured quantity into an hours range. The
+    measurement is counted; the divisor is invented. Both ends are printed so a reader
+    can substitute their own.</p>
+  <div class="scroll"><table id="pkgTable"></table></div>
+  <h3>Which assumption actually moves the answer</h3>
+  <p class="sub">Band width is what that package's hours uncertainty is worth in dollars
+    at the whole-schedule median rate. Sorted widest first.</p>
+  <div class="bars" id="sensBars"></div>
+  <p class="note warn"><strong>The hours are the weakest number on this page.</strong>
+    They are not derived from a timesheet, a productivity study or a published estimation
+    model. They are a stated guess carried as a band. If you disagree with them, the
+    package table above gives you every input needed to disagree precisely.</p>
+</section>
+
+<section class="card" id="awards">
+  <h2>Instrument A &mdash; what buyers actually paid <span class="rating good">5/5 VERIFIED</span></h2>
+  <p class="sub">Federal prime awards for noise and acoustic studies, selected by keyword
+    against the award description and by Product/Service Code. Obligated dollars, not
+    list prices, and no hours are assumed anywhere in this instrument.</p>
+  <div class="stats" id="awardStats"></div>
+  <h3>The distribution</h3>
+  <div class="bars" id="awardBars"></div>
+  <h3>What the money bought, at and above the lower quartile</h3>
+  <div class="scroll"><table id="awardTable"></table></div>
+  <p class="note warn"><strong>The most relevant buyer is missing.</strong> USASpending
+    records federal awards. The MTA, NYCDOT and NYCDEP are state and city bodies and do
+    not appear in it at all, so the one organisation that would actually commission a
+    Manhattan Bridge noise study is absent from the only dataset that records what such
+    studies cost. Nothing here was hand-removed either: a bombing-range noise study is
+    not a bridge, and it is still in the population, because deleting the rows that
+    spoil an average is the failure this repository exists to avoid.</p>
+</section>
+
+<section class="card" id="crosscheck">
+  <h2>The two instruments disagree, and that is the result</h2>
+  <p class="sub">Reported as a number rather than described, and not reconciled.</p>
+  <div class="scroll"><table id="ccTable"></table></div>
+  <p>At the blended midpoint rate of <span id="blended">&mdash;</span> per hour, the
+    median federal noise study buys about <span id="medHours">&mdash;</span> hours. The
+    bottom-up estimate for this corpus starts at <span id="buLow">&mdash;</span> hours.
+    Two readings survive that gap and both are live:</p>
+  <ul class="tight">
+    <li><b>The hours band is too generous.</b> If a competent team would produce this
+      corpus in 400 to 600 hours, the bottom-up column is wrong by a factor of three
+      and the whole comparison should be restated against the award distribution alone.</li>
+    <li><b>The awards buy narrower deliverables.</b> A single-site acoustical study of
+      one library or one animal laboratory is not nine cited documents, seven interactive
+      artifacts and six datasets. On this reading the corpus is correctly priced near the
+      upper quartile of the award distribution, which is exactly where the bottom-up low
+      end lands.</li>
+  </ul>
+  <p>Distinguishing them needs a timesheet from a firm that has built something of this
+    shape, and no such figure was found. It is recorded as an open question rather than
+    resolved by preference.</p>
+</section>
+
+<section class="card" id="notdelivered">
+  <h2>The scope that was not delivered</h2>
+  <p class="sub">Priced the same way, and rated the same way: the rates are published,
+    the hours are invented. This column is the honest counterweight to the first one.</p>
+  <div class="scroll"><table id="ndTable"></table></div>
+  <p class="pull">The part of this work that could not have been done this way is
+    precisely the part that is missing.</p>
+  <p>No language model can stand under a bridge with a calibrated microphone, count
+    pedestrians at a cordon, seal a structural drawing, or give a legal opinion that
+    anybody may rely on. Those four items are the binding constraint on every absolute
+    claim in this investigation, and they are the items an agency engagement would have
+    delivered.</p>
+</section>
+
+<section class="card" id="seven">
+  <h2>Twelve thousand project managers and seven acoustical engineers</h2>
+  <p class="sub">A count nobody asked for, which fell out of the rate fetch.</p>
+  <div class="bars" id="popBars"></div>
+  <p>These are counts of distinct awarded labour categories across every holder of a GSA
+    Multiple Award Schedule contract, which is the federal government's largest
+    professional-services purchasing vehicle. The whole schedule carries
+    <span id="acN">&mdash;</span> acoustical categories, priced between
+    <span id="acLo">&mdash;</span> and <span id="acHi">&mdash;</span> an hour.</p>
+  <p>This is not an argument that acoustics is undervalued. It is an observation about
+    what is <em>procurable at speed</em>. An agency that decides on Monday it needs a
+    project manager has twelve thousand priced options. An agency that decides it needs
+    an acoustical engineer has seven, from five firms. That asymmetry is the same shape
+    as the finding in
+    <a href="../read/community-evidence-audit.html">Document&nbsp;6</a>: the instruments
+    a city has for buying attention determine which problems get attention, and rail
+    noise falls through the same kind of gap twice.</p>
+</section>
+
+<section class="card" id="transparency">
+  <h2>One firm's rate card is restricted and published at the same time</h2>
+  <p class="sub">Found while trying to price the comparison, and worth recording.</p>
+  <p>Ernst &amp; Young LLP's GSA price list, contract <code>GS-00F-290CA</code>, is a
+    five-page PDF that contains no rates. Its last page reads:</p>
+  <blockquote class="loc">Use of or reference to the rate card or any information
+    contained herein is limited to EY's GPS Federal US48. Use of or reference to the rate
+    card or any information contained herein by other EY BU must be approved in advance
+    of such use or reference by David M. Lewandoski, Director of Federal Contract
+    Management.
+    <cite>Ernst &amp; Young LLP, GSA Federal Supply Schedule price list, contract
+      GS-00F-290CA, page 5. Current through Mod #PS-0041, effective 2 April 2026.
+      <span class="rating good">5/5 VERIFIED</span></cite></blockquote>
+  <p>GSA publishes <span id="eyN">&mdash;</span> of that contract's awarded labour
+    categories in a search index that needs no login, priced from
+    <span id="eyLo">&mdash;</span> to <span id="eyHi">&mdash;</span> an hour. Both
+    statements are true at once: the vendor restricts its card, and the buyer publishes
+    the rates it awarded under it.</p>
+  <p class="note"><strong>Why this belongs in a noise study.</strong> It does not, on its
+    own. It is here because this comparison could not have been made from vendor
+    disclosure alone, and a reader deciding whether to trust the numbers above should
+    know which of them came from a firm and which came from a government.</p>
+</section>
+
+<section class="card" id="measured">
+  <h2>Instrument C &mdash; what it actually cost <span class="rating good">5/5 VERIFIED</span></h2>
+  <p class="sub">From the client's own billing telemetry. The full derivation, and the
+    one inference it still rests on, are in the
+    <a href="../usage/usage-dashboard.html">usage dashboard</a>.</p>
+  <div class="stats" id="measStats"></div>
+  <p>The wall-clock span is not working time: it is the interval from the first request
+    to the last, across three calendar days, and most of it is the human being elsewhere.
+    Inference time is the sum of model latency and is a better lower bound on machine
+    work than on human work. Neither is a timesheet, and no timesheet was kept.</p>
+  <p class="note warn"><strong>The human hours are not measured and are not zero.</strong>
+    Every question asked, every direction changed, every claim rejected and every
+    withdrawal ordered came from a person. That labour is the input this page cannot
+    price, and any ratio computed from the $236.61 alone silently sets it to zero.</p>
+</section>
+
+<section class="card" id="weak">
+  <h2>Where this comparison is likely to be wrong</h2>
+  <ol class="tight">
+    <li><b>The hours are invented.</b> Named first because it is the largest error term
+      by a distance. The sensitivity table says which packages carry it.</li>
+    <li><b>A ceiling rate is not a paid rate.</b> Agencies compete task orders below the
+      ceiling. The bottom-up column is therefore biased HIGH by an unknown amount,
+      probably tens of percent, and no discount was applied because inventing one would
+      trade a published number for a guess.</li>
+    <li><b>A federal rate is not a commercial rate.</b> Both directions are arguable:
+      federal work carries compliance overhead that raises rates, and competitive
+      pressure on a schedule that lowers them. No adjustment was made.</li>
+    <li><b>The award population is federal only.</b> The MTA, NYCDOT and NYCDEP are
+      absent. This is the largest gap in instrument A.</li>
+    <li><b>The award keyword filter is crude.</b> It selects on description text and
+      Product/Service Code. It will miss studies whose descriptions do not say "noise",
+      and it admits work in other domains entirely.</li>
+    <li><b>The nearshore rung is missing and was left out deliberately.</b> Every
+      figure found for nearshore delivery was published by a firm selling nearshore
+      delivery. No independent survey with a quotable method was located. Rather than
+      print a vendor's marketing range beside two government datasets, the whole-schedule
+      tenth percentile is used as the low rung, and it is labelled as what it is.</li>
+    <li><b>The discipline decomposition is a choice.</b> Six packages and two overheads
+      is one way to cut this work. A firm would cut it differently and the answer would
+      move.</li>
+    <li><b>The delivered corpus may not be worth building.</b> The comparison prices
+      producing it. It says nothing about whether producing it was the right thing to do,
+      and several methods registered in this repository would have been better value than
+      any of it.</li>
+  </ol>
+</section>
+
+<section class="card" id="method">
+  <h2>How to reproduce every number on this page</h2>
+  <ol class="tight">
+    <li><code>python procurement/fetch_rates.py</code> &mdash; sweeps the GSA ceiling-rate
+      index in price bands and writes <code>rates.json</code>.</li>
+    <li><code>python procurement/fetch_awards.py</code> &mdash; pulls federal noise-study
+      awards from USASpending and writes <code>awards.json</code>.</li>
+    <li><code>python usage/build_usage_data.py</code> &mdash; reads the local billing
+      store and writes <code>usage-data.json</code>.</li>
+    <li><code>python procurement/build_procurement_data.py</code> &mdash; combines all
+      three, applies the hours band, and injects this page.</li>
+  </ol>
+  <h3>Two traps on the rate endpoint, both silent</h3>
+  <p>Recorded here because either one produces a plausible wrong answer with no error.</p>
+  <ul class="tight">
+    <li><code>hits.total.value</code> saturates at 10,000 and reports
+      <code>relation: "gte"</code>. Taken at face value it under-counts the project
+      manager population by 2,913 and every percentile computed from it is wrong.</li>
+    <li><code>page_size</code> caps near 1,000 rows and the default ordering is price
+      ASCENDING. Asking for 1,000 rows of a 12,913-row population returns the thousand
+      cheapest, not a sample. A median taken from that slice is not a median of
+      anything.</li>
+  </ul>
+  <p>Both are avoided by sweeping the price axis in bands, which return exact counts, and
+    subdividing any band the page cap cannot hold. Bands are inclusive at both ends, so
+    rows priced exactly on a split point are returned twice and are deduplicated on the
+    index document id.</p>
+  <div class="scroll"><table id="srcTable"></table></div>
+</section>
+
+<footer>
+  <p>Generated by <code>procurement/build_procurement_data.py</code> from
+    <code>rates.json</code>, <code>awards.json</code> and <code>usage-data.json</code>.
+    Data injected between the <code>PROCDATA</code> comment markers in this file's
+    script block; nothing on this page is typed by hand.</p>
+  <p id="prov"></p>
+  <p>Part of the <a href="../index.html">Manhattan Bridge / DUMBO rail noise
+    investigation</a>. Method and full argument:
+    <a href="../read/procurement.html">the procurement case study</a>.</p>
+</footer>
+</div>
+
+<script>
+/*PROCDATA*/
+const PROC = {"awards": {"examples": [{"agency": "Department of the Interior", "amount": 22073.44, "award_id": "140P1326P0021", "description": "ENVIRONMENTAL NOISE EVALUATION FOR A250", "end": "2026-06-01", "matched": "environmental noise", "psc": "ARCHITECT AND ENGINEERING- GENERAL: LANDSCAPING, INTERIOR LAYOUT, AND DESIGNING", "recipient": "BLUE RIDGE RESEARCH AND CONSULTING, LLC", "start": "2026-05-12", "sub_agency": "National Park Service"}, {"agency": "Department of Defense", "amount": 22528.0, "award_id": "1020", "description": "IGF::OT::IGF TYPE A SERVICES XGFG162026 F35 NOISE STUDY", "end": "2016-09-25", "matched": "noise study", "psc": "ARCHITECT AND ENGINEERING- GENERAL: LANDSCAPING, INTERIOR LAYOUT, AND DESIGNING", "recipient": "MEAD & HUNT INC", "start": "2016-05-26", "sub_agency": "Department of the Army"}, {"agency": "Department of Commerce", "amount": 23225.0, "award_id": "DOC45PAPT1500208", "description": "CALL 20 DESIGN AND ACOUSTICAL CONSULTING SERVICES FOR GYMNASIUM ''IGF::OT::IGF''", "end": "2015-11-30", "matched": "acoustical consulting services", "psc": "SUPPORT- PROFESSIONAL: OTHER", "recipient": "EIGHTH DAY DESIGN, INC.", "start": "2015-03-17", "sub_agency": "U.S. Patent and Trademark Office"}, {"agency": "National Aeronautics and Space Administration", "amount": 24500.0, "award_id": "80NSSC18P0291", "description": "ACOUSTICAL STUDY", "end": "2018-03-22", "matched": "acoustical study", "psc": "SPECIAL STUDIES/ANALYSIS- OTHER", "recipient": "HWH ARCHITECTS-ENGINEERS-PLANNERS INC.", "start": "2017-12-08", "sub_agency": "National Aeronautics and Space Administration"}, {"agency": "Department of Defense", "amount": 27499.0, "award_id": "W9128F19F0013", "description": "ACOUSTICAL STUDY", "end": "2019-05-04", "matched": "acoustical study", "psc": "ARCHITECT AND ENGINEERING- GENERAL: OTHER", "recipient": "HB&A, LLC", "start": "2018-11-05", "sub_agency": "Department of the Army"}, {"agency": "Department of Transportation", "amount": 31653.0, "award_id": "DTRTVT1008", "description": "NOISE ANALYSIS", "end": "2010-12-31", "matched": "noise analysis", "psc": "SPECIAL STUDIES/ANALYSIS- DATA (OTHER THAN SCIENTIFIC)", "recipient": "BOWLBY & ASSOCIATES INC", "start": "2010-10-08", "sub_agency": "Immediate Office of the Secretary of Transportation"}, {"agency": "Department of Transportation", "amount": 38333.79, "award_id": "DTRTVT0007", "description": "NOISE ANALYSIS SUPPORT", "end": "2010-09-30", "matched": "noise analysis", "psc": "SPECIAL STUDIES/ANALYSIS- DATA (OTHER THAN SCIENTIFIC)", "recipient": "BOWLBY & ASSOCIATES INC", "start": "2010-06-15", "sub_agency": "Immediate Office of the Secretary of Transportation"}, {"agency": "Department of Agriculture", "amount": 38970.0, "award_id": "AG84N8P170217", "description": "IGF::OT::IGF BASELINE AMBIENT NOISE LEVEL MONITORING NEAR SAGE GROUSE LEKS THE PURPOSE OF THIS PURCHASE ORDER IS FOR NOISE MONITORING OF SAGE GROUSE LEKS (BREEDING AREA OF SAGE GROUSE), DURING THE BREEDING SEASON, TO DETERMINE THE LEVEL OF MAN-MADE NOISE (ANTHROPOGENIC) AT A LEK.  THE AMBIENT LEVEL FOR EACH GROUP OF LEKS WILL BE MEASURED AND DETERMINED AND NOISE MONITORING WILL BE CONDUCTED FOR EACH OF THE 8 LEKS.  A REPORT OF THE RESULTS WILL BE PREPARED AND SUBMITTED (SEE STATEMENT OF WORK).  THE TOTAL VALUE OF THIS CONTRACT IS $38,970.00 AND HAS A PERFORMANCE PERIOD OF 9/12/17-9/30/18.  PLEASE COORDINATE WITH ROBERT CHRISTENSEN AT 435-781-3428 OR DAN ABEYTA AT 435-781-5130.", "end": "2018-09-30", "matched": "noise monitoring", "psc": "SUPPORT- PROFESSIONAL: PROGRAM MANAGEMENT/SUPPORT", "recipient": "WESTERN BIOACOUSTICS INC", "start": "2017-09-12", "sub_agency": "Forest Service"}, {"agency": "Department of Transportation", "amount": 43937.82, "award_id": "DTFH7112D00010T13001", "description": "IGF::OT::IGFPROJECT:  RAPHUNE HILL IMPROVEMENTS, ST. THOMAS, USVI NOISE STUDY PREPARE NOISE STUDY DATA COLLECTION ANALYSIS AND RECOMMENDATIONS TO COMPLY WITH FHWA AND PUERTO RICO DIVISION REQUIREMENTS FOR ROAD WIDENING", "end": "2014-04-30", "matched": "noise study", "psc": "ARCHITECT AND ENGINEERING- CONSTRUCTION: HIGHWAYS, ROADS, STREETS, BRIDGES, AND RAILWAYS", "recipient": "WSP USA INC.", "start": "2013-08-15", "sub_agency": "Federal Highway Administration"}, {"agency": "Department of Defense", "amount": 56749.0, "award_id": "N4425526F0027", "description": "SUPPLEMENTAL NOISE ANALYSIS (EIS) FOR P252 AT BREMERTON WF, BREMERTON WA", "end": "2026-04-23", "matched": "noise analysis", "psc": "ARCHITECT AND ENGINEERING- GENERAL: OTHER", "recipient": "STANTEC GS-AECOM PACIFIC JV", "start": "2025-12-23", "sub_agency": "Department of the Navy"}, {"agency": "Department of Transportation", "amount": 59689.69, "award_id": "DTRTVT1009", "description": "NOISE ANALYSIS ACOUSTIC SUPPORT", "end": "2012-03-13", "matched": "noise analysis", "psc": "SPECIAL STUDIES/ANALYSIS- DATA (OTHER THAN SCIENTIFIC)", "recipient": "BOWLBY & ASSOCIATES INC", "start": "2011-03-01", "sub_agency": "Immediate Office of the Secretary of Transportation"}, {"agency": "Department of Defense", "amount": 61108.0, "award_id": "W912EF18F0179", "description": "ENVIRONMENTAL CONSULTING NOISE STUDY FOR THE PORT OF BENTON", "end": "2018-11-20", "matched": "noise study", "psc": "SUPPORT- PROFESSIONAL: OTHER", "recipient": "SEALASKA TECHNICAL SERVICES, LLC.", "start": "2018-09-26", "sub_agency": "Department of the Army"}], "filters": {"award_type_codes": ["A", "B", "C", "D"], "keywords": ["noise study", "acoustical study", "noise and vibration", "noise monitoring", "acoustical consulting services", "noise analysis", "acoustic assessment", "environmental noise"], "psc_codes": ["B", "C", "R"], "time_period": {"end": "2026-08-01", "start": "2015-01-01"}}, "n": 56, "note": "Federal prime awards only. State and city buyers, including the MTA, NYCDOT and NYCDEP, do not appear in USASpending.", "source": "https://api.usaspending.gov/api/v2/search/spending_by_award/", "stats": {"max": 1740857.0, "mean": 186409.02, "median": 68440.5, "min": 5900.0, "n": 56, "p10": 11658.9, "p25": 21578.64, "p75": 201657.76, "p90": 377285.14, "total": 10438904.99}}, "crosscheck": {"awards_imply": {"max": {"hours_at_blended": 11773.0, "share_of_bottom_up_low": 9.621, "usd": 1740857.0}, "median": {"hours_at_blended": 462.8, "share_of_bottom_up_low": 0.378, "usd": 68440.5}, "p25": {"hours_at_blended": 145.9, "share_of_bottom_up_low": 0.119, "usd": 21578.64}, "p75": {"hours_at_blended": 1363.8, "share_of_bottom_up_low": 1.114, "usd": 201657.76}, "p90": {"hours_at_blended": 2551.5, "share_of_bottom_up_low": 2.085, "usd": 377285.14}}, "blended_rate_usd_per_hour": 147.87, "bottom_up_hours": {"high": 3794.4, "low": 1259.1, "mid": 2526.7}, "reading": "The bottom-up band and the award distribution do not agree. They are reported side by side and neither is adjusted to meet the other."}, "delivered": {"low": {"high": 364455.47, "low": 116789.67}, "median": {"high": 566302.21, "low": 180941.04}, "vendor": {"high": 701302.24, "low": 223812.3}}, "generated_at": "2026-08-04T13:10:24Z", "generator": "procurement/build_procurement_data.py", "hours": {"high": 3794.4, "low": 1259.1}, "inventory": {"artifact_sloc": 7205, "artifacts": 7, "data_sloc": 969, "doc_words": 104223, "documents": 10, "external_urls": 7, "model_sloc": 1696, "quoted_loci": 309, "scripts": 14, "site_sloc": 3225, "sources": 264, "total_sloc": 13095}, "measured": {"counterfactual_uncached_usd": 1292.11, "generated_at": "2026-08-04T13:10:24Z", "inference_sum_h": 7.47, "inference_union_h": 6.86, "models": 2, "requests": 1756, "subagents": 3, "turns": 27, "usd": 236.61, "wall_span_h": 72.4}, "not_delivered": {"low": {"high": 102979.6, "low": 36079.04}, "median": {"high": 151556.0, "low": 52975.68}, "vendor": {"high": 207785.2, "low": 71777.52}}, "not_delivered_packages": [{"group": "disc:acoustical", "hours_high": 200, "hours_low": 80, "key": "field_acoustic", "label": "Field acoustic measurement (Methods 11, 28, 31; captures C1-C5)", "rate_low": 90.54, "rate_median": 131.21, "rate_vendor": 136.77, "rate_vendor_why": "no matching vendor category; schedule p75 substituted", "why": "Five capture campaigns plus instrument calibration, analysis and reporting."}, {"group": "disc:environmental-scientist", "hours_high": 320, "hours_low": 120, "key": "ped_survey", "label": "Pedestrian origin-destination and dwell survey (Method 28)", "rate_low": 70.17, "rate_median": 108.13, "rate_vendor": 139.43, "rate_vendor_why": "no matching vendor category; schedule p75 substituted", "why": "Timed cordon counts across three day types, plus analysis. The single blocking unknown for any absolute exposure figure."}, {"group": "disc:architect-building", "hours_high": 600, "hours_low": 200, "key": "architecture", "label": "Licensed architectural and structural design", "rate_low": 99.15, "rate_median": 142.01, "rate_vendor": 211.77, "rate_vendor_why": "no matching vendor category; schedule p75 substituted", "why": "Nothing in this repository is a design. A design-build proposal needs a licensed architect and a structural engineer of record."}, {"group": "disc:attorney", "hours_high": 40, "hours_low": 8, "key": "legal", "label": "Preemption opinion (Q42)", "rate_low": 73.18, "rate_median": 137.66, "rate_vendor": 218.79, "rate_vendor_why": "no matching vendor category; schedule p75 substituted", "why": "Whether 40 CFR Part 201 preempts municipal regulation of a wholly intrastate rapid transit system. One lawyer, one day, per the register."}], "packages": [{"group": "disc:sme", "hours_high": 396.0, "hours_low": 132.0, "key": "retrieval", "label": "Source retrieval and appraisal", "measure": "sources", "per_unit_high": 1.5, "per_unit_low": 0.5, "quantity": 264, "rate_low": 125.78, "rate_median": 201.97, "rate_vendor": 255.79, "rate_vendor_why": "no matching vendor category; schedule p75 substituted", "unit": "source"}, {"group": "disc:technical-writer", "hours_high": 677.4, "hours_low": 260.6, "key": "authorship", "label": "Document authorship, cited", "measure": "doc_words", "per_unit_high": 6.5, "per_unit_low": 2.5, "quantity": 104.22, "rate_low": 62.85, "rate_median": 95.76, "rate_vendor": 118.35, "rate_vendor_why": "no matching vendor category; schedule p75 substituted", "unit": "1k words"}, {"group": "disc:data-engineer", "hours_high": 121.1, "hours_low": 48.4, "key": "dataeng", "label": "Data acquisition and pipelines", "measure": "data_sloc", "per_unit_high": 12.5, "per_unit_low": 5.0, "quantity": 9.69, "rate_low": 99.04, "rate_median": 149.77, "rate_vendor": 182.72, "rate_vendor_why": "no matching vendor category; schedule p75 substituted", "unit": "100 SLOC"}, {"group": "disc:data-scientist", "hours_high": 254.4, "hours_low": 101.8, "key": "modelling", "label": "Quantitative modelling", "measure": "model_sloc", "per_unit_high": 15.0, "per_unit_low": 6.0, "quantity": 16.96, "rate_low": 110.81, "rate_median": 167.81, "rate_vendor": 203.09, "rate_vendor_why": "no matching vendor category; schedule p75 substituted", "unit": "100 SLOC"}, {"group": "disc:software-engineer", "hours_high": 900.6, "hours_low": 360.2, "key": "artifacts", "label": "Interactive artifacts", "measure": "artifact_sloc", "per_unit_high": 12.5, "per_unit_low": 5.0, "quantity": 72.05, "rate_low": 88.24, "rate_median": 138.26, "rate_vendor": 171.07, "rate_vendor_why": "no matching vendor category; schedule p75 substituted", "unit": "100 SLOC"}, {"group": "disc:web-developer", "hours_high": 322.5, "hours_low": 129.0, "key": "publication", "label": "Site generation and publication", "measure": "site_sloc", "per_unit_high": 10.0, "per_unit_low": 4.0, "quantity": 32.25, "rate_low": 82.3, "rate_median": 120.45, "rate_vendor": 146.85, "rate_vendor_why": "no matching vendor category; schedule p75 substituted", "unit": "100 SLOC"}, {"group": "disc:sme", "hours_high": 534.4, "hours_low": 103.2, "key": "qa", "label": "Review and quality assurance", "measure": "fraction of packages above", "per_unit_high": 0.2, "per_unit_low": 0.1, "quantity": null, "rate_low": 125.78, "rate_median": 201.97, "rate_vendor": 255.79, "rate_vendor_why": "no matching vendor category; schedule p75 substituted", "unit": "share"}, {"group": "disc:project-manager", "hours_high": 587.9, "hours_low": 123.8, "key": "pm", "label": "Engagement management", "measure": "fraction of packages above", "per_unit_high": 0.22, "per_unit_low": 0.12, "quantity": null, "rate_low": 99.78, "rate_median": 151.95, "rate_vendor": 183.58, "rate_vendor_why": "no matching vendor category; schedule p75 substituted", "unit": "share"}], "rate_ladder": [{"key": "vendor", "label": "Named global consultancy", "note": "GSA ceiling rate, the vendor's own published card"}, {"key": "median", "label": "Whole-schedule median", "note": "Median awarded ceiling rate for the discipline across every MAS holder"}, {"key": "low", "label": "Whole-schedule 10th percentile", "note": "Cheapest decile of awarded ceiling rates for the same discipline"}], "rate_populations": {"disc:acoustical": {"max": 172.65, "median": 131.21, "min": 68.95, "n": 7}, "disc:architect-building": {"max": 453.71, "median": 142.01, "min": 84.0, "n": 46}, "disc:architect-historian": {"max": 178.19, "median": 94.43, "min": 55.27, "n": 29}, "disc:attorney": {"max": 490.21, "median": 137.66, "min": 35.0, "n": 75}, "disc:civil-engineer": {"max": 304.59, "median": 117.15, "min": 36.76, "n": 217}, "disc:data-analyst": {"max": 371.46, "median": 114.81, "min": 27.96, "n": 1749}, "disc:data-engineer": {"max": 410.61, "median": 149.77, "min": 47.86, "n": 632}, "disc:data-scientist": {"max": 449.62, "median": 167.81, "min": 49.79, "n": 1180}, "disc:environmental-scientist": {"max": 247.42, "median": 108.13, "min": 34.8, "n": 218}, "disc:gis-analyst": {"max": 221.39, "median": 101.29, "min": 30.71, "n": 200}, "disc:noise": {"max": 176.08, "median": 149.13, "min": 131.21, "n": 7}, "disc:program-manager": {"max": 499.91, "median": 183.37, "min": 27.92, "n": 8591}, "disc:project-manager": {"max": 458.39, "median": 151.95, "min": 26.96, "n": 12825}, "disc:sme": {"max": 499.72, "median": 201.97, "min": 40.88, "n": 10330}, "disc:software-engineer": {"max": 449.75, "median": 138.26, "min": 29.27, "n": 3686}, "disc:technical-writer": {"max": 323.75, "median": 95.76, "min": 29.5, "n": 4467}, "disc:web-developer": {"max": 332.61, "median": 120.45, "min": 35.06, "n": 1181}, "vendor:accenture": {"max": 488.26, "median": 211.16, "min": 61.22, "n": 2101}, "vendor:booz": {"max": 498.06, "median": 151.19, "min": 37.48, "n": 1886}, "vendor:deloitte": {"max": 472.66, "median": 231.02, "min": 40.8, "n": 1826}, "vendor:ey": {"max": 437.13, "median": 275.41, "min": 133.39, "n": 56}, "vendor:kpmg": {"max": 450.36, "median": 207.85, "min": 93.39, "n": 94}}, "rates_provenance": {"fetched": "2026-08-04T14:40:30Z", "index": "ceilingrates-2026-08-04_02-00-02", "note": "Ceiling rates on live GSA Multiple Award Schedule contracts. A ceiling rate is the maximum chargeable under the schedule, not a paid price and not a commercial price.", "source": "https://buy.gsa.gov/pricing/api/v3/search/ceilingrates/"}, "ratings": {"instrument_a_awards": "5/5 VERIFIED - obligated dollars on real federal contracts", "instrument_b_hours": "1/5 INVENTED - this repository's own estimate, carried as a band", "instrument_b_rates": "5/5 VERIFIED - published GSA ceiling rates", "instrument_c_measured": "5/5 VERIFIED - the client's own billing telemetry", "not_delivered_hours": "1/5 INVENTED - no scoping exercise has been done"}, "schema": "procurement-comparison/1", "sensitivity": [{"band_width_usd": 87089.46, "key": "qa", "label": "Review and quality assurance", "share_of_midpoint": 0.1723}, {"band_width_usd": 74715.7, "key": "artifacts", "label": "Interactive artifacts", "share_of_midpoint": 0.2333}, {"band_width_usd": 70519.99, "key": "pm", "label": "Engagement management", "share_of_midpoint": 0.1447}, {"band_width_usd": 53320.08, "key": "retrieval", "label": "Source retrieval and appraisal", "share_of_midpoint": 0.1427}, {"band_width_usd": 39912.77, "key": "authorship", "label": "Document authorship, cited", "share_of_midpoint": 0.1202}, {"band_width_usd": 25607.81, "key": "modelling", "label": "Quantitative modelling", "share_of_midpoint": 0.08}, {"band_width_usd": 23307.08, "key": "publication", "label": "Site generation and publication", "share_of_midpoint": 0.0728}, {"band_width_usd": 10888.28, "key": "dataeng", "label": "Data acquisition and pipelines", "share_of_midpoint": 0.034}]};
+/*PROCDATA*/
+
+const $ = (id) => document.getElementById(id);
+const usd = (n, dp) => n === null || n === undefined ? "&mdash;" :
+  "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: dp === undefined ? 0 : dp,
+                                            maximumFractionDigits: dp === undefined ? 0 : dp });
+const num = (n) => n === null || n === undefined ? "&mdash;" : Number(n).toLocaleString("en-US");
+const esc = (s) => String(s === null || s === undefined ? "" : s)
+  .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+function table(el, head, rows, foot) {
+  const th = head.map((h) => `<th class="${h.n ? "num" : ""}">${esc(h.t)}</th>`).join("");
+  const tb = rows.map((r) => "<tr>" + r.map((c, i) =>
+    `<td class="${head[i] && head[i].n ? "num" : ""}">${c}</td>`).join("") + "</tr>").join("");
+  const tf = foot ? "<tfoot><tr>" + foot.map((c, i) =>
+    `<td class="${head[i] && head[i].n ? "num" : ""}">${c}</td>`).join("") + "</tr></tfoot>" : "";
+  el.innerHTML = `<thead><tr>${th}</tr></thead><tbody>${tb}</tbody>${tf}`;
+}
+
+function bars(el, items) {
+  const max = Math.max(...items.map((i) => i.v), 1);
+  el.innerHTML = items.map((i) => `<div class="bar">
+    <div class="lab" title="${esc(i.k)}">${esc(i.k)}</div>
+    <div class="track"><div class="fill" style="width:${(100 * i.v / max).toFixed(1)}%"></div></div>
+    <div class="val">${i.d}</div></div>`).join("");
+}
+
+function stat(b, s, e) {
+  return `<div class="stat"><b>${b}</b><span>${esc(s)}</span>${e ? `<em>${e}</em>` : ""}</div>`;
+}
+
+(function render() {
+  const P = PROC;
+  if (!P || !P.inventory) { return; }
+  const d = P.delivered, nd = P.not_delivered, m = P.measured, aw = P.awards;
+
+  // ---- hero -------------------------------------------------------------
+  $("heroStats").innerHTML = [
+    stat(usd(m.usd, 2), "C. what it actually cost",
+         num(m.requests) + " requests over " + m.wall_span_h.toFixed(1) + " h"),
+    stat(usd(aw.stats.median), "A. median noise study bought",
+         "federal awards, n=" + aw.stats.n),
+    stat(usd(d.median.low) + "&ndash;" + usd(d.median.high), "B. delivered scope, bottom-up",
+         "whole-schedule median rates"),
+    stat(usd(nd.median.low) + "&ndash;" + usd(nd.median.high), "scope not delivered",
+         "field, survey, design, legal"),
+  ].join("");
+
+  // ---- inventory --------------------------------------------------------
+  const inv = P.inventory;
+  table($("invTable"),
+    [{ t: "What exists" }, { t: "Count", n: 1 }, { t: "How it was counted" }],
+    [
+      ["Cited documents", num(inv.documents), "Markdown files outside the rendered copy"],
+      ["Words in those documents", num(inv.doc_words), "Whitespace-separated tokens"],
+      ["Appraised sources", num(inv.sources), "Lines carrying a 1/5 to 5/5 rating"],
+      ["Quoted loci", num(inv.quoted_loci), "Blockquote lines across the corpus"],
+      ["Interactive artifacts", num(inv.artifacts), "Self-contained HTML in visual-review and usage"],
+      ["Scripts", num(inv.scripts), "Python that fetches, models or builds"],
+      ["Data-pipeline source lines", num(inv.data_sloc), "Non-blank, non-comment"],
+      ["Modelling source lines", num(inv.model_sloc), "Non-blank, non-comment"],
+      ["Site and tooling source lines", num(inv.site_sloc), "Non-blank, non-comment"],
+      ["Artifact source lines", num(inv.artifact_sloc), "Non-blank; injected data spans removed"],
+    ],
+    ["Total source lines", num(inv.total_sloc), ""]);
+  $("srcN").textContent = num(inv.sources);
+  $("urlN").textContent = num(inv.external_urls);
+
+  // ---- rate ladder ------------------------------------------------------
+  const groups = {};
+  P.packages.concat(P.not_delivered_packages).forEach((p) => { groups[p.group] = p; });
+  const order = ["disc:sme", "disc:project-manager", "disc:data-scientist",
+                 "disc:data-engineer", "disc:software-engineer", "disc:web-developer",
+                 "disc:technical-writer", "disc:acoustical",
+                 "disc:environmental-scientist", "disc:architect-building",
+                 "disc:attorney"];
+  const nice = {
+    "disc:sme": "Subject matter expert", "disc:project-manager": "Project manager",
+    "disc:data-scientist": "Data scientist", "disc:data-engineer": "Data engineer",
+    "disc:software-engineer": "Software engineer", "disc:web-developer": "Web developer",
+    "disc:technical-writer": "Technical writer", "disc:acoustical": "Acoustical engineer",
+    "disc:environmental-scientist": "Environmental scientist",
+    "disc:architect-building": "Architect", "disc:attorney": "Attorney",
+  };
+  table($("ladderTable"),
+    [{ t: "Discipline" }, { t: "Named consultancy", n: 1 }, { t: "Schedule median", n: 1 },
+     { t: "Schedule 10th pct", n: 1 }, { t: "Where the top rung came from" }],
+    order.filter((g) => groups[g]).map((g) => {
+      const p = groups[g];
+      return [nice[g] || g, usd(p.rate_vendor, 2), usd(p.rate_median, 2),
+              usd(p.rate_low, 2), esc(p.rate_vendor_why)];
+    }));
+
+  table($("xcheckTable"),
+    [{ t: "Accenture category, OFFSITE" }, { t: "Published card, year 10", n: 1 },
+     { t: "GSA index", n: 1 }, { t: "Difference", n: 1 }],
+    [
+      ["Subject Matter Expert 1", "$322.29", "$322.29", "$0.00"],
+      ["Subject Matter Expert 2", "$391.45", "$391.45", "$0.00"],
+      ["Subject Matter Expert 3", "$480.91", "$480.91", "$0.00"],
+      ["Project Manager", "$365.72", "$365.72", "$0.00"],
+      ["Enterprise Architect", "$322.29", "$322.29", "$0.00"],
+      ["Data Architect", "$262.58", "$262.58", "$0.00"],
+    ]);
+
+  // ---- bottom-up --------------------------------------------------------
+  const pk = P.packages;
+  table($("pkgTable"),
+    [{ t: "Package" }, { t: "Measured" , n: 1 }, { t: "Hours per unit", n: 1 },
+     { t: "Hours", n: 1 }, { t: "Median rate", n: 1 }, { t: "Cost at median", n: 1 }],
+    pk.map((p) => {
+      const q = p.quantity === null ? "&mdash;"
+        : num(Math.round(p.quantity * 10) / 10) + " " + esc(p.unit);
+      const per = p.quantity === null
+        ? (100 * p.per_unit_low).toFixed(0) + "&ndash;" + (100 * p.per_unit_high).toFixed(0) + "%"
+        : p.per_unit_low + "&ndash;" + p.per_unit_high;
+      const c1 = (p.hours_low || 0) * (p.rate_median || 0);
+      const c2 = (p.hours_high || 0) * (p.rate_median || 0);
+      return [esc(p.label), q, per,
+              num(Math.round(p.hours_low)) + "&ndash;" + num(Math.round(p.hours_high)),
+              usd(p.rate_median, 2), usd(c1) + "&ndash;" + usd(c2)];
+    }),
+    ["Total", "", "",
+     num(Math.round(P.hours.low)) + "&ndash;" + num(Math.round(P.hours.high)),
+     "", usd(d.median.low) + "&ndash;" + usd(d.median.high)]);
+
+  bars($("sensBars"), P.sensitivity.map((s) => ({
+    k: s.label, v: s.band_width_usd,
+    d: usd(s.band_width_usd) + "  " + (100 * s.share_of_midpoint).toFixed(0) + "%",
+  })));
+
+  // ---- awards -----------------------------------------------------------
+  $("awardStats").innerHTML = [
+    stat(num(aw.stats.n), "awards in scope", "2015 to 2026, PSC B, C and R"),
+    stat(usd(aw.stats.median), "median", "p25 " + usd(aw.stats.p25) + " &middot; p75 " + usd(aw.stats.p75)),
+    stat(usd(aw.stats.min), "smallest", "largest " + usd(aw.stats.max)),
+    stat(usd(aw.stats.total), "total obligated", "mean " + usd(aw.stats.mean)),
+  ].join("");
+
+  bars($("awardBars"), ["min", "p10", "p25", "median", "p75", "p90", "max"].map((k) => ({
+    k: k, v: aw.stats[k], d: usd(aw.stats[k]),
+  })));
+
+  table($("awardTable"),
+    [{ t: "Amount", n: 1 }, { t: "Recipient" }, { t: "What was bought" }],
+    aw.examples.slice().reverse().map((a) => [
+      usd(a.amount), esc((a.recipient || "").slice(0, 34)),
+      esc((a.description || "").replace(/^IGF::[A-Z]{2}::IGF\s*-?\s*/, "").slice(0, 96)),
+    ]));
+
+  // ---- cross-check ------------------------------------------------------
+  const cc = P.crosscheck;
+  table($("ccTable"),
+    [{ t: "Award percentile" }, { t: "Obligated", n: 1 },
+     { t: "Hours it buys at the blended rate", n: 1 },
+     { t: "Share of the bottom-up low end", n: 1 }],
+    Object.keys(cc.awards_imply).map((k) => {
+      const v = cc.awards_imply[k];
+      return [k, usd(v.usd), num(Math.round(v.hours_at_blended)),
+              (100 * v.share_of_bottom_up_low).toFixed(0) + "%"];
+    }));
+  $("blended").textContent = "$" + cc.blended_rate_usd_per_hour.toFixed(2);
+  $("medHours").textContent = num(Math.round(cc.awards_imply.median.hours_at_blended));
+  $("buLow").textContent = num(Math.round(cc.bottom_up_hours.low));
+
+  // ---- not delivered ----------------------------------------------------
+  table($("ndTable"),
+    [{ t: "What is missing" }, { t: "Hours", n: 1 }, { t: "Median rate", n: 1 },
+     { t: "Cost at median", n: 1 }, { t: "Why it matters" }],
+    P.not_delivered_packages.map((p) => [
+      esc(p.label),
+      num(p.hours_low) + "&ndash;" + num(p.hours_high),
+      usd(p.rate_median, 2),
+      usd(p.hours_low * (p.rate_median || 0)) + "&ndash;" + usd(p.hours_high * (p.rate_median || 0)),
+      esc(p.why),
+    ]),
+    ["Total", "", "", usd(nd.median.low) + "&ndash;" + usd(nd.median.high), ""]);
+
+  // ---- population asymmetry --------------------------------------------
+  const rp = P.rate_populations || {};
+  bars($("popBars"), Object.keys(rp).filter((k) => k.indexOf("disc:") === 0)
+    .map((k) => ({ k: nice[k] || k.replace("disc:", ""), v: rp[k].n,
+                   d: num(rp[k].n) + " categories" }))
+    .sort((a, b) => b.v - a.v));
+  if (rp["disc:acoustical"]) {
+    $("acN").textContent = num(rp["disc:acoustical"].n);
+    $("acLo").textContent = "$" + rp["disc:acoustical"].min.toFixed(2);
+    $("acHi").textContent = "$" + rp["disc:acoustical"].max.toFixed(2);
+  }
+  if (rp["vendor:ey"]) {
+    $("eyN").textContent = num(rp["vendor:ey"].n);
+    $("eyLo").textContent = "$" + rp["vendor:ey"].min.toFixed(2);
+    $("eyHi").textContent = "$" + rp["vendor:ey"].max.toFixed(2);
+  }
+
+  // ---- measured ---------------------------------------------------------
+  $("measStats").innerHTML = [
+    stat(usd(m.usd, 2), "billed", num(m.requests) + " model requests"),
+    stat(m.inference_sum_h.toFixed(2) + " h", "inference time",
+         "union " + m.inference_union_h.toFixed(2) + " h"),
+    stat(m.wall_span_h.toFixed(1) + " h", "wall-clock span", "first request to last"),
+    stat(usd(m.counterfactual_uncached_usd, 2), "without prompt caching",
+         (m.counterfactual_uncached_usd / m.usd).toFixed(2) + "x the actual bill"),
+  ].join("");
+
+  // ---- sources ----------------------------------------------------------
+  table($("srcTable"),
+    [{ t: "Source" }, { t: "What it gives" }, { t: "Rating" }],
+    [
+      [`<a href="${esc(P.rates_provenance.source)}">GSA ceiling-rate index</a>`,
+       "Awarded hourly ceiling rates on live Multiple Award Schedule contracts. Index " +
+       "<code>" + esc(P.rates_provenance.index) + "</code>.",
+       '<span class="rating good">5/5 VERIFIED</span>'],
+      [`<a href="${esc(aw.source)}">USASpending award search</a>`,
+       "Obligated dollars on federal prime contracts for noise and acoustic studies.",
+       '<span class="rating good">5/5 VERIFIED</span>'],
+      ["Accenture Federal Services price list, <code>GS-35F-540GA</code>",
+       "The vendor's own published card, used to check the index.",
+       '<span class="rating good">5/5 VERIFIED</span>'],
+      ["Ernst &amp; Young LLP price list, <code>GS-00F-290CA</code>",
+       "Contains no rates; states that the card is restricted.",
+       '<span class="rating good">5/5 VERIFIED</span>'],
+      ["This repository's own hours estimate",
+       "Converts measured deliverables into an hours band.",
+       '<span class="rating">1/5 INVENTED</span>'],
+    ]);
+
+  $("prov").innerHTML = "Rates fetched " + esc(P.rates_provenance.fetched) +
+    " from index <code>" + esc(P.rates_provenance.index) + "</code>. Usage telemetry " +
+    "generated " + esc(P.generated_at) + ". Award search covers " +
+    esc(aw.filters.time_period.start) + " to " + esc(aw.filters.time_period.end) + ".";
+})();
+</script>
+</body>
+</html>

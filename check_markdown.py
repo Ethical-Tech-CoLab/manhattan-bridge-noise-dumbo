@@ -30,6 +30,7 @@ DOCS = [
     "COMMUNITY-EVIDENCE-AUDIT.md",
     "data-collection/README.md",
     "usage/README.md",
+    "procurement/README.md",
 ]
 
 # Rendered by both GitHub and the site generator, and used deliberately.

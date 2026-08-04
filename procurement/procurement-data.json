@@ -1,0 +1,683 @@
+{
+ "awards": {
+  "examples": [
+   {
+    "agency": "Department of the Interior",
+    "amount": 22073.44,
+    "award_id": "140P1326P0021",
+    "description": "ENVIRONMENTAL NOISE EVALUATION FOR A250",
+    "end": "2026-06-01",
+    "matched": "environmental noise",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: LANDSCAPING, INTERIOR LAYOUT, AND DESIGNING",
+    "recipient": "BLUE RIDGE RESEARCH AND CONSULTING, LLC",
+    "start": "2026-05-12",
+    "sub_agency": "National Park Service"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 22528.0,
+    "award_id": "1020",
+    "description": "IGF::OT::IGF TYPE A SERVICES XGFG162026 F35 NOISE STUDY",
+    "end": "2016-09-25",
+    "matched": "noise study",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: LANDSCAPING, INTERIOR LAYOUT, AND DESIGNING",
+    "recipient": "MEAD & HUNT INC",
+    "start": "2016-05-26",
+    "sub_agency": "Department of the Army"
+   },
+   {
+    "agency": "Department of Commerce",
+    "amount": 23225.0,
+    "award_id": "DOC45PAPT1500208",
+    "description": "CALL 20 DESIGN AND ACOUSTICAL CONSULTING SERVICES FOR GYMNASIUM ''IGF::OT::IGF''",
+    "end": "2015-11-30",
+    "matched": "acoustical consulting services",
+    "psc": "SUPPORT- PROFESSIONAL: OTHER",
+    "recipient": "EIGHTH DAY DESIGN, INC.",
+    "start": "2015-03-17",
+    "sub_agency": "U.S. Patent and Trademark Office"
+   },
+   {
+    "agency": "National Aeronautics and Space Administration",
+    "amount": 24500.0,
+    "award_id": "80NSSC18P0291",
+    "description": "ACOUSTICAL STUDY",
+    "end": "2018-03-22",
+    "matched": "acoustical study",
+    "psc": "SPECIAL STUDIES/ANALYSIS- OTHER",
+    "recipient": "HWH ARCHITECTS-ENGINEERS-PLANNERS INC.",
+    "start": "2017-12-08",
+    "sub_agency": "National Aeronautics and Space Administration"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 27499.0,
+    "award_id": "W9128F19F0013",
+    "description": "ACOUSTICAL STUDY",
+    "end": "2019-05-04",
+    "matched": "acoustical study",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: OTHER",
+    "recipient": "HB&A, LLC",
+    "start": "2018-11-05",
+    "sub_agency": "Department of the Army"
+   },
+   {
+    "agency": "Department of Transportation",
+    "amount": 31653.0,
+    "award_id": "DTRTVT1008",
+    "description": "NOISE ANALYSIS",
+    "end": "2010-12-31",
+    "matched": "noise analysis",
+    "psc": "SPECIAL STUDIES/ANALYSIS- DATA (OTHER THAN SCIENTIFIC)",
+    "recipient": "BOWLBY & ASSOCIATES INC",
+    "start": "2010-10-08",
+    "sub_agency": "Immediate Office of the Secretary of Transportation"
+   },
+   {
+    "agency": "Department of Transportation",
+    "amount": 38333.79,
+    "award_id": "DTRTVT0007",
+    "description": "NOISE ANALYSIS SUPPORT",
+    "end": "2010-09-30",
+    "matched": "noise analysis",
+    "psc": "SPECIAL STUDIES/ANALYSIS- DATA (OTHER THAN SCIENTIFIC)",
+    "recipient": "BOWLBY & ASSOCIATES INC",
+    "start": "2010-06-15",
+    "sub_agency": "Immediate Office of the Secretary of Transportation"
+   },
+   {
+    "agency": "Department of Agriculture",
+    "amount": 38970.0,
+    "award_id": "AG84N8P170217",
+    "description": "IGF::OT::IGF BASELINE AMBIENT NOISE LEVEL MONITORING NEAR SAGE GROUSE LEKS THE PURPOSE OF THIS PURCHASE ORDER IS FOR NOISE MONITORING OF SAGE GROUSE LEKS (BREEDING AREA OF SAGE GROUSE), DURING THE BREEDING SEASON, TO DETERMINE THE LEVEL OF MAN-MADE NOISE (ANTHROPOGENIC) AT A LEK.  THE AMBIENT LEVEL FOR EACH GROUP OF LEKS WILL BE MEASURED AND DETERMINED AND NOISE MONITORING WILL BE CONDUCTED FOR EACH OF THE 8 LEKS.  A REPORT OF THE RESULTS WILL BE PREPARED AND SUBMITTED (SEE STATEMENT OF WORK).  THE TOTAL VALUE OF THIS CONTRACT IS $38,970.00 AND HAS A PERFORMANCE PERIOD OF 9/12/17-9/30/18.  PLEASE COORDINATE WITH ROBERT CHRISTENSEN AT 435-781-3428 OR DAN ABEYTA AT 435-781-5130.",
+    "end": "2018-09-30",
+    "matched": "noise monitoring",
+    "psc": "SUPPORT- PROFESSIONAL: PROGRAM MANAGEMENT/SUPPORT",
+    "recipient": "WESTERN BIOACOUSTICS INC",
+    "start": "2017-09-12",
+    "sub_agency": "Forest Service"
+   },
+   {
+    "agency": "Department of Transportation",
+    "amount": 43937.82,
+    "award_id": "DTFH7112D00010T13001",
+    "description": "IGF::OT::IGFPROJECT:  RAPHUNE HILL IMPROVEMENTS, ST. THOMAS, USVI NOISE STUDY PREPARE NOISE STUDY DATA COLLECTION ANALYSIS AND RECOMMENDATIONS TO COMPLY WITH FHWA AND PUERTO RICO DIVISION REQUIREMENTS FOR ROAD WIDENING",
+    "end": "2014-04-30",
+    "matched": "noise study",
+    "psc": "ARCHITECT AND ENGINEERING- CONSTRUCTION: HIGHWAYS, ROADS, STREETS, BRIDGES, AND RAILWAYS",
+    "recipient": "WSP USA INC.",
+    "start": "2013-08-15",
+    "sub_agency": "Federal Highway Administration"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 56749.0,
+    "award_id": "N4425526F0027",
+    "description": "SUPPLEMENTAL NOISE ANALYSIS (EIS) FOR P252 AT BREMERTON WF, BREMERTON WA",
+    "end": "2026-04-23",
+    "matched": "noise analysis",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: OTHER",
+    "recipient": "STANTEC GS-AECOM PACIFIC JV",
+    "start": "2025-12-23",
+    "sub_agency": "Department of the Navy"
+   },
+   {
+    "agency": "Department of Transportation",
+    "amount": 59689.69,
+    "award_id": "DTRTVT1009",
+    "description": "NOISE ANALYSIS ACOUSTIC SUPPORT",
+    "end": "2012-03-13",
+    "matched": "noise analysis",
+    "psc": "SPECIAL STUDIES/ANALYSIS- DATA (OTHER THAN SCIENTIFIC)",
+    "recipient": "BOWLBY & ASSOCIATES INC",
+    "start": "2011-03-01",
+    "sub_agency": "Immediate Office of the Secretary of Transportation"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 61108.0,
+    "award_id": "W912EF18F0179",
+    "description": "ENVIRONMENTAL CONSULTING NOISE STUDY FOR THE PORT OF BENTON",
+    "end": "2018-11-20",
+    "matched": "noise study",
+    "psc": "SUPPORT- PROFESSIONAL: OTHER",
+    "recipient": "SEALASKA TECHNICAL SERVICES, LLC.",
+    "start": "2018-09-26",
+    "sub_agency": "Department of the Army"
+   }
+  ],
+  "filters": {
+   "award_type_codes": [
+    "A",
+    "B",
+    "C",
+    "D"
+   ],
+   "keywords": [
+    "noise study",
+    "acoustical study",
+    "noise and vibration",
+    "noise monitoring",
+    "acoustical consulting services",
+    "noise analysis",
+    "acoustic assessment",
+    "environmental noise"
+   ],
+   "psc_codes": [
+    "B",
+    "C",
+    "R"
+   ],
+   "time_period": {
+    "end": "2026-08-01",
+    "start": "2015-01-01"
+   }
+  },
+  "n": 56,
+  "note": "Federal prime awards only. State and city buyers, including the MTA, NYCDOT and NYCDEP, do not appear in USASpending.",
+  "source": "https://api.usaspending.gov/api/v2/search/spending_by_award/",
+  "stats": {
+   "max": 1740857.0,
+   "mean": 186409.02,
+   "median": 68440.5,
+   "min": 5900.0,
+   "n": 56,
+   "p10": 11658.9,
+   "p25": 21578.64,
+   "p75": 201657.76,
+   "p90": 377285.14,
+   "total": 10438904.99
+  }
+ },
+ "crosscheck": {
+  "awards_imply": {
+   "max": {
+    "hours_at_blended": 11773.0,
+    "share_of_bottom_up_low": 9.621,
+    "usd": 1740857.0
+   },
+   "median": {
+    "hours_at_blended": 462.8,
+    "share_of_bottom_up_low": 0.378,
+    "usd": 68440.5
+   },
+   "p25": {
+    "hours_at_blended": 145.9,
+    "share_of_bottom_up_low": 0.119,
+    "usd": 21578.64
+   },
+   "p75": {
+    "hours_at_blended": 1363.8,
+    "share_of_bottom_up_low": 1.114,
+    "usd": 201657.76
+   },
+   "p90": {
+    "hours_at_blended": 2551.5,
+    "share_of_bottom_up_low": 2.085,
+    "usd": 377285.14
+   }
+  },
+  "blended_rate_usd_per_hour": 147.87,
+  "bottom_up_hours": {
+   "high": 3794.4,
+   "low": 1259.1,
+   "mid": 2526.7
+  },
+  "reading": "The bottom-up band and the award distribution do not agree. They are reported side by side and neither is adjusted to meet the other."
+ },
+ "delivered": {
+  "low": {
+   "high": 364455.47,
+   "low": 116789.67
+  },
+  "median": {
+   "high": 566302.21,
+   "low": 180941.04
+  },
+  "vendor": {
+   "high": 701302.24,
+   "low": 223812.3
+  }
+ },
+ "generated_at": "2026-08-04T13:10:24Z",
+ "generator": "procurement/build_procurement_data.py",
+ "hours": {
+  "high": 3794.4,
+  "low": 1259.1
+ },
+ "inventory": {
+  "artifact_sloc": 7205,
+  "artifacts": 7,
+  "data_sloc": 969,
+  "doc_words": 104223,
+  "documents": 10,
+  "external_urls": 7,
+  "model_sloc": 1696,
+  "quoted_loci": 309,
+  "scripts": 14,
+  "site_sloc": 3225,
+  "sources": 264,
+  "total_sloc": 13095
+ },
+ "measured": {
+  "counterfactual_uncached_usd": 1292.11,
+  "generated_at": "2026-08-04T13:10:24Z",
+  "inference_sum_h": 7.47,
+  "inference_union_h": 6.86,
+  "models": 2,
+  "requests": 1756,
+  "subagents": 3,
+  "turns": 27,
+  "usd": 236.61,
+  "wall_span_h": 72.4
+ },
+ "not_delivered": {
+  "low": {
+   "high": 102979.6,
+   "low": 36079.04
+  },
+  "median": {
+   "high": 151556.0,
+   "low": 52975.68
+  },
+  "vendor": {
+   "high": 207785.2,
+   "low": 71777.52
+  }
+ },
+ "not_delivered_packages": [
+  {
+   "group": "disc:acoustical",
+   "hours_high": 200,
+   "hours_low": 80,
+   "key": "field_acoustic",
+   "label": "Field acoustic measurement (Methods 11, 28, 31; captures C1-C5)",
+   "rate_low": 90.54,
+   "rate_median": 131.21,
+   "rate_vendor": 136.77,
+   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "why": "Five capture campaigns plus instrument calibration, analysis and reporting."
+  },
+  {
+   "group": "disc:environmental-scientist",
+   "hours_high": 320,
+   "hours_low": 120,
+   "key": "ped_survey",
+   "label": "Pedestrian origin-destination and dwell survey (Method 28)",
+   "rate_low": 70.17,
+   "rate_median": 108.13,
+   "rate_vendor": 139.43,
+   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "why": "Timed cordon counts across three day types, plus analysis. The single blocking unknown for any absolute exposure figure."
+  },
+  {
+   "group": "disc:architect-building",
+   "hours_high": 600,
+   "hours_low": 200,
+   "key": "architecture",
+   "label": "Licensed architectural and structural design",
+   "rate_low": 99.15,
+   "rate_median": 142.01,
+   "rate_vendor": 211.77,
+   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "why": "Nothing in this repository is a design. A design-build proposal needs a licensed architect and a structural engineer of record."
+  },
+  {
+   "group": "disc:attorney",
+   "hours_high": 40,
+   "hours_low": 8,
+   "key": "legal",
+   "label": "Preemption opinion (Q42)",
+   "rate_low": 73.18,
+   "rate_median": 137.66,
+   "rate_vendor": 218.79,
+   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "why": "Whether 40 CFR Part 201 preempts municipal regulation of a wholly intrastate rapid transit system. One lawyer, one day, per the register."
+  }
+ ],
+ "packages": [
+  {
+   "group": "disc:sme",
+   "hours_high": 396.0,
+   "hours_low": 132.0,
+   "key": "retrieval",
+   "label": "Source retrieval and appraisal",
+   "measure": "sources",
+   "per_unit_high": 1.5,
+   "per_unit_low": 0.5,
+   "quantity": 264,
+   "rate_low": 125.78,
+   "rate_median": 201.97,
+   "rate_vendor": 255.79,
+   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "unit": "source"
+  },
+  {
+   "group": "disc:technical-writer",
+   "hours_high": 677.4,
+   "hours_low": 260.6,
+   "key": "authorship",
+   "label": "Document authorship, cited",
+   "measure": "doc_words",
+   "per_unit_high": 6.5,
+   "per_unit_low": 2.5,
+   "quantity": 104.22,
+   "rate_low": 62.85,
+   "rate_median": 95.76,
+   "rate_vendor": 118.35,
+   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "unit": "1k words"
+  },
+  {
+   "group": "disc:data-engineer",
+   "hours_high": 121.1,
+   "hours_low": 48.4,
+   "key": "dataeng",
+   "label": "Data acquisition and pipelines",
+   "measure": "data_sloc",
+   "per_unit_high": 12.5,
+   "per_unit_low": 5.0,
+   "quantity": 9.69,
+   "rate_low": 99.04,
+   "rate_median": 149.77,
+   "rate_vendor": 182.72,
+   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "unit": "100 SLOC"
+  },
+  {
+   "group": "disc:data-scientist",
+   "hours_high": 254.4,
+   "hours_low": 101.8,
+   "key": "modelling",
+   "label": "Quantitative modelling",
+   "measure": "model_sloc",
+   "per_unit_high": 15.0,
+   "per_unit_low": 6.0,
+   "quantity": 16.96,
+   "rate_low": 110.81,
+   "rate_median": 167.81,
+   "rate_vendor": 203.09,
+   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "unit": "100 SLOC"
+  },
+  {
+   "group": "disc:software-engineer",
+   "hours_high": 900.6,
+   "hours_low": 360.2,
+   "key": "artifacts",
+   "label": "Interactive artifacts",
+   "measure": "artifact_sloc",
+   "per_unit_high": 12.5,
+   "per_unit_low": 5.0,
+   "quantity": 72.05,
+   "rate_low": 88.24,
+   "rate_median": 138.26,
+   "rate_vendor": 171.07,
+   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "unit": "100 SLOC"
+  },
+  {
+   "group": "disc:web-developer",
+   "hours_high": 322.5,
+   "hours_low": 129.0,
+   "key": "publication",
+   "label": "Site generation and publication",
+   "measure": "site_sloc",
+   "per_unit_high": 10.0,
+   "per_unit_low": 4.0,
+   "quantity": 32.25,
+   "rate_low": 82.3,
+   "rate_median": 120.45,
+   "rate_vendor": 146.85,
+   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "unit": "100 SLOC"
+  },
+  {
+   "group": "disc:sme",
+   "hours_high": 534.4,
+   "hours_low": 103.2,
+   "key": "qa",
+   "label": "Review and quality assurance",
+   "measure": "fraction of packages above",
+   "per_unit_high": 0.2,
+   "per_unit_low": 0.1,
+   "quantity": null,
+   "rate_low": 125.78,
+   "rate_median": 201.97,
+   "rate_vendor": 255.79,
+   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "unit": "share"
+  },
+  {
+   "group": "disc:project-manager",
+   "hours_high": 587.9,
+   "hours_low": 123.8,
+   "key": "pm",
+   "label": "Engagement management",
+   "measure": "fraction of packages above",
+   "per_unit_high": 0.22,
+   "per_unit_low": 0.12,
+   "quantity": null,
+   "rate_low": 99.78,
+   "rate_median": 151.95,
+   "rate_vendor": 183.58,
+   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "unit": "share"
+  }
+ ],
+ "rate_ladder": [
+  {
+   "key": "vendor",
+   "label": "Named global consultancy",
+   "note": "GSA ceiling rate, the vendor's own published card"
+  },
+  {
+   "key": "median",
+   "label": "Whole-schedule median",
+   "note": "Median awarded ceiling rate for the discipline across every MAS holder"
+  },
+  {
+   "key": "low",
+   "label": "Whole-schedule 10th percentile",
+   "note": "Cheapest decile of awarded ceiling rates for the same discipline"
+  }
+ ],
+ "rate_populations": {
+  "disc:acoustical": {
+   "max": 172.65,
+   "median": 131.21,
+   "min": 68.95,
+   "n": 7
+  },
+  "disc:architect-building": {
+   "max": 453.71,
+   "median": 142.01,
+   "min": 84.0,
+   "n": 46
+  },
+  "disc:architect-historian": {
+   "max": 178.19,
+   "median": 94.43,
+   "min": 55.27,
+   "n": 29
+  },
+  "disc:attorney": {
+   "max": 490.21,
+   "median": 137.66,
+   "min": 35.0,
+   "n": 75
+  },
+  "disc:civil-engineer": {
+   "max": 304.59,
+   "median": 117.15,
+   "min": 36.76,
+   "n": 217
+  },
+  "disc:data-analyst": {
+   "max": 371.46,
+   "median": 114.81,
+   "min": 27.96,
+   "n": 1749
+  },
+  "disc:data-engineer": {
+   "max": 410.61,
+   "median": 149.77,
+   "min": 47.86,
+   "n": 632
+  },
+  "disc:data-scientist": {
+   "max": 449.62,
+   "median": 167.81,
+   "min": 49.79,
+   "n": 1180
+  },
+  "disc:environmental-scientist": {
+   "max": 247.42,
+   "median": 108.13,
+   "min": 34.8,
+   "n": 218
+  },
+  "disc:gis-analyst": {
+   "max": 221.39,
+   "median": 101.29,
+   "min": 30.71,
+   "n": 200
+  },
+  "disc:noise": {
+   "max": 176.08,
+   "median": 149.13,
+   "min": 131.21,
+   "n": 7
+  },
+  "disc:program-manager": {
+   "max": 499.91,
+   "median": 183.37,
+   "min": 27.92,
+   "n": 8591
+  },
+  "disc:project-manager": {
+   "max": 458.39,
+   "median": 151.95,
+   "min": 26.96,
+   "n": 12825
+  },
+  "disc:sme": {
+   "max": 499.72,
+   "median": 201.97,
+   "min": 40.88,
+   "n": 10330
+  },
+  "disc:software-engineer": {
+   "max": 449.75,
+   "median": 138.26,
+   "min": 29.27,
+   "n": 3686
+  },
+  "disc:technical-writer": {
+   "max": 323.75,
+   "median": 95.76,
+   "min": 29.5,
+   "n": 4467
+  },
+  "disc:web-developer": {
+   "max": 332.61,
+   "median": 120.45,
+   "min": 35.06,
+   "n": 1181
+  },
+  "vendor:accenture": {
+   "max": 488.26,
+   "median": 211.16,
+   "min": 61.22,
+   "n": 2101
+  },
+  "vendor:booz": {
+   "max": 498.06,
+   "median": 151.19,
+   "min": 37.48,
+   "n": 1886
+  },
+  "vendor:deloitte": {
+   "max": 472.66,
+   "median": 231.02,
+   "min": 40.8,
+   "n": 1826
+  },
+  "vendor:ey": {
+   "max": 437.13,
+   "median": 275.41,
+   "min": 133.39,
+   "n": 56
+  },
+  "vendor:kpmg": {
+   "max": 450.36,
+   "median": 207.85,
+   "min": 93.39,
+   "n": 94
+  }
+ },
+ "rates_provenance": {
+  "fetched": "2026-08-04T14:40:30Z",
+  "index": "ceilingrates-2026-08-04_02-00-02",
+  "note": "Ceiling rates on live GSA Multiple Award Schedule contracts. A ceiling rate is the maximum chargeable under the schedule, not a paid price and not a commercial price.",
+  "source": "https://buy.gsa.gov/pricing/api/v3/search/ceilingrates/"
+ },
+ "ratings": {
+  "instrument_a_awards": "5/5 VERIFIED - obligated dollars on real federal contracts",
+  "instrument_b_hours": "1/5 INVENTED - this repository's own estimate, carried as a band",
+  "instrument_b_rates": "5/5 VERIFIED - published GSA ceiling rates",
+  "instrument_c_measured": "5/5 VERIFIED - the client's own billing telemetry",
+  "not_delivered_hours": "1/5 INVENTED - no scoping exercise has been done"
+ },
+ "schema": "procurement-comparison/1",
+ "sensitivity": [
+  {
+   "band_width_usd": 87089.46,
+   "key": "qa",
+   "label": "Review and quality assurance",
+   "share_of_midpoint": 0.1723
+  },
+  {
+   "band_width_usd": 74715.7,
+   "key": "artifacts",
+   "label": "Interactive artifacts",
+   "share_of_midpoint": 0.2333
+  },
+  {
+   "band_width_usd": 70519.99,
+   "key": "pm",
+   "label": "Engagement management",
+   "share_of_midpoint": 0.1447
+  },
+  {
+   "band_width_usd": 53320.08,
+   "key": "retrieval",
+   "label": "Source retrieval and appraisal",
+   "share_of_midpoint": 0.1427
+  },
+  {
+   "band_width_usd": 39912.77,
+   "key": "authorship",
+   "label": "Document authorship, cited",
+   "share_of_midpoint": 0.1202
+  },
+  {
+   "band_width_usd": 25607.81,
+   "key": "modelling",
+   "label": "Quantitative modelling",
+   "share_of_midpoint": 0.08
+  },
+  {
+   "band_width_usd": 23307.08,
+   "key": "publication",
+   "label": "Site generation and publication",
+   "share_of_midpoint": 0.0728
+  },
+  {
+   "band_width_usd": 10888.28,
+   "key": "dataeng",
+   "label": "Data acquisition and pipelines",
+   "share_of_midpoint": 0.034
+  }
+ ]
+}
