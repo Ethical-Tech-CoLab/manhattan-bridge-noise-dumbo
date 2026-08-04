@@ -85,6 +85,10 @@ DOCS = [
      "How many trains, how many people, and for how long? Runnable scripts "
      "against MTA and NYC open data - and the traps that each silently produce a "
      "plausible wrong number."),
+    ("usage/README.md", "usage", "8. Usage and cost", "8. Usage",
+     "What did producing this repository consume? A per-request ledger read "
+     "from the tool's own store - and the correction that the first answer, "
+     "that no such data existed, was wrong."),
 ]
 
 # (path, kind, title, what it demonstrates, what to look at first)
@@ -129,6 +133,15 @@ ARTIFACTS = [
      "The first panel: the same itinerary started ninety seconds apart gets a "
      "different dose. Then the rejected-propagation panel, which is a negative "
      "result and the most important thing on the page."),
+    ("usage/usage-dashboard.html", "Meta", "Usage and cost dashboard",
+     "What this investigation cost to produce, from the tool's own per-request "
+     "log: every model call priced by channel, time measured four ways that "
+     "disagree by an order of magnitude, and an energy bracket that spans a "
+     "factor of twenty-four because nothing here is a measured joule.",
+     "The correction at the top - the first conclusion this dashboard reached "
+     "about itself was that the data did not exist. Then the two bars under the "
+     "ledger: what an agent reads is most of the tokens and half the money; "
+     "what it writes is under one per cent of the tokens and a fifth of it."),
 ]
 
 # Above-the-fold statements on the index page.
@@ -214,6 +227,14 @@ DATASETS = [
 # different marker, because a full tick beside "the week has not been run"
 # would overstate it.
 DONE = [
+    ("Method 33 - the cost of the study itself", 33,
+     "One SQLite read, free",
+     "A per-request ledger of what producing this repository consumed, priced "
+     "by billing channel from the tool's own log. <b>It opens by withdrawing "
+     "its own first conclusion</b> - that no such data existed - which had been "
+     "reached from the wrong file and was three minutes from being published as "
+     "the finding. It reports <b>no measured energy at all</b>, because none "
+     "reaches a client."),
     ("Method 32 - the corridor geometry", 32,
      "Two open datasets, no key, about a minute",
      "The canyon under the bridge, drawn from 960 surveyed building footprints "

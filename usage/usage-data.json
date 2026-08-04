@@ -1,0 +1,1268 @@
+{
+ "schema": "copilot-usage/1",
+ "generated_at": "2026-08-04T13:10:24Z",
+ "generator": "usage/build_usage_data.py",
+ "project": {
+  "name": "Manhattan Bridge Design",
+  "cwd": "c:\\Dev\\Manhattan Bridge Design",
+  "repository": "Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo",
+  "branch": "main"
+ },
+ "session": {
+  "id": "427b73d5-2337-48d8-ac50-a2e20a220074",
+  "created_at": "2026-08-01T12:46:25.992Z",
+  "updated_at": "2026-08-04T12:45:22.792Z"
+ },
+ "units": {
+  "aiu_is": "one US cent",
+  "nano_aiu_per_aiu": 1000000000,
+  "note": "AIU prices in the store match the per-model prices the client publishes in models.json, which in turn match three vendor list prices to the cent. See usage/README.md."
+ },
+ "totals": {
+  "requests": 1756,
+  "turns": 27,
+  "models": 2,
+  "subagents": 3,
+  "subagent_requests": 37,
+  "nano_aiu": 23660625850000,
+  "aiu": 23660.626,
+  "usd": 236.61,
+  "tokens": {
+   "input": 24817,
+   "cache_read": 237584487,
+   "cache_write": 10904220,
+   "output": 1971302,
+   "reasoning": 363866
+  },
+  "premium_requests": 24,
+  "multipliers": [
+   1.0
+  ]
+ },
+ "time": {
+  "first_request": "2026-08-01T12:46:34.717Z",
+  "last_request": "2026-08-04T13:10:23.007Z",
+  "wall_span_s": 260628.3,
+  "inference_sum_s": 26905.8,
+  "inference_union_s": 24706.5,
+  "busy_blocks": 1565,
+  "active": [
+   {
+    "cutoff_s": 120,
+    "active_s": 23447.6,
+    "sittings": 52
+   },
+   {
+    "cutoff_s": 300,
+    "active_s": 27453.0,
+    "sittings": 29
+   },
+   {
+    "cutoff_s": 600,
+    "active_s": 33195.4,
+    "sittings": 14
+   },
+   {
+    "cutoff_s": 1800,
+    "active_s": 40807.1,
+    "sittings": 7
+   }
+  ]
+ },
+ "channels": [
+  {
+   "model": "claude-opus-5",
+   "type": "cache_read",
+   "price_nano_per_token": 50000,
+   "tokens": 235432725,
+   "nano_aiu": 11771636250000,
+   "usd": 117.7164,
+   "usd_per_1m": 0.5
+  },
+  {
+   "model": "claude-opus-5",
+   "type": "cache_write",
+   "price_nano_per_token": 625000,
+   "tokens": 10630108,
+   "nano_aiu": 6643817500000,
+   "usd": 66.4382,
+   "usd_per_1m": 6.25
+  },
+  {
+   "model": "claude-opus-5",
+   "type": "output",
+   "price_nano_per_token": 2500000,
+   "tokens": 1920101,
+   "nano_aiu": 4800252500000,
+   "usd": 48.0025,
+   "usd_per_1m": 25.0
+  },
+  {
+   "model": "gpt-5.6-sol",
+   "type": "cache_write",
+   "price_nano_per_token": 625000,
+   "tokens": 274112,
+   "nano_aiu": 171320000000,
+   "usd": 1.7132,
+   "usd_per_1m": 6.25
+  },
+  {
+   "model": "gpt-5.6-sol",
+   "type": "output",
+   "price_nano_per_token": 3000000,
+   "tokens": 51201,
+   "nano_aiu": 153603000000,
+   "usd": 1.536,
+   "usd_per_1m": 30.0
+  },
+  {
+   "model": "gpt-5.6-sol",
+   "type": "cache_read",
+   "price_nano_per_token": 50000,
+   "tokens": 2151762,
+   "nano_aiu": 107588100000,
+   "usd": 1.0759,
+   "usd_per_1m": 0.5
+  },
+  {
+   "model": "claude-opus-5",
+   "type": "input",
+   "price_nano_per_token": 500000,
+   "tokens": 24706,
+   "nano_aiu": 12353000000,
+   "usd": 0.1235,
+   "usd_per_1m": 5.0
+  },
+  {
+   "model": "gpt-5.6-sol",
+   "type": "input",
+   "price_nano_per_token": 500000,
+   "tokens": 111,
+   "nano_aiu": 55500000,
+   "usd": 0.0006,
+   "usd_per_1m": 5.0
+  }
+ ],
+ "models": [
+  {
+   "model": "claude-opus-5",
+   "requests": 1719,
+   "nano_aiu": 23228059250000,
+   "duration_ms": 26072106,
+   "reasoning": 330130,
+   "input": 24706,
+   "cache_read": 235432725,
+   "cache_write": 10630108,
+   "output": 1920101,
+   "usd": 232.2806
+  },
+  {
+   "model": "gpt-5.6-sol",
+   "requests": 37,
+   "nano_aiu": 432566600000,
+   "duration_ms": 833733,
+   "reasoning": 33736,
+   "input": 111,
+   "cache_read": 2151762,
+   "cache_write": 274112,
+   "output": 51201,
+   "usd": 4.3257
+  }
+ ],
+ "initiators": [
+  {
+   "initiator": "agent",
+   "requests": 1675,
+   "nano_aiu": 19044494050000,
+   "duration_ms": 23272929,
+   "reasoning": 303002,
+   "input": 24618,
+   "cache_read": 234044276,
+   "cache_write": 4917758,
+   "output": 1702549,
+   "usd": 190.4449
+  },
+  {
+   "initiator": "compaction",
+   "requests": 20,
+   "nano_aiu": 2621436925000,
+   "duration_ms": 2208004,
+   "reasoning": 0,
+   "input": 40,
+   "cache_read": 640526,
+   "cache_write": 3426905,
+   "output": 179030,
+   "usd": 26.2144
+  },
+  {
+   "initiator": "user",
+   "requests": 24,
+   "nano_aiu": 1562128275000,
+   "duration_ms": 591173,
+   "reasoning": 27128,
+   "input": 48,
+   "cache_read": 747923,
+   "cache_write": 2285445,
+   "output": 38522,
+   "usd": 15.6213
+  },
+  {
+   "initiator": "sub-agent",
+   "requests": 37,
+   "nano_aiu": 432566600000,
+   "duration_ms": 833733,
+   "reasoning": 33736,
+   "input": 111,
+   "cache_read": 2151762,
+   "cache_write": 274112,
+   "output": 51201,
+   "usd": 4.3257
+  }
+ ],
+ "efforts": [
+  {
+   "effort": "xhigh",
+   "requests": 1444,
+   "nano_aiu": 17442482425000,
+   "duration_ms": 19895454,
+   "reasoning": 289750,
+   "input": 14791,
+   "cache_read": 201752801,
+   "cache_write": 5893583,
+   "output": 1465583,
+   "usd": 174.4248
+  },
+  {
+   "effort": null,
+   "requests": 20,
+   "nano_aiu": 2621436925000,
+   "duration_ms": 2208004,
+   "reasoning": 0,
+   "input": 40,
+   "cache_read": 640526,
+   "cache_write": 3426905,
+   "output": 179030,
+   "usd": 26.2144
+  },
+  {
+   "effort": "medium",
+   "requests": 133,
+   "nano_aiu": 1779393250000,
+   "duration_ms": 2158899,
+   "reasoning": 20681,
+   "input": 273,
+   "cache_read": 17090720,
+   "cache_write": 888434,
+   "output": 145953,
+   "usd": 17.7939
+  },
+  {
+   "effort": "max",
+   "requests": 144,
+   "nano_aiu": 1660541650000,
+   "duration_ms": 2384664,
+   "reasoning": 45057,
+   "input": 9668,
+   "cache_read": 17172308,
+   "cache_write": 590630,
+   "output": 165761,
+   "usd": 16.6054
+  },
+  {
+   "effort": "high",
+   "requests": 15,
+   "nano_aiu": 156771600000,
+   "duration_ms": 258818,
+   "reasoning": 8378,
+   "input": 45,
+   "cache_read": 928132,
+   "cache_write": 104668,
+   "output": 14975,
+   "usd": 1.5677
+  }
+ ],
+ "agents": [
+  {
+   "agent": "toolu_01EFseCxBf8exs9YGKDWZPJW",
+   "requests": 15,
+   "nano_aiu": 182898875000,
+   "duration_ms": 421875,
+   "reasoning": 21186,
+   "input": 45,
+   "cache_read": 898070,
+   "cache_write": 90715,
+   "output": 27092,
+   "usd": 1.829,
+   "started": "2026-08-01T13:02:30.571Z",
+   "turn": 1,
+   "models": [
+    "gpt-5.6-sol"
+   ]
+  },
+  {
+   "agent": "toolu_01CNECvF8YkQmFhnmV9D9aPE",
+   "requests": 15,
+   "nano_aiu": 156771600000,
+   "duration_ms": 258818,
+   "reasoning": 8378,
+   "input": 45,
+   "cache_read": 928132,
+   "cache_write": 104668,
+   "output": 14975,
+   "usd": 1.5677,
+   "started": "2026-08-01T15:28:59.401Z",
+   "turn": 6,
+   "models": [
+    "gpt-5.6-sol"
+   ]
+  },
+  {
+   "agent": "toolu_01KMTco8bXLJjFdLFwq58S2L",
+   "requests": 7,
+   "nano_aiu": 92896125000,
+   "duration_ms": 153040,
+   "reasoning": 4172,
+   "input": 21,
+   "cache_read": 325560,
+   "cache_write": 78729,
+   "output": 9134,
+   "usd": 0.929,
+   "started": "2026-08-01T14:27:55.084Z",
+   "turn": 4,
+   "models": [
+    "gpt-5.6-sol"
+   ]
+  }
+ ],
+ "turns": [
+  {
+   "index": 0,
+   "label": "As an academic researcher, noise reduction research for rail traffic (subway) that runs over the...",
+   "started": "2026-08-01T12:46:34.717Z",
+   "requests": 2,
+   "nano_aiu": 32975100000,
+   "usd": 0.33,
+   "duration_ms": 8458,
+   "reasoning": 61,
+   "input": 126,
+   "cache_read": 46367,
+   "cache_write": 46798,
+   "output": 538,
+   "subagent_requests": 0
+  },
+  {
+   "index": 1,
+   "label": "(tool or skill context, not a typed request)",
+   "started": "2026-08-01T12:46:46.010Z",
+   "requests": 143,
+   "nano_aiu": 1760810450000,
+   "usd": 17.608,
+   "duration_ms": 2479561,
+   "reasoning": 44996,
+   "input": 9544,
+   "cache_read": 17161449,
+   "cache_write": 721428,
+   "output": 173411,
+   "subagent_requests": 15
+  },
+  {
+   "index": 2,
+   "label": "1/Fix the formatting error that is occurring whenever \" L<sub>EQ</sub> of\" this type of thing is...",
+   "started": "2026-08-01T13:42:33.858Z",
+   "requests": 32,
+   "nano_aiu": 592698850000,
+   "usd": 5.927,
+   "duration_ms": 429916,
+   "reasoning": 2739,
+   "input": 64,
+   "cache_read": 5660987,
+   "cache_write": 369972,
+   "output": 31354,
+   "subagent_requests": 0
+  },
+  {
+   "index": 3,
+   "label": "Produce detailed researched using Tavily as needed and the same research methodology to research...",
+   "started": "2026-08-01T14:12:10.746Z",
+   "requests": 46,
+   "nano_aiu": 329428500000,
+   "usd": 3.294,
+   "duration_ms": 320597,
+   "reasoning": 5724,
+   "input": 92,
+   "cache_read": 4247900,
+   "cache_write": 116748,
+   "output": 17608,
+   "subagent_requests": 0
+  },
+  {
+   "index": 4,
+   "label": "Note the no-MTA-modification constraint is for one area of research. Another area of research to...",
+   "started": "2026-08-01T14:17:55.471Z",
+   "requests": 57,
+   "nano_aiu": 1142676425000,
+   "usd": 11.427,
+   "duration_ms": 1617651,
+   "reasoning": 12218,
+   "input": 121,
+   "cache_read": 7217341,
+   "cache_write": 788507,
+   "output": 113746,
+   "subagent_requests": 7
+  },
+  {
+   "index": 5,
+   "label": "1/Add a research project to measure the Williamsburg Bridge underneath in the outdoor space wher...",
+   "started": "2026-08-01T14:52:19.307Z",
+   "requests": 42,
+   "nano_aiu": 614650525000,
+   "usd": 6.147,
+   "duration_ms": 832728,
+   "reasoning": 18804,
+   "input": 478,
+   "cache_read": 4959893,
+   "cache_write": 365511,
+   "output": 55189,
+   "subagent_requests": 0
+  },
+  {
+   "index": 6,
+   "label": "(tool or skill context, not a typed request)",
+   "started": "2026-08-01T15:13:06.334Z",
+   "requests": 121,
+   "nano_aiu": 1757225675000,
+   "usd": 17.572,
+   "duration_ms": 2250809,
+   "reasoning": 21673,
+   "input": 257,
+   "cache_read": 14432381,
+   "cache_write": 972245,
+   "output": 168135,
+   "subagent_requests": 15
+  },
+  {
+   "index": 7,
+   "label": "status?",
+   "started": "2026-08-01T15:47:13.461Z",
+   "requests": 1,
+   "nano_aiu": 42533625000,
+   "usd": 0.425,
+   "duration_ms": 26428,
+   "reasoning": 287,
+   "input": 2,
+   "cache_read": 36890,
+   "cache_write": 59569,
+   "output": 1383,
+   "subagent_requests": 0
+  },
+  {
+   "index": 8,
+   "label": "status?",
+   "started": "2026-08-01T16:25:37.628Z",
+   "requests": 83,
+   "nano_aiu": 895604625000,
+   "usd": 8.956,
+   "duration_ms": 792862,
+   "reasoning": 5312,
+   "input": 166,
+   "cache_read": 12477070,
+   "cache_write": 192201,
+   "output": 60617,
+   "subagent_requests": 0
+  },
+  {
+   "index": 9,
+   "label": "1/Provide links in the README.md and here to each item that should be reviewed as a model or in ...",
+   "started": "2026-08-01T16:53:16.005Z",
+   "requests": 90,
+   "nano_aiu": 1558089700000,
+   "usd": 15.581,
+   "duration_ms": 2529712,
+   "reasoning": 32324,
+   "input": 5399,
+   "cache_read": 11145704,
+   "cache_write": 791232,
+   "output": 201434,
+   "subagent_requests": 0
+  },
+  {
+   "index": 10,
+   "label": "Based on the audio/decible data, we should add a Continuous feature for the audio. We know the f...",
+   "started": "2026-08-01T18:46:05.752Z",
+   "requests": 80,
+   "nano_aiu": 986801525000,
+   "usd": 9.868,
+   "duration_ms": 1137218,
+   "reasoning": 22621,
+   "input": 3496,
+   "cache_read": 9835708,
+   "cache_write": 457081,
+   "output": 83037,
+   "subagent_requests": 0
+  },
+  {
+   "index": 11,
+   "label": "What would be useful to capture on my cellphone high quality camera and microphone? It is a Sams...",
+   "started": "2026-08-01T20:14:07.460Z",
+   "requests": 40,
+   "nano_aiu": 520138675000,
+   "usd": 5.201,
+   "duration_ms": 684333,
+   "reasoning": 9333,
+   "input": 80,
+   "cache_read": 5909986,
+   "cache_write": 187231,
+   "output": 43032,
+   "subagent_requests": 0
+  },
+  {
+   "index": 12,
+   "label": "look carefully at reddit and other local resident resources where someone may have crowd sourced...",
+   "started": "2026-08-01T20:52:24.916Z",
+   "requests": 77,
+   "nano_aiu": 1054552225000,
+   "usd": 10.546,
+   "duration_ms": 1040961,
+   "reasoning": 9445,
+   "input": 154,
+   "cache_read": 11037017,
+   "cache_write": 517691,
+   "output": 71627,
+   "subagent_requests": 0
+  },
+  {
+   "index": 13,
+   "label": "Thesis: Does Googlemaps effectively publish route schedule on these routes across the Manhattan ...",
+   "started": "2026-08-02T02:19:20.356Z",
+   "requests": 63,
+   "nano_aiu": 852151950000,
+   "usd": 8.522,
+   "duration_ms": 913316,
+   "reasoning": 13662,
+   "input": 2706,
+   "cache_read": 7988829,
+   "cache_write": 447408,
+   "output": 68691,
+   "subagent_requests": 0
+  },
+  {
+   "index": 14,
+   "label": "Create a dashboard that shows the train direction and frequency and determines based on schedule...",
+   "started": "2026-08-02T02:45:10.020Z",
+   "requests": 9,
+   "nano_aiu": 160088900000,
+   "usd": 1.601,
+   "duration_ms": 179917,
+   "reasoning": 7705,
+   "input": 18,
+   "cache_read": 957823,
+   "cache_write": 128842,
+   "output": 12665,
+   "subagent_requests": 0
+  },
+  {
+   "index": 15,
+   "label": "(tool or skill context, not a typed request)",
+   "started": "2026-08-02T02:51:15.146Z",
+   "requests": 52,
+   "nano_aiu": 736365700000,
+   "usd": 7.364,
+   "duration_ms": 861729,
+   "reasoning": 7106,
+   "input": 104,
+   "cache_read": 8161474,
+   "cache_write": 255864,
+   "output": 67330,
+   "subagent_requests": 0
+  },
+  {
+   "index": 16,
+   "label": "How can we add York St (F Train) and High St (A Train) data to substantiate subway riders that b...",
+   "started": "2026-08-02T03:20:48.988Z",
+   "requests": 109,
+   "nano_aiu": 1259664575000,
+   "usd": 12.597,
+   "duration_ms": 1475570,
+   "reasoning": 20576,
+   "input": 218,
+   "cache_read": 14069149,
+   "cache_write": 441101,
+   "output": 112164,
+   "subagent_requests": 0
+  },
+  {
+   "index": 17,
+   "label": "make sure the todos are all completed",
+   "started": "2026-08-02T04:08:04.742Z",
+   "requests": 9,
+   "nano_aiu": 125247850000,
+   "usd": 1.252,
+   "duration_ms": 68869,
+   "reasoning": 433,
+   "input": 18,
+   "cache_read": 889602,
+   "cache_write": 113054,
+   "output": 4040,
+   "subagent_requests": 0
+  },
+  {
+   "index": 18,
+   "label": "Add logic that attempts to calculate accumulated population that is present each hour of the day...",
+   "started": "2026-08-02T04:16:09.964Z",
+   "requests": 34,
+   "nano_aiu": 437843125000,
+   "usd": 4.378,
+   "duration_ms": 530175,
+   "reasoning": 11936,
+   "input": 68,
+   "cache_read": 4577570,
+   "cache_write": 171973,
+   "output": 40579,
+   "subagent_requests": 0
+  },
+  {
+   "index": 19,
+   "label": "We may be able to use this cohort modeling data later to do an agentic population model where we...",
+   "started": "2026-08-02T04:26:40.257Z",
+   "requests": 64,
+   "nano_aiu": 928966275000,
+   "usd": 9.29,
+   "duration_ms": 739412,
+   "reasoning": 9575,
+   "input": 128,
+   "cache_read": 7901108,
+   "cache_write": 624691,
+   "output": 57366,
+   "subagent_requests": 0
+  },
+  {
+   "index": 20,
+   "label": "1/when complete, make the repo public, create an explainer HTML page that links to all of the ar...",
+   "started": "2026-08-02T05:05:55.743Z",
+   "requests": 154,
+   "nano_aiu": 2047577600000,
+   "usd": 20.476,
+   "duration_ms": 2148491,
+   "reasoning": 20891,
+   "input": 308,
+   "cache_read": 21869372,
+   "cache_write": 853352,
+   "output": 168244,
+   "subagent_requests": 0
+  },
+  {
+   "index": 21,
+   "label": "Create a Pages site that organizes current state of the investigation, research and work to be d...",
+   "started": "2026-08-03T17:44:30.592Z",
+   "requests": 49,
+   "nano_aiu": 610613050000,
+   "usd": 6.106,
+   "duration_ms": 729106,
+   "reasoning": 14753,
+   "input": 98,
+   "cache_read": 7161006,
+   "cache_write": 176590,
+   "output": 56858,
+   "subagent_requests": 0
+  },
+  {
+   "index": 22,
+   "label": "Improve the visual front page 'above the fold' for the research by showing a combination of a re...",
+   "started": "2026-08-03T18:10:49.245Z",
+   "requests": 41,
+   "nano_aiu": 583907600000,
+   "usd": 5.839,
+   "duration_ms": 507090,
+   "reasoning": 10052,
+   "input": 82,
+   "cache_read": 5481807,
+   "cache_write": 360706,
+   "output": 33734,
+   "subagent_requests": 0
+  },
+  {
+   "index": 23,
+   "label": "Create a new carousel page that is a picture that shows the 2026 noise canyon that exists by sho...",
+   "started": "2026-08-03T18:21:41.284Z",
+   "requests": 1,
+   "nano_aiu": 12985975000,
+   "usd": 0.13,
+   "duration_ms": 34344,
+   "reasoning": 1810,
+   "input": 2,
+   "cache_read": 119862,
+   "cache_write": 2107,
+   "output": 2270,
+   "subagent_requests": 0
+  },
+  {
+   "index": 24,
+   "label": "make it easy to add and remove pages from the carousel",
+   "started": "2026-08-03T18:22:14.827Z",
+   "requests": 179,
+   "nano_aiu": 2303024925000,
+   "usd": 23.03,
+   "duration_ms": 2356872,
+   "reasoning": 28090,
+   "input": 358,
+   "cache_read": 28021931,
+   "cache_write": 764499,
+   "output": 169575,
+   "subagent_requests": 0
+  },
+  {
+   "index": 25,
+   "label": "1/update to the todo list for green checkmarks 2/move the section \"where the investigation stand...",
+   "started": "2026-08-03T19:25:23.259Z",
+   "requests": 81,
+   "nano_aiu": 845426700000,
+   "usd": 8.454,
+   "duration_ms": 700753,
+   "reasoning": 6115,
+   "input": 162,
+   "cache_read": 12007264,
+   "cache_write": 197244,
+   "output": 48682,
+   "subagent_requests": 0
+  },
+  {
+   "index": 26,
+   "label": "",
+   "started": "2026-08-04T12:45:42.255Z",
+   "requests": 97,
+   "nano_aiu": 1468575725000,
+   "usd": 14.686,
+   "duration_ms": 1508961,
+   "reasoning": 25625,
+   "input": 568,
+   "cache_read": 14208997,
+   "cache_write": 780575,
+   "output": 107993,
+   "subagent_requests": 0
+  }
+ ],
+ "counterfactual": {
+  "actual_usd": 236.61,
+  "uncached_usd": 1292.11,
+  "ratio": 5.461,
+  "models_without_an_input_price_sample": []
+ },
+ "energy": {
+  "requests": 1756,
+  "scenarios": [
+   {
+    "scenario": "Traditional query, IQR low",
+    "wh_per_request": 0.18,
+    "kwh": 0.316,
+    "household_hours": 0.26
+   },
+   {
+    "scenario": "Traditional query, median",
+    "wh_per_request": 0.34,
+    "kwh": 0.597,
+    "household_hours": 0.5
+   },
+   {
+    "scenario": "Traditional query, IQR high",
+    "wh_per_request": 0.67,
+    "kwh": 1.177,
+    "household_hours": 0.98
+   },
+   {
+    "scenario": "Test-time scaling, median",
+    "wh_per_request": 4.32,
+    "kwh": 7.586,
+    "household_hours": 6.33
+   }
+  ],
+  "spread": 24.0,
+  "measured": false,
+  "why_neither_regime_fits": "The published regimes are separated by output length. This workload is not separated that way: its requests are short in output and extremely long in input, and almost all of that input is served from a prompt cache. The bracket below is therefore wider than the truth in one direction and narrower in another, and no arithmetic available here can close it.",
+  "source": {
+   "title": "Energy Use of AI Inference: Efficiency Pathways and Test-Time Compute",
+   "authors": "Oviedo, Kazhamiaka, Choukse, Kim, Luers, Nakagawa, Bianchini, Lavista Ferres",
+   "venue": "Joule, 2025 (Microsoft Research)",
+   "url": "https://www.microsoft.com/en-us/research/publication/energy-use-of-ai-inference-efficiency-pathways-and-test-time-compute",
+   "rating": "5/5 VERIFIED for the figures; 2/5 for their application here",
+   "locus": "we estimate a median energy per query of 0.34 Wh (IQR: 0.18-0.67) for frontier-scale models (>200 billion parameters) ... Extending to test-time scaling scenarios with 15x more tokens per typical query, the median energy rises 13-fold to 4.32 Wh"
+  },
+  "household_source": {
+   "locus": "The average U.S. household consumes about 10,500 kilowatthours (kWh) of electricity per year.",
+   "url": "https://www.eia.gov/energyexplained/use-of-energy/electricity-use-in-homes.php",
+   "venue": "US Energy Information Administration"
+  }
+ },
+ "catalogue": {
+  "offered": 40,
+  "selectable": 21,
+  "used": [
+   "claude-opus-5",
+   "gpt-5.6-sol"
+  ],
+  "roster": [
+   {
+    "id": "gpt-4-0125-preview",
+    "vendor": "Azure OpenAI",
+    "input_price": 1000,
+    "output_price": 3000,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "claude-opus-4.6",
+    "vendor": "Anthropic",
+    "input_price": 500,
+    "output_price": 2500,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "claude-opus-4.7",
+    "vendor": "Anthropic",
+    "input_price": 500,
+    "output_price": 2500,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "claude-opus-4.8",
+    "vendor": "Anthropic",
+    "input_price": 500,
+    "output_price": 2500,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "claude-opus-5",
+    "vendor": "Anthropic",
+    "input_price": 500,
+    "output_price": 2500,
+    "picker": true,
+    "used": true
+   },
+   {
+    "id": "gpt-5.5",
+    "vendor": "OpenAI",
+    "input_price": 500,
+    "output_price": 3000,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "gpt-5.6-sol",
+    "vendor": "OpenAI",
+    "input_price": 500,
+    "output_price": 3000,
+    "picker": true,
+    "used": true
+   },
+   {
+    "id": "claude-sonnet-4.6",
+    "vendor": "Anthropic",
+    "input_price": 300,
+    "output_price": 1500,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "claude-sonnet-4.5",
+    "vendor": "Anthropic",
+    "input_price": 300,
+    "output_price": 1500,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "gpt-5.4",
+    "vendor": "OpenAI",
+    "input_price": 250,
+    "output_price": 1500,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "gpt-4",
+    "vendor": "Azure OpenAI",
+    "input_price": 250,
+    "output_price": 1000,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-4-0613",
+    "vendor": "Azure OpenAI",
+    "input_price": 250,
+    "output_price": 1000,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "claude-sonnet-5",
+    "vendor": "Anthropic",
+    "input_price": 200,
+    "output_price": 1000,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "gemini-3.1-pro-preview",
+    "vendor": "Google",
+    "input_price": 200,
+    "output_price": 1200,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "gpt-5.6-terra",
+    "vendor": "OpenAI",
+    "input_price": 200,
+    "output_price": 1200,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "grok-4.5",
+    "vendor": "xAI",
+    "input_price": 200,
+    "output_price": 600,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "gpt-41-copilot",
+    "vendor": "Azure OpenAI",
+    "input_price": 200,
+    "output_price": 800,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-5.3-codex",
+    "vendor": "OpenAI",
+    "input_price": 175,
+    "output_price": 1400,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "gemini-3.5-flash",
+    "vendor": "Google",
+    "input_price": 150,
+    "output_price": 900,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "gemini-3.6-flash",
+    "vendor": "Google",
+    "input_price": 150,
+    "output_price": 750,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "claude-haiku-4.5",
+    "vendor": "Anthropic",
+    "input_price": 100,
+    "output_price": 500,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "gpt-5.4-mini",
+    "vendor": "OpenAI",
+    "input_price": 75,
+    "output_price": 450,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "mai-code-1-flash-picker",
+    "vendor": "Microsoft",
+    "input_price": 75,
+    "output_price": 450,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "gpt-5-mini",
+    "vendor": "Azure OpenAI",
+    "input_price": 25,
+    "output_price": 200,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "gpt-5.6-luna",
+    "vendor": "OpenAI",
+    "input_price": 20,
+    "output_price": 120,
+    "picker": true,
+    "used": false
+   },
+   {
+    "id": "trajectory-compaction",
+    "vendor": "Fireworks",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-4o-mini-2024-07-18",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-4o-2024-11-20",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-4o-2024-08-06",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "text-embedding-3-small",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "text-embedding-3-small-inference",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-4.1-2025-04-14",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-3.5-turbo-0613",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-4o-2024-05-13",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-4-o-preview",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-4.1",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-3.5-turbo",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-4o-mini",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "gpt-4o",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   },
+   {
+    "id": "text-embedding-ada-002",
+    "vendor": "Azure OpenAI",
+    "input_price": 0,
+    "output_price": 0,
+    "picker": false,
+    "used": false
+   }
+  ],
+  "source": "models.json written by the client"
+ },
+ "outputs": {
+  "commits": [
+   {
+    "sha": "4dd85eb",
+    "at": "2026-08-01T09:45:30-04:00",
+    "subject": "docs: add DUMBO / Manhattan Bridge rail-noise problem definition (v1.1)"
+   },
+   {
+    "sha": "d86a562",
+    "at": "2026-08-01T10:39:31-04:00",
+    "subject": "docs: add worldwide elevated-transit precedent and materials survey (v1.1)"
+   },
+   {
+    "sha": "2bb649b",
+    "at": "2026-08-01T12:40:00-04:00",
+    "subject": "docs: add Documents 3 and 4 plus visual-review artifact, both red-teamed to v1.1"
+   },
+   {
+    "sha": "314d8f1",
+    "at": "2026-08-01T13:31:41-04:00",
+    "subject": "feat: add navigable 3D model and calibrated acoustic demonstration"
+   },
+   {
+    "sha": "e62d32a",
+    "at": "2026-08-01T15:07:16-04:00",
+    "subject": "feat(acoustic-demo): model the service pattern, not just the event"
+   },
+   {
+    "sha": "713efe5",
+    "at": "2026-08-01T16:23:37-04:00",
+    "subject": "docs: add Document 5, the field capture protocol"
+   },
+   {
+    "sha": "5fe510a",
+    "at": "2026-08-01T17:07:53-04:00",
+    "subject": "docs: add Document 6, the community evidence audit"
+   },
+   {
+    "sha": "080c032",
+    "at": "2026-08-01T22:34:00-04:00",
+    "subject": "Add data-collection: establish bridge traversal frequency from MTA GTFS"
+   },
+   {
+    "sha": "316cce9",
+    "at": "2026-08-01T22:59:18-04:00",
+    "subject": "Add frequency dashboard; withdraw two claims it disproved"
+   },
+   {
+    "sha": "d70d10b",
+    "at": "2026-08-01T23:01:07-04:00",
+    "subject": "Register Method 27: nobody has counted the people"
+   },
+   {
+    "sha": "acc1ed1",
+    "at": "2026-08-01T23:47:51-04:00",
+    "subject": "Count the denominator, and withdraw a third claim"
+   },
+   {
+    "sha": "dd3d381",
+    "at": "2026-08-02T01:43:12-04:00",
+    "subject": "feat: cohort survival model, agentic population model, and explainer page"
+   },
+   {
+    "sha": "12ccc54",
+    "at": "2026-08-02T01:46:13-04:00",
+    "subject": "docs: link the three red-team issues and record that the repo is public"
+   },
+   {
+    "sha": "aaae876",
+    "at": "2026-08-03T13:54:20-04:00",
+    "subject": "feat: publish a GitHub Pages site generated from the repository"
+   },
+   {
+    "sha": "aa96cc6",
+    "at": "2026-08-03T13:58:36-04:00",
+    "subject": "fix: inline an SVG favicon so no page takes a 404 on /favicon.ico"
+   },
+   {
+    "sha": "8260a40",
+    "at": "2026-08-03T15:03:57-04:00",
+    "subject": "feat: noise-canyon carousel from open data, hero composite, Method 32"
+   },
+   {
+    "sha": "b506480",
+    "at": "2026-08-03T15:04:18-04:00",
+    "subject": "chore: rebuild Pages so the site cites the commit containing the carousel"
+   },
+   {
+    "sha": "309558f",
+    "at": "2026-08-03T15:09:43-04:00",
+    "subject": "docs: document fetch_geodata.py and traps 5-7 in data-collection"
+   },
+   {
+    "sha": "a22a085",
+    "at": "2026-08-03T15:38:50-04:00",
+    "subject": "feat: mark done work with checks, move the status board below the demos"
+   },
+   {
+    "sha": "d7a3113",
+    "at": "2026-08-03T15:39:37-04:00",
+    "subject": "chore: rebuild Pages so the site cites the current commit"
+   }
+  ],
+  "commit_count": 20,
+  "insertions": 31504,
+  "deletions": 837,
+  "tracked_files": 47,
+  "files_by_ext": {
+   ".html": 15,
+   ".py": 9,
+   ".md": 8,
+   ".json": 6,
+   ".jpg": 4,
+   "(none)": 3,
+   ".png": 1,
+   ".js": 1
+  },
+  "bytes": 4998773,
+  "markdown_words": 96527
+ },
+ "not_measured": [
+  [
+   "Energy",
+   "No joules are recorded anywhere in this data. The energy panel applies a published per-query figure to a request count. It is an estimate stapled to a fact, and the two ends of its own bracket differ by a factor of 24."
+  ],
+  [
+   "Water and embodied carbon",
+   "Downstream of energy, and not derivable from it without a site-specific PUE and WUE."
+  ],
+  [
+   "What was actually paid",
+   "The store prices tokens. A Copilot subscription bills premium requests. The two are not the same number and this data cannot bridge them."
+  ],
+  [
+   "Human time",
+   "No keystroke or focus telemetry exists here. The active-time figures are inferred from gaps between requests."
+  ],
+  [
+   "Value",
+   "Nothing here measures whether any of the output was worth having."
+  ]
+ ]
+}

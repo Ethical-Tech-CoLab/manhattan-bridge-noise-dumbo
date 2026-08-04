@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Usage dashboard - what this investigation cost</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M2 24h28M6 24V8m20 16V8M6 10c5 6 15 6 20 0M6 24c5-8 15-8 20 0' fill='none' stroke='%23b11f4b' stroke-width='2'/%3E%3C/svg%3E">
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+code, .mono, th.num, td.num { font-family: Consolas, "Courier New", Courier, monospace; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px 90px; }
+header.top {
+  background: var(--cp-bg-elevated);
+  border-bottom: 1px solid var(--cp-border);
+  padding: 44px 0 34px;
+  margin-bottom: 30px;
+}
+header.top .wrap { padding-bottom: 0; }
+h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 10px; letter-spacing: -0.02em; }
+h2 {
+  font-size: 1.35rem; margin: 0 0 4px; letter-spacing: -0.01em;
+}
+.sub { color: var(--cp-text-muted); margin: 0 0 6px; max-width: 74ch; }
+.crumb { font-size: 0.82rem; color: var(--cp-text-soft); margin-bottom: 14px; }
+.crumb a { color: var(--cp-link); text-decoration: none; }
+.crumb a:hover { text-decoration: underline; }
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 24px 26px;
+  margin: 0 0 22px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.card > h2 + .sub { margin-bottom: 18px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(158px, 1fr)); gap: 12px; margin-top: 22px; }
+.stat {
+  background: var(--cp-surface); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+}
+.stat b { display: block; font-size: 1.6rem; line-height: 1.15; letter-spacing: -0.02em; }
+.stat span { display: block; font-size: 0.76rem; color: var(--cp-text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+.stat em { display: block; font-style: normal; font-size: 0.8rem; color: var(--cp-text-soft); margin-top: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.scroll { overflow-x: auto; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--cp-border); vertical-align: top; }
+th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cp-text-muted); font-weight: 600; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+tfoot td { font-weight: 700; border-top: 2px solid var(--cp-border-strong); }
+.note {
+  border-left: 3px solid var(--cp-accent); background: var(--cp-accent-soft);
+  padding: 12px 16px; border-radius: 0 0.625rem 0.625rem 0; margin: 18px 0 0;
+  font-size: 0.92rem;
+}
+.note strong { color: var(--cp-accent); }
+.warn { border-left-color: var(--cp-warning); background: var(--cp-surface-soft); }
+.warn strong { color: var(--cp-warning); }
+blockquote.wrong {
+  margin: 14px 0; padding: 12px 18px; border-left: 3px solid var(--cp-danger);
+  background: var(--cp-surface-soft); color: var(--cp-text-muted);
+  border-radius: 0 0.625rem 0.625rem 0; font-style: italic;
+}
+.withdrawn { color: var(--cp-danger); font-weight: 700; font-style: normal; }
+.bars { margin-top: 16px; }
+.bar { display: grid; grid-template-columns: minmax(120px, 190px) 1fr auto; gap: 12px; align-items: center; padding: 3px 0; font-size: 0.86rem; }
+.bar .lab { color: var(--cp-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar .track { background: var(--cp-surface-soft); border-radius: 4px; height: 15px; overflow: hidden; border: 1px solid var(--cp-border); }
+.bar .fill { height: 100%; background: var(--cp-accent); }
+.bar .val { font-family: Consolas, "Courier New", Courier, monospace; font-size: 0.82rem; color: var(--cp-text-muted); min-width: 74px; text-align: right; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+@media (max-width: 780px) { .split { grid-template-columns: 1fr; } .bar { grid-template-columns: minmax(90px,130px) 1fr auto; } }
+.dual { margin-top: 8px; }
+.dual .row { margin-bottom: 14px; }
+.dual .cap { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cp-text-muted); margin-bottom: 5px; }
+.seg { display: flex; height: 30px; border-radius: 0.625rem; overflow: hidden; border: 1px solid var(--cp-border); }
+.seg div { display: flex; align-items: center; justify-content: center; font-size: 0.72rem; color: var(--cp-accent-fg); overflow: hidden; white-space: nowrap; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: 0.8rem; color: var(--cp-text-muted); }
+.legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+ul.tight { margin: 12px 0 0; padding-left: 20px; }
+ul.tight li { margin-bottom: 9px; }
+a { color: var(--cp-link); }
+.rating { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted); margin-left: 8px; vertical-align: 2px; }
+.locus { font-size: 0.86rem; color: var(--cp-text-muted); border-left: 2px solid var(--cp-border-strong); padding-left: 14px; margin: 12px 0; font-style: italic; }
+footer { color: var(--cp-text-soft); font-size: 0.84rem; border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 34px; }
+h3 { font-size: 1rem; margin: 22px 0 6px; }
+.pill { font-size: 0.72rem; padding: 2px 9px; border-radius: 999px; background: var(--cp-accent-soft); color: var(--cp-accent); font-weight: 700; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="crumb"><a href="../index.html">Manhattan Bridge noise study</a> &rsaquo; usage dashboard</div>
+    <h1>What this investigation cost</h1>
+    <p class="sub" id="lede"></p>
+    <div class="stats" id="hero"></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>A correction, before any of the numbers</h2>
+    <p class="sub">This dashboard began by concluding that the data it needed did not exist.</p>
+    <blockquote class="wrong" id="wrongclaim"></blockquote>
+    <p><span class="withdrawn">That is withdrawn.</span> <span id="withdrawtext"></span></p>
+    <div class="note"><strong>Why it is on the page.</strong> The claim was three minutes from
+      being written up as the finding of the case study &mdash; that agentic work is
+      unmeasurable because nobody records it. It was wrong, and it was wrong in the
+      flattering direction: an absence of evidence is a much easier thing to publish than
+      a ledger that can be checked. The correction stays visible for the same reason every
+      other withdrawal in this repository does.</div>
+  </div>
+
+  <div class="card">
+    <h2>The ledger</h2>
+    <p class="sub">Every request that was billed, by model and by channel. Read from
+      <code>token_details_json</code>, which reconciles to the cost the client recorded on
+      <strong id="reconcount"></strong> &mdash; not from the token columns beside it, which do not.</p>
+    <div class="scroll"><table id="chanTable"></table></div>
+    <div class="dual" id="dual"></div>
+    <div class="note" id="dualnote"></div>
+  </div>
+
+  <div class="card">
+    <h2>Where it actually went</h2>
+    <p class="sub">Requests are grouped by what caused them. This is the panel that
+      changed how the work reads.</p>
+    <div class="split">
+      <div>
+        <h3>By initiator</h3>
+        <div class="bars" id="initBars"></div>
+      </div>
+      <div>
+        <h3>By reasoning effort</h3>
+        <div class="bars" id="effortBars"></div>
+      </div>
+    </div>
+    <div class="note" id="initnote"></div>
+  </div>
+
+  <div class="card">
+    <h2>The cache is doing most of the work</h2>
+    <p class="sub">Same traffic, same models, every cached token repriced at its model's
+      full input rate.</p>
+    <div class="stats" id="cfStats"></div>
+    <div class="note"><strong>What this is not.</strong> It is not a saving anyone banked.
+      Without a cache the agent would have been driven differently &mdash; smaller context,
+      fewer re-reads, more summarising &mdash; so the uncached column prices a workload that
+      would never have been run in that shape. It bounds the cache's contribution; it does
+      not measure a decision.</div>
+  </div>
+
+  <div class="card">
+    <h2>Three honest answers to &ldquo;how many hours&rdquo;</h2>
+    <p class="sub">They differ by an order of magnitude, and each one is measuring
+      something real. The question does not have a single answer.</p>
+    <div class="scroll"><table id="timeTable"></table></div>
+    <h3>Active time, by how long a pause has to be before it stops counting</h3>
+    <div class="bars" id="activeBars"></div>
+    <div class="note" id="timenote"></div>
+  </div>
+
+  <div class="card">
+    <h2>Cost per turn</h2>
+    <p class="sub">One bar per thing that was asked for. The label is the opening of the
+      request as it was typed.</p>
+    <div class="bars" id="turnBars"></div>
+    <div class="scroll" style="margin-top:20px"><table id="turnTable"></table></div>
+  </div>
+
+  <div class="card">
+    <h2>Models, and sub-agents</h2>
+    <div class="split">
+      <div>
+        <h3>What was offered against what was used</h3>
+        <div id="modelSummary"></div>
+        <div class="scroll" style="margin-top:12px"><table id="modelTable"></table></div>
+      </div>
+      <div>
+        <h3>Sub-agents</h3>
+        <div id="agentSummary"></div>
+        <div class="scroll" style="margin-top:12px"><table id="agentTable"></table></div>
+      </div>
+    </div>
+    <div class="note" id="agentnote"></div>
+  </div>
+
+  <div class="card">
+    <h2>Energy <span class="rating" id="energyRating"></span></h2>
+    <p class="sub" id="energysub"></p>
+    <div class="scroll"><table id="energyTable"></table></div>
+    <p class="locus" id="energyLocus"></p>
+    <div class="note warn" id="energynote"></div>
+  </div>
+
+  <div class="card">
+    <h2>The other half of the ledger</h2>
+    <p class="sub">What the repository has to show for it. Counted, not appraised.</p>
+    <div class="stats" id="outStats"></div>
+    <div class="scroll" style="margin-top:20px"><table id="perUnit"></table></div>
+    <div class="note warn"><strong>Volume is not value.</strong> Every figure above is a
+      count of output, and this repository&rsquo;s own record argues against reading counts as
+      worth: several of its most useful moments were <em>withdrawals</em>, which reduce the
+      word count and improve the work. A ratio of dollars to words prices typing. Nothing
+      here prices whether the study is any good.</div>
+  </div>
+
+  <div class="card">
+    <h2>What is not measured</h2>
+    <p class="sub">Named, so that the gaps are as visible as the numbers.</p>
+    <div class="scroll"><table id="missTable"></table></div>
+  </div>
+
+  <div class="card">
+    <h2>What would have to exist next time</h2>
+    <p class="sub">The point of a first case study is to specify the instrument. These are
+      the fields that would close the gaps above, in the order they would pay off.</p>
+    <ol class="tight" id="instrument"></ol>
+  </div>
+
+  <div class="card">
+    <h2>Where this dashboard is likely to be wrong</h2>
+    <ul class="tight" id="weak"></ul>
+  </div>
+
+  <footer>
+    <p id="foot"></p>
+  </footer>
+</div>
+
+<script>
+const DATA = /*USAGE*/{"schema":"copilot-usage/1","generated_at":"2026-08-04T13:10:24Z","generator":"usage/build_usage_data.py","project":{"name":"Manhattan Bridge Design","cwd":"c:\\Dev\\Manhattan Bridge Design","repository":"Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo","branch":"main"},"session":{"id":"427b73d5-2337-48d8-ac50-a2e20a220074","created_at":"2026-08-01T12:46:25.992Z","updated_at":"2026-08-04T12:45:22.792Z"},"units":{"aiu_is":"one US cent","nano_aiu_per_aiu":1000000000,"note":"AIU prices in the store match the per-model prices the client publishes in models.json, which in turn match three vendor list prices to the cent. See usage/README.md."},"totals":{"requests":1756,"turns":27,"models":2,"subagents":3,"subagent_requests":37,"nano_aiu":23660625850000,"aiu":23660.626,"usd":236.61,"tokens":{"input":24817,"cache_read":237584487,"cache_write":10904220,"output":1971302,"reasoning":363866},"premium_requests":24,"multipliers":[1.0]},"time":{"first_request":"2026-08-01T12:46:34.717Z","last_request":"2026-08-04T13:10:23.007Z","wall_span_s":260628.3,"inference_sum_s":26905.8,"inference_union_s":24706.5,"busy_blocks":1565,"active":[{"cutoff_s":120,"active_s":23447.6,"sittings":52},{"cutoff_s":300,"active_s":27453.0,"sittings":29},{"cutoff_s":600,"active_s":33195.4,"sittings":14},{"cutoff_s":1800,"active_s":40807.1,"sittings":7}]},"channels":[{"model":"claude-opus-5","type":"cache_read","price_nano_per_token":50000,"tokens":235432725,"nano_aiu":11771636250000,"usd":117.7164,"usd_per_1m":0.5},{"model":"claude-opus-5","type":"cache_write","price_nano_per_token":625000,"tokens":10630108,"nano_aiu":6643817500000,"usd":66.4382,"usd_per_1m":6.25},{"model":"claude-opus-5","type":"output","price_nano_per_token":2500000,"tokens":1920101,"nano_aiu":4800252500000,"usd":48.0025,"usd_per_1m":25.0},{"model":"gpt-5.6-sol","type":"cache_write","price_nano_per_token":625000,"tokens":274112,"nano_aiu":171320000000,"usd":1.7132,"usd_per_1m":6.25},{"model":"gpt-5.6-sol","type":"output","price_nano_per_token":3000000,"tokens":51201,"nano_aiu":153603000000,"usd":1.536,"usd_per_1m":30.0},{"model":"gpt-5.6-sol","type":"cache_read","price_nano_per_token":50000,"tokens":2151762,"nano_aiu":107588100000,"usd":1.0759,"usd_per_1m":0.5},{"model":"claude-opus-5","type":"input","price_nano_per_token":500000,"tokens":24706,"nano_aiu":12353000000,"usd":0.1235,"usd_per_1m":5.0},{"model":"gpt-5.6-sol","type":"input","price_nano_per_token":500000,"tokens":111,"nano_aiu":55500000,"usd":0.0006,"usd_per_1m":5.0}],"models":[{"model":"claude-opus-5","requests":1719,"nano_aiu":23228059250000,"duration_ms":26072106,"reasoning":330130,"input":24706,"cache_read":235432725,"cache_write":10630108,"output":1920101,"usd":232.2806},{"model":"gpt-5.6-sol","requests":37,"nano_aiu":432566600000,"duration_ms":833733,"reasoning":33736,"input":111,"cache_read":2151762,"cache_write":274112,"output":51201,"usd":4.3257}],"initiators":[{"initiator":"agent","requests":1675,"nano_aiu":19044494050000,"duration_ms":23272929,"reasoning":303002,"input":24618,"cache_read":234044276,"cache_write":4917758,"output":1702549,"usd":190.4449},{"initiator":"compaction","requests":20,"nano_aiu":2621436925000,"duration_ms":2208004,"reasoning":0,"input":40,"cache_read":640526,"cache_write":3426905,"output":179030,"usd":26.2144},{"initiator":"user","requests":24,"nano_aiu":1562128275000,"duration_ms":591173,"reasoning":27128,"input":48,"cache_read":747923,"cache_write":2285445,"output":38522,"usd":15.6213},{"initiator":"sub-agent","requests":37,"nano_aiu":432566600000,"duration_ms":833733,"reasoning":33736,"input":111,"cache_read":2151762,"cache_write":274112,"output":51201,"usd":4.3257}],"efforts":[{"effort":"xhigh","requests":1444,"nano_aiu":17442482425000,"duration_ms":19895454,"reasoning":289750,"input":14791,"cache_read":201752801,"cache_write":5893583,"output":1465583,"usd":174.4248},{"effort":null,"requests":20,"nano_aiu":2621436925000,"duration_ms":2208004,"reasoning":0,"input":40,"cache_read":640526,"cache_write":3426905,"output":179030,"usd":26.2144},{"effort":"medium","requests":133,"nano_aiu":1779393250000,"duration_ms":2158899,"reasoning":20681,"input":273,"cache_read":17090720,"cache_write":888434,"output":145953,"usd":17.7939},{"effort":"max","requests":144,"nano_aiu":1660541650000,"duration_ms":2384664,"reasoning":45057,"input":9668,"cache_read":17172308,"cache_write":590630,"output":165761,"usd":16.6054},{"effort":"high","requests":15,"nano_aiu":156771600000,"duration_ms":258818,"reasoning":8378,"input":45,"cache_read":928132,"cache_write":104668,"output":14975,"usd":1.5677}],"agents":[{"agent":"toolu_01EFseCxBf8exs9YGKDWZPJW","requests":15,"nano_aiu":182898875000,"duration_ms":421875,"reasoning":21186,"input":45,"cache_read":898070,"cache_write":90715,"output":27092,"usd":1.829,"started":"2026-08-01T13:02:30.571Z","turn":1,"models":["gpt-5.6-sol"]},{"agent":"toolu_01CNECvF8YkQmFhnmV9D9aPE","requests":15,"nano_aiu":156771600000,"duration_ms":258818,"reasoning":8378,"input":45,"cache_read":928132,"cache_write":104668,"output":14975,"usd":1.5677,"started":"2026-08-01T15:28:59.401Z","turn":6,"models":["gpt-5.6-sol"]},{"agent":"toolu_01KMTco8bXLJjFdLFwq58S2L","requests":7,"nano_aiu":92896125000,"duration_ms":153040,"reasoning":4172,"input":21,"cache_read":325560,"cache_write":78729,"output":9134,"usd":0.929,"started":"2026-08-01T14:27:55.084Z","turn":4,"models":["gpt-5.6-sol"]}],"turns":[{"index":0,"label":"As an academic researcher, noise reduction research for rail traffic (subway) that runs over the...","started":"2026-08-01T12:46:34.717Z","requests":2,"nano_aiu":32975100000,"usd":0.33,"duration_ms":8458,"reasoning":61,"input":126,"cache_read":46367,"cache_write":46798,"output":538,"subagent_requests":0},{"index":1,"label":"(tool or skill context, not a typed request)","started":"2026-08-01T12:46:46.010Z","requests":143,"nano_aiu":1760810450000,"usd":17.608,"duration_ms":2479561,"reasoning":44996,"input":9544,"cache_read":17161449,"cache_write":721428,"output":173411,"subagent_requests":15},{"index":2,"label":"1/Fix the formatting error that is occurring whenever \" L<sub>EQ</sub> of\" this type of thing is...","started":"2026-08-01T13:42:33.858Z","requests":32,"nano_aiu":592698850000,"usd":5.927,"duration_ms":429916,"reasoning":2739,"input":64,"cache_read":5660987,"cache_write":369972,"output":31354,"subagent_requests":0},{"index":3,"label":"Produce detailed researched using Tavily as needed and the same research methodology to research...","started":"2026-08-01T14:12:10.746Z","requests":46,"nano_aiu":329428500000,"usd":3.294,"duration_ms":320597,"reasoning":5724,"input":92,"cache_read":4247900,"cache_write":116748,"output":17608,"subagent_requests":0},{"index":4,"label":"Note the no-MTA-modification constraint is for one area of research. Another area of research to...","started":"2026-08-01T14:17:55.471Z","requests":57,"nano_aiu":1142676425000,"usd":11.427,"duration_ms":1617651,"reasoning":12218,"input":121,"cache_read":7217341,"cache_write":788507,"output":113746,"subagent_requests":7},{"index":5,"label":"1/Add a research project to measure the Williamsburg Bridge underneath in the outdoor space wher...","started":"2026-08-01T14:52:19.307Z","requests":42,"nano_aiu":614650525000,"usd":6.147,"duration_ms":832728,"reasoning":18804,"input":478,"cache_read":4959893,"cache_write":365511,"output":55189,"subagent_requests":0},{"index":6,"label":"(tool or skill context, not a typed request)","started":"2026-08-01T15:13:06.334Z","requests":121,"nano_aiu":1757225675000,"usd":17.572,"duration_ms":2250809,"reasoning":21673,"input":257,"cache_read":14432381,"cache_write":972245,"output":168135,"subagent_requests":15},{"index":7,"label":"status?","started":"2026-08-01T15:47:13.461Z","requests":1,"nano_aiu":42533625000,"usd":0.425,"duration_ms":26428,"reasoning":287,"input":2,"cache_read":36890,"cache_write":59569,"output":1383,"subagent_requests":0},{"index":8,"label":"status?","started":"2026-08-01T16:25:37.628Z","requests":83,"nano_aiu":895604625000,"usd":8.956,"duration_ms":792862,"reasoning":5312,"input":166,"cache_read":12477070,"cache_write":192201,"output":60617,"subagent_requests":0},{"index":9,"label":"1/Provide links in the README.md and here to each item that should be reviewed as a model or in ...","started":"2026-08-01T16:53:16.005Z","requests":90,"nano_aiu":1558089700000,"usd":15.581,"duration_ms":2529712,"reasoning":32324,"input":5399,"cache_read":11145704,"cache_write":791232,"output":201434,"subagent_requests":0},{"index":10,"label":"Based on the audio/decible data, we should add a Continuous feature for the audio. We know the f...","started":"2026-08-01T18:46:05.752Z","requests":80,"nano_aiu":986801525000,"usd":9.868,"duration_ms":1137218,"reasoning":22621,"input":3496,"cache_read":9835708,"cache_write":457081,"output":83037,"subagent_requests":0},{"index":11,"label":"What would be useful to capture on my cellphone high quality camera and microphone? It is a Sams...","started":"2026-08-01T20:14:07.460Z","requests":40,"nano_aiu":520138675000,"usd":5.201,"duration_ms":684333,"reasoning":9333,"input":80,"cache_read":5909986,"cache_write":187231,"output":43032,"subagent_requests":0},{"index":12,"label":"look carefully at reddit and other local resident resources where someone may have crowd sourced...","started":"2026-08-01T20:52:24.916Z","requests":77,"nano_aiu":1054552225000,"usd":10.546,"duration_ms":1040961,"reasoning":9445,"input":154,"cache_read":11037017,"cache_write":517691,"output":71627,"subagent_requests":0},{"index":13,"label":"Thesis: Does Googlemaps effectively publish route schedule on these routes across the Manhattan ...","started":"2026-08-02T02:19:20.356Z","requests":63,"nano_aiu":852151950000,"usd":8.522,"duration_ms":913316,"reasoning":13662,"input":2706,"cache_read":7988829,"cache_write":447408,"output":68691,"subagent_requests":0},{"index":14,"label":"Create a dashboard that shows the train direction and frequency and determines based on schedule...","started":"2026-08-02T02:45:10.020Z","requests":9,"nano_aiu":160088900000,"usd":1.601,"duration_ms":179917,"reasoning":7705,"input":18,"cache_read":957823,"cache_write":128842,"output":12665,"subagent_requests":0},{"index":15,"label":"(tool or skill context, not a typed request)","started":"2026-08-02T02:51:15.146Z","requests":52,"nano_aiu":736365700000,"usd":7.364,"duration_ms":861729,"reasoning":7106,"input":104,"cache_read":8161474,"cache_write":255864,"output":67330,"subagent_requests":0},{"index":16,"label":"How can we add York St (F Train) and High St (A Train) data to substantiate subway riders that b...","started":"2026-08-02T03:20:48.988Z","requests":109,"nano_aiu":1259664575000,"usd":12.597,"duration_ms":1475570,"reasoning":20576,"input":218,"cache_read":14069149,"cache_write":441101,"output":112164,"subagent_requests":0},{"index":17,"label":"make sure the todos are all completed","started":"2026-08-02T04:08:04.742Z","requests":9,"nano_aiu":125247850000,"usd":1.252,"duration_ms":68869,"reasoning":433,"input":18,"cache_read":889602,"cache_write":113054,"output":4040,"subagent_requests":0},{"index":18,"label":"Add logic that attempts to calculate accumulated population that is present each hour of the day...","started":"2026-08-02T04:16:09.964Z","requests":34,"nano_aiu":437843125000,"usd":4.378,"duration_ms":530175,"reasoning":11936,"input":68,"cache_read":4577570,"cache_write":171973,"output":40579,"subagent_requests":0},{"index":19,"label":"We may be able to use this cohort modeling data later to do an agentic population model where we...","started":"2026-08-02T04:26:40.257Z","requests":64,"nano_aiu":928966275000,"usd":9.29,"duration_ms":739412,"reasoning":9575,"input":128,"cache_read":7901108,"cache_write":624691,"output":57366,"subagent_requests":0},{"index":20,"label":"1/when complete, make the repo public, create an explainer HTML page that links to all of the ar...","started":"2026-08-02T05:05:55.743Z","requests":154,"nano_aiu":2047577600000,"usd":20.476,"duration_ms":2148491,"reasoning":20891,"input":308,"cache_read":21869372,"cache_write":853352,"output":168244,"subagent_requests":0},{"index":21,"label":"Create a Pages site that organizes current state of the investigation, research and work to be d...","started":"2026-08-03T17:44:30.592Z","requests":49,"nano_aiu":610613050000,"usd":6.106,"duration_ms":729106,"reasoning":14753,"input":98,"cache_read":7161006,"cache_write":176590,"output":56858,"subagent_requests":0},{"index":22,"label":"Improve the visual front page 'above the fold' for the research by showing a combination of a re...","started":"2026-08-03T18:10:49.245Z","requests":41,"nano_aiu":583907600000,"usd":5.839,"duration_ms":507090,"reasoning":10052,"input":82,"cache_read":5481807,"cache_write":360706,"output":33734,"subagent_requests":0},{"index":23,"label":"Create a new carousel page that is a picture that shows the 2026 noise canyon that exists by sho...","started":"2026-08-03T18:21:41.284Z","requests":1,"nano_aiu":12985975000,"usd":0.13,"duration_ms":34344,"reasoning":1810,"input":2,"cache_read":119862,"cache_write":2107,"output":2270,"subagent_requests":0},{"index":24,"label":"make it easy to add and remove pages from the carousel","started":"2026-08-03T18:22:14.827Z","requests":179,"nano_aiu":2303024925000,"usd":23.03,"duration_ms":2356872,"reasoning":28090,"input":358,"cache_read":28021931,"cache_write":764499,"output":169575,"subagent_requests":0},{"index":25,"label":"1/update to the todo list for green checkmarks 2/move the section \"where the investigation stand...","started":"2026-08-03T19:25:23.259Z","requests":81,"nano_aiu":845426700000,"usd":8.454,"duration_ms":700753,"reasoning":6115,"input":162,"cache_read":12007264,"cache_write":197244,"output":48682,"subagent_requests":0},{"index":26,"label":"","started":"2026-08-04T12:45:42.255Z","requests":97,"nano_aiu":1468575725000,"usd":14.686,"duration_ms":1508961,"reasoning":25625,"input":568,"cache_read":14208997,"cache_write":780575,"output":107993,"subagent_requests":0}],"counterfactual":{"actual_usd":236.61,"uncached_usd":1292.11,"ratio":5.461,"models_without_an_input_price_sample":[]},"energy":{"requests":1756,"scenarios":[{"scenario":"Traditional query, IQR low","wh_per_request":0.18,"kwh":0.316,"household_hours":0.26},{"scenario":"Traditional query, median","wh_per_request":0.34,"kwh":0.597,"household_hours":0.5},{"scenario":"Traditional query, IQR high","wh_per_request":0.67,"kwh":1.177,"household_hours":0.98},{"scenario":"Test-time scaling, median","wh_per_request":4.32,"kwh":7.586,"household_hours":6.33}],"spread":24.0,"measured":false,"why_neither_regime_fits":"The published regimes are separated by output length. This workload is not separated that way: its requests are short in output and extremely long in input, and almost all of that input is served from a prompt cache. The bracket below is therefore wider than the truth in one direction and narrower in another, and no arithmetic available here can close it.","source":{"title":"Energy Use of AI Inference: Efficiency Pathways and Test-Time Compute","authors":"Oviedo, Kazhamiaka, Choukse, Kim, Luers, Nakagawa, Bianchini, Lavista Ferres","venue":"Joule, 2025 (Microsoft Research)","url":"https://www.microsoft.com/en-us/research/publication/energy-use-of-ai-inference-efficiency-pathways-and-test-time-compute","rating":"5/5 VERIFIED for the figures; 2/5 for their application here","locus":"we estimate a median energy per query of 0.34 Wh (IQR: 0.18-0.67) for frontier-scale models (>200 billion parameters) ... Extending to test-time scaling scenarios with 15x more tokens per typical query, the median energy rises 13-fold to 4.32 Wh"},"household_source":{"locus":"The average U.S. household consumes about 10,500 kilowatthours (kWh) of electricity per year.","url":"https://www.eia.gov/energyexplained/use-of-energy/electricity-use-in-homes.php","venue":"US Energy Information Administration"}},"catalogue":{"offered":40,"selectable":21,"used":["claude-opus-5","gpt-5.6-sol"],"roster":[{"id":"gpt-4-0125-preview","vendor":"Azure OpenAI","input_price":1000,"output_price":3000,"picker":false,"used":false},{"id":"claude-opus-4.6","vendor":"Anthropic","input_price":500,"output_price":2500,"picker":true,"used":false},{"id":"claude-opus-4.7","vendor":"Anthropic","input_price":500,"output_price":2500,"picker":true,"used":false},{"id":"claude-opus-4.8","vendor":"Anthropic","input_price":500,"output_price":2500,"picker":true,"used":false},{"id":"claude-opus-5","vendor":"Anthropic","input_price":500,"output_price":2500,"picker":true,"used":true},{"id":"gpt-5.5","vendor":"OpenAI","input_price":500,"output_price":3000,"picker":true,"used":false},{"id":"gpt-5.6-sol","vendor":"OpenAI","input_price":500,"output_price":3000,"picker":true,"used":true},{"id":"claude-sonnet-4.6","vendor":"Anthropic","input_price":300,"output_price":1500,"picker":true,"used":false},{"id":"claude-sonnet-4.5","vendor":"Anthropic","input_price":300,"output_price":1500,"picker":true,"used":false},{"id":"gpt-5.4","vendor":"OpenAI","input_price":250,"output_price":1500,"picker":true,"used":false},{"id":"gpt-4","vendor":"Azure OpenAI","input_price":250,"output_price":1000,"picker":false,"used":false},{"id":"gpt-4-0613","vendor":"Azure OpenAI","input_price":250,"output_price":1000,"picker":false,"used":false},{"id":"claude-sonnet-5","vendor":"Anthropic","input_price":200,"output_price":1000,"picker":true,"used":false},{"id":"gemini-3.1-pro-preview","vendor":"Google","input_price":200,"output_price":1200,"picker":true,"used":false},{"id":"gpt-5.6-terra","vendor":"OpenAI","input_price":200,"output_price":1200,"picker":true,"used":false},{"id":"grok-4.5","vendor":"xAI","input_price":200,"output_price":600,"picker":true,"used":false},{"id":"gpt-41-copilot","vendor":"Azure OpenAI","input_price":200,"output_price":800,"picker":false,"used":false},{"id":"gpt-5.3-codex","vendor":"OpenAI","input_price":175,"output_price":1400,"picker":true,"used":false},{"id":"gemini-3.5-flash","vendor":"Google","input_price":150,"output_price":900,"picker":true,"used":false},{"id":"gemini-3.6-flash","vendor":"Google","input_price":150,"output_price":750,"picker":true,"used":false},{"id":"claude-haiku-4.5","vendor":"Anthropic","input_price":100,"output_price":500,"picker":true,"used":false},{"id":"gpt-5.4-mini","vendor":"OpenAI","input_price":75,"output_price":450,"picker":true,"used":false},{"id":"mai-code-1-flash-picker","vendor":"Microsoft","input_price":75,"output_price":450,"picker":true,"used":false},{"id":"gpt-5-mini","vendor":"Azure OpenAI","input_price":25,"output_price":200,"picker":true,"used":false},{"id":"gpt-5.6-luna","vendor":"OpenAI","input_price":20,"output_price":120,"picker":true,"used":false},{"id":"trajectory-compaction","vendor":"Fireworks","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"gpt-4o-mini-2024-07-18","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"gpt-4o-2024-11-20","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"gpt-4o-2024-08-06","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"text-embedding-3-small","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"text-embedding-3-small-inference","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"gpt-4.1-2025-04-14","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"gpt-3.5-turbo-0613","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"gpt-4o-2024-05-13","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"gpt-4-o-preview","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"gpt-4.1","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"gpt-3.5-turbo","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"gpt-4o-mini","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"gpt-4o","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false},{"id":"text-embedding-ada-002","vendor":"Azure OpenAI","input_price":0,"output_price":0,"picker":false,"used":false}],"source":"models.json written by the client"},"outputs":{"commits":[{"sha":"4dd85eb","at":"2026-08-01T09:45:30-04:00","subject":"docs: add DUMBO / Manhattan Bridge rail-noise problem definition (v1.1)"},{"sha":"d86a562","at":"2026-08-01T10:39:31-04:00","subject":"docs: add worldwide elevated-transit precedent and materials survey (v1.1)"},{"sha":"2bb649b","at":"2026-08-01T12:40:00-04:00","subject":"docs: add Documents 3 and 4 plus visual-review artifact, both red-teamed to v1.1"},{"sha":"314d8f1","at":"2026-08-01T13:31:41-04:00","subject":"feat: add navigable 3D model and calibrated acoustic demonstration"},{"sha":"e62d32a","at":"2026-08-01T15:07:16-04:00","subject":"feat(acoustic-demo): model the service pattern, not just the event"},{"sha":"713efe5","at":"2026-08-01T16:23:37-04:00","subject":"docs: add Document 5, the field capture protocol"},{"sha":"5fe510a","at":"2026-08-01T17:07:53-04:00","subject":"docs: add Document 6, the community evidence audit"},{"sha":"080c032","at":"2026-08-01T22:34:00-04:00","subject":"Add data-collection: establish bridge traversal frequency from MTA GTFS"},{"sha":"316cce9","at":"2026-08-01T22:59:18-04:00","subject":"Add frequency dashboard; withdraw two claims it disproved"},{"sha":"d70d10b","at":"2026-08-01T23:01:07-04:00","subject":"Register Method 27: nobody has counted the people"},{"sha":"acc1ed1","at":"2026-08-01T23:47:51-04:00","subject":"Count the denominator, and withdraw a third claim"},{"sha":"dd3d381","at":"2026-08-02T01:43:12-04:00","subject":"feat: cohort survival model, agentic population model, and explainer page"},{"sha":"12ccc54","at":"2026-08-02T01:46:13-04:00","subject":"docs: link the three red-team issues and record that the repo is public"},{"sha":"aaae876","at":"2026-08-03T13:54:20-04:00","subject":"feat: publish a GitHub Pages site generated from the repository"},{"sha":"aa96cc6","at":"2026-08-03T13:58:36-04:00","subject":"fix: inline an SVG favicon so no page takes a 404 on /favicon.ico"},{"sha":"8260a40","at":"2026-08-03T15:03:57-04:00","subject":"feat: noise-canyon carousel from open data, hero composite, Method 32"},{"sha":"b506480","at":"2026-08-03T15:04:18-04:00","subject":"chore: rebuild Pages so the site cites the commit containing the carousel"},{"sha":"309558f","at":"2026-08-03T15:09:43-04:00","subject":"docs: document fetch_geodata.py and traps 5-7 in data-collection"},{"sha":"a22a085","at":"2026-08-03T15:38:50-04:00","subject":"feat: mark done work with checks, move the status board below the demos"},{"sha":"d7a3113","at":"2026-08-03T15:39:37-04:00","subject":"chore: rebuild Pages so the site cites the current commit"}],"commit_count":20,"insertions":31504,"deletions":837,"tracked_files":47,"files_by_ext":{".html":15,".py":9,".md":8,".json":6,".jpg":4,"(none)":3,".png":1,".js":1},"bytes":4998773,"markdown_words":96527},"not_measured":[["Energy","No joules are recorded anywhere in this data. The energy panel applies a published per-query figure to a request count. It is an estimate stapled to a fact, and the two ends of its own bracket differ by a factor of 24."],["Water and embodied carbon","Downstream of energy, and not derivable from it without a site-specific PUE and WUE."],["What was actually paid","The store prices tokens. A Copilot subscription bills premium requests. The two are not the same number and this data cannot bridge them."],["Human time","No keystroke or focus telemetry exists here. The active-time figures are inferred from gaps between requests."],["Value","Nothing here measures whether any of the output was worth having."]]}/*USAGE*/;
+
+const $ = (id) => document.getElementById(id);
+const n0 = (x) => Math.round(x).toLocaleString("en-US");
+const n1 = (x) => x.toLocaleString("en-US", {minimumFractionDigits:1, maximumFractionDigits:1});
+const n2 = (x) => x.toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
+const usd = (x) => (x > 0 && x < 0.005) ? "<$0.01"
+  : "$" + x.toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
+const hrs = (s) => n2(s/3600) + " h";
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pct = (a,b) => b ? n1(100*a/b) + "%" : "0%";
+
+// A fixed palette drawn from theme variables only.
+const SHADES = ["var(--cp-accent)", "var(--cp-warning)", "var(--cp-link)", "var(--cp-success)", "var(--cp-border-strong)"];
+
+function table(el, cols, rows, foot) {
+  const head = "<thead><tr>" + cols.map(c =>
+    `<th class="${c.num ? "num" : ""}">${esc(c.label)}</th>`).join("") + "</tr></thead>";
+  const body = "<tbody>" + rows.map(r => "<tr>" + cols.map(c =>
+    `<td class="${c.num ? "num" : ""}">${c.raw ? r[c.key] : esc(r[c.key])}</td>`).join("") + "</tr>").join("") + "</tbody>";
+  const f = foot ? "<tfoot><tr>" + cols.map(c =>
+    `<td class="${c.num ? "num" : ""}">${foot[c.key] === undefined ? "" : esc(foot[c.key])}</td>`).join("") + "</tr></tfoot>" : "";
+  el.innerHTML = head + body + f;
+}
+
+function bars(el, items) {
+  const max = Math.max(...items.map(i => i.value), 1);
+  el.innerHTML = items.map(i => `
+    <div class="bar">
+      <span class="lab" title="${esc(i.label)}">${esc(i.label)}</span>
+      <span class="track"><span class="fill" style="width:${(100*i.value/max).toFixed(2)}%;background:${i.color || "var(--cp-accent)"}"></span></span>
+      <span class="val">${esc(i.text)}</span>
+    </div>`).join("");
+}
+
+function render() {
+  const d = DATA, t = d.totals, T = d.time;
+
+  $("lede").textContent =
+    `Every request this project sent to a model, priced from the client's own ` +
+    `per-request log. ${n0(t.requests)} requests across ${n0(t.turns)} turns, ` +
+    `${t.models} models and ${t.subagents} sub-agents, on ` +
+    `${d.project.repository || d.project.name}.`;
+
+  const tk = t.tokens;
+  const allTokens = tk.input + tk.cache_read + tk.cache_write + tk.output;
+  $("hero").innerHTML = [
+    [usd(t.usd), "list-price cost", "at published token rates"],
+    [n0(t.requests), "model requests", n0(t.premium_requests) + " of them user-initiated"],
+    [n0(Math.round(allTokens/1e6)) + "M", "tokens billed", pct(tk.cache_read, allTokens) + " served from cache"],
+    [n2(T.inference_union_s/3600) + " h", "model busy time", "against " + n1(T.wall_span_s/3600) + " h of wall clock"],
+    [n0(d.outputs.commit_count), "commits", n0(d.outputs.insertions) + " lines added"],
+    [n0(d.outputs.markdown_words), "words published", "across " + d.outputs.files_by_ext[".md"] + " documents"]
+  ].map(([b,s,e]) => `<div class="stat"><b>${b}</b><span>${s}</span><em>${e}</em></div>`).join("");
+
+  // --- the withdrawal -----------------------------------------------------
+  $("wrongclaim").textContent =
+    "main.jsonl does not contain what is being asked for. All of its lines are " +
+    "session_start. There are no per-request rows, no model names, no token counts, " +
+    "no costs. The environment does not record the thing the user most wants, so " +
+    "the dashboard's first job is to say so.";
+  $("withdrawtext").textContent =
+    `The file that was searched was the wrong file. The Copilot CLI keeps its own ` +
+    `store at ~/.copilot/session-store.db, and table assistant_usage_events held ` +
+    `${n0(t.requests)} rows for this project alone, each carrying the model, the token ` +
+    `count on four billing channels, the cost in nano-AIU, the wall duration, the ` +
+    `turn it belonged to and, for sub-agent work, the id of the tool call that ` +
+    `spawned it. Everything below comes from rows that were there the whole time.`;
+
+  // --- ledger -------------------------------------------------------------
+  $("reconcount").textContent = "all " + n0(t.requests) + " rows";
+  const ch = d.channels.map(c => ({
+    model: c.model, type: c.type.replace("_", " "),
+    price: "$" + n2(c.usd_per_1m) + " / 1M",
+    tokens: n0(c.tokens), tshare: pct(c.tokens, allTokens),
+    cost: usd(c.usd), cshare: pct(c.usd, t.usd)
+  }));
+  table($("chanTable"), [
+    {key:"model", label:"Model"}, {key:"type", label:"Channel"},
+    {key:"price", label:"Rate", num:true}, {key:"tokens", label:"Tokens", num:true},
+    {key:"tshare", label:"% of tokens", num:true}, {key:"cost", label:"Cost", num:true},
+    {key:"cshare", label:"% of cost", num:true}
+  ], ch, {model:"Total", tokens:n0(allTokens), tshare:"100%", cost:usd(t.usd), cshare:"100%"});
+
+  // token share vs cost share, the contrast that matters
+  const kinds = ["cache_read", "cache_write", "output", "input"];
+  const tokBy = {}, costBy = {};
+  kinds.forEach(k => { tokBy[k] = 0; costBy[k] = 0; });
+  d.channels.forEach(c => { tokBy[c.type] += c.tokens; costBy[c.type] += c.usd; });
+  const seg = (map, total, fmt) => `<div class="seg">` + kinds.map((k,i) => {
+    const v = map[k], p = 100*v/total;
+    return p < 0.4 ? "" : `<div style="width:${p.toFixed(2)}%;background:${SHADES[i]}" title="${k}: ${fmt(v)}">${p > 7 ? n1(p)+"%" : ""}</div>`;
+  }).join("") + `</div>`;
+  $("dual").innerHTML =
+    `<div class="row"><div class="cap">Share of tokens</div>${seg(tokBy, allTokens, n0)}</div>` +
+    `<div class="row"><div class="cap">Share of cost</div>${seg(costBy, t.usd, usd)}</div>` +
+    `<div class="legend">` + kinds.map((k,i) =>
+      `<span><i style="background:${SHADES[i]}"></i>${k.replace("_"," ")}</span>`).join("") + `</div>`;
+  $("dualnote").innerHTML =
+    `<strong>The two bars are not the same shape, and that is the economics of this ` +
+    `kind of work.</strong> Cache reads are ${pct(tokBy.cache_read, allTokens)} of every ` +
+    `token billed but ${pct(costBy.cache_read, t.usd)} of the money. Output is ` +
+    `${pct(tokBy.output, allTokens)} of the tokens and ${pct(costBy.output, t.usd)} of the ` +
+    `money. What an agent <em>reads</em> is voluminous and cheap; what it <em>writes</em> ` +
+    `is tiny and expensive. Fresh, uncached input &mdash; the thing a token counter would ` +
+    `intuitively call "the prompt" &mdash; is ${pct(tokBy.input, allTokens)} of the total.`;
+
+  // --- initiators and efforts --------------------------------------------
+  const initLabel = {
+    "agent": "agent, continuing a turn", "user": "user, opening a turn",
+    "compaction": "compaction, summarising context", "sub-agent": "sub-agent, delegated"
+  };
+  bars($("initBars"), d.initiators.map((i,ix) => ({
+    label: initLabel[i.initiator] || String(i.initiator),
+    value: i.usd, color: SHADES[ix % SHADES.length],
+    text: usd(i.usd) + "  " + n0(i.requests) + "r"
+  })));
+  bars($("effortBars"), d.efforts.map((e,ix) => ({
+    label: e.effort === null || e.effort === "None" ? "(not recorded)" : String(e.effort),
+    value: e.usd, color: SHADES[ix % SHADES.length],
+    text: usd(e.usd) + "  " + n0(e.requests) + "r"
+  })));
+  const byInit = {};
+  d.initiators.forEach(i => byInit[i.initiator] = i);
+  const comp = byInit["compaction"], user = byInit["user"], sub = byInit["sub-agent"];
+  if (comp && user && sub) {
+    $("initnote").innerHTML =
+      `<strong>Compaction is the third largest cost centre in this project.</strong> ` +
+      `The ${n0(comp.requests)} requests that exist only to summarise the conversation so ` +
+      `it keeps fitting in a context window cost ${usd(comp.usd)} &mdash; ` +
+      `${n1(comp.usd/user.usd)} times everything the user typed (${usd(user.usd)} across ` +
+      `${n0(user.requests)} requests) and ${n1(comp.usd/sub.usd)} times all delegated ` +
+      `sub-agent work put together (${usd(sub.usd)}). It is pure overhead: it produces no ` +
+      `output anyone reads, and it is invisible in every account of this project except ` +
+      `this one. On a long-running session it is a first-class line item, and it is the ` +
+      `single strongest argument in this data for keeping sessions short and scoped.`;
+  }
+
+  // --- counterfactual ------------------------------------------------------
+  const cf = d.counterfactual;
+  $("cfStats").innerHTML = [
+    [usd(cf.actual_usd), "as billed", "with the prompt cache"],
+    [usd(cf.uncached_usd), "repriced", "every cached token at full input rate"],
+    [n1(cf.ratio) + "x", "difference", "the cache is the dominant cost lever here"],
+    [usd(cf.uncached_usd - cf.actual_usd), "difference", "in list-price terms"]
+  ].map(([b,s,e]) => `<div class="stat"><b>${b}</b><span>${s}</span><em>${e}</em></div>`).join("");
+
+  // --- time ---------------------------------------------------------------
+  table($("timeTable"), [
+    {key:"m", label:"Measure"}, {key:"v", label:"Hours", num:true}, {key:"w", label:"What it actually counts"}
+  ], [
+    {m:"Wall-clock span", v:n2(T.wall_span_s/3600),
+     w:"First request to last. Includes two nights and a day and a half when nothing happened. Not work."},
+    {m:"Model busy time", v:n2(T.inference_union_s/3600),
+     w:"Seconds in which at least one request was in flight. Overlapping sub-agent requests counted once."},
+    {m:"Sum of request durations", v:n2(T.inference_sum_s/3600),
+     w:"The same thing without de-duplication. Exceeds the union by " +
+       n1(100*(T.inference_sum_s-T.inference_union_s)/T.inference_sum_s) + "% because sub-agents ran alongside the main agent."},
+    {m:"Engaged time (5 min cut-off)", v:n2((T.active.find(a=>a.cutoff_s===300)||{active_s:0}).active_s/3600),
+     w:"Gaps between consecutive requests, counting any pause under five minutes as continuous work."}
+  ]);
+  bars($("activeBars"), T.active.map(a => ({
+    label: a.cutoff_s/60 + " min cut-off",
+    value: a.active_s, text: n2(a.active_s/3600) + " h, " + a.sittings + " sittings"
+  })));
+  const a300 = T.active.find(a => a.cutoff_s === 300) || {active_s: 0};
+  $("timenote").innerHTML =
+    `<strong>The number worth taking away is the ratio, not any of the totals.</strong> ` +
+    `At a five-minute cut-off there were ${n2(a300.active_s/3600)} engaged hours, of which ` +
+    `${n2(T.inference_union_s/3600)} had a model actively generating &mdash; ` +
+    `${pct(T.inference_union_s, a300.active_s)}. Two independent measurements, one from ` +
+    `request timestamps and one from request durations, arriving at nearly the same ` +
+    `number. For almost all of the engaged time in this project, the human was waiting. ` +
+    `Anyone budgeting this kind of work in person-hours is budgeting the wrong resource.`;
+
+  // --- turns --------------------------------------------------------------
+  const turns = d.turns.slice().sort((a,b) => (a.index||0)-(b.index||0));
+  bars($("turnBars"), turns.map(t2 => ({
+    label: (t2.index === null ? "?" : t2.index) + ". " + (t2.label || "(no text recorded)"),
+    value: t2.usd, text: usd(t2.usd)
+  })));
+  table($("turnTable"), [
+    {key:"i", label:"Turn", num:true}, {key:"l", label:"Request"},
+    {key:"r", label:"Requests", num:true}, {key:"o", label:"Output tok", num:true},
+    {key:"rr", label:"Reasoning tok", num:true}, {key:"m", label:"Model time", num:true},
+    {key:"c", label:"Cost", num:true}
+  ], turns.map(t2 => ({
+    i: t2.index === null ? "-" : t2.index,
+    l: t2.label || "(no text recorded)",
+    r: n0(t2.requests), o: n0(t2.output), rr: n0(t2.reasoning),
+    m: n1(t2.duration_ms/60000) + " min", c: usd(t2.usd)
+  })), {i:"", l:"Total", r:n0(t.requests), o:n0(tk.output), rr:n0(tk.reasoning),
+        m:n1(T.inference_sum_s/60) + " min", c:usd(t.usd)});
+
+  // --- models and agents ---------------------------------------------------
+  const cat = d.catalogue;
+  $("modelSummary").innerHTML = cat.offered
+    ? `<p class="sub"><strong>${cat.offered}</strong> models were on offer, ` +
+      `<strong>${cat.selectable}</strong> of them selectable in the picker. ` +
+      `<strong>${cat.used.length}</strong> were used.</p>`
+    : `<p class="sub">No model catalogue was found beside the client, so the number on offer is unknown.</p>`;
+  table($("modelTable"), [
+    {key:"m", label:"Model"}, {key:"r", label:"Requests", num:true},
+    {key:"o", label:"Output tok", num:true}, {key:"c", label:"Cost", num:true},
+    {key:"s", label:"% of cost", num:true}
+  ], d.models.map(m => ({
+    m: m.model, r: n0(m.requests), o: n0(m.output), c: usd(m.usd), s: pct(m.usd, t.usd)
+  })));
+  $("agentSummary").innerHTML =
+    `<p class="sub"><strong>${t.subagents}</strong> sub-agents ran, issuing ` +
+    `<strong>${n0(t.subagent_requests)}</strong> requests between them &mdash; ` +
+    `${pct(t.subagent_requests, t.requests)} of all traffic.</p>`;
+  table($("agentTable"), [
+    {key:"a", label:"Spawned by tool call"}, {key:"t", label:"Turn", num:true},
+    {key:"m", label:"Model"}, {key:"r", label:"Requests", num:true}, {key:"c", label:"Cost", num:true}
+  ], d.agents.map(a => ({
+    a: a.agent.slice(0, 16) + "...", t: a.turn, m: a.models.join(", "),
+    r: n0(a.requests), c: usd(a.usd)
+  })));
+  const subCost = d.agents.reduce((s,a) => s + a.usd, 0);
+  $("agentnote").innerHTML =
+    `<strong>Delegation was cheap and rare.</strong> All sub-agent work together came to ` +
+    `${usd(subCost)}, ${pct(subCost, t.usd)} of the project. Each sub-agent ran on a ` +
+    `smaller model than the one driving the session, which is the mechanism: the expensive ` +
+    `model decides what to ask, the cheap model goes and reads. The counter-reading is ` +
+    `equally available from this data &mdash; only ${t.subagents} were ever spawned across ` +
+    `${n0(t.turns)} turns, so this is evidence that delegation is inexpensive, not evidence ` +
+    `that it was used well.`;
+
+  // --- energy --------------------------------------------------------------
+  const en = d.energy;
+  $("energyRating").textContent = "ESTIMATE, NOT MEASURED";
+  $("energysub").innerHTML =
+    `Nothing in this data is a joule. What follows multiplies a published per-query ` +
+    `figure by a request count that is exact. The ends of the bracket differ by a factor ` +
+    `of <strong>${n1(en.spread)}</strong>, so no single value from it should be quoted as ` +
+    `the energy cost of this project.`;
+  table($("energyTable"), [
+    {key:"s", label:"Scenario"}, {key:"w", label:"Wh / request", num:true},
+    {key:"k", label:"kWh total", num:true}, {key:"h", label:"= an average US home for", num:true}
+  ], en.scenarios.map(s => ({
+    s: s.scenario, w: n2(s.wh_per_request), k: n2(s.kwh), h: n1(s.household_hours) + " h"
+  })));
+  $("energyLocus").textContent = "\u201C" + en.source.locus + "\u201D \u2014 " +
+    en.source.authors + ", " + en.source.venue + ".";
+  $("energynote").innerHTML =
+    `<strong>Neither published regime describes this workload.</strong> ${esc(en.why_neither_regime_fits)} ` +
+    `The household comparison uses the US EIA figure: &ldquo;${esc(d.energy.household_source.locus)}&rdquo;`;
+
+  // --- outputs -------------------------------------------------------------
+  const o = d.outputs;
+  $("outStats").innerHTML = [
+    [n0(o.commit_count), "commits", o.commits.length ? o.commits[0].at.slice(0,10) + " to " + o.commits[o.commits.length-1].at.slice(0,10) : ""],
+    [n0(o.insertions), "lines added", n0(o.deletions) + " removed"],
+    [n0(o.tracked_files), "files tracked", n0(Math.round(o.bytes/1024)) + " KB"],
+    [n0(o.markdown_words), "words of prose", o.files_by_ext[".md"] + " markdown documents"],
+    [n0(o.files_by_ext[".html"] || 0), "HTML artifacts", "self-contained, no dependencies"],
+    [n0(o.files_by_ext[".py"] || 0), "Python scripts", "every figure regenerable"]
+  ].map(([b,s,e]) => `<div class="stat"><b>${b}</b><span>${s}</span><em>${e}</em></div>`).join("");
+  table($("perUnit"), [
+    {key:"m", label:"Unit rate"}, {key:"v", label:"Value", num:true}, {key:"c", label:"Read it with care"}
+  ], [
+    {m:"Cost per commit", v:usd(t.usd/o.commit_count), c:"Commits are not equal sized; three of these are rebuilds of a generated site."},
+    {m:"Cost per 1,000 published words", v:usd(1000*t.usd/o.markdown_words), c:"Counts prose only. Says nothing about whether the prose is correct."},
+    {m:"Cost per line added", v:"$" + (t.usd/o.insertions).toFixed(3), c:"Generated HTML dominates the line count, so this mostly prices a build script's output."},
+    {m:"Requests per turn", v:n1(t.requests/t.turns), c:"The agent issued this many model calls, on average, per thing that was asked for."},
+    {m:"Cost per user request", v:usd(t.usd/t.premium_requests), c:"What one typed instruction set in motion, at list prices."}
+  ]);
+
+  // --- not measured ---------------------------------------------------------
+  table($("missTable"), [{key:"a", label:"Not measured"}, {key:"b", label:"Why not, and what it would take"}],
+    d.not_measured.map(([a,b]) => ({a, b})));
+
+  // --- instrumentation ------------------------------------------------------
+  $("instrument").innerHTML = [
+    ["A stable request id, exposed to the user.", "Every row already carries one internally. Surfacing it is what makes a cost figure auditable by the person who paid it rather than only by whoever can read the SQLite file."],
+    ["Energy per request, reported by the server.", "This is the only item on the list that a client genuinely cannot derive. It is also the one the user asked for. Until a provider returns it, every energy number in this class of dashboard is an estimate multiplied by a count."],
+    ["A cost figure in the billing unit actually charged.", "The store prices tokens; a subscription charges premium requests. Both numbers are on this page and they differ by more than two orders of magnitude. Nothing available to a client can reconcile them."],
+    ["Tool-call outcomes joined to the request that made them.", "The store records what was spent, never what came back. A failed command and a useful one cost the same and are indistinguishable here, so no efficiency measure is possible."],
+    ["A durable sub-agent name.", "Sub-agents are identified by the id of the tool call that spawned them, which says nothing about what they were for. Their purpose has to be reconstructed by hand."],
+    ["Retention long enough to matter.", "This store held one project cleanly. Nothing guarantees it will next month, and a case study whose evidence expires is an anecdote."]
+  ].map(([a,b]) => `<li><strong>${esc(a)}</strong> ${esc(b)}</li>`).join("");
+
+  // --- weaknesses -----------------------------------------------------------
+  $("weak").innerHTML = [
+    "The dollar figure is a list-price equivalent, not a bill. It prices the tokens at the rates the client publishes. What was actually paid was a subscription, against which this work consumed " + n0(t.premium_requests) + " premium requests at a multiplier of " + (t.multipliers.join(", ") || "1") + ". The two numbers differ by more than two orders of magnitude and this data cannot bridge them. If you quote one figure from this page, quote both.",
+    "One AIU is taken to be one US cent. That identification is inferred, not documented: the per-model rates in the client's catalogue match three vendors' published list prices to the cent, and the cache rates sit at the published 0.1x and 1.25x multiples of base. It is a strong inference and it is still an inference.",
+    "The token columns in the store disagree with the token details on the " + n0((byInit["compaction"] || {requests:0}).requests) + " compaction rows. This dashboard reads the details, which reconcile exactly to the recorded cost on every row; a dashboard that read the columns would silently under-count. Anyone rebuilding this should check that assertion still holds rather than assume it.",
+    "Engaged time is inferred from gaps between requests. It cannot tell a user thinking hard about the last answer from a user who has gone to lunch, and it cannot see any time spent reading the output after the final request of a sitting.",
+    "The energy panel is an estimate applied to a workload the source paper does not describe. Its own bracket spans a factor of " + n1(d.energy.spread) + ".",
+    "The output side counts artifacts. It contains no measure of whether any of them is correct, useful, or wanted, and this repository has already withdrawn several published claims that would have counted as output on the day they were written.",
+    "The data is live and this page is part of it. Generating this dashboard cost requests that appear in the next run of the generator. The totals here are a snapshot that was already out of date when it rendered, and a self-measuring instrument cannot record its own last measurement."
+  ].map(s => `<li>${esc(s)}</li>`).join("");
+
+  $("foot").innerHTML =
+    `Generated ${esc(d.generated_at)} by <code>${esc(d.generator)}</code> from ` +
+    `session <code>${esc(d.session.id)}</code>. Data: <a href="usage-data.json">usage-data.json</a>. ` +
+    `Rebuild with <code>python usage/build_usage_data.py</code>; it takes a ` +
+    `<code>--cwd</code> or <code>--session</code> and works on any project.`;
+}
+
+if (DATA) { render(); }
+else {
+  document.querySelector(".wrap").innerHTML =
+    '<div class="card"><h2>No data</h2><p class="sub">This page has not had a payload ' +
+    'injected. Run <code>python usage/build_usage_data.py</code>.</p></div>';
+}
+</script>
+</body>
+</html>
