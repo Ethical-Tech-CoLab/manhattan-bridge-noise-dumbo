@@ -311,6 +311,14 @@ TODO = [
      "Confirm across the full 311 and SONYC taxonomies that no rail category "
      "exists anywhere in either. The finding is already evidenced; this closes "
      "the last route by which it could be wrong."),
+    ("cheap", "Method 34 - pin one cohort from outside the curve",
+     "One download of a free federal dataset",
+     "The cohort model is degenerate by construction, because <b>a departure "
+     "curve carries no labels</b>: at 14:00 the fitted worker count ranges "
+     "3,629-5,490 and visitors 1,460-2,313 across 9,248 parameter sets that fit "
+     "equally well. No better fitting narrows that. <b>One exogenous number "
+     "does</b> - LEHD LODES gives jobs by census block, which pins workers and "
+     "leaves visitors as a residual rather than a guess."),
     ("cheap", "Q42 - preemption or merely unregulated?",
      "One competent lawyer, one day",
      "Is elevated rapid transit federally <i>preempted</i> from local noise "

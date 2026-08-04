@@ -749,6 +749,75 @@ most flexible object in the model and will absorb misfit from everywhere else.
 should survive every act of quotation, and if it does not, this section has
 done net harm.
 
+### What would actually move this
+
+The three weaknesses above are not equally tractable, and two of them cannot be
+improved by working harder on the same data.
+
+**Q52.** **Can any cohort be pinned from outside the departure curve?** The
+identifiability sweep is not a statement about this fit being poor. It is a
+statement that **a departure curve carries no labels**: someone present for
+eight hours is the same observation whether they came to work or came for the
+day. Nine thousand parameter sets fit within ten per cent of the best, and
+across them the fitted worker count at 14:00 ranges 3,629 to 5,490 while the
+visitor count ranges 1,460 to 2,313. **The fit cannot narrow that**, because
+the information is not in the series. One exogenous number
+does. LEHD LODES Workplace Area Characteristics reports jobs by census
+block and is free; it pins the worker cohort directly and demotes the visitor
+cohort from a guess to a residual. Method 34.
+
+**Q53.** **How much of a resident's day is spent outdoors, and by which type?**
+The model tracks whether a resident is inside the district.
+**Being inside the district includes being asleep indoors**, so the resident
+curve is an occupancy curve and the exposure
+analysis is right to exclude it — but excluding it entirely asserts that
+residents are never outdoors, which is false and is not a smaller error than
+including them at full weight. The scale is not marginal. Against 18,636
+residents, published leisure-walking figures imply an outdoor population in the
+same range as the whole visitor cohort. Type matters and is measurable: dog
+owners walk about 300 minutes a week against 168 for non-owners, a difference
+of roughly nineteen minutes a day. The national instrument is the American Time
+Use Survey, which codes location, including "outdoors away from home" — and
+which carries its own trap, recorded below. Method 35.
+
+**Q54.** **Which assumptions move the total rather than only the split?**
+Arrivals exceed entries by 1.77 per cent on
+a weekday, 2.61 on a Saturday and 2.84 on a Sunday. That residual is real, it
+is reproducible, and **it is currently attributed to nothing.** It is the only
+available bound on how wrong the arrival and departure logistics are. Sweeping
+every declared assumption and sorting the results into those that change the
+corridor total and those that only redistribute it between cohorts would
+separate the parameters that matter from the parameters that merely look
+uncertain. Method 36.
+
+#### The trap in the obvious instrument
+
+LOCUS. George, B.J. and McCurdy, T., "Investigating the American Time Use
+Survey from an exposure modeling perspective", *Journal of Exposure Science and
+Environmental Epidemiology*, 21(1), 2011, pp. 92–105, abstract:
+
+> Another limitation is that ATUS does not distinguish between indoor and
+> outdoor activities at home, two of the traditional locational demarcations
+> used in human exposure modeling.
+
+and, on the scale of the gap:
+
+> The ATUS does not report the location for a number of activities regarded as
+> "personal." For 2006, personal activities with missing location information
+> totaled 572 min/day, on average, for survey participants: about 40% of their
+> day.
+
+ATUS is the instrument any exposure modeller reaches for, it has been evaluated
+for exactly this purpose by the EPA's own exposure modelling branch, and
+**it was found wanting for the exact distinction this question needs.**
+Two consequences follow, and only one of them is fatal. The home-versus-yard
+conflation matters little in a district of apartment buildings.
+**The 40 per cent of the diary day with no location code matters a great deal**,
+although it is concentrated in personal care, which is overwhelmingly indoors
+and at home, so the bias it introduces here is signed and can be bounded rather
+than merely noted. Rated 5/5 for what the paper says, and 3/5 as a transfer,
+because the evaluation is of the 2003–2007 waves.
+
 ---
 
 ## Where the people go, not merely how many there are
