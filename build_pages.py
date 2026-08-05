@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 build_pages.py - regenerate the GitHub Pages site from the repository itself.
 
@@ -101,6 +101,67 @@ DOCS = [
      "by side and never averaged - and the disagreement between them is the "
      "result."),
 ]
+
+# What each document FOUND, as against what it asks. One line each, shown on
+# the research hub so a reader can choose a document by its result rather than
+# by its title.
+#
+# EVERY LINE HERE IS A STATEMENT ALREADY PUBLISHED ELSEWHERE ON THIS SITE - in
+# the README's headline findings, in the document's own abstract, or in the
+# method register. Nothing in this table is a new claim, and nothing in it may
+# say more than the document it points at. A hub that summarises by
+# paraphrasing is a hub that drifts away from what it indexes; the build
+# fails below if a document has no entry, so adding a document forces the
+# question "what did it find?" to be answered rather than skipped.
+HIGHLIGHTS = {
+    "readme": "The register with its honest status column: <b>{methods} "
+              "methods specified, {done} executed or partly.</b> It does not "
+              "hide the ratio.",
+    "idea-concept": "The MTA measured the noise, in DUMBO, at named "
+                    "addresses, and published the levels. <b>The levels are "
+                    "high and nothing followed.</b>",
+    "precedent-and-materials": "Floating slab track, constrained-layer "
+                               "damping, rail dampers and parapet treatments "
+                               "all exist and work &mdash; <b>on structures "
+                               "that were designed to carry them.</b> This "
+                               "one was built in 1909 and its load budget is "
+                               "the constraint everything else answers to.",
+    "williamsburg-comparator": "A second bridge with the same owner, "
+                               "operator, rolling stock and statute is the "
+                               "cheapest control this problem will ever get, "
+                               "and <b>nobody has measured the pair.</b>",
+    "visual-model-framework": "A drawing can be built from open data, and the "
+                              "useful part is what it refuses to draw: "
+                              "<b>turn every provenance filter off and the "
+                              "viewport goes empty.</b> That is the state of "
+                              "public knowledge.",
+    "field-capture-protocol": "Five captures, a phone already owned, and no "
+                              "permission needed. <b>C2, the temporal "
+                              "envelope, is the one measurement that could "
+                              "prove this repository wrong.</b>",
+    "community-evidence-audit": "Within 500&nbsp;m of the MTA's own "
+                                "measurement, residents filed <b>4,055 noise "
+                                "complaints since 2020 and not one of them "
+                                "can be about the train.</b> There is no "
+                                "category for it.",
+    "data-collection": "Six scripts, and four traps that each silently "
+                       "produce a plausible wrong number. <b>The turnstile "
+                       "feed's <code>entries</code> field means people "
+                       "leaving, not arriving</b>, and reading it the natural "
+                       "way inverts the day.",
+    "pedestrian-site-visits": "The first material here that was captured "
+                              "rather than retrieved &mdash; and <b>v1.1 "
+                              "withdraws v1.0's headline</b>, because two "
+                              "correctly-computed datasets were joined that "
+                              "had never been joined in the field.",
+    "usage": "<b>Human direction time costs about eight and a half times the "
+             "entire metered inference bill.</b> That is the opposite of the "
+             "usual claim, and it is measured rather than asserted.",
+    "procurement": "Three instruments, reported side by side and never "
+                   "averaged. <b>The disagreement between them is the "
+                   "result</b>, and the obvious headline is withdrawn before "
+                   "it is made.",
+}
 
 # Documents about the work rather than about the bridge. They are research and
 # they are linked from every page - but they are grouped apart in the nav and
@@ -215,7 +276,7 @@ HERO_CARDS = [
     ("{q}", "questions nobody had asked",
      "an open, unfinished investigation that works by finding the question the "
      "record skipped, then writing it so it can be proved wrong",
-     "#method"),
+     "research.html#method"),
 ]
 
 SCRIPTS = [
@@ -399,6 +460,17 @@ TODO = [
      "The tooling is built and verified. It is now the only route to the "
      "coincidence distribution, since the schedule feed was shown to be "
      "quantised to 30 s and unable to answer it."),
+    ("field", "Extend the walk: York Street to Fulton Ferry along the water",
+     "One afternoon on foot, the phone already owned",
+     "The drawn walk currently stops at the water's edge. <b>That is not the "
+     "walk people take.</b> They come up from the York Street F platform, go "
+     "straight down to the water, turn, and follow the shoreline past Jane's "
+     "Carousel to Fulton Ferry Landing &mdash; passing under the bridge, out "
+     "from under it, and back into its shadow. Extending the corridor drawing "
+     "and the capture route along that full line puts the receptor path where "
+     "the population actually is, and it crosses the one geometry this "
+     "programme keeps asserting and has never walked end to end: <b>where the "
+     "canyon stops.</b> Method 31's decay transect and this share a route."),
     ("field", "Captures C1 to C5 - the phone protocol",
      "A Galaxy S23+, public ground, no permission and no funding",
      "The only proposal in the programme that requires nothing the programme "
@@ -1034,16 +1106,19 @@ LOGO = (
 def bar(active, depth):
     """The masthead, identical on every page of the site.
 
-    `active` is a document slug, "home", or "demos" for the interactive
-    artifacts, which are not documents but still need to report where you are.
+    `active` is "home", "demos", or "research".
     `depth` is 1 for anything in a subdirectory.
 
-    The nav is in two groups, separated by a rule. The first is the
-    investigation: the README, the numbered research documents, and the
-    demonstrations they produced. The second is the work ABOUT the work - what
-    it cost to make and what it would have cost to buy - which is real research
-    and is deliberately not in the same group, because a reader arriving at
-    this site is looking for the bridge, not for the method.
+    THREE ITEMS, DELIBERATELY. This nav previously carried twelve: the README,
+    seven numbered documents, the demos, and two meta documents behind a rule.
+    That is a correct table of contents and a bad menu. A reader who has never
+    heard of this problem cannot tell from "3. Comparator" whether it is worth
+    a click, so twelve pills read as a wall and the whole thing gets skipped.
+
+    So the documents are no longer in the header. They are on research.html,
+    one click away, each with a line saying what it FOUND rather than what it
+    is numbered. The header now answers only the three questions a newcomer
+    actually has: what is this, can I see it, and where is the evidence.
 
     The same string is emitted for generated pages and injected into
     hand-written ones by ensure_masthead(), so there is exactly one definition
@@ -1057,19 +1132,14 @@ def bar(active, depth):
         return '<a href="%s"%s>%s</a>' % (href, ' class="on"' if on else "",
                                           label)
 
-    main, meta = [], []
-    for _, slug, _, label, _ in DOCS:
-        (meta if slug in BEHIND_THE_SCENES else main).append(
-            link("%sread/%s.html" % (up, slug), label, active == slug))
-
-    # Demos belongs with the investigation and ahead of the meta group. It is
-    # a jump to the section of the index that lists them, because the demos
-    # are seven separate files and a nav pill cannot point at seven things.
-    main.append(link("%sindex.html#demos" % up, "Demos", active == "demos"))
-
-    items = main
-    if meta:
-        items = main + ['<span class="mh-sep" aria-hidden="true"></span>'] + meta
+    # Demos is an anchor on the landing page rather than a page of its own:
+    # the demonstrations are seven separate files, a pill cannot point at
+    # seven things, and putting them on the opening page is the point.
+    items = [
+        link("%sindex.html" % up, "Overview", active == "home"),
+        link("%sindex.html#demos" % up, "Demos", active == "demos"),
+        link("%sresearch.html" % up, "Research", active == "research"),
+    ]
     home = ' aria-current="page"' if active == "home" else ""
     return (
         '<div class="mh-bar"><div class="mh-in">'
@@ -1201,7 +1271,8 @@ def render_doc(src, slug, title, stats):
         'procurement.</div>\n'
         + html +
         '\n<p class="foot">'
-        '<a href="../index.html">&larr; Back to the research overview</a> '
+        '<a href="../research.html">&larr; All research</a> '
+        '&middot; <a href="../index.html">Overview</a> '
         '&middot; <a href="' + BLOB + src.replace("\\", "/") + '">Source on '
         'GitHub</a> &middot; Built from <code>' + stats["sha"] + '</code> on '
         + stats["date"] + '.</p>\n'
@@ -1210,19 +1281,48 @@ def render_doc(src, slug, title, stats):
     return shell("%s &mdash; Silencing the Span" % title,
                  "Rendered copy of %s from the Manhattan Bridge rail-noise "
                  "research repository." % src.replace("\\", "/"),
-                 body, slug, 1)
+                 body, "research", 1)
 
 
 # ---------------------------------------------------------------------------
-# The organising page
+# The two organising pages
+#
+# The site has one landing page and one research hub, and every card below is
+# written as a SECTION FUNCTION returning a list of HTML strings so that a
+# section can be moved from one page to the other without a word of it
+# changing. That constraint is the whole point of the split: the information
+# architecture was wrong, the writing was not, and a reorganisation that
+# rewrites as it moves cannot be checked against what it replaced.
+#
+#   index.html      the opening page, and an executive summary. Hero, the
+#                   headline numbers, the three ways in, the interactive
+#                   demonstrations, and what has actually been found. A reader
+#                   who has never heard of this problem should be able to stop
+#                   here and know what it is.
+#
+#   research.html   everything underneath: the eleven documents with their
+#                   highlights, where the investigation stands, the work queue,
+#                   the scripts, the method, the conventions, and the work
+#                   about the work. One nav item, because a newcomer counting
+#                   twelve of them reads a wall, not a menu.
 # ---------------------------------------------------------------------------
 
-def build_index(stats):
-    m_exec = [m for m in stats["methods"] if m["cls"] == "executed"]
-    m_part = [m for m in stats["methods"] if m["cls"] == "partial"]
-    m_tool = [m for m in stats["methods"] if m["cls"] == "tooling"]
-    by_num = {m["n"]: m for m in stats["methods"]}
+def _ctx(stats):
+    """Everything more than one section needs, computed once."""
+    return {
+        "m_exec": [m for m in stats["methods"] if m["cls"] == "executed"],
+        "m_part": [m for m in stats["methods"] if m["cls"] == "partial"],
+        "m_tool": [m for m in stats["methods"] if m["cls"] == "tooling"],
+        "by_num": {m["n"]: m for m in stats["methods"]},
+        # The two "Meta" dashboards are about the work rather than about the
+        # bridge. Listing them beside the demonstrations is what made the demos
+        # and the usage page look like the same thing.
+        "demos": [a for a in ARTIFACTS if a[1] != "Meta"],
+        "metas": [a for a in ARTIFACTS if a[1] == "Meta"],
+    }
 
+
+def sec_hero(stats, c):
     o = []
     A = o.append
 
@@ -1262,11 +1362,13 @@ def build_index(stats):
       'rotating statements">Pause</button>')
     A("</div>")
 
-    A('<p class="lede" style="margin-top:26px">This page is the organising '
-      'index for the whole investigation: where it currently stands, what has '
-      'actually been established, what is demonstrably wrong, and what still '
-      'needs doing. It is regenerated from the repository, so the counts on it '
-      'cannot drift away from the work.</p>')
+    A('<p class="lede" style="margin-top:26px">This is the short version: what '
+      'the problem is, artifacts you can hear and navigate for yourself, and '
+      'what has actually been established. <a href="research.html">The '
+      'research</a> holds the evidence underneath it &mdash; every document, '
+      'the open questions, the work still to be done, and the claims this '
+      'programme has had to withdraw. Both pages are regenerated from the '
+      'repository, so the counts on them cannot drift away from the work.</p>')
     A('<p class="cred">Photograph: Historic American Engineering Record '
       'NY-127-7, Jack E. Boucher, National Park Service, via '
       '<a href="https://www.loc.gov/item/ny0980/">Library of Congress</a> '
@@ -1297,9 +1399,16 @@ def build_index(stats):
       'anything below it.</strong> <b>Nobody from this programme has stood in '
       'Brooklyn Bridge Park with an instrument.</b> Every level quoted here was '
       'measured by someone else and published; every level <i>modelled</i> here '
-      'is synthetic. <a href="#status">Where the investigation stands</a> sets '
-      'out how little of the specified work has actually been done.</div>')
+      'is synthetic. <a href="research.html#status">Where the investigation '
+      'stands</a> sets out how little of the specified work has actually been '
+      'done.</div>')
     A('</div>')
+    return o
+
+
+def sec_start(stats, c):
+    o = []
+    A = o.append
 
     # -- start here --------------------------------------------------------
     A('<div class="card" id="start">')
@@ -1332,13 +1441,15 @@ def build_index(stats):
       '29&nbsp;s. <b>The answer does not move.</b> That is a finding about the '
       'feed, not the railway.</div></a>')
     A('</div></div>')
+    return o
+
+
+def sec_demos(stats, c):
+    o = []
+    A = o.append
+    demos = c["demos"]
 
     # -- demonstrations ----------------------------------------------------
-    # Only the demonstrations. The two "Meta" dashboards are about the work
-    # rather than about the bridge, and listing them here is what made the
-    # demos section and the usage section look like the same thing.
-    demos = [a for a in ARTIFACTS if a[1] != "Meta"]
-    metas = [a for a in ARTIFACTS if a[1] == "Meta"]
     A('<div class="card" id="demos">')
     A('<h2>Interactive demonstrations</h2>')
     A('<p>Each is a <strong>single self-contained HTML file</strong>: no build '
@@ -1361,20 +1472,29 @@ def build_index(stats):
       'so in its own interface rather than in a footnote somewhere else.</div>'
       % spell(len(demos)))
     A('</div>')
+    return o
+
+
+def sec_status(stats, c):
+    o = []
+    A = o.append
+    m_exec, m_part, m_tool = c["m_exec"], c["m_part"], c["m_tool"]
 
     # -- status board ------------------------------------------------------
-    # Deliberately placed AFTER the demonstrations. A reader who has just been
-    # shown five working artifacts is the reader most likely to over-estimate
-    # how much of this programme has been done, and this is the correction.
+    # First thing on the research page, and deliberately not on the front one.
+    # A reader who has just been shown five working artifacts is the reader
+    # most likely to over-estimate how much of this programme has been done,
+    # so this is the correction, and it is the first thing they meet when they
+    # come looking for the evidence behind those artifacts.
     A('<div class="card" id="status">')
     A('<h2>Where the investigation stands</h2>')
     A('<p class="lede">%s research documents, %s interactive artifacts, %s '
       'runnable scripts and roughly %s words &mdash; against %s specified '
       'methods of which <strong>%s have been executed and %s partially</strong>. '
       'The gap between those two halves of the sentence is the honest summary '
-      'of this programme, and it is the reason this section sits below the '
-      'demonstrations rather than above them: <b>the artifacts are the most '
-      'finished thing here and the least load-bearing.</b></p>'
+      'of this programme, and it is the reason this section leads the research '
+      'rather than the front page: <b>the artifacts are the most finished '
+      'thing here and the least load-bearing.</b></p>'
       % (spell(len(DOCS) - 1).capitalize(), spell(len(ARTIFACTS)),
          spell(len(SCRIPTS)), "{:,}".format(stats["total_words"]),
          spell(stats["n_methods"]), spell(stats["n_exec"]),
@@ -1413,6 +1533,12 @@ def build_index(stats):
       '<i>modelled</i> here is synthetic. No option in any document is '
       'recommended for procurement, and none of it is peer-reviewed.</div>')
     A('</div>')
+    return o
+
+
+def sec_findings(stats, c):
+    o = []
+    A = o.append
 
     # -- findings ----------------------------------------------------------
     A('<div class="card" id="findings">')
@@ -1488,6 +1614,13 @@ def build_index(stats):
       'exactly the condition under which this programme has previously '
       'over-claimed.</p>')
     A('</div>')
+    return o
+
+
+def sec_todo(stats, c):
+    o = []
+    A = o.append
+    by_num = c["by_num"]
 
     # -- work: done, then to be done ---------------------------------------
     A('<div class="card" id="todo">')
@@ -1561,6 +1694,12 @@ def build_index(stats):
       'currently in it. The bar is far lower than people assume: <b>spectral '
       'shape and event timing survive an uncalibrated phone.</b></div>')
     A('</div>')
+    return o
+
+
+def sec_documents(stats, c):
+    o = []
+    A = o.append
 
     # -- documents ---------------------------------------------------------
     A('<div class="card" id="documents">')
@@ -1578,6 +1717,12 @@ def build_index(stats):
              "{:,}".format(stats["words"][src])))
     A('</tbody></table></div>')
     A('</div>')
+    return o
+
+
+def sec_code(stats, c):
+    o = []
+    A = o.append
 
     # -- data and code -----------------------------------------------------
     A('<div class="card" id="code">')
@@ -1605,6 +1750,12 @@ def build_index(stats):
       'trap and three others are documented in '
       '<a href="read/data-collection.html">the data-collection notes</a>.</div>')
     A('</div>')
+    return o
+
+
+def sec_method(stats, c):
+    o = []
+    A = o.append
 
     # -- method ------------------------------------------------------------
     A('<div class="card" id="method">')
@@ -1659,6 +1810,12 @@ def build_index(stats):
       'ratio, and <a href="#todo">what to do next</a> lists the work that '
       'would settle it.</p>')
     A('</div>')
+    return o
+
+
+def sec_conventions(stats, c):
+    o = []
+    A = o.append
 
     # -- conventions -------------------------------------------------------
     A('<div class="card" id="conventions">')
@@ -1672,6 +1829,13 @@ def build_index(stats):
         A('<li><strong>%s.</strong> %s</li>' % (head, body_txt))
     A('</ol>')
     A('</div>')
+    return o
+
+
+def sec_behind(stats, c):
+    o = []
+    A = o.append
+    metas = c["metas"]
 
     # -- behind the scenes -------------------------------------------------
     # Placed here deliberately, near the foot. This is real research and it is
@@ -1710,6 +1874,12 @@ def build_index(stats):
       '<strong>eight and a half times</strong> the entire metered inference '
       'bill, which is the opposite of the usual claim.</div>')
     A('</div>')
+    return o
+
+
+def sec_help(stats, c):
+    o = []
+    A = o.append
 
     # -- help --------------------------------------------------------------
     A('<div class="card" id="help">')
@@ -1743,7 +1913,12 @@ def build_index(stats):
       'Over-claiming to a community in that position would be a different and '
       'worse kind of error than the ones already made here.</div>')
     A('</div>')
+    return o
 
+
+def sec_foot(stats, c):
+    o = []
+    A = o.append
     A('<p class="foot"><strong>Silencing the Span: Defining the Manhattan Bridge '
       'Rail-Noise Problem in DUMBO for a Design-Build Intervention.</strong> '
       'Ethical Tech CoLab. Research content released under '
@@ -1754,15 +1929,171 @@ def build_index(stats):
       + '</code> on ' + stats["date"] + '. '
       '<a href="https://github.com/' + REPO + '">Repository</a> &middot; '
       '<a href="' + ISSUES + '">Open issues</a></p>')
+    return o
 
-    A(HERO_JS)
+
+# ---------------------------------------------------------------------------
+# The two pages, assembled from those sections
+# ---------------------------------------------------------------------------
+
+def sec_research_head(stats, c):
+    """The hub's own opening: what is here, and one highlight per document.
+
+    Every highlight below is a statement already published elsewhere on this
+    site - in the README's headline findings, in a document's own abstract, or
+    in the register. Nothing here is a new claim. A hub that summarises by
+    paraphrasing is a hub that can drift away from what it indexes, so these
+    are quotations of the programme's own conclusions and are checked against
+    the documents when either changes.
+    """
+    o = []
+    A = o.append
+
+    # A document with no highlight is a document nobody asked "what did it
+    # find?" about. Fail rather than render a blank tile.
+    missing = [s for _p, s, _t, _l, _d in DOCS if s not in HIGHLIGHTS]
+    if missing:
+        sys.exit("HIGHLIGHTS has no entry for: %s" % ", ".join(missing))
+    live = {"methods": stats["n_methods"],
+            "done": stats["n_exec"] + stats["n_partial"],
+            "q": stats["max_q"], "withdrawals": stats["withdrawals"]}
+    hi = {k: (v.format(**live) if "{" in v else v)
+          for k, v in HIGHLIGHTS.items()}
+
+    A('<div class="card" id="research-top">')
+    A('<h2>The research</h2>')
+    A('<p class="lede">%s documents and roughly %s words, in the order they '
+      'were written. Each asks one question, answers as much of it as the '
+      'evidence allows, and ends with a section on where it is most likely to '
+      'be wrong. <strong>They are meant to be read out of order</strong> '
+      '&mdash; start with whichever question is yours.</p>'
+      % (spell(len(DOCS)).capitalize(),
+         "{:,}".format(stats["total_words"])))
+
+    A('<div class="statrow">'
+      '<div class="s"><div class="k">Documents</div>'
+      '<div class="big">%d</div>each one question</div>'
+      '<div class="s"><div class="k">Methods specified</div>'
+      '<div class="big">%d</div>%d executed or partly</div>'
+      '<div class="s"><div class="k">Questions derived</div>'
+      '<div class="big">%d</div>Q1 to Q%d, none rhetorical</div>'
+      '<div class="s"><div class="k">Claims withdrawn</div>'
+      '<div class="big">%d</div>left standing in the text</div>'
+      '</div>'
+      % (len(DOCS), stats["n_methods"], stats["n_exec"] + stats["n_partial"],
+         stats["max_q"], stats["max_q"], stats["withdrawals"]))
+
+    A('<h3 style="margin-top:26px">The investigation</h3>')
+    A('<div class="tiles">')
+    for src, slug, title, _label, desc in DOCS:
+        if slug in BEHIND_THE_SCENES:
+            continue
+        A('<a class="tile" href="read/%s.html">'
+          '<div class="t">%s <span class="badge acc">%s words</span></div>'
+          '<div class="d">%s</div>'
+          '<div class="look">%s</div></a>'
+          % (slug, title, "{:,}".format(stats["words"][src]), desc,
+             hi[slug]))
+    A('</div>')
+
+    A('<h3 style="margin-top:26px">The work about the work</h3>')
+    A('<p>Two documents that study this investigation rather than the bridge: '
+      'what it cost to produce, measured from the tool\'s own per-request log, '
+      'and what the same deliverable would have cost to buy. Both are held to '
+      'the same evidence standard as everything else here, and both withdraw '
+      'a headline claim on their own front page.</p>')
+    A('<div class="tiles">')
+    for src, slug, title, _label, desc in DOCS:
+        if slug not in BEHIND_THE_SCENES:
+            continue
+        A('<a class="tile" href="read/%s.html">'
+          '<div class="t">%s <span class="badge acc">%s words</span></div>'
+          '<div class="d">%s</div>'
+          '<div class="look">%s</div></a>'
+          % (slug, title, "{:,}".format(stats["words"][src]), desc,
+             hi[slug]))
+    A('</div>')
+
+    A('<div class="note">Looking for the interactive pieces instead? They are '
+      'on the <a href="index.html#demos">front page</a>, where a reader who '
+      'has never heard of this problem will find them first. This page is the '
+      'evidence underneath them.</div>')
+    A('</div>')
+    return o
+
+
+def sec_handoff(stats, c):
+    """The one card on the landing page that exists only because of the split.
+
+    Everything above it on the index is the argument. This is the door to the
+    evidence, and it is written as a door: named documents, honest word count,
+    and no pretence that reading them is a small undertaking.
+    """
+    o = []
+    A = o.append
+    A('<div class="card" id="research">')
+    A('<h2>The research behind all of it</h2>')
+    A('<p class="lede">Everything above is a summary. <strong>%s documents, '
+      'roughly %s words</strong>, every quantitative claim carrying a quoted '
+      'source and a rating, and every error left standing in the text with the '
+      'correction beneath it.</p>'
+      % (spell(len(DOCS)).capitalize(), "{:,}".format(stats["total_words"])))
+    A('<div class="tiles">')
+    A('<a class="tile" href="research.html">'
+      '<div class="t">Read the research &rarr;</div>'
+      '<div class="d">One page indexing all %s documents with what each asks '
+      'and what it found, plus where the investigation stands, the work queue, '
+      'the runnable scripts, the method it follows, and the two pieces of work '
+      'about the work itself.</div>'
+      '<div class="look">If you read one thing, read <b>where the '
+      'investigation stands</b> &mdash; %d of %d specified methods have '
+      'actually been executed.</div></a>'
+      % (spell(len(DOCS)), stats["n_exec"] + stats["n_partial"],
+         stats["n_methods"]))
+    A('<a class="tile" href="research.html#status">'
+      '<div class="t">What is still wrong with it &rarr;</div>'
+      '<div class="d">%d claims published on this site and then disproved on '
+      'it. They are not deleted. Each is quoted where it was made, with the '
+      'withdrawal underneath, because a research record that shows only its '
+      'surviving claims is not showing its method.</div>'
+      '<div class="look">Q1&ndash;Q%d are numbered, attributed, and none of '
+      'them rhetorical.</div></a>'
+      % (stats["withdrawals"], stats["max_q"]))
+    A('</div>')
+    A('</div>')
+    return o
+
+
+def build_index(stats):
+    c = _ctx(stats)
+    o = []
+    for fn in (sec_hero, sec_start, sec_demos, sec_findings, sec_handoff,
+               sec_foot):
+        o.extend(fn(stats, c))
+    o.append(HERO_JS)
 
     return shell(
         "Silencing the Span &mdash; Manhattan Bridge rail noise in DUMBO",
         "Open research on rail noise from the NYC Subway crossing the Manhattan "
-        "Bridge into DUMBO, Brooklyn. Current state of the investigation, "
-        "interactive demonstrations, and the work still to be done.",
+        "Bridge into DUMBO, Brooklyn. What the problem is, interactive "
+        "demonstrations you can hear and navigate, and what has been found.",
         "\n".join(o), "home", 0)
+
+
+def build_research(stats):
+    c = _ctx(stats)
+    o = []
+    for fn in (sec_research_head, sec_status, sec_todo, sec_documents,
+               sec_code, sec_method, sec_conventions, sec_behind, sec_help,
+               sec_foot):
+        o.extend(fn(stats, c))
+
+    return shell(
+        "The research &mdash; Silencing the Span",
+        "Every document, dataset, script and open question behind the "
+        "Manhattan Bridge rail-noise investigation, with where it stands and "
+        "what it still gets wrong.",
+        "\n".join(o), "research", 0)
 
 
 # ---------------------------------------------------------------------------
@@ -1849,7 +2180,7 @@ def artifact_nav_state(rel):
     d = os.path.dirname(rel).replace("\\", "/").split("/")[0]
     for _src, slug, _t, _l, _desc in DOCS:
         if slug in BEHIND_THE_SCENES and d == slug:
-            return slug
+            return "research"
     return "demos"
 
 
@@ -1938,6 +2269,7 @@ def main():
     print("Writing pages...")
     write(".nojekyll", "")
     write("index.html", build_index(stats))
+    write("research.html", build_research(stats))
     for src, slug, title, _label, _desc in DOCS:
         write("read/%s.html" % slug, render_doc(src, slug, title, stats))
 
