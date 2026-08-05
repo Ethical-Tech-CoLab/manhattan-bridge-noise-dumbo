@@ -350,19 +350,20 @@ td.st.part { color: var(--cp-warning); }
 <p class="eyebrow">Document 10 &middot; field media</p>
 <h1>What a phone actually recorded under the Manhattan Bridge</h1>
 <p class="lede">On 3 and 4 August 2026 an observer stood under the bridge in
-DUMBO with a consumer Samsung Galaxy S23+, filmed the buildings on either
-side, walked to the lawn on the south side, and separately stood with a
-stopwatch and tapped a lap every time train noise started and stopped. This
-page is everything that came back and everything that can and cannot be
+DUMBO with a consumer Samsung Galaxy S23+ and filmed the buildings that wall
+the corridor on either side of the deck. Separately, an hour later, he stood
+with a stopwatch and tapped a lap each time train noise started and stopped.
+This page is everything that came back and everything that can and cannot be
 concluded from it.</p>
-<p class="lede"><strong>Nothing on this page is a decibel.</strong> A phone
-with automatic gain control does not measure sound pressure, and no attempt
-is made here to pretend otherwise. What survives an unknown, time-varying
-gain is <em>when</em> things happened and <em>how long</em> they lasted, and
-that is the only thing this page claims.</p>
+<p class="lede"><strong>Nothing on this page is a decibel</strong>, and the
+two instruments are never joined. The video exists to show the buildings that
+form the echo chamber near the water &mdash; its audio track is a by-product,
+not an acoustic measurement. The stopwatch is an independent sample taken
+<strong>62 minutes later</strong> with no overlap. Numbers from one are not
+carried to the other anywhere below.</p>
 </div></header>
 <div class="wrap">
-<section class='card glance'><h2>At a glance</h2><div class='ggrid'><div class='gcell'><div class='gv'>7</div><div class='gl'>captures</div><div class='gn'>224.7 MB of masters, 4.1 MB shipped</div></div><div class='gcell'><div class='gv'>108 s</div><div class='gl'>audio analysed</div><div class='gn'>across 2 clips, after 1 exclusion</div></div><div class='gcell'><div class='gv'>4</div><div class='gl'>level excursions</div><div class='gn'>longest 10.1 s</div></div><div class='gcell'><div class='gv'>14</div><div class='gl'>stopwatch laps</div><div class='gn'>one observer, 12:59:00 to 13:07:19</div></div><div class='gcell'><div class='gv'>56.4/h</div><div class='gl'>observed rate</div><div class='gn'>schedule says 57.7/h</div></div><div class='gcell'><div class='gv'>44%</div><div class='gl'>duty ceiling</div><div class='gn'>at the loosest threshold tested</div></div></div></section>
+<section class='card glance'><h2>At a glance</h2><div class='ggrid'><div class='gcell'><div class='gv'>7</div><div class='gl'>captures</div><div class='gn'>224.7 MB of masters, 4.1 MB shipped</div></div><div class='gcell'><div class='gv'>26 m</div><div class='gl'>closest to the track</div><div class='gn'>3 of 4 measured points are further out</div></div><div class='gcell'><div class='gv'>108 s</div><div class='gl'>audio analysed</div><div class='gn'>a by-product of video, not a measurement</div></div><div class='gcell'><div class='gv'>14</div><div class='gl'>stopwatch laps</div><div class='gn'>one observer, 12:59:00 to 13:07:19</div></div><div class='gcell'><div class='gv'>56.4/h</div><div class='gl'>observed rate</div><div class='gn'>schedule says 57.7/h</div></div><div class='gcell'><div class='gv'>62 min</div><div class='gl'>between the two instruments</div><div class='gn'>zero overlap, so neither constrains the other</div></div></div></section>
 <section class='card'><h2>What this is not</h2>
 <p>The obvious thing to do with a phone recording of a loud place is to read a
 level off it. That is refused here, and the refusal is the most important
@@ -392,6 +393,21 @@ and every quantitative claim below is one of those four.</p>
 is never <span class="mono">dB(A)</span>. The MTA's measured
 <span class="mono">dB(A)</span> figures used elsewhere in this repository are
 from a calibrated meter and are not comparable to anything on this page.</p>
+</section>
+<section class='card'><h2>What each capture was taken for, in the operator&#x27;s own words</h2>
+<p>A measurement can only be read for the purpose it was taken for. These
+statements of intent arrived <em>after</em> the first analysis run and they
+invalidated part of it. That is the correct order of events and not a failure
+of it &mdash; an analyst who never asks what a capture was <em>for</em> will
+happily compute a precise number from a file that cannot carry one.</p>
+<div class="tw"><table><thead><tr><th>capture</th>
+<th>the operator's statement</th><th>what follows for this page</th>
+</tr></thead><tbody><tr><td>the stopwatch</td><td>The stopwatch is an independent sample. There is no correlation between it and any video or audio also supplied.</td><td>No quantity derived from the stopwatch may be compared with any quantity derived from the audio. The file timestamps agree: the last video ends at 11:56:36 and the stopwatch does not start until 12:59:00.</td></tr><tr><td>the stopwatch</td><td>It is somewhat imprecise because a human operator decided when to start and stop the stopwatch. It was an indicator that there is a very small amount of time between noise from the train tracks. I will redo this with better documentation.</td><td>The stopwatch is an indicator, not an instrument. Its own author has scheduled its replacement.</td></tr><tr><td>the video</td><td>The video was primarily used to show the buildings that create an echo chamber around the bridge near the water. That was the main value of them. It was not to be used for audio precision.</td><td>The video is a VISUAL record of the canyon geometry. Its audio track is a by-product. It may be used to establish that the recording chain misbehaved; it may not be used to characterise the acoustic environment.</td></tr><tr><td>what comes next</td><td>Better audio will be captured later this week with a microphone shield and an audio meter.</td><td>The by-product audio is superseded before anything was built on it. That is the reason to demote it now rather than defend it.</td></tr></tbody></table></div>
+<p class="note">Rated <strong>5/5</strong>. Most testimony on this page is
+rated 2/5, because a recollection about what happened can be wrong. These are
+not recollections about events &mdash; they are statements of intent from the
+only person in a position to know it, and no analysis can overrule them. Where
+they conflict with something computed here they win, and one of them did.</p>
 </section>
 <section class='card'><h2>Every file, and its fingerprint</h2><div class='tw'><table><thead><tr><th>file</th><th>kind</th><th>place</th><th>clock</th><th>length</th><th>sha-256 (first 16)</th><th>what ships</th></tr></thead><tbody><tr><td>clock-screenshot_20260804_130719_Clock.jpg</td><td>screenshot</td><td>Stopwatch, paused</td><td class='num'>2026-08-04 13:07:19</td><td class='num'>&mdash;</td><td class='mono sha'>6b77c58ab84527c7</td><td><a href='web/clock-screenshot_20260804_130719_Clock.jpg'>image</a></td></tr><tr><td>20260803_190055.jpg</td><td>still</td><td>Under the bridge, evening</td><td class='num'>2026-08-03 19:00:55</td><td class='num'>&mdash;</td><td class='mono sha'>505601476abb7478</td><td><a href='web/20260803_190055.jpg'>image</a></td></tr><tr><td>20260803_190152.jpg</td><td>still</td><td>Under the bridge, evening</td><td class='num'>2026-08-03 19:01:52</td><td class='num'>&mdash;</td><td class='mono sha'>cf64fa29ccdeac04</td><td><a href='web/20260803_190152.jpg'>image</a></td></tr><tr><td>grassy-knoll-20260804_120225.jpg</td><td>still</td><td>Grassy knoll, south of the bridge</td><td class='num'>2026-08-04 12:02:25</td><td class='num'>&mdash;</td><td class='mono sha'>d62b709131cd74af</td><td><a href='web/grassy-knoll-20260804_120225.jpg'>image</a></td></tr><tr><td>canyon-buildings-20260804_115319.mp4</td><td>video</td><td>The canyon, walking</td><td class='num'>2026-08-04 11:53:19</td><td class='num'>61.8 s</td><td class='mono sha'>da4532294a3665e0</td><td><a href='web/canyon-buildings-20260804_115319.m4a'>audio</a> <a href='web/canyon-buildings-20260804_115319-poster.jpg'>poster</a></td></tr><tr><td>canyon-buildings2-20260804_115505.mp4</td><td>video</td><td>The canyon, continued</td><td class='num'>2026-08-04 11:55:05</td><td class='num'>46.7 s</td><td class='mono sha'>905cad6caa9aa119</td><td><a href='web/canyon-buildings2-20260804_115505.m4a'>audio</a> <a href='web/canyon-buildings2-20260804_115505-poster.jpg'>poster</a></td></tr><tr><td>grassy-knoll-20260804_115626.mp4 <span class='pill bad'>excluded</span></td><td>video</td><td>Grassy knoll, south of the bridge</td><td class='num'>2026-08-04 11:56:26</td><td class='num'>10.3 s</td><td class='mono sha'>4745dba0fb3483c5</td><td><a href='web/grassy-knoll-20260804_115626.m4a'>audio</a> <a href='web/grassy-knoll-20260804_115626-poster.jpg'>poster</a></td></tr></tbody></table></div><p class='note'>The masters are not in this repository. One video is 114 MB, which is over GitHub&#x27;s hard file limit, and committing the set would put a quarter of a gigabyte of phone footage into a research repository to no purpose. What ships is a poster frame and an audio track per video and a resized still per photograph. Every master is fingerprinted by SHA-256 above, so a master supplied later can be checked against what was actually analysed.</p><p class='note'>The masters total 224.7 MB and the web versions total 4.1 MB, a factor of 55&times;. Android names a video file at the moment recording <em>starts</em> and writes the container timestamp when it <em>closes</em>, so the clock column is the start and the two differ by the length of the clip. Every capture carried GPS and full EXIF; none of it was stripped before analysis.</p></section>
 <section class='card'><h2>Where each capture actually stood</h2><svg viewBox='0 0 1080 290' width='100%' role='img' class='envsvg' data-kind='geo' aria-label='captures against the alignment'><line x1='52' y1='240.0' x2='1064.0' y2='240.0' stroke='var(--cp-border)' stroke-width='1'/><text x='46' y='243.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-78</text><line x1='52' y1='170.0' x2='1064.0' y2='170.0' stroke='var(--cp-border)' stroke-width='1'/><text x='46' y='173.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>68</text><line x1='52' y1='100.0' x2='1064.0' y2='100.0' stroke='var(--cp-border)' stroke-width='1'/><text x='46' y='103.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>214</text><line x1='52' y1='30.0' x2='1064.0' y2='30.0' stroke='var(--cp-border)' stroke-width='1'/><text x='46' y='33.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>361</text><line x1='52' y1='202.8' x2='1064.0' y2='202.8' stroke='var(--cp-text)' stroke-width='2.5' opacity='0.55'/><text x='1062.0' y='196.8' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>fitted track axis</text><circle cx='159.7' cy='211.6' r='5' fill='none' stroke='var(--cp-text)' stroke-width='1.8'/><line x1='159.7' y1='217.6' x2='159.7' y2='222.6' stroke='var(--cp-border-strong)' stroke-width='1'/><text x='159.7' y='229.6' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>Adams Street Library</text><circle cx='201.4' cy='206.2' r='5' fill='none' stroke='var(--cp-text)' stroke-width='1.8'/><line x1='201.4' y1='212.2' x2='201.4' y2='230.2' stroke='var(--cp-border-strong)' stroke-width='1'/><text x='201.4' y='237.2' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>Front and Pine Street</text><circle cx='460.6' cy='196.8' r='5' fill='none' stroke='var(--cp-text)' stroke-width='1.8'/><line x1='460.6' y1='190.8' x2='460.6' y2='185.8' stroke='var(--cp-border-strong)' stroke-width='1'/><text x='460.6' y='182.8' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>DUMBO Archway</text><circle cx='964.8' cy='49.2' r='5' fill='none' stroke='var(--cp-text)' stroke-width='1.8'/><line x1='964.8' y1='43.2' x2='964.8' y2='38.2' stroke='var(--cp-border-strong)' stroke-width='1'/><text x='964.8' y='35.2' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>Brooklyn Bridge Park</text><circle cx='151.2' cy='125.2' r='4.5' fill='var(--cp-accent)'/><circle cx='158.9' cy='126.6' r='4.5' fill='var(--cp-accent)'/><rect x='641.5' y='216.3' width='9' height='9' fill='var(--cp-accent)'/><rect x='683.1' y='211.0' width='9' height='9' fill='var(--cp-accent)'/><rect x='799.2' y='185.4' width='9' height='9' fill='var(--cp-text-muted)'/><circle cx='866.5' cy='163.7' r='4.5' fill='var(--cp-accent)'/><text x='558.0' y='286' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>chainage along the alignment, m (0 = the DUMBO Archway)</text><text x='10' y='135' font-size='10' fill='var(--cp-text-muted)' transform='rotate(-90 14,135)'>offset, m</text><g font-size='10' fill='var(--cp-text-muted)'><rect x='54' y='262' width='9' height='9' fill='var(--cp-accent)'/><text x='68' y='270'>video</text><circle cx='114' cy='266' r='4.5' fill='var(--cp-accent)'/><text x='124' y='270'>still</text><circle cx='160' cy='266' r='5' fill='none' stroke='var(--cp-text)' stroke-width='1.8'/><text x='170' y='270'>MTA measurement point</text><rect x='310' y='262' width='9' height='9' fill='var(--cp-text-muted)'/><text x='324' y='270'>excluded</text></g></svg><div class='tw'><table><thead><tr><th>capture</th><th>chainage, m</th><th>offset from track, m</th><th>which side</th><th>nearest MTA measurement</th><th>distance to it</th></tr></thead><tbody><tr><td>20260803_190152.jpg</td><td class='num'>-124.7</td><td class='num'>161.9</td><td>west-south-west</td><td>Front and Pine Street</td><td class='num'>170 m</td></tr><tr><td>20260803_190055.jpg</td><td class='num'>-121.6</td><td class='num'>159.0</td><td>west-south-west</td><td>Front and Pine Street</td><td class='num'>167 m</td></tr><tr><td>canyon-buildings-20260804_115319.mp4</td><td class='num'>+74.7</td><td class='num'>37.6</td><td>east-north-east</td><td>DUMBO Archway</td><td class='num'>90 m</td></tr><tr><td>canyon-buildings2-20260804_115505.mp4</td><td class='num'>+91.5</td><td class='num'>26.4</td><td>east-north-east</td><td>DUMBO Archway</td><td class='num'>100 m</td></tr><tr><td>grassy-knoll-20260804_115626.mp4</td><td class='num'>+138.3</td><td class='num'>27.0</td><td>west-south-west</td><td>DUMBO Archway</td><td class='num'>139 m</td></tr><tr><td>grassy-knoll-20260804_120225.jpg</td><td class='num'>+163.6</td><td class='num'>81.6</td><td>west-south-west</td><td>DUMBO Archway</td><td class='num'>178 m</td></tr></tbody></table></div>
@@ -441,8 +457,13 @@ leaves the channels agreeing.</p>
 <p class="note">The clip is excluded <em>at source</em>, before any statistic
 is computed &mdash; not caveated afterwards. A caveat below a number does not
 stop the number being quoted. The audio span on this page is
-108.4 s, not 118.7 s, because of it, and the conclusion in the corroboration
-card survives losing it.</p>
+108.4 s, not 118.7 s, because of it.</p>
+<p class="note"><strong>This finding is unaffected by the withdrawal
+below</strong>, and it is worth being clear why. It is a statement about the
+recording chain, not about the site &mdash; it says a microphone misbehaved,
+which is exactly what a by-product audio track <em>can</em> establish. It does
+not depend on the stopwatch, on any duty cycle, or on the audio being an
+acoustic measurement of anything.</p>
 </section>
 <section class='card'><h2>A clip shorter than a headway cannot be evidence of quiet</h2>
 <p>The lawn clip is <em>closer</em> to the track than either canyon clip and
@@ -487,31 +508,61 @@ reading is 12.8 s and the median is 7.3 s, a gap this one lap almost entirely
 accounts for, which is why the median is quoted beside the mean everywhere it
 matters. The lap was <em>not</em> dropped and the reading was <em>not</em>
 re-chosen to make it go away.</p>
+<p class="note"><strong>The tie-break now rests on that one argument
+alone.</strong> It used to have a second, apparently independent prop &mdash;
+an audio duty ceiling that seemed to rule the other reading out. That prop is
+withdrawn in the next card but one, so the confidence attached to the pairing,
+and to the event durations and duty cycle that hang off it, drops with it.
+Rated <strong>WEAK</strong>.</p>
+<p class="note"><strong>The operator's own reading of the session points the
+other way, and is recorded rather than resolved.</strong> The operator&#x27;s own reading of the session is that it showed &#x27;a very small amount of time between noise from the train tracks&#x27;. That is ambiguous between two things this stopwatch cannot separate: short GAPS, which would favour the rejected pairing, or a short CYCLE, which is pairing-independent and is already established at 63.8 s. It is recorded rather than resolved.</p>
+<p class="note"><strong>Only the cycle is pairing-independent.</strong> The cycle, and therefore the event rate, is identical under both pairings. It is the only quantity here that does not depend on the tie-break, and it is the only one carried forward.
+The operator has stated this will be re-run with documentation of which tap was which. When that happens the tie-break stops being an inference and this section is replaced, not amended.</p>
 </section>
-<section class='card'><h2>The audio was analysed without reference to the stopwatch, and it refutes the reading that was rejected</h2><svg viewBox='0 0 1080 210' width='100%' role='img' class='envsvg' data-kind='sweep' aria-label='duty cycle against threshold'><line x1='46' y1='176.0' x2='856.0' y2='176.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='179.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>0%</text><line x1='46' y1='135.5' x2='856.0' y2='135.5' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='138.5' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>22%</text><line x1='46' y1='95.0' x2='856.0' y2='95.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='98.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>45%</text><line x1='46' y1='54.5' x2='856.0' y2='54.5' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='57.5' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>67%</text><line x1='46' y1='14.0' x2='856.0' y2='14.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='17.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>89%</text><line x1='46' y1='31.4' x2='856.0' y2='31.4' stroke='var(--cp-danger)' stroke-width='2' stroke-dasharray='6 4'/><text x='864.0' y='35.4' font-size='11' fill='var(--cp-danger)'>the rejected reading needs 80%</text><line x1='46' y1='96.2' x2='856.0' y2='96.2' stroke='var(--cp-success)' stroke-width='2'/><text x='864.0' y='100.2' font-size='11' fill='var(--cp-success)'>measured ceiling 44%</text><polyline points='46.0,96.2 136.0,121.0 226.0,135.8 316.0,148.3 496.0,167.9 676.0,175.3 856.0,176.0' fill='none' stroke='var(--cp-accent)' stroke-width='1.6'/><line x1='864' y1='138.0' x2='886' y2='138.0' stroke='var(--cp-accent)' stroke-width='1.6'/><text x='892' y='142.0' font-size='10' fill='var(--cp-text-muted)'>canyon-buildings</text><polyline points='46.0,124.6 136.0,151.7 226.0,167.3 316.0,173.3 496.0,176.0 676.0,176.0 856.0,176.0' fill='none' stroke='var(--cp-accent)' stroke-width='1.6' stroke-dasharray='4 3'/><line x1='864' y1='153.0' x2='886' y2='153.0' stroke='var(--cp-accent)' stroke-width='1.6' stroke-dasharray='4 3'/><text x='892' y='157.0' font-size='10' fill='var(--cp-text-muted)'>canyon-buildings2</text><text x='46.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>3</text><text x='136.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>4</text><text x='226.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>5</text><text x='316.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>6</text><text x='496.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>8</text><text x='676.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>10</text><text x='856.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>12</text><text x='451.0' y='207' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>detection threshold, dB above the clip's own median</text></svg>
-<p>The two instruments are independent: different day, different place,
-different mechanism, and the audio detector was written and run before the
-stopwatch file was parsed. So the audio can be asked whether the rejected
-reading is even possible.</p>
-<p>The rejected reading requires this corridor to be under train noise about
-<strong>80%</strong> of the time, with each event lasting about
-<strong>51 s</strong>. In 108.4 s of recording the longest sustained level
-excursion of any kind is <strong>10.1 s</strong>, and the duty cycle never
-exceeds <strong>44%</strong> at any detection threshold tested &mdash;
-including thresholds loose enough to be catching footsteps.</p>
-<div class="tw"><table><thead><tr><th>&nbsp;</th>
-<th>rejected reading</th><th>chosen reading</th><th>what the audio shows</th>
+<section class='card'><h2>A claim made on this page yesterday, withdrawn</h2>
+<blockquote><p>The audio was analysed without reference to the stopwatch, and
+it refutes the reading that was rejected. The rejected reading requires this
+corridor to be under train noise about <strong>80%</strong> of the time&hellip;
+the duty cycle never exceeds <strong>44%</strong> at any detection
+threshold tested.</p></blockquote>
+<p><strong>That is withdrawn.</strong> It was the strongest-sounding result on
+the page and it was not a result at all.</p>
+<p>It required the audio and the stopwatch to be measuring the same thing.
+They are not, for two independent reasons, either of which is sufficient.</p>
+<p><strong>First, they do not overlap.</strong> The operator states plainly
+that the stopwatch is an independent sample with no correlation to any video
+or audio supplied. The file timestamps say the same thing without being asked:
+the last audio-bearing capture ends at <strong>11:56:36</strong> and the stopwatch
+does not start until <strong>12:59:00</strong>.</p>
+<div class="tw"><table><thead><tr><th>&nbsp;</th><th>from</th><th>to</th>
 </tr></thead><tbody>
-<tr><th>duty cycle</th><td class='num'>79.9%</td><td class='num'>20.1%</td>
-<td class='num'>ceiling 44.1%</td></tr>
-<tr><th>typical event</th><td class='num'>51.0 s</td><td class='num'>7.3 s</td>
-<td class='num'>longest 10.1 s</td></tr>
+<tr><th>audio (3 video clips)</th><td class='num'>11:53:19</td>
+<td class='num'>11:56:36</td></tr>
+<tr><th>stopwatch</th><td class='num'>12:59:00</td><td class='num'>13:07:19</td></tr>
+<tr class='flagged'><th>gap between them</th>
+<td class='num' colspan='2'><strong>62 min, zero overlap</strong></td></tr>
 </tbody></table></div>
-<p class="note"><strong>This refutes one reading. It does not confirm the
-other.</strong> The same sweep runs from 44% down to zero as the threshold
-tightens, so the duty figure is threshold-dependent and only its
-<em>ceiling</em> is load-bearing. A ceiling can kill a claim above it and can
-say nothing about a claim below it.</p>
+<p>A duty cycle measured in one window places no constraint on a duty cycle in
+another window an hour away. The arithmetic was correct and the inference was
+not.</p>
+<p><strong>Second, and independently, the video was never an acoustic
+instrument.</strong> Its purpose was to record the buildings that form the
+echo chamber near the water. The audio came along with it. A by-product track
+shot while walking cannot characterise the acoustic environment no matter how
+carefully it is processed, and it should not have been asked to.</p>
+<p class="note">What survives is narrower and it is stated narrowly. Each
+instrument constrains itself. The sweep below is kept because it shows why a
+single duty figure from uncalibrated audio should never have been quoted at
+all &mdash; on the same three files it runs from 44% down to zero depending
+only on where the threshold is put.</p>
+</section>
+<section class='card'><h2>The duty figure is an artefact of the threshold, and that is all this sweep now shows</h2><svg viewBox='0 0 1080 210' width='100%' role='img' class='envsvg' data-kind='sweep' aria-label='duty cycle against threshold'><line x1='46' y1='176.0' x2='856.0' y2='176.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='179.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>0%</text><line x1='46' y1='135.5' x2='856.0' y2='135.5' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='138.5' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>22%</text><line x1='46' y1='95.0' x2='856.0' y2='95.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='98.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>45%</text><line x1='46' y1='54.5' x2='856.0' y2='54.5' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='57.5' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>67%</text><line x1='46' y1='14.0' x2='856.0' y2='14.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='17.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>89%</text><line x1='46' y1='31.4' x2='856.0' y2='31.4' stroke='var(--cp-danger)' stroke-width='2' stroke-dasharray='6 4'/><text x='864.0' y='35.4' font-size='11' fill='var(--cp-danger)'>the rejected reading needs 80%</text><line x1='46' y1='96.2' x2='856.0' y2='96.2' stroke='var(--cp-success)' stroke-width='2'/><text x='864.0' y='100.2' font-size='11' fill='var(--cp-success)'>measured ceiling 44%</text><polyline points='46.0,96.2 136.0,121.0 226.0,135.8 316.0,148.3 496.0,167.9 676.0,175.3 856.0,176.0' fill='none' stroke='var(--cp-accent)' stroke-width='1.6'/><line x1='864' y1='138.0' x2='886' y2='138.0' stroke='var(--cp-accent)' stroke-width='1.6'/><text x='892' y='142.0' font-size='10' fill='var(--cp-text-muted)'>canyon-buildings</text><polyline points='46.0,124.6 136.0,151.7 226.0,167.3 316.0,173.3 496.0,176.0 676.0,176.0 856.0,176.0' fill='none' stroke='var(--cp-accent)' stroke-width='1.6' stroke-dasharray='4 3'/><line x1='864' y1='153.0' x2='886' y2='153.0' stroke='var(--cp-accent)' stroke-width='1.6' stroke-dasharray='4 3'/><text x='892' y='157.0' font-size='10' fill='var(--cp-text-muted)'>canyon-buildings2</text><text x='46.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>3</text><text x='136.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>4</text><text x='226.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>5</text><text x='316.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>6</text><text x='496.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>8</text><text x='676.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>10</text><text x='856.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>12</text><text x='451.0' y='207' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>detection threshold, dB above the clip's own median</text></svg>
+<p>Every curve here is the same audio. The only thing changing is how far
+above each clip's own floor a sample has to sit before it counts as loud. The
+answer moves across the whole available range.</p>
+<p class="note"><strong>This is published as a caution, not as a measurement.</strong>
+Any duty cycle quoted from uncalibrated consumer audio is a statement about a
+threshold somebody chose. This page quoted one. It should not have.</p>
 </section>
 <section class='card'><h2>The rate agrees with the published timetable, within a wide interval</h2>
 <p>The chosen reading counts <strong>7</strong> events in 446.4 s, which is
@@ -527,19 +578,29 @@ observed rate to land <em>outside</em> the interval, which would have said the
 stopwatch reading was wrong. It did not. That is weak positive evidence, and
 it is reported as weak.</p>
 </section>
-<section class='card'><h2>What it looks like</h2><p class='sub'>None of these is a measurement. They are what the corridor looked like on the two afternoons the recordings were made.</p><div class='gal'><figure><img src='web/20260803_190055.jpg' alt='20260803_190055.jpg' loading='lazy'><figcaption>Under the bridge, evening<br><span class='mono'>20260803_190055.jpg</span></figcaption></figure><figure><img src='web/20260803_190152.jpg' alt='20260803_190152.jpg' loading='lazy'><figcaption>Under the bridge, evening<br><span class='mono'>20260803_190152.jpg</span></figcaption></figure><figure><img src='web/canyon-buildings-20260804_115319-poster.jpg' alt='canyon-buildings-20260804_115319.mp4' loading='lazy'><figcaption>poster frame &mdash; The canyon, walking<br><span class='mono'>canyon-buildings-20260804_115319.mp4</span></figcaption></figure><figure><img src='web/canyon-buildings2-20260804_115505-poster.jpg' alt='canyon-buildings2-20260804_115505.mp4' loading='lazy'><figcaption>poster frame &mdash; The canyon, continued<br><span class='mono'>canyon-buildings2-20260804_115505.mp4</span></figcaption></figure><figure><img src='web/clock-screenshot_20260804_130719_Clock.jpg' alt='clock-screenshot_20260804_130719_Clock.jpg' loading='lazy'><figcaption>Stopwatch, paused<br><span class='mono'>clock-screenshot_20260804_130719_Clock.jpg</span></figcaption></figure><figure><img src='web/grassy-knoll-20260804_115626-poster.jpg' alt='grassy-knoll-20260804_115626.mp4' loading='lazy'><figcaption>poster frame &mdash; Grassy knoll, south of the bridge<br><span class='mono'>grassy-knoll-20260804_115626.mp4</span></figcaption></figure><figure><img src='web/grassy-knoll-20260804_120225.jpg' alt='grassy-knoll-20260804_120225.jpg' loading='lazy'><figcaption>Grassy knoll, south of the bridge<br><span class='mono'>grassy-knoll-20260804_120225.jpg</span></figcaption></figure></div>
-<p>Two of these are worth more than the rest. The poster frame of the first
-canyon clip puts a <strong>John St / DUMBO Historic District</strong> street
-sign directly under the bridge deck, which fixes the location of that
-recording against a street name rather than against a coordinate the reader
-has to trust. The bridge underside fills the top third of the frame.</p>
+<section class='card'><h2>The echo chamber, which is what the video was actually for</h2><p class='sub'>The video was captured to record the buildings that form the echo chamber around the bridge near the water. That is what it is used for here.</p><div class='gal'><figure><img src='web/20260803_190055.jpg' alt='20260803_190055.jpg' loading='lazy'><figcaption>Under the bridge, evening<br><span class='mono'>20260803_190055.jpg</span></figcaption></figure><figure><img src='web/20260803_190152.jpg' alt='20260803_190152.jpg' loading='lazy'><figcaption>Under the bridge, evening<br><span class='mono'>20260803_190152.jpg</span></figcaption></figure><figure><img src='web/canyon-buildings-20260804_115319-poster.jpg' alt='canyon-buildings-20260804_115319.mp4' loading='lazy'><figcaption>poster frame &mdash; The canyon, walking<br><span class='mono'>canyon-buildings-20260804_115319.mp4</span></figcaption></figure><figure><img src='web/canyon-buildings2-20260804_115505-poster.jpg' alt='canyon-buildings2-20260804_115505.mp4' loading='lazy'><figcaption>poster frame &mdash; The canyon, continued<br><span class='mono'>canyon-buildings2-20260804_115505.mp4</span></figcaption></figure><figure><img src='web/clock-screenshot_20260804_130719_Clock.jpg' alt='clock-screenshot_20260804_130719_Clock.jpg' loading='lazy'><figcaption>Stopwatch, paused<br><span class='mono'>clock-screenshot_20260804_130719_Clock.jpg</span></figcaption></figure><figure><img src='web/grassy-knoll-20260804_115626-poster.jpg' alt='grassy-knoll-20260804_115626.mp4' loading='lazy'><figcaption>poster frame &mdash; Grassy knoll, south of the bridge<br><span class='mono'>grassy-knoll-20260804_115626.mp4</span></figcaption></figure><figure><img src='web/grassy-knoll-20260804_120225.jpg' alt='grassy-knoll-20260804_120225.jpg' loading='lazy'><figcaption>Grassy knoll, south of the bridge<br><span class='mono'>grassy-knoll-20260804_120225.jpg</span></figcaption></figure></div>
+<p><strong>This is the durable contribution of the session</strong>, and it is
+visual rather than acoustic. The operator's stated purpose for the video was
+to show the buildings that wall the corridor on both sides of the deck near
+the water &mdash; the geometry that turns a passing train into a reverberant
+event instead of one that disperses.</p>
+<p>That geometry is the subject of
+<a href="../visual-review/noise-canyon.html">the noise canyon page</a>, which
+until now drew it entirely from surveyed footprints and OpenStreetMap ways
+&mdash; 76 buildings extruded around an alignment, with nobody having stood in
+it. <strong>These frames are the first photographic record in this repository
+of the thing that page models.</strong> They do not measure it. They show that
+the modelled canyon and the built canyon are the same place.</p>
+<p>The poster frame of the first canyon clip puts a <strong>John St / DUMBO
+Historic District</strong> street sign directly under the bridge deck, fixing
+that recording against a street name rather than a coordinate the reader has
+to trust. The bridge underside fills the top third of the frame.</p>
 <p>The lawn frame is the only image in this repository that shows the
 <strong>receptor rather than the source</strong>. There are three separate
-walking groups in it and one of them has a pushchair. That is not a
-measurement and it is not a count &mdash; a single frame cannot be either
-&mdash; but the population this investigation has been modelling from
-turnstile arithmetic is visible in it, doing the thing the model says it does,
-under the deck.</p>
+walking groups in it and one has a pushchair. That is not a measurement and it
+is not a count &mdash; a single frame cannot be either &mdash; but the
+population this investigation models from turnstile arithmetic is visible in
+it, doing the thing the model says it does, under the deck.</p>
 <p class="note">People appear in two of these frames at a distance, in a public
 park, incidentally and unidentifiably. The programme's own ethics position in
 <a href="../read/field-capture-protocol.html">Document 5</a> is that this work
@@ -604,9 +665,21 @@ for its adequacy.</p>
 inference.</strong> Everything the stopwatch contributes rests on deciding
 which laps were noise. The tie-break is principled and the ratio is 4.7&times;
 &mdash; but it is one observer, fourteen laps, and no independent record of
-what the first tap meant. If the pairing is wrong, the duty cycle, the event
-durations and the rate are all wrong together, and the audio corroboration
-only rules out the alternative on duty cycle, not on everything.</li>
+what the first tap meant. It once had a second prop and no longer does. If the
+pairing is wrong, the event durations and the duty cycle are wrong together.
+<strong>The rate survives either way</strong>, because the cycle is identical
+under both pairings.</li>
+<li><strong>The stopwatch is an indicator, not an instrument, and its own
+author says so.</strong> A human decided when to start and stop it, which puts
+reaction time, anticipation and attention into every lap with no way to
+separate them. It is being re-run with documentation. Nothing here should be
+treated as settled until it is.</li>
+<li><strong>The audio is a by-product of a visual record.</strong> The video
+was shot to show the buildings that form the echo chamber, not to measure
+sound. It is used on this page for exactly one thing &mdash; establishing that
+one recording's microphone misbehaved &mdash; and that is a claim about the
+recording chain, not about the corridor. <strong>Every acoustic
+characterisation drawn from it has been withdrawn.</strong></li>
 <li><strong>The observer knew what the study is about.</strong> The same
 person who has been writing about train noise for weeks decided, in real time,
 when train noise started and stopped. Expectancy effects are not controlled
@@ -637,11 +710,12 @@ not to metres.</li>
 <li><strong>One consumer handset, two days, one observer, one weather
 condition.</strong> Nothing here establishes anything about a different
 season, a different time of day, wet rail, or a different phone.</li>
-<li><strong>The duty ceiling is a ceiling because of how the sweep was
-defined.</strong> If a real excursion sits below the loosest threshold tested,
-the ceiling is too low and the refutation weakens. The sweep was run to a
-threshold loose enough to catch footsteps specifically to make this
-unlikely, which is an argument and not a proof.</li>
+<li><strong>Better capture is already scheduled, and it supersedes rather than
+supplements most of this.</strong> The operator is re-running the stopwatch
+with documentation of which tap was which, and capturing audio with a
+microphone shield and an audio meter. When that arrives, the pairing stops
+being an inference and the acoustic content of this page is replaced, not
+amended. Anyone building on the numbers here should wait.</li>
 </ol>
 </section>
 

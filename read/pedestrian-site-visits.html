@@ -395,9 +395,9 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../read/readme.html">README</a><a href="../read/idea-concept.html">1. Concept</a><a href="../read/precedent-and-materials.html">2. Precedent</a><a href="../read/williamsburg-comparator.html">3. Comparator</a><a href="../read/visual-model-framework.html">4. Visual model</a><a href="../read/field-capture-protocol.html">5. Field capture</a><a href="../read/community-evidence-audit.html">6. Community</a><a href="../read/data-collection.html">7. Data</a><a href="../read/pedestrian-site-visits.html" class="on">10. Field media</a><a href="../index.html#demos">Demos</a><span class="mh-sep" aria-hidden="true"></span><a href="../read/usage.html">8. AI Usage</a><a href="../read/procurement.html">9. Procurement</a></nav></div></div>
 <div class="wrap">
 <div class="doclayout">
-<aside class="toc"><div class="h">On this page</div><a href="#1-the-refusal-first">1. The refusal, first</a><a href="#2-what-was-captured">2. What was captured</a><a class="l3" href="#the-gitignore-nearly-shipped-a-page-of-broken-images">The .gitignore nearly shipped a page of broken images</a><a href="#3-where-the-captures-actually-stood">3. Where the captures actually stood</a><a class="l3" href="#two-guards-that-exist-because-the-first-version-was-wrong">Two guards that exist because the first version was wrong</a><a href="#4-the-stopwatch-and-the-inference-the-whole-reading-rests-on">4. The stopwatch, and the inference the whole reading rests on</a><a class="l3" href="#one-event-does-not-fit-and-it-is-not-hidden">One event does not fit and it is not hidden</a><a href="#5-the-audio-analysed-without-reference-to-the-stopwatch">5. The audio, analysed without reference to the stopwatch</a><a class="l3" href="#what-that-refutes-and-what-it-does-not">What that refutes, and what it does not</a><a href="#6-a-microphone-was-obstructed-and-finding-that-out-was-worth-more-than-the-clip">6. A microphone was obstructed, and finding that out was worth more than the clip</a><a class="l3" href="#the-mono-mixdown-had-to-be-undone-first">The mono mixdown had to be undone first</a><a class="l3" href="#the-first-result-was-negative-and-checking-it-found-a-blind-spot">The first result was negative, and checking it found a blind spot</a><a class="l3" href="#the-between-clip-test-on-three-indicators-that-disagree-by-design">The between-clip test, on three indicators that disagree by design</a><a href="#7-a-null-shorter-than-a-headway-is-not-a-finding">7. A null shorter than a headway is not a finding</a><a href="#8-the-rate-agrees-with-the-timetable-within-a-wide-interval">8. The rate agrees with the timetable, within a wide interval</a><a href="#81-what-was-asked-for-and-is-not-separately-here">8.1 What was asked for and is not separately here</a><a href="#82-measured-against-the-protocol-this-repository-wrote-for-itself">8.2 Measured against the protocol this repository wrote for itself</a><a href="#9-where-this-is-likely-to-be-wrong">9. Where this is likely to be wrong</a><a href="#10-what-this-changes-and-what-it-does-not">10. What this changes, and what it does not</a><a href="#11-the-question-this-opens">11. The question this opens</a><a href="#12-ethics">12. Ethics</a></aside>
+<aside class="toc"><div class="h">On this page</div><a href="#0-what-was-corrected-in-v11-and-why-it-matters-more-than-what-was-kept">0. What was corrected in v1.1, and why it matters more than what was kept</a><a href="#1-the-refusal-first">1. The refusal, first</a><a href="#2-what-was-captured">2. What was captured</a><a class="l3" href="#the-gitignore-nearly-shipped-a-page-of-broken-images">The .gitignore nearly shipped a page of broken images</a><a href="#3-where-the-captures-actually-stood">3. Where the captures actually stood</a><a class="l3" href="#two-guards-that-exist-because-the-first-version-was-wrong">Two guards that exist because the first version was wrong</a><a href="#4-the-stopwatch-and-the-inference-the-whole-reading-rests-on">4. The stopwatch, and the inference the whole reading rests on</a><a class="l3" href="#the-operators-own-reading-points-the-other-way">The operator's own reading points the other way</a><a class="l3" href="#only-the-cycle-is-pairing-independent">Only the cycle is pairing-independent</a><a class="l3" href="#one-event-does-not-fit-and-it-is-not-hidden">One event does not fit and it is not hidden</a><a href="#5-the-audio-which-is-a-by-product-and-is-treated-as-one">5. The audio, which is a by-product and is treated as one</a><a class="l3" href="#the-withdrawal">The withdrawal</a><a class="l3" href="#what-survives">What survives</a><a href="#6-a-microphone-was-obstructed-and-finding-that-out-was-worth-more-than-the-clip">6. A microphone was obstructed, and finding that out was worth more than the clip</a><a class="l3" href="#the-mono-mixdown-had-to-be-undone-first">The mono mixdown had to be undone first</a><a class="l3" href="#the-first-result-was-negative-and-checking-it-found-a-blind-spot">The first result was negative, and checking it found a blind spot</a><a class="l3" href="#the-between-clip-test-on-three-indicators-that-disagree-by-design">The between-clip test, on three indicators that disagree by design</a><a href="#7-a-null-shorter-than-a-headway-is-not-a-finding">7. A null shorter than a headway is not a finding</a><a href="#8-the-rate-agrees-with-the-timetable-within-a-wide-interval">8. The rate agrees with the timetable, within a wide interval</a><a href="#81-what-was-asked-for-and-is-not-separately-here">8.1 What was asked for and is not separately here</a><a href="#82-measured-against-the-protocol-this-repository-wrote-for-itself">8.2 Measured against the protocol this repository wrote for itself</a><a href="#9-where-this-is-likely-to-be-wrong">9. Where this is likely to be wrong</a><a href="#10-what-this-changes-and-what-it-does-not">10. What this changes, and what it does not</a><a href="#11-the-question-this-opens">11. The question this opens</a><a href="#12-ethics">12. Ethics</a></aside>
 <main class="doc">
-<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/README.md"><code>pedestrian-site-visits/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 4,109 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/README.md"><code>pedestrian-site-visits/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 5,609 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
 <h1 id="field-media-what-a-consumer-phone-actually-recorded-under-the-bridge">Field media: what a consumer phone actually recorded under the bridge</h1>
 <p><strong>Page:</strong> <a href="../pedestrian-site-visits/media.html"><code>media.html</code></a> &middot;
 <strong>Data:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/media-data.json"><code>media-data.json</code></a> &middot;
@@ -406,13 +406,53 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <strong>Harness:</strong> <a href="../pedestrian-site-visits/verify_media.js"><code>verify_media.js</code></a></p>
 <p>This is the first material in this programme that was not retrieved from
 somebody else. On 3 and 4 August 2026 an observer stood under the Manhattan
-Bridge in DUMBO with a Samsung Galaxy S23+, filmed the buildings on either side
-of the alignment, walked to the lawn on the south side, and separately stood
-with the phone's stopwatch and tapped a lap every time train noise started or
-stopped.</p>
+Bridge in DUMBO with a Samsung Galaxy S23+ and filmed the buildings that wall
+the corridor on both sides of the alignment. Separately, an hour later, he
+stood with the phone's stopwatch and tapped a lap every time train noise
+started or stopped.</p>
 <p>Every other document here argues from records: MTA memoranda, GTFS feeds,
 Socrata datasets, GSA rate schedules, a HAER survey. This one argues from
-fourteen taps on a screen and about two minutes of usable audio.</p>
+fourteen taps on a screen, about two minutes of by-product audio, and a set of
+photographs of a place this repository had until now only modelled.</p>
+<h2 id="0-what-was-corrected-in-v11-and-why-it-matters-more-than-what-was-kept">0. What was corrected in v1.1, and why it matters more than what was kept</h2>
+<p><strong>Version 1.0 made a cross-instrument claim that is withdrawn.</strong>
+It is quoted in full in section 5 rather than deleted. The short
+form: the audio duty cycle was used to refute one of the two possible readings
+of the stopwatch, and it cannot, because the two are independent samples
+<strong>62.4 minutes apart with no overlap</strong>.</p>
+<p>The correction came from the operator, and it arrived as three statements of
+intent:</p>
+<blockquote>
+<p>The stopwatch is an independent sample. There is no correlation between it
+and any video or audio also supplied.</p>
+<p>It is somewhat imprecise because a human operator decided when to start and
+stop the stopwatch. It was an indicator that there is a very small amount of
+time between noise from the train tracks. I will redo this with better
+documentation.</p>
+<p>The video was primarily used to show the buildings that create an echo
+chamber around the bridge near the water. That was the main value of them.
+It was not to be used for audio precision.</p>
+</blockquote>
+<p>These are rated <strong>5/5</strong>. Every other piece of testimony in this document is
+rated 2/5, because a recollection about what happened can be wrong. These are
+not recollections about events. They are statements about <em>intent</em> from the
+only person in a position to know it, and no analysis performed afterwards can
+overrule them.</p>
+<p><strong>A measurement can only be read for the purpose it was taken for.</strong> The
+analysis that produced v1.0 never asked what the captures were <em>for</em>. It
+treated a video shot to photograph buildings as an acoustic instrument, and it
+treated a hand-timed indicator as a data series to be reconciled with that
+instrument. Both files are real and both numbers were computed correctly. The
+inference joining them was invented by the analyst, not supplied by the field.</p>
+<p>The net effect:
+<strong>this document's centre of gravity moves from the audio to the photographs.</strong>
+The buildings forming the echo chamber are the
+thing the session was for, and they are the thing it delivered.</p>
+<p><strong>Better capture is already scheduled.</strong> The operator is re-running the
+stopwatch with documentation of which tap was which, and capturing audio with
+a microphone shield and an audio meter later this week. The acoustic content
+here is superseded rather than supplemented when that arrives, which is the
+reason to demote it now rather than defend it.</p>
 <pre><code>python pedestrian-site-visits/make_derivatives.py    # masters -&gt; web/
 python pedestrian-site-visits/build_media_data.py    # -&gt; media-data.json
 python pedestrian-site-visits/build_media_page.py    # -&gt; media.html
@@ -664,6 +704,29 @@ rejected reading those swap, which would mean the railway runs to no timetable
 while every train sounds loud for almost exactly the same length of time.</p>
 <p>That is a strong argument and it is still an inference. It is the load-bearing
 assumption in this document and it is listed first in section 9.</p>
+<p><strong>It now rests on that one argument alone.</strong> Version 1.0 gave it a second and
+apparently independent prop &mdash; an audio duty ceiling that seemed to rule
+the other reading out. That prop is withdrawn in section 5, so the confidence
+attached to the pairing, and to the event durations and duty cycle hanging off
+it, drops with it. The data file marks the pairing <code>"confidence": "WEAK"</code> and
+<code>"sole_support": true</code>.</p>
+<h3 id="the-operators-own-reading-points-the-other-way">The operator's own reading points the other way</h3>
+<p>The operator describes the session as an indicator that there is</p>
+<blockquote>
+<p>a very small amount of time between noise from the train tracks.</p>
+</blockquote>
+<p>That is ambiguous between two things <strong>this stopwatch cannot separate</strong>. It
+may mean the <em>gaps</em> are short, which would favour the rejected pairing, where
+gaps average 12.8 s. It may mean the <em>cycle</em> is short, which is
+pairing-independent and is already established at 63.8 s &mdash; a train about
+every minute, which anyone might reasonably describe that way.</p>
+<p>It is recorded, not resolved. Reading it either way would be choosing the
+answer. The ambiguity is itself the argument for re-running the stopwatch with
+documentation, which the operator has said he will do.</p>
+<h3 id="only-the-cycle-is-pairing-independent">Only the cycle is pairing-independent</h3>
+<p>The cycle, and therefore the event rate, is identical under both pairings. It
+is the one quantity here that does not depend on the tie-break, and it is the
+only one carried forward into section 8.</p>
 <h3 id="one-event-does-not-fit-and-it-is-not-hidden">One event does not fit and it is not hidden</h3>
 <p>Lap 2 is 41.09 s against 18.63 s for the next longest of the seven and a median
 of 7.3 s &mdash; a 5.6&times; outlier on the median. It is the first event of
@@ -674,27 +737,90 @@ two real intervals.</p>
 The mean of the accepted reading is 12.8 s and the median 7.3 s, a gap this one
 lap almost entirely accounts for, which is why the median is quoted beside the
 mean throughout.</p>
-<h2 id="5-the-audio-analysed-without-reference-to-the-stopwatch">5. The audio, analysed without reference to the stopwatch</h2>
+<h2 id="5-the-audio-which-is-a-by-product-and-is-treated-as-one">5. The audio, which is a by-product and is treated as one</h2>
+<p>The audio analysed here is the sound track of video shot to photograph
+buildings.
+<strong>It was not captured for acoustic precision and is not used as though it was.</strong>
+It is used for exactly one thing that it can carry: showing
+that one recording's microphone misbehaved, which is a claim about the
+recording chain rather than about the corridor.</p>
 <p>The detector was written and run before the stopwatch file was parsed. An
 excursion is a stretch at least 1.5 s long sitting at least 6 dB above the
 clip's own rolling median, with excursions less than 1.5 s apart merged.</p>
 <p><strong>It is a level excursion, not a train.</strong> The detector cannot distinguish a
-train from a truck and does not try to. On a corridor carrying heavy road
-traffic under the same deck this matters.</p>
+train from a truck, from the operator's own footsteps as he walked, from
+clothing against the handset, or from wind. On a corridor carrying heavy road
+traffic under the same deck, recorded by someone walking through it, this is
+not a marginal caveat.</p>
 <p>Across 108.4 s of usable recording: <strong>4 excursions, longest 10.10 s</strong>, and the
-duty cycle never exceeds <strong>44%</strong> at any detection threshold tested &mdash;
-including thresholds loose enough to be catching footsteps.</p>
-<h3 id="what-that-refutes-and-what-it-does-not">What that refutes, and what it does not</h3>
-<p>The rejected stopwatch reading requires the corridor to be under train noise
-about 80% of the time with each event lasting about 51 s. The audio ceiling is
-44% and the longest excursion of any kind is 10.10 s.</p>
+duty cycle never exceeds <strong>44%</strong> at any detection threshold tested.</p>
+<p>Those are statements about three files. They are not statements about the
+corridor, and the next section withdraws the claim that treated them as such.</p>
+<h3 id="the-withdrawal">The withdrawal</h3>
+<p>Version 1.0 of this document said:</p>
+<blockquote>
 <p><strong>That refutes the rejected reading robustly. It does not confirm the other.</strong>
-The same sweep runs from 44% down to zero as the threshold
-tightens, so the duty figure is threshold-dependent and only its <em>ceiling</em> is
-load-bearing. A ceiling can kill a claim above it and says nothing about a
-claim below it.</p>
-<p>The refutation also survives the exclusion in section 6. <code>refutes_rejected</code>
-stays <code>true</code> after the lawn clip is removed.</p>
+The rejected stopwatch reading requires the corridor to be under
+train noise about 80% of the time with each event lasting about 51 s. The
+audio ceiling is 44% and the longest excursion of any kind is 10.10 s.</p>
+</blockquote>
+<p><strong>That is withdrawn.</strong> It was the strongest-sounding result in the document
+and it was not a result at all. Two independent reasons kill it, either of
+which is sufficient.</p>
+<p><strong>First, the two instruments do not overlap.</strong> The operator states there is no
+correlation between the stopwatch and any video or audio supplied. The file
+timestamps agree without being asked:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>instrument</th>
+<th>from</th>
+<th>to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>audio, 3 video clips</td>
+<td>11:53:19</td>
+<td>11:56:36</td>
+</tr>
+<tr>
+<td>stopwatch</td>
+<td>12:59:00</td>
+<td>13:07:19</td>
+</tr>
+<tr>
+<td><strong>gap</strong></td>
+<td><strong>62.4 min</strong></td>
+<td><strong>zero overlap</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>A duty cycle measured in one window places no constraint on a duty cycle in
+another window an hour away. The arithmetic was right; the inference joining
+the two was invented here and was never in the data.</p>
+<p>That the operator's statement and the file timestamps agree is the strongest
+form this evidence could take, <strong>because they could have disagreed</strong>. The
+check is in <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/build_media_data.py"><code>build_media_data.py</code></a> as <code>separation()</code>,
+and it hard-exits if the two ever overlap.</p>
+<p><strong>Second, and independently, the video was never an acoustic instrument.</strong> It
+was shot to record the buildings forming the echo chamber near the water. Its
+audio track is a by-product of a visual record, captured while walking, and
+cannot characterise an acoustic environment however carefully it is processed.</p>
+<h3 id="what-survives">What survives</h3>
+<p>Each instrument constrains itself and nothing else. Concretely:</p>
+<ul>
+<li><strong>The duty ceiling has no consumer.</strong> Its only use was the refutation above.
+  It is retained in the data as a property of three files and is used for
+  nothing.</li>
+<li><strong>The threshold sweep is kept for the opposite reason it was built.</strong> On the
+  same audio it runs from 44% down to zero depending only on where the
+  threshold is put. That is worth publishing as a caution against anyone
+  &mdash; including this repository, which did it &mdash; quoting a single
+  duty figure from uncalibrated audio.</li>
+<li><strong>The obstruction finding in section 6 is unaffected</strong>, and section 6 says
+  why.</li>
+</ul>
 <h2 id="6-a-microphone-was-obstructed-and-finding-that-out-was-worth-more-than-the-clip">6. A microphone was obstructed, and finding that out was worth more than the clip</h2>
 <p>After the recordings were made the operator volunteered two recollections about
 the lawn clip:</p>
@@ -887,15 +1013,33 @@ from. That loop is still closed. This material does not open it, because AGC
 deforms precisely the rise and decay the assumption is about. A UMIK-1 over
 USB-C, about USD 100&ndash;150 with a serial-numbered calibration file, still
 does.</p>
+<p><strong>The equipment gap is closing this week.</strong> The operator has stated he will
+capture with a microphone shield and an audio meter. A shield addresses the
+wind and handling noise that make C1 unsatisfiable; a meter addresses the
+absolute scale that makes everything on this page a ratio. When that material
+arrives, C1 and C2 become answerable for the first time, and the acoustic
+content of this document is replaced rather than extended.</p>
 <h2 id="9-where-this-is-likely-to-be-wrong">9. Where this is likely to be wrong</h2>
 <ol>
 <li><strong>The pairing inference is load-bearing and it is an inference.</strong> Everything
    the stopwatch contributes rests on deciding which laps were noise. The
    tie-break is principled and the ratio is 4.67&times;, but it is one
    observer, fourteen laps, and no independent record of what the first tap
-   meant. If the pairing is wrong, the duty cycle, the event durations and the
-   rate are wrong together, and the audio only rules out the alternative on
-   duty cycle.</li>
+   meant. <strong>It had a second prop in v1.0 and no longer does.</strong> If the pairing
+   is wrong, the event durations and the duty cycle are wrong together. The
+   <em>rate</em> survives either way, because the cycle is identical under both.</li>
+<li><strong>The stopwatch is an indicator, not an instrument, and its author says so.</strong>
+   A human decided when to start and stop it, which puts reaction time,
+   anticipation and attention into every lap with no way to separate them. It
+   is being re-run with documentation. Nothing derived from it should be
+   treated as settled until that happens.</li>
+<li><strong>The audio is a by-product of a visual record.</strong> Every acoustic
+   characterisation drawn from it has been withdrawn. What remains is one
+   finding about the recording chain. If even that is over-read &mdash; if the
+   between-clip test is picking up something about the lawn rather than
+   something about the microphone &mdash; then the audio contributes nothing
+   at all, and the honest position would be that only the photographs and the
+   geometry survive.</li>
 <li><strong>The observer knew what the study is about.</strong> The same person who has been
    writing about train noise for weeks decided, in real time, when train noise
    started and stopped. Expectancy effects are not controlled for and cannot be
@@ -920,49 +1064,76 @@ does.</p>
 <li><strong>One handset, two days, one observer, one weather condition.</strong> Nothing here
    establishes anything about a different season, time of day, wet rail, or a
    different phone.</li>
-<li><strong>The duty ceiling is a ceiling because of how the sweep was defined.</strong> If a
-    real excursion sits below the loosest threshold tested, the ceiling is too
-    low and the refutation weakens. The sweep was deliberately run to a
-    threshold loose enough to catch footsteps to make this unlikely, which is
-    an argument and not a proof.</li>
+<li><strong>The largest error in v1.0 was not arithmetic.</strong>
+    Every number in the withdrawn claim was
+    computed correctly. What was wrong was joining two things that were never
+    joined in the field.
+    <strong>That failure mode is invisible to every check this directory runs</strong>
+    &mdash; the tests verify that numbers are computed
+    correctly and that pages render, not that an inference between two
+    datasets was licensed by how they were collected. The only defence is
+    asking the person who captured the material what each capture was for, and
+    that only happened here after publication.</li>
 <li><strong>The operator notes came from the person who made the recording</strong>, after
     the fact, with knowledge of what the recording was for.
     They are rated 2/5 for that reason. The between-clip test does not depend
-    on them; it would have flagged the clip had they never been offered.</li>
+    on them; it would have flagged the clip had they never been offered.
+    <strong>The statements of intent in section 0 are a different kind of thing</strong>
+    and are rated 5/5 &mdash; nobody else can say what a capture was for.</li>
 </ol>
 <h2 id="10-what-this-changes-and-what-it-does-not">10. What this changes, and what it does not</h2>
 <p>It does <strong>not</strong> change any published number about the bridge. No decibel here,
 no exposure figure, no revision to any MTA-derived quantity.</p>
 <p>What it changes:</p>
 <ul>
-<li><strong>The duty cycle now has a measured ceiling.</strong> 44%, from audio, independent
-  of the stopwatch. Any future claim above that line has to argue with data
-  rather than with an assumption.</li>
-<li><strong>The event durations have a first empirical anchor.</strong> Median 7.3 s from the
-  stopwatch, longest audio excursion 10.10 s. Section 1.7 derives 5.70, 6.28
-  and 7.25 s from the MTA tables under an assumed envelope. Those sit inside
-  this range. That is <strong>consistent, not confirmatory</strong> &mdash; the ranges are
-  wide and the instruments are weak.</li>
-<li><strong>The observed rate agrees with the timetable at this location</strong>, weakly, in
-  the first check of the schedule against anything observed on the ground.</li>
+<li><strong>The echo chamber is photographed.</strong> Until now
+  <a href="../visual-review/noise-canyon.html">the noise canyon page</a> drew the corridor
+  from 76 surveyed footprints and OpenStreetMap ways, with nobody having stood
+  in it. These frames are the first photographic record here of the geometry
+  that page models. They do not measure it; they show that the modelled canyon
+  and the built canyon are the same place.
+  <strong>This was the purpose of the session and it is what the session delivered.</strong></li>
 <li><strong>The receptor is photographed.</strong> The lawn frame is the only image in this
   repository showing people, in the corridor, under the deck, including a
   family group with a pushchair. It is not a count. It is the population the
   cohort model has only ever inferred from turnstile arithmetic.</li>
+<li><strong>The captures are placed against the measured points.</strong> Two stand 26 m and
+  27 m from the fitted track axis, closer than three of the four points anyone
+  has ever measured. That is geometry from embedded GPS and is unaffected by
+  everything withdrawn above.</li>
+<li><strong>The observed rate agrees with the timetable at this location</strong>, weakly, in
+  the first check of the schedule against anything observed on the ground. It
+  is the one stopwatch quantity that does not depend on the pairing.</li>
+<li><strong>One recording is known to be defective, and was known before disclosure.</strong>
+  That is a finding about method, not about DUMBO, and it is the
+  only thing the by-product audio establishes.</li>
+</ul>
+<p>What it explicitly does <strong>not</strong> change, after the withdrawal in section 5:</p>
+<ul>
+<li><strong>There is no measured duty cycle for this corridor.</strong> The 44% figure is a
+  property of three files and constrains nothing.</li>
+<li><strong>There is no empirical anchor on event duration.</strong> v1.0 offered one by
+  placing the stopwatch median beside the longest audio excursion and calling
+  the pair a range. Those are two unrelated samples an hour apart and that
+  range is withdrawn. Section 1.7 of <a href="idea-concept.html">Document 1</a> remains
+  unchecked against anything observed.</li>
 </ul>
 <h2 id="11-the-question-this-opens">11. The question this opens</h2>
 <p><strong>Q56.</strong> <strong>Which way does automatic gain control bias a duty cycle, and by how much?</strong></p>
-<p>The 44% ceiling is the most load-bearing number here. It is the one result that
-survives an unknown gain, and it is the one that refutes a competing reading of
-the stopwatch. It was computed by counting the fraction of each clip sitting
-above a threshold relative to that clip's own rolling median.</p>
+<p>This question was framed in v1.0 to defend a number that is now withdrawn. It
+is kept, and its value has changed rather than disappeared: it is no longer
+about rescuing one figure, it is about whether <strong>any</strong> duty cycle can be
+computed from consumer capture &mdash; including from the shielded, metered
+capture arriving this week, which will still run through a compressor unless
+the capture path is explicitly changed.</p>
+<p>A duty cycle of this kind is computed by counting the fraction of a clip
+sitting above a threshold relative to that clip's own rolling median.</p>
 <p><strong>That estimator and automatic gain control interact, and the interaction has</strong>
 <strong>a sign.</strong>
 A compressor pulls loud passages down toward the median and lets quiet
 stretches back up. Both movements shrink the measured excursion above the
-median. So a duty cycle computed from AGC-processed audio is <strong>biased low</strong>, and
-the ceiling derived from it may be <strong>too low</strong> &mdash; which would weaken the
-refutation the ceiling was used for, not strengthen it.</p>
+median. So a duty cycle computed from AGC-processed audio is <strong>biased low</strong>,
+and by an unknown amount.</p>
 <p>The direction is arguable from first principles. The magnitude is not. It could
 be 1% or it could be 20%, and nothing in this repository distinguishes those.</p>
 <p><strong>This is answerable on a bench, in an afternoon, for nothing.</strong> Play a
@@ -972,19 +1143,21 @@ statistic. The known input gives the answer directly. Repeat under
 <code>AudioSource.UNPROCESSED</code> &mdash; which <a href="field-capture-protocol.html">Document 5</a>
 establishes is queryable on Android &mdash; and the difference between the two
 runs isolates the compressor from everything else in the chain.</p>
-<p>Two of the three outcomes are useful and one is uncomfortable:</p>
+<p>Three outcomes, all useful:</p>
 <ul>
-<li>The bias is small, and the 44% ceiling stands as published.</li>
-<li>The bias is large, and <strong>the ceiling in this document is withdrawn</strong> &mdash;
-  along with the refutation that rests on it, returning the stopwatch pairing to
-  an open question decided only on the railway-property argument.</li>
-<li>The bias depends on the signal, in which case no ceiling of this kind is
+<li>The bias is small, and duty cycles from consumer capture are usable with a
+  stated correction.</li>
+<li>The bias is large, and <strong>no duty figure from a phone means anything</strong> unless
+  the capture path is changed first &mdash; which would apply to the new
+  material as much as to the old.</li>
+<li>The bias depends on the signal, in which case no duty cycle of this kind is
   computable from consumer capture at all, and Document 5's claim that
   <em>relative</em> quantities survive an uncalibrated chain needs narrowing.</li>
 </ul>
-<p><strong>There is no way to find out this is wrong except by running it.</strong>
-That is the same property that made capture C2 the highest-value item in
-Document 5, and it now applies to a number this repository produced itself.</p>
+<p><strong>There is no way to find out this is wrong except by running it</strong>, and it
+should be run <em>before</em> the shielded capture rather than after, because it
+determines whether that capture needs <code>UNPROCESSED</code> enabled to be worth
+taking.</p>
 <h2 id="12-ethics">12. Ethics</h2>
 <p>People appear in two frames at a distance, in a public park, incidentally and
 unidentifiably. No frame was selected for a person in it, no face is resolvable
@@ -993,7 +1166,7 @@ at the published size, and the published audio carries no intelligible speech.</
 is carried voluntarily: this programme argues for the interests of the people it
 would incidentally record, so it takes the burden rather than waiting to be
 made to.</p>
-<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/README.md">Source on GitHub</a> &middot; Built from <code>628e657</code> on 2026-08-04.</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/README.md">Source on GitHub</a> &middot; Built from <code>30b9857</code> on 2026-08-04.</p>
 </main>
 </div>
 

@@ -6,6 +6,36 @@
   "threshold_db": 6.0,
   "window_s": 0.05
  },
+ "capture_intent": [
+  {
+   "claim": "The stopwatch is an independent sample. There is no correlation between it and any video or audio also supplied.",
+   "consequence": "No quantity derived from the stopwatch may be compared with any quantity derived from the audio. The file timestamps agree: the last video ends at 11:56:36 and the stopwatch does not start until 12:59:00.",
+   "rating": 5,
+   "status": "OPERATOR STATEMENT OF INTENT",
+   "subject": "the stopwatch"
+  },
+  {
+   "claim": "It is somewhat imprecise because a human operator decided when to start and stop the stopwatch. It was an indicator that there is a very small amount of time between noise from the train tracks. I will redo this with better documentation.",
+   "consequence": "The stopwatch is an indicator, not an instrument. Its own author has scheduled its replacement.",
+   "rating": 5,
+   "status": "OPERATOR STATEMENT OF INTENT",
+   "subject": "the stopwatch"
+  },
+  {
+   "claim": "The video was primarily used to show the buildings that create an echo chamber around the bridge near the water. That was the main value of them. It was not to be used for audio precision.",
+   "consequence": "The video is a VISUAL record of the canyon geometry. Its audio track is a by-product. It may be used to establish that the recording chain misbehaved; it may not be used to characterise the acoustic environment.",
+   "rating": 5,
+   "status": "OPERATOR STATEMENT OF INTENT",
+   "subject": "the video"
+  },
+  {
+   "claim": "Better audio will be captured later this week with a microphone shield and an audio meter.",
+   "consequence": "The by-product audio is superseded before anything was built on it. That is the reason to demote it now rather than defend it.",
+   "rating": 5,
+   "status": "OPERATOR STATEMENT OF INTENT",
+   "subject": "what comes next"
+  }
+ ],
  "constant_obstruction": {
   "all_three_agree": true,
   "highest_floor": "grassy-knoll-20260804_115626.mp4",
@@ -38,6 +68,7 @@
   "verdict": "All three indicators point at the same clip, grassy-knoll-20260804_115626.mp4. That is what a microphone obstructed for the WHOLE recording looks like, and it is the opposite of what a quiet site looks like - a quiet site lowers the floor and leaves the two channels agreeing. It is consistent with the operator's account and it is not proof of it: three indicators over three clips cannot carry a p-value, and no significance is claimed. The consequence does not depend on resolving the cause - the clip is excluded either way."
  },
  "corroboration": {
+  "STATUS": "WITHDRAWN",
   "audio_complete_durations": [
    2.02,
    4.4,
@@ -54,13 +85,15 @@
    4.98
   ],
   "duty_ceiling_pct": 44.1,
-  "refutes_rejected": true,
   "rejected_duty_pct": 79.9,
   "rejected_mean_event_s": 50.96,
   "scheduled_in_video_windows": 1,
+  "second_reason": "Independently of the timing, the video was not captured for acoustic precision. The operator states its purpose was to show the buildings that form the echo chamber near the water. Its audio track is a by-product of a visual record, shot while walking, and cannot carry a duty cycle for the site under any pairing of instruments.",
   "stopwatch_duty_pct": 20.1,
   "stopwatch_median_event_s": 7.3,
-  "verdict": "The rejected reading requires the site to be under train noise about 80% of the time and each event to last about 51 s. In 108 s of recording the longest sustained level excursion of any kind is 10.1 s, and the duty cycle never exceeds 44% at ANY detection threshold tested - including thresholds loose enough to be catching footsteps. That refutes the rejected reading robustly. It does NOT confirm the chosen reading's 20% to any precision: the same sweep runs from 44% down to zero, so the duty figure is threshold-dependent and only its ceiling is load-bearing. The audio was analysed without reference to the stopwatch."
+  "what_survives": "Each instrument still constrains itself and nothing else. The audio numbers below describe three files. The stopwatch numbers describe eight minutes of one person's judgement. Neither is transported to the other anywhere on the page.",
+  "withdrawn_because": "The claim required the audio and the stopwatch to be measuring the same thing. They are not. The operator states the stopwatch is an independent sample with no correlation to any video or audio, and the file timestamps agree: the last video ended at 11:56:36 and the stopwatch did not start until 12:59:00, a gap of 62 minutes. A duty cycle measured in one window places no constraint on a duty cycle in another.",
+  "withdrawn_claim": "The audio was analysed without reference to the stopwatch, and it refutes the reading that was rejected."
  },
  "derivatives": {
   "files": {
@@ -2650,7 +2683,7 @@
    "width": 4000
   }
  ],
- "generated_at": "2026-08-04T20:18:27",
+ "generated_at": "2026-08-04T21:21:13",
  "generator": "pedestrian-site-visits/build_media_data.py",
  "geo": {
   "anchors": [
@@ -2820,9 +2853,19 @@
   "scheduled_per_hour": 57.7
  },
  "schema": "site-visit-media/1",
+ "separation": {
+  "gap_min": 62.4,
+  "gap_s": 3743.7,
+  "last_media_end_local": "11:56:36",
+  "last_media_name": "grassy-knoll-20260804_115626.mp4",
+  "note": "The two instruments share no overlap at all. The operator's statement that they are uncorrelated and the file timestamps agree, and they could have disagreed.",
+  "overlap_s": 0.0,
+  "stopwatch_start_local": "12:59:00"
+ },
  "stopwatch": {
   "basis": "The reading whose quiet intervals cluster more tightly is taken as the one in which the quiet intervals are really quiet intervals, because headway is scheduled and event duration is not.",
   "chosen": "odd_quiet",
+  "confidence": "WEAK",
   "cv_ratio": 4.67,
   "end_local_approx": "13:07:19",
   "laps": [
@@ -2898,6 +2941,8 @@
    }
   ],
   "n_laps": 14,
+  "operator_account": "The operator's own reading of the session is that it showed 'a very small amount of time between noise from the train tracks'. That is ambiguous between two things this stopwatch cannot separate: short GAPS, which would favour the rejected pairing, or a short CYCLE, which is pairing-independent and is already established at 63.8 s. It is recorded rather than resolved.",
+  "pairing_independent": "The cycle, and therefore the event rate, is identical under both pairings. It is the only quantity here that does not depend on the tie-break, and it is the only one carried forward.",
   "readings": {
    "odd_noise": {
     "cycle_s": 63.78,
@@ -3013,8 +3058,10 @@
    "window_s": 498.74,
    "window_start": "12:59:00"
   },
+  "sole_support": true,
   "span_s": 446.45,
   "start_is_approximate": true,
-  "start_local_approx": "12:59:00"
+  "start_local_approx": "12:59:00",
+  "superseded": "The operator has stated this will be re-run with documentation of which tap was which. When that happens the tie-break stops being an inference and this section is replaced, not amended."
  }
 }

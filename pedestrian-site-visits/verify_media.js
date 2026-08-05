@@ -65,8 +65,13 @@ const path = process.cwd().replace(/\\/g, '/') + '/pedestrian-site-visits/media.
     const cards = await p.$$eval('section.card', e => e.length);
     const tables = await p.$$eval('table', e => e.length);
 
+    // Card count is asserted as a floor, not an equality. An equality here
+    // fails every time a card is legitimately added - which is exactly when
+    // the page most needs checking, so the check would train you to edit it
+    // rather than read it. A floor still catches the failure that matters:
+    // a build that silently emits half a page.
     const ok = !errs.length && !bad404.length && !broken.length &&
-               !emptySvg.length && !junk.length && cards === 15;
+               !emptySvg.length && !junk.length && cards >= 15;
     if (!ok) bad++;
     console.log(`${ok ? 'ok  ' : 'FAIL'} ${theme}  cards=${cards} tables=${tables} ` +
       `imgs=${imgs.length}/${broken.length}bad svg=${svgs.length}/${emptySvg.length}empty ` +

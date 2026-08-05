@@ -136,6 +136,51 @@ OPERATOR_NOTES = {
 }
 
 
+# Statements of INTENT from the operator, recorded verbatim. These are not
+# recollections that can be tested against a recording - they are the reason
+# each capture exists, and they are decisive because a measurement can only be
+# read for the purpose it was taken for.
+#
+# They arrived after the first analysis run and they invalidated part of it.
+# That is the correct order of events, not a failure of it: an analyst who
+# never asks what a capture was FOR will happily compute a precise number from
+# a file that cannot carry one.
+CAPTURE_INTENT = [
+    {"subject": "the stopwatch",
+     "claim": "The stopwatch is an independent sample. There is no correlation "
+              "between it and any video or audio also supplied.",
+     "rating": 5, "status": "OPERATOR STATEMENT OF INTENT",
+     "consequence": "No quantity derived from the stopwatch may be compared "
+                    "with any quantity derived from the audio. The file "
+                    "timestamps agree: the last video ends at 11:56:36 and "
+                    "the stopwatch does not start until 12:59:00."},
+    {"subject": "the stopwatch",
+     "claim": "It is somewhat imprecise because a human operator decided when "
+              "to start and stop the stopwatch. It was an indicator that there "
+              "is a very small amount of time between noise from the train "
+              "tracks. I will redo this with better documentation.",
+     "rating": 5, "status": "OPERATOR STATEMENT OF INTENT",
+     "consequence": "The stopwatch is an indicator, not an instrument. Its "
+                    "own author has scheduled its replacement."},
+    {"subject": "the video",
+     "claim": "The video was primarily used to show the buildings that create "
+              "an echo chamber around the bridge near the water. That was the "
+              "main value of them. It was not to be used for audio precision.",
+     "rating": 5, "status": "OPERATOR STATEMENT OF INTENT",
+     "consequence": "The video is a VISUAL record of the canyon geometry. Its "
+                    "audio track is a by-product. It may be used to establish "
+                    "that the recording chain misbehaved; it may not be used "
+                    "to characterise the acoustic environment."},
+    {"subject": "what comes next",
+     "claim": "Better audio will be captured later this week with a microphone "
+              "shield and an audio meter.",
+     "rating": 5, "status": "OPERATOR STATEMENT OF INTENT",
+     "consequence": "The by-product audio is superseded before anything was "
+                    "built on it. That is the reason to demote it now rather "
+                    "than defend it."},
+]
+
+
 def sha256(path):
     h = hashlib.sha256()
     with open(path, "rb") as fh:
@@ -397,10 +442,18 @@ def find_events(t, db):
 def duty_sweep(db):
     """Fraction of time above floor+X, for a range of X.
 
-    The duty cycle is the number that decides between the two stopwatch
-    readings, so it must not depend on one arbitrary 6 dB threshold. If the
-    answer moves a lot across this sweep the corroboration is worthless and a
-    reader is entitled to see that rather than be told a single figure.
+    ORIGINAL PURPOSE, NOW WITHDRAWN: this sweep existed to test whether the
+    audio could decide between the two stopwatch readings. It cannot, and the
+    reason is not statistical. The stopwatch is an independent sample taken
+    62 minutes after the last video ended, and the operator states there is no
+    correlation between them. A number computed here says nothing about a
+    number computed there.
+
+    WHAT IT IS STILL FOR: showing that the duty figure is an artefact of the
+    threshold. It runs from tens of per cent down to zero across seven
+    thresholds on the same audio. That is worth publishing as a caution
+    against anyone - including this repository - quoting a single duty figure
+    from uncalibrated audio as though it were a property of the site.
     """
     if len(db) == 0:
         return []
@@ -658,6 +711,30 @@ def pair_stopwatch(laps):
                   "taken as the one in which the quiet intervals are really "
                   "quiet intervals, because headway is scheduled and event "
                   "duration is not."),
+        # The tie-break above once had a second, independent prop: an audio
+        # duty ceiling that appeared to rule the other reading out. That prop
+        # is withdrawn - the audio is a separate sample an hour away - so the
+        # pairing now rests on ONE argument, and the confidence attached to
+        # everything downstream of it drops accordingly.
+        "sole_support": True,
+        "confidence": "WEAK",
+        "operator_account": (
+            "The operator's own reading of the session is that it showed "
+            "'a very small amount of time between noise from the train "
+            "tracks'. That is ambiguous between two things this stopwatch "
+            "cannot separate: short GAPS, which would favour the rejected "
+            "pairing, or a short CYCLE, which is pairing-independent and is "
+            "already established at %.1f s. It is recorded rather than "
+            "resolved."
+            % (readings[chosen]["cycle_s"] or 0.0)),
+        "pairing_independent": (
+            "The cycle, and therefore the event rate, is identical under both "
+            "pairings. It is the only quantity here that does not depend on "
+            "the tie-break, and it is the only one carried forward."),
+        "superseded": (
+            "The operator has stated this will be re-run with documentation "
+            "of which tap was which. When that happens the tie-break stops "
+            "being an inference and this section is replaced, not amended."),
     }
 
 
@@ -906,6 +983,44 @@ def derivatives(files):
     }
 
 
+def separation(files, sw):
+    """Seconds between the end of the last video and the start of the stopwatch.
+
+    The operator states the stopwatch is an independent sample uncorrelated
+    with any video or audio. That statement is decisive on its own. This
+    function exists so the page does not have to take it on trust: the file
+    timestamps say the same thing, and a reader can check the arithmetic.
+
+    A statement of intent and a file timestamp agreeing is the strongest form
+    this evidence can take, because they could have disagreed.
+    """
+    ends = []
+    for f in files:
+        # Only audio-bearing captures matter here. The comparison being
+        # severed is between the audio and the stopwatch; a still photograph
+        # taken at 12:02 has no bearing on it.
+        if f.get("start_local") and f.get("duration_s") and f.get("audio"):
+            h, m, s = (int(x) for x in f["start_local"].split(":"))
+            ends.append((h * 3600 + m * 60 + s + f["duration_s"], f["name"]))
+    if not ends or not sw.get("start_local_approx"):
+        return None
+    last_end, last_name = max(ends)
+    h, m, s = (int(x) for x in sw["start_local_approx"].split(":"))
+    sw_start = h * 3600 + m * 60 + s
+    gap = sw_start - last_end
+    return {
+        "last_media_name": last_name,
+        "last_media_end_local": "%02d:%02d:%02d" % (
+            int(last_end // 3600), int(last_end % 3600 // 60), int(last_end % 60)),
+        "stopwatch_start_local": sw["start_local_approx"],
+        "gap_s": round(gap, 1),
+        "gap_min": round(gap / 60.0, 1),
+        "overlap_s": 0.0 if gap > 0 else round(-gap, 1),
+        "note": ("The two instruments share no overlap at all. The operator's "
+                 "statement that they are uncorrelated and the file "
+                 "timestamps agree, and they could have disagreed."),
+    }
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
@@ -1017,16 +1132,29 @@ def main():
     active_total = sum(f["audio"]["active_s"] for f in vids)
 
     # The duty cycle moves a lot with the detection threshold, so a single
-    # figure cannot carry a conclusion. What CAN carry one is the ceiling:
-    # the highest duty any threshold produces, including thresholds so loose
-    # they are catching footsteps. If even that ceiling is far below what a
-    # reading predicts, that reading is refuted regardless of where the
-    # threshold is set.
+    # figure cannot carry a conclusion.
+    #
+    # WITHDRAWN REASONING, kept here because the code is the record: this was
+    # a ceiling, and a ceiling was supposed to be able to refute any stopwatch
+    # reading that predicted a higher duty. That inference is dead. It required
+    # the two instruments to be measuring the same thing, and they are not -
+    # they are separated by an hour and the operator states they are
+    # uncorrelated. The value is still computed because the SWEEP is worth
+    # showing; the ceiling itself no longer refutes anything.
     duty_ceiling = max(
         [s["duty_pct"] for f in vids for s in f["audio"]["duty_sweep"]] or [0.0])
 
     ch = sw["readings"][sw["chosen"]]
     rej = sw["readings"][sw["rejected"]]
+
+    # Proves the independence the operator asserts, from the timestamps, so a
+    # reader does not have to take either the operator's word or mine.
+    sep = separation(files, sw)
+    if sep and sep["gap_s"] <= 0:
+        raise SystemExit(
+            "separation(): the stopwatch overlaps the media by %.1f s. The "
+            "independence argument on this page assumes it does not. Fix the "
+            "argument, not this check." % sep["overlap_s"])
 
     # The rate agreement must be quoted with its own sampling error or it
     # invites the reader to believe seven events settle something to 2%.
@@ -1071,6 +1199,33 @@ def main():
                      "does not establish agreement to a few per cent."),
         },
         "corroboration": {
+            "STATUS": "WITHDRAWN",
+            "withdrawn_claim": (
+                "The audio was analysed without reference to the stopwatch, "
+                "and it refutes the reading that was rejected."),
+            "withdrawn_because": (
+                "The claim required the audio and the stopwatch to be "
+                "measuring the same thing. They are not. The operator states "
+                "the stopwatch is an independent sample with no correlation "
+                "to any video or audio, and the file timestamps agree: the "
+                "last video ended at %s and the stopwatch did not start until "
+                "%s, a gap of %.0f minutes. A duty cycle measured in one "
+                "window places no constraint on a duty cycle in another."
+                % (sep["last_media_end_local"], sep["stopwatch_start_local"],
+                   sep["gap_min"]) if sep else "No overlap between instruments."),
+            "second_reason": (
+                "Independently of the timing, the video was not captured for "
+                "acoustic precision. The operator states its purpose was to "
+                "show the buildings that form the echo chamber near the "
+                "water. Its audio track is a by-product of a visual record, "
+                "shot while walking, and cannot carry a duty cycle for the "
+                "site under any pairing of instruments."),
+            "what_survives": (
+                "Each instrument still constrains itself and nothing else. "
+                "The audio numbers below describe three files. The stopwatch "
+                "numbers describe eight minutes of one person's judgement. "
+                "Neither is transported to the other anywhere on the page."),
+            # Retained so the withdrawal can be checked rather than believed.
             "audio_n_excursions": obs_events,
             "audio_n_complete": len(complete),
             "audio_n_truncated": len(cut),
@@ -1088,22 +1243,9 @@ def main():
             "rejected_mean_event_s": rej["noise"]["mean"],
             "duty_ceiling_pct": duty_ceiling,
             "scheduled_in_video_windows": sched_in_vid,
-            "refutes_rejected": bool(duty_ceiling < rej["duty_pct"]),
-            "verdict": (
-                "The rejected reading requires the site to be under train "
-                "noise about %.0f%% of the time and each event to last about "
-                "%.0f s. In %.0f s of recording the longest sustained level "
-                "excursion of any kind is %.1f s, and the duty cycle never "
-                "exceeds %.0f%% at ANY detection threshold tested - including "
-                "thresholds loose enough to be catching footsteps. That "
-                "refutes the rejected reading robustly. It does NOT confirm "
-                "the chosen reading's %.0f%% to any precision: the same sweep "
-                "runs from %.0f%% down to zero, so the duty figure is "
-                "threshold-dependent and only its ceiling is load-bearing. "
-                "The audio was analysed without reference to the stopwatch."
-                % (rej["duty_pct"], rej["noise"]["mean"], obs_span, longest,
-                   duty_ceiling, ch["duty_pct"], duty_ceiling)),
         },
+        "separation": sep,
+        "capture_intent": CAPTURE_INTENT,
     }
 
     path = os.path.join(HERE, "media-data.json")

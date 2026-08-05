@@ -88,8 +88,8 @@ DOCS = [
     ("pedestrian-site-visits/README.md", "pedestrian-site-visits",
      "10. Field media", "10. Field media",
      "The first material here that was not retrieved from somebody else: two "
-     "days of phone video, audio and stopwatch laps under the bridge - and a "
-     "careful account of why none of it is a decibel."),
+     "days of phone video, stills, by-product audio and stopwatch laps under "
+     "the bridge - and a v1.1 that withdraws v1.0's headline in place."),
     ("usage/README.md", "usage", "8. AI usage and cost", "8. AI Usage",
      "What did producing this repository consume? A per-request ledger read "
      "from the tool's own store, set against the argument that inference is "
@@ -151,13 +151,16 @@ ARTIFACTS = [
      "different dose. Then the rejected-propagation panel, which is a negative "
      "result and the most important thing on the page."),
     ("pedestrian-site-visits/media.html", "Field", "Field media, first capture",
-     "Two days of phone video, audio and stopwatch laps under the bridge, "
-     "analysed as relative envelopes rather than levels: level traces with "
-     "detected events, a duty-cycle sweep, the stopwatch laps, and where each "
-     "capture stood against every point anyone has ever measured.",
-     "The second card, which refuses to call any of this a decibel. Then the "
-     "obstruction finding - the between-clip test flagged the one recording "
-     "the operator later said he may have covered, before he said it."),
+     "Two days of phone video, stills, by-product audio and stopwatch laps "
+     "under the bridge: level traces, a threshold sweep, the stopwatch laps, "
+     "and where each capture stood against every point anyone has ever "
+     "measured - with the operator's stated purpose for each capture carried "
+     "on the page, because a measurement can only be read for the purpose it "
+     "was taken for.",
+     "The withdrawal card, which quotes this page's own strongest claim from "
+     "the day before and kills it - the audio and the stopwatch are "
+     "independent samples 62.4 minutes apart. Then the echo-chamber frames, "
+     "which are what the video was actually for."),
     ("usage/usage-dashboard.html", "Meta", "Usage and cost dashboard",
      "What this investigation cost to produce, from the tool's own per-request "
      "log: every model call priced by channel, time measured four ways that "
@@ -270,15 +273,18 @@ DATASETS = [
 DONE = [
     ("Method 38 - the first captured field material", 38,
      "One afternoon, a phone already owned",
-     "Two days of video, audio, stopwatch laps and stills under the bridge - "
-     "<b>the first material in this repository that was captured rather than "
-     "retrieved</b>. The recording chain has an unknown gain, so nothing in it "
-     "is reported as a decibel; what survives is a <b>duty-cycle ceiling of "
-     "44%</b> that refutes one reading of the stopwatch without confirming the "
-     "other, and a rate that agrees with the timetable inside an interval wide "
-     "enough to say so plainly. <b>Its most useful output was a defect</b>: a "
-     "between-clip test flagged the one recording the operator later said he "
-     "may have covered, before he said it."),
+     "Two days of video, stills, by-product audio and stopwatch laps under "
+     "the bridge - <b>the first material in this repository that was captured "
+     "rather than retrieved</b>. It delivered <b>the first photographic record "
+     "of the echo chamber</b> the repository had until then only modelled from "
+     "surveyed footprints, the geometry of every capture, and a rate that "
+     "agrees with the timetable inside an interval wide enough to say so "
+     "plainly. <b>It also produced this repository's fastest withdrawal</b>: "
+     "v1.0 used an audio duty cycle to refute a reading of the stopwatch, and "
+     "v1.1 withdrew that one day later, because the two are independent "
+     "samples 62.4 minutes apart. Every number in the withdrawn claim was "
+     "computed correctly - what was wrong was joining two datasets that were "
+     "never joined in the field, which no check here can catch."),
     ("Method 33 - the cost of the study itself", 33,
      "One SQLite read, free",
      "A per-request ledger of what producing this repository consumed, priced "
@@ -401,17 +407,20 @@ TODO = [
      "envelope, remains the highest-value item</b>: it is the one measurement "
      "that could establish that this repository's own derived result is wrong, "
      "and the first attempt showed why it needs a windscreen and a capture "
-     "path with the compressor disabled."),
-    ("cheap", "Q56 - how much does the phone's compressor bias a duty cycle?",
+     "path with the compressor disabled. A shielded and metered session is "
+     "planned; Q56 should be answered before it is taken, not after."),
+    ("cheap", "Q56 - is any duty cycle computable from consumer capture?",
      "An afternoon on a bench, no equipment beyond the phone",
-     "The 44% duty ceiling is the strongest result the field material produced "
-     "and it was computed from audio that passed through automatic gain "
-     "control. <b>The interaction has a sign</b>: a compressor shrinks "
-     "excursions above a clip's own median, so the ceiling is biased low and "
-     "may be too low to carry the refutation resting on it. Play a signal of "
-     "known duty cycle through a speaker, record it on the same handset, and "
-     "the known input gives the answer. <b>One of the three outcomes withdraws "
-     "a number this repository published.</b>"),
+     "Every duty figure computed from the field audio passed through "
+     "automatic gain control, and <b>the interaction has a sign</b>: a "
+     "compressor shrinks excursions above a clip's own median, so any such "
+     "figure is biased low by an unknown amount. Play a signal of known duty "
+     "cycle through a speaker, record it on the same handset, and the known "
+     "input gives the answer. <b>This should be run before the next capture, "
+     "not after</b> - a shielded, metered microphone still feeds the same "
+     "compressor unless <code>AudioSource.UNPROCESSED</code> is explicitly "
+     "enabled, so this test decides whether the next session needs its "
+     "capture path changed to be worth taking."),
     ("review", "Red-team the three newest results",
      "Reading and arithmetic",
      "Issues <a href=\"" + ISSUES + "26\">#26</a> (is the cohort model's "

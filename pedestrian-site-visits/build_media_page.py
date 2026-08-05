@@ -405,6 +405,8 @@ def build():
     deriv = d["derivatives"]
     geo = d["geo"]
     corr = d["corroboration"]
+    sep = d["separation"]
+    intent = d["capture_intent"]
     sw = d["stopwatch"]
     ch = sw["readings"][sw["chosen"]]
     rej = sw["readings"][sw["rejected"]]
@@ -420,16 +422,17 @@ def build():
 <p class="eyebrow">Document 10 &middot; field media</p>
 <h1>What a phone actually recorded under the Manhattan Bridge</h1>
 <p class="lede">On 3 and 4 August 2026 an observer stood under the bridge in
-DUMBO with a consumer Samsung Galaxy S23+, filmed the buildings on either
-side, walked to the lawn on the south side, and separately stood with a
-stopwatch and tapped a lap every time train noise started and stopped. This
-page is everything that came back and everything that can and cannot be
+DUMBO with a consumer Samsung Galaxy S23+ and filmed the buildings that wall
+the corridor on either side of the deck. Separately, an hour later, he stood
+with a stopwatch and tapped a lap each time train noise started and stopped.
+This page is everything that came back and everything that can and cannot be
 concluded from it.</p>
-<p class="lede"><strong>Nothing on this page is a decibel.</strong> A phone
-with automatic gain control does not measure sound pressure, and no attempt
-is made here to pretend otherwise. What survives an unknown, time-varying
-gain is <em>when</em> things happened and <em>how long</em> they lasted, and
-that is the only thing this page claims.</p>
+<p class="lede"><strong>Nothing on this page is a decibel</strong>, and the
+two instruments are never joined. The video exists to show the buildings that
+form the echo chamber near the water &mdash; its audio track is a by-product,
+not an acoustic measurement. The stopwatch is an independent sample taken
+<strong>62 minutes later</strong> with no overlap. Numbers from one are not
+carried to the other anywhere below.</p>
 </div></header>
 <div class="wrap">""")
 
@@ -443,17 +446,18 @@ that is the only thing this page claims.</p>
 
     stat(str(len(caps)), "captures", "%s of masters, %s shipped"
          % (mb(deriv["master_bytes"]), mb(deriv["web_bytes"])))
+    stat("%.0f m" % min(c["abs_offset_m"] for c in geo["captures"]),
+         "closest to the track",
+         "3 of 4 measured points are further out")
     stat("%.0f s" % corr["audio_span_s"], "audio analysed",
-         "across %d clips, after 1 exclusion" % len(kept))
-    stat(str(corr["audio_n_excursions"]), "level excursions",
-         "longest %.1f s" % corr["audio_longest_s"])
+         "a by-product of video, not a measurement")
     stat(str(sw["n_laps"]), "stopwatch laps",
          "one observer, %s to %s" % (esc(sw["start_local_approx"]),
                                      esc(sw["end_local_approx"])))
     stat("%.1f/h" % rate["observed_per_hour"], "observed rate",
          "schedule says %.1f/h" % rate["scheduled_per_hour"])
-    stat("%.0f%%" % corr["duty_ceiling_pct"], "duty ceiling",
-         "at the loosest threshold tested")
+    stat("%.0f min" % sep["gap_min"], "between the two instruments",
+         "zero overlap, so neither constrains the other")
     parts.append("<section class='card glance'><h2>At a glance</h2>"
                  "<div class='ggrid'>%s</div></section>" % "".join(g))
 
@@ -490,6 +494,29 @@ is never <span class="mono">dB(A)</span>. The MTA's measured
 <span class="mono">dB(A)</span> figures used elsewhere in this repository are
 from a calibrated meter and are not comparable to anything on this page.</p>
 """))
+
+    # ---- what each capture was for --------------------------------------
+    irows = "".join(
+        "<tr><td>%s</td><td>%s</td><td>%s</td></tr>"
+        % (esc(i["subject"]), esc(i["claim"]), esc(i["consequence"]))
+        for i in intent)
+    parts.append(card(
+        "What each capture was taken for, in the operator's own words",
+        """
+<p>A measurement can only be read for the purpose it was taken for. These
+statements of intent arrived <em>after</em> the first analysis run and they
+invalidated part of it. That is the correct order of events and not a failure
+of it &mdash; an analyst who never asks what a capture was <em>for</em> will
+happily compute a precise number from a file that cannot carry one.</p>
+<div class="tw"><table><thead><tr><th>capture</th>
+<th>the operator's statement</th><th>what follows for this page</th>
+</tr></thead><tbody>%s</tbody></table></div>
+<p class="note">Rated <strong>5/5</strong>. Most testimony on this page is
+rated 2/5, because a recollection about what happened can be wrong. These are
+not recollections about events &mdash; they are statements of intent from the
+only person in a position to know it, and no analysis can overrule them. Where
+they conflict with something computed here they win, and one of them did.</p>
+""" % irows))
 
     # ---- inventory ------------------------------------------------------
     rows = []
@@ -667,8 +694,13 @@ leaves the channels agreeing.</p>
 <p class="note">The clip is excluded <em>at source</em>, before any statistic
 is computed &mdash; not caveated afterwards. A caveat below a number does not
 stop the number being quoted. The audio span on this page is
-%.1f s, not %.1f s, because of it, and the conclusion in the corroboration
-card survives losing it.</p>
+%.1f s, not %.1f s, because of it.</p>
+<p class="note"><strong>This finding is unaffected by the withdrawal
+below</strong>, and it is worth being clear why. It is a statement about the
+recording chain, not about the site &mdash; it says a microphone misbehaved,
+which is exactly what a by-product audio track <em>can</em> establish. It does
+not depend on the stopwatch, on any duty cycle, or on the audio being an
+acoustic measurement of anything.</p>
 """ % (notes, "5.9", orows, esc(co["verdict"]),
             corr["audio_span_s"], corr["audio_span_s"] + 10.28)))
 
@@ -768,49 +800,84 @@ reading is %.1f s and the median is %.1f s, a gap this one lap almost entirely
 accounts for, which is why the median is quoted beside the mean everywhere it
 matters. The lap was <em>not</em> dropped and the reading was <em>not</em>
 re-chosen to make it go away.</p>
+<p class="note"><strong>The tie-break now rests on that one argument
+alone.</strong> It used to have a second, apparently independent prop &mdash;
+an audio duty ceiling that seemed to rule the other reading out. That prop is
+withdrawn in the next card but one, so the confidence attached to the pairing,
+and to the event durations and duty cycle that hang off it, drops with it.
+Rated <strong>%s</strong>.</p>
+<p class="note"><strong>The operator's own reading of the session points the
+other way, and is recorded rather than resolved.</strong> %s</p>
+<p class="note"><strong>Only the cycle is pairing-independent.</strong> %s
+%s</p>
 """ % (reading_block(sw["chosen"], ch, True),
             reading_block(sw["rejected"], rej, False),
             sw["cv_ratio"], ch["gap_cv"], ch["noise"]["cv"],
             out_lap, out_v, next_v, ch["noise"]["median"],
             out_v / ch["noise"]["median"],
-            ch["noise"]["mean"], ch["noise"]["median"])))
+            ch["noise"]["mean"], ch["noise"]["median"],
+            esc(sw["confidence"]), esc(sw["operator_account"]),
+            esc(sw["pairing_independent"]), esc(sw["superseded"]))))
 
-    # ---- corroboration --------------------------------------------------
+    # ---- the withdrawal --------------------------------------------------
     sweep = {f["name"]: f["audio"]["duty_sweep"] for f in kept}
     parts.append(card(
-        "The audio was analysed without reference to the stopwatch, "
-        "and it refutes the reading that was rejected",
+        "A claim made on this page yesterday, withdrawn",
+        """
+<blockquote><p>The audio was analysed without reference to the stopwatch, and
+it refutes the reading that was rejected. The rejected reading requires this
+corridor to be under train noise about <strong>%.0f%%</strong> of the time&hellip;
+the duty cycle never exceeds <strong>%.0f%%</strong> at any detection
+threshold tested.</p></blockquote>
+<p><strong>That is withdrawn.</strong> It was the strongest-sounding result on
+the page and it was not a result at all.</p>
+<p>It required the audio and the stopwatch to be measuring the same thing.
+They are not, for two independent reasons, either of which is sufficient.</p>
+<p><strong>First, they do not overlap.</strong> The operator states plainly
+that the stopwatch is an independent sample with no correlation to any video
+or audio supplied. The file timestamps say the same thing without being asked:
+the last audio-bearing capture ends at <strong>%s</strong> and the stopwatch
+does not start until <strong>%s</strong>.</p>
+<div class="tw"><table><thead><tr><th>&nbsp;</th><th>from</th><th>to</th>
+</tr></thead><tbody>
+<tr><th>audio (3 video clips)</th><td class='num'>11:53:19</td>
+<td class='num'>%s</td></tr>
+<tr><th>stopwatch</th><td class='num'>%s</td><td class='num'>%s</td></tr>
+<tr class='flagged'><th>gap between them</th>
+<td class='num' colspan='2'><strong>%.0f min, zero overlap</strong></td></tr>
+</tbody></table></div>
+<p>A duty cycle measured in one window places no constraint on a duty cycle in
+another window an hour away. The arithmetic was correct and the inference was
+not.</p>
+<p><strong>Second, and independently, the video was never an acoustic
+instrument.</strong> Its purpose was to record the buildings that form the
+echo chamber near the water. The audio came along with it. A by-product track
+shot while walking cannot characterise the acoustic environment no matter how
+carefully it is processed, and it should not have been asked to.</p>
+<p class="note">What survives is narrower and it is stated narrowly. Each
+instrument constrains itself. The sweep below is kept because it shows why a
+single duty figure from uncalibrated audio should never have been quoted at
+all &mdash; on the same three files it runs from %.0f%% down to zero depending
+only on where the threshold is put.</p>
+""" % (corr["rejected_duty_pct"], corr["duty_ceiling_pct"],
+            esc(sep["last_media_end_local"]),
+            esc(sep["stopwatch_start_local"]),
+            esc(sep["last_media_end_local"]),
+            esc(sw["start_local_approx"]), esc(sw["end_local_approx"]),
+            sep["gap_min"], corr["duty_ceiling_pct"])))
+
+    parts.append(card(
+        "The duty figure is an artefact of the threshold, and that is all "
+        "this sweep now shows",
         sweep_svg(sweep, corr["duty_ceiling_pct"], corr["rejected_duty_pct"])
         + """
-<p>The two instruments are independent: different day, different place,
-different mechanism, and the audio detector was written and run before the
-stopwatch file was parsed. So the audio can be asked whether the rejected
-reading is even possible.</p>
-<p>The rejected reading requires this corridor to be under train noise about
-<strong>%.0f%%</strong> of the time, with each event lasting about
-<strong>%.0f s</strong>. In %.1f s of recording the longest sustained level
-excursion of any kind is <strong>%.1f s</strong>, and the duty cycle never
-exceeds <strong>%.0f%%</strong> at any detection threshold tested &mdash;
-including thresholds loose enough to be catching footsteps.</p>
-<div class="tw"><table><thead><tr><th>&nbsp;</th>
-<th>rejected reading</th><th>chosen reading</th><th>what the audio shows</th>
-</tr></thead><tbody>
-<tr><th>duty cycle</th><td class='num'>%.1f%%</td><td class='num'>%.1f%%</td>
-<td class='num'>ceiling %.1f%%</td></tr>
-<tr><th>typical event</th><td class='num'>%.1f s</td><td class='num'>%.1f s</td>
-<td class='num'>longest %.1f s</td></tr>
-</tbody></table></div>
-<p class="note"><strong>This refutes one reading. It does not confirm the
-other.</strong> The same sweep runs from %.0f%% down to zero as the threshold
-tightens, so the duty figure is threshold-dependent and only its
-<em>ceiling</em> is load-bearing. A ceiling can kill a claim above it and can
-say nothing about a claim below it.</p>
-""" % (corr["rejected_duty_pct"], corr["rejected_mean_event_s"],
-            corr["audio_span_s"], corr["audio_longest_s"],
-            corr["duty_ceiling_pct"],
-            corr["rejected_duty_pct"], ch["duty_pct"], corr["duty_ceiling_pct"],
-            corr["rejected_mean_event_s"], ch["noise"]["median"],
-            corr["audio_longest_s"], corr["duty_ceiling_pct"])))
+<p>Every curve here is the same audio. The only thing changing is how far
+above each clip's own floor a sample has to sit before it counts as loud. The
+answer moves across the whole available range.</p>
+<p class="note"><strong>This is published as a caution, not as a measurement.</strong>
+Any duty cycle quoted from uncalibrated consumer audio is a statement about a
+threshold somebody chose. This page quoted one. It should not have.</p>
+"""))
 
     # ---- rate -----------------------------------------------------------
     parts.append(card(
@@ -849,21 +916,31 @@ it is reported as weak.</p>
                    "</figure>" % (esc(src), esc(f["name"]), cap,
                                   esc(f["name"])))
     parts.append(card(
-        "What it looks like",
+        "The echo chamber, which is what the video was actually for",
         "<div class='gal'>%s</div>" % "".join(gal)
         + """
-<p>Two of these are worth more than the rest. The poster frame of the first
-canyon clip puts a <strong>John St / DUMBO Historic District</strong> street
-sign directly under the bridge deck, which fixes the location of that
-recording against a street name rather than against a coordinate the reader
-has to trust. The bridge underside fills the top third of the frame.</p>
+<p><strong>This is the durable contribution of the session</strong>, and it is
+visual rather than acoustic. The operator's stated purpose for the video was
+to show the buildings that wall the corridor on both sides of the deck near
+the water &mdash; the geometry that turns a passing train into a reverberant
+event instead of one that disperses.</p>
+<p>That geometry is the subject of
+<a href="../visual-review/noise-canyon.html">the noise canyon page</a>, which
+until now drew it entirely from surveyed footprints and OpenStreetMap ways
+&mdash; 76 buildings extruded around an alignment, with nobody having stood in
+it. <strong>These frames are the first photographic record in this repository
+of the thing that page models.</strong> They do not measure it. They show that
+the modelled canyon and the built canyon are the same place.</p>
+<p>The poster frame of the first canyon clip puts a <strong>John St / DUMBO
+Historic District</strong> street sign directly under the bridge deck, fixing
+that recording against a street name rather than a coordinate the reader has
+to trust. The bridge underside fills the top third of the frame.</p>
 <p>The lawn frame is the only image in this repository that shows the
 <strong>receptor rather than the source</strong>. There are three separate
-walking groups in it and one of them has a pushchair. That is not a
-measurement and it is not a count &mdash; a single frame cannot be either
-&mdash; but the population this investigation has been modelling from
-turnstile arithmetic is visible in it, doing the thing the model says it does,
-under the deck.</p>
+walking groups in it and one has a pushchair. That is not a measurement and it
+is not a count &mdash; a single frame cannot be either &mdash; but the
+population this investigation models from turnstile arithmetic is visible in
+it, doing the thing the model says it does, under the deck.</p>
 <p class="note">People appear in two of these frames at a distance, in a public
 park, incidentally and unidentifiably. The programme's own ethics position in
 <a href="../read/field-capture-protocol.html">Document 5</a> is that this work
@@ -872,8 +949,9 @@ carries that burden voluntarily: no frame here was selected for a person in
 it, no face is resolvable at the published size, and the audio published
 alongside carries no intelligible speech.</p>
 """,
-        "None of these is a measurement. They are what the corridor looked "
-        "like on the two afternoons the recordings were made."))
+        "The video was captured to record the buildings that form the echo "
+        "chamber around the bridge near the water. That is what it is used "
+        "for here."))
 
     # ---- adams/john -----------------------------------------------------
     parts.append(card(
@@ -942,9 +1020,21 @@ for its adequacy.</p>
 inference.</strong> Everything the stopwatch contributes rests on deciding
 which laps were noise. The tie-break is principled and the ratio is %.1f&times;
 &mdash; but it is one observer, fourteen laps, and no independent record of
-what the first tap meant. If the pairing is wrong, the duty cycle, the event
-durations and the rate are all wrong together, and the audio corroboration
-only rules out the alternative on duty cycle, not on everything.</li>
+what the first tap meant. It once had a second prop and no longer does. If the
+pairing is wrong, the event durations and the duty cycle are wrong together.
+<strong>The rate survives either way</strong>, because the cycle is identical
+under both pairings.</li>
+<li><strong>The stopwatch is an indicator, not an instrument, and its own
+author says so.</strong> A human decided when to start and stop it, which puts
+reaction time, anticipation and attention into every lap with no way to
+separate them. It is being re-run with documentation. Nothing here should be
+treated as settled until it is.</li>
+<li><strong>The audio is a by-product of a visual record.</strong> The video
+was shot to show the buildings that form the echo chamber, not to measure
+sound. It is used on this page for exactly one thing &mdash; establishing that
+one recording's microphone misbehaved &mdash; and that is a claim about the
+recording chain, not about the corridor. <strong>Every acoustic
+characterisation drawn from it has been withdrawn.</strong></li>
 <li><strong>The observer knew what the study is about.</strong> The same
 person who has been writing about train noise for weeks decided, in real time,
 when train noise started and stopped. Expectancy effects are not controlled
@@ -975,11 +1065,12 @@ not to metres.</li>
 <li><strong>One consumer handset, two days, one observer, one weather
 condition.</strong> Nothing here establishes anything about a different
 season, a different time of day, wet rail, or a different phone.</li>
-<li><strong>The duty ceiling is a ceiling because of how the sweep was
-defined.</strong> If a real excursion sits below the loosest threshold tested,
-the ceiling is too low and the refutation weakens. The sweep was run to a
-threshold loose enough to catch footsteps specifically to make this
-unlikely, which is an argument and not a proof.</li>
+<li><strong>Better capture is already scheduled, and it supersedes rather than
+supplements most of this.</strong> The operator is re-running the stopwatch
+with documentation of which tap was which, and capturing audio with a
+microphone shield and an audio meter. When that arrives, the pairing stops
+being an inference and the acoustic content of this page is replaced, not
+amended. Anyone building on the numbers here should wait.</li>
 </ol>
 """ % (sw["cv_ratio"], rate["ci95_low"], rate["ci95_high"])))
 
