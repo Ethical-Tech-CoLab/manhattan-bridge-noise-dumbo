@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Field media - what a phone recorded under the Manhattan Bridge</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M2 24h28M6 24V8m20 16V8M6 10c5 6 15 6 20 0M6 24c5-8 15-8 20 0' fill='none' stroke='%23b11f4b' stroke-width='2'/%3E%3C/svg%3E">
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+code, .mono, th.num, td.num { font-family: Consolas, "Courier New", Courier, monospace; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px 90px; }
+header.top {
+  background: var(--cp-bg-elevated);
+  border-bottom: 1px solid var(--cp-border);
+  padding: 44px 0 34px;
+  margin-bottom: 30px;
+}
+header.top .wrap { padding-bottom: 0; }
+h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 10px; letter-spacing: -0.02em; }
+h2 {
+  font-size: 1.35rem; margin: 0 0 4px; letter-spacing: -0.01em;
+}
+.sub { color: var(--cp-text-muted); margin: 0 0 6px; max-width: 74ch; }
+.crumb { font-size: 0.82rem; color: var(--cp-text-soft); margin-bottom: 14px; }
+.crumb a { color: var(--cp-link); text-decoration: none; }
+.crumb a:hover { text-decoration: underline; }
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 24px 26px;
+  margin: 0 0 22px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.card > h2 + .sub { margin-bottom: 18px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(158px, 1fr)); gap: 12px; margin-top: 22px; }
+.stat {
+  background: var(--cp-surface); border: 1px solid var(--cp-border);
+  border-radius: 0.625rem; padding: 14px 16px;
+}
+.stat b { display: block; font-size: 1.6rem; line-height: 1.15; letter-spacing: -0.02em; }
+.stat span { display: block; font-size: 0.76rem; color: var(--cp-text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+.stat em { display: block; font-style: normal; font-size: 0.8rem; color: var(--cp-text-soft); margin-top: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.scroll { overflow-x: auto; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--cp-border); vertical-align: top; }
+th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cp-text-muted); font-weight: 600; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+tfoot td { font-weight: 700; border-top: 2px solid var(--cp-border-strong); }
+.note {
+  border-left: 3px solid var(--cp-accent); background: var(--cp-accent-soft);
+  padding: 12px 16px; border-radius: 0 0.625rem 0.625rem 0; margin: 18px 0 0;
+  font-size: 0.92rem;
+}
+.note strong { color: var(--cp-accent); }
+.warn { border-left-color: var(--cp-warning); background: var(--cp-surface-soft); }
+.warn strong { color: var(--cp-warning); }
+blockquote.wrong {
+  margin: 14px 0; padding: 12px 18px; border-left: 3px solid var(--cp-danger);
+  background: var(--cp-surface-soft); color: var(--cp-text-muted);
+  border-radius: 0 0.625rem 0.625rem 0; font-style: italic;
+}
+.withdrawn { color: var(--cp-danger); font-weight: 700; font-style: normal; }
+.bars { margin-top: 16px; }
+.bar { display: grid; grid-template-columns: minmax(120px, 190px) 1fr auto; gap: 12px; align-items: center; padding: 3px 0; font-size: 0.86rem; }
+.bar .lab { color: var(--cp-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar .track { background: var(--cp-surface-soft); border-radius: 4px; height: 15px; overflow: hidden; border: 1px solid var(--cp-border); }
+.bar .fill { display: block; height: 100%; background: var(--cp-accent); }
+.bar .val { font-family: Consolas, "Courier New", Courier, monospace; font-size: 0.82rem; color: var(--cp-text-muted); min-width: 74px; text-align: right; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+@media (max-width: 780px) { .split { grid-template-columns: 1fr; } .bar { grid-template-columns: minmax(90px,130px) 1fr auto; } }
+.dual { margin-top: 8px; }
+.dual .row { margin-bottom: 14px; }
+.dual .cap { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cp-text-muted); margin-bottom: 5px; }
+.seg { display: flex; height: 30px; border-radius: 0.625rem; overflow: hidden; border: 1px solid var(--cp-border); }
+.seg div { display: flex; align-items: center; justify-content: center; font-size: 0.72rem; color: var(--cp-accent-fg); overflow: hidden; white-space: nowrap; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: 0.8rem; color: var(--cp-text-muted); }
+.legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+ul.tight { margin: 12px 0 0; padding-left: 20px; }
+ul.tight li { margin-bottom: 9px; }
+a { color: var(--cp-link); }
+.rating { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--cp-border-strong); color: var(--cp-text-muted); margin-left: 8px; vertical-align: 2px; }
+.locus { font-size: 0.86rem; color: var(--cp-text-muted); border-left: 2px solid var(--cp-border-strong); padding-left: 14px; margin: 12px 0; font-style: italic; }
+blockquote.loc {
+  margin: 14px 0; padding: 12px 18px; border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft); border-radius: 0 0.625rem 0.625rem 0;
+  font-style: italic; font-size: 0.94rem;
+}
+blockquote.loc cite {
+  display: block; margin-top: 9px; font-style: normal; font-size: 0.8rem;
+  color: var(--cp-text-muted);
+}
+.rating.good { border-color: var(--cp-success); color: var(--cp-success); }
+p.pull {
+  font-size: 1.12rem; line-height: 1.5; font-weight: 600; color: var(--cp-accent);
+  border-left: 3px solid var(--cp-accent); padding: 4px 0 4px 18px; margin: 22px 0;
+}
+footer { color: var(--cp-text-soft); font-size: 0.84rem; border-top: 1px solid var(--cp-border); padding-top: 18px; margin-top: 34px; }
+h3 { font-size: 1rem; margin: 22px 0 6px; }
+.pill { font-size: 0.72rem; padding: 2px 9px; border-radius: 999px; background: var(--cp-accent-soft); color: var(--cp-accent); font-weight: 700; }
+/*IGBAND-BEGIN*/
+/* -- at-a-glance band ----------------------------------------------------
+   The dashboard opens with sixteen sections of method. A reader who wants
+   the result has to earn it, and most will not. This band carries the four
+   numbers, the model split and the money split, and nothing else. */
+.ig { margin: 22px 0 26px; }
+.ig .igh {
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  margin: 0 0 14px;
+}
+.ig .igh h2 { margin: 0; font-size: 1.05rem; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--cp-text-muted); }
+.ig .igh .igs { font-size: 0.84rem; color: var(--cp-text-soft); }
+
+.ig .igbig {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+  gap: 14px; margin-bottom: 18px;
+}
+.ig .igbig > div {
+  background: var(--cp-surface); border: 1px solid var(--cp-border);
+  border-radius: 14px; padding: 18px 18px 16px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.ig .igbig b { display: block; font-size: 2.05rem; line-height: 1.08;
+  letter-spacing: -0.025em; color: var(--cp-accent); }
+.ig .igbig span { display: block; font-size: 0.76rem; margin-top: 6px;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--cp-text-muted); }
+.ig .igbig em { display: block; font-style: normal; font-size: 0.82rem;
+  color: var(--cp-text-soft); margin-top: 7px; }
+
+.ig .igrow {
+  background: var(--cp-surface); border: 1px solid var(--cp-border);
+  border-radius: 14px; padding: 18px 20px; margin-bottom: 14px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.ig .igrow > h3 { margin: 0 0 12px; font-size: 0.78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--cp-text-muted); }
+
+/* Deliberately NOT .bar - this page uses .bar for the ledger charts and the
+   masthead uses .mh-bar. A third meaning of the same class is how a stylesheet
+   starts fighting itself. */
+.ig .igm { display: grid; grid-template-columns: minmax(104px, 150px) 1fr auto;
+  gap: 12px; align-items: center; padding: 4px 0; font-size: 0.87rem; }
+.ig .igm .l { color: var(--cp-text); font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ig .igm .t { background: var(--cp-surface-soft); border-radius: 5px;
+  height: 19px; overflow: hidden; border: 1px solid var(--cp-border); }
+/* display:block is load-bearing, not decoration. A fill written as a <span>
+   inside a track that is not a flex container stays inline, and an inline
+   element ignores width and height - so it renders 0x0 while the track around
+   it still paints. The chart then looks like an axis with no data rather than
+   like a broken page, which is why forty of them shipped that way on this
+   dashboard before anyone noticed. Blockifying here makes the rule correct for
+   either a <span> or a <div>. */
+.ig .igm .f { display: block; height: 100%; background: var(--cp-accent); }
+.ig .igm .v { font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.8rem; color: var(--cp-text-muted); min-width: 128px;
+  text-align: right; }
+
+.ig .igsplit { display: flex; height: 34px; border-radius: 9px;
+  overflow: hidden; border: 1px solid var(--cp-border); }
+.ig .igsplit div { display: flex; align-items: center; justify-content: center;
+  font-size: 0.74rem; font-weight: 600; color: var(--cp-accent-fg);
+  overflow: hidden; white-space: nowrap; }
+.ig .iglg { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 11px;
+  font-size: 0.79rem; color: var(--cp-text-muted); }
+.ig .iglg i { display: inline-block; width: 11px; height: 11px;
+  border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+.ig .igfind { margin: 12px 0 0; font-size: 0.88rem; line-height: 1.55;
+  border-left: 3px solid var(--cp-accent); padding: 2px 0 2px 13px;
+  color: var(--cp-text-muted); }
+.ig .igfind b { color: var(--cp-text); }
+/*IGBAND-END*/
+
+
+/*MEDIACSS*/
+.eyebrow { text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.78rem;
+  color: var(--cp-text-muted); margin: 0 0 8px; font-weight: 600; }
+.lede { font-size: 1.06rem; max-width: 74ch; color: var(--cp-text-muted); }
+.lede strong { color: var(--cp-text); }
+.card { background: var(--cp-surface); border: 1px solid var(--cp-border);
+  border-radius: 12px; padding: 20px 22px; margin: 0 0 20px; }
+.card h2 { font-size: 1.22rem; margin: 0 0 6px; }
+.card h3 { font-size: 1rem; margin: 22px 0 2px; }
+.card h4 { font-size: 0.95rem; margin: 0 0 8px; }
+.card .sub { color: var(--cp-text-muted); font-size: 0.92rem; margin: 0 0 14px; }
+.card p { max-width: 78ch; }
+.ggrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px; }
+.gcell { background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  border-radius: 10px; padding: 12px 14px; }
+.gv { font-size: 1.7rem; font-weight: 700; color: var(--cp-accent);
+  line-height: 1.1; }
+.gl { text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.7rem;
+  color: var(--cp-text-muted); margin-top: 3px; font-weight: 600; }
+.gn { font-size: 0.82rem; color: var(--cp-text-soft); margin-top: 6px; }
+.tw { overflow-x: auto; margin: 12px 0; }
+.tw.narrow table { max-width: 760px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; padding: 7px 10px;
+  border-bottom: 1px solid var(--cp-border); vertical-align: top; }
+th { font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--cp-text-muted); font-weight: 600; }
+td.num, th.num { text-align: right; }
+tr.flagged td { background: var(--cp-accent-soft); }
+.sha { font-size: 0.78rem; color: var(--cp-text-muted); }
+.note { font-size: 0.9rem; color: var(--cp-text-muted);
+  border-left: 3px solid var(--cp-border-strong); padding-left: 12px;
+  margin: 14px 0 0; }
+.note.bad { border-left-color: var(--cp-danger); }
+.pill { display: inline-block; font-size: 0.7rem; text-transform: uppercase;
+  letter-spacing: 0.05em; padding: 2px 7px; border-radius: 999px;
+  font-weight: 600; vertical-align: middle; }
+.pill.bad { background: var(--cp-danger); color: #fff; }
+.envsvg { display: block; margin: 10px 0 4px; max-width: 100%; height: auto; }
+audio { width: 100%; max-width: 520px; margin: 8px 0 4px; display: block; }
+.rds { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px; margin: 14px 0; }
+.rd { border: 1px solid var(--cp-border); border-radius: 10px; padding: 14px; }
+.rd.ok { border-color: var(--cp-success); background: var(--cp-surface-soft); }
+.rd.no { border-color: var(--cp-danger); opacity: 0.82; }
+.rd table.kv { font-size: 0.86rem; }
+.rd table.kv th { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.gal { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px; }
+.gal figure { margin: 0; }
+/* contain, not cover. These are portrait phone frames, and the evidence in
+   two of them - the John Street sign under the deck, and the people on the
+   lawn - sits in the top third, which a cover crop to a landscape tile cuts
+   off completely. A gallery that silently deletes the thing the caption is
+   pointing at is worse than no gallery. */
+.gal img { width: 100%; height: 300px; object-fit: contain;
+  background: var(--cp-surface-soft); border-radius: 8px;
+  border: 1px solid var(--cp-border); display: block; }
+.gal figcaption { font-size: 0.8rem; color: var(--cp-text-muted); margin-top: 6px; }
+.gal figcaption .mono { font-size: 0.74rem; }
+ul.quotes li { margin-bottom: 6px; }
+ol.wrong li { margin-bottom: 10px; max-width: 78ch; }
+td.st.no { color: var(--cp-danger); }
+td.st.part { color: var(--cp-warning); }
+/*MEDIACSS-END*/
+
+</style>
+<!--MASTHEAD--><style>
+/* Site masthead, injected by build_pages.py. Do not edit by hand.
+   Every class is mh- prefixed. An artifact is free to own .bar, .in, .home,
+   .mark or .nav for its own purposes, and one of them already does: the usage
+   dashboard uses .bar for its horizontal bar-chart rows, which turned an
+   un-prefixed masthead into a stacked column covering the page. */
+.mh-bar { position: sticky; top: 0; z-index: 200; display: block;
+  background: var(--cp-panel-strong); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--cp-border); }
+.mh-bar .mh-in { max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.mh-bar .mh-home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 9px;
+  white-space: nowrap; }
+.mh-bar .mh-home .mh-mark { display: block; flex: none; border-radius: 6px;
+  width: 26px; height: 26px; min-width: 26px; max-width: 26px; }
+.mh-bar .mh-home:hover { color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto;
+  align-items: center; }
+.mh-bar .mh-nav a { color: var(--cp-text-muted); font-size: 0.82rem;
+  padding: 4px 9px; display: inline-block; font-weight: 400;
+  border-radius: 999px; white-space: nowrap; text-decoration: none; border: 0; }
+.mh-bar .mh-nav a:hover { background: var(--cp-accent-soft);
+  color: var(--cp-accent); text-decoration: none; }
+.mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+.mh-bar .mh-nav .mh-sep { width: 1px; height: 17px; flex: none; margin: 0 7px;
+  background: var(--cp-border-strong); border-radius: 1px; }
+@media (max-width: 560px) { .mh-bar .mh-home .mh-wm { display: none; } }
+</style><!--/MASTHEAD-->
+</head>
+<body>
+<!--MASTHEAD--><div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../read/readme.html">README</a><a href="../read/idea-concept.html">1. Concept</a><a href="../read/precedent-and-materials.html">2. Precedent</a><a href="../read/williamsburg-comparator.html">3. Comparator</a><a href="../read/visual-model-framework.html">4. Visual model</a><a href="../read/field-capture-protocol.html">5. Field capture</a><a href="../read/community-evidence-audit.html">6. Community</a><a href="../read/data-collection.html">7. Data</a><a href="../read/pedestrian-site-visits.html">10. Field media</a><a href="../index.html#demos" class="on">Demos</a><span class="mh-sep" aria-hidden="true"></span><a href="../read/usage.html">8. AI Usage</a><a href="../read/procurement.html">9. Procurement</a></nav></div></div><!--/MASTHEAD-->
+
+<header class="top"><div class="wrap">
+<p class="eyebrow">Document 10 &middot; field media</p>
+<h1>What a phone actually recorded under the Manhattan Bridge</h1>
+<p class="lede">On 3 and 4 August 2026 an observer stood under the bridge in
+DUMBO with a consumer Samsung Galaxy S23+, filmed the buildings on either
+side, walked to the lawn on the south side, and separately stood with a
+stopwatch and tapped a lap every time train noise started and stopped. This
+page is everything that came back and everything that can and cannot be
+concluded from it.</p>
+<p class="lede"><strong>Nothing on this page is a decibel.</strong> A phone
+with automatic gain control does not measure sound pressure, and no attempt
+is made here to pretend otherwise. What survives an unknown, time-varying
+gain is <em>when</em> things happened and <em>how long</em> they lasted, and
+that is the only thing this page claims.</p>
+</div></header>
+<div class="wrap">
+<section class='card glance'><h2>At a glance</h2><div class='ggrid'><div class='gcell'><div class='gv'>7</div><div class='gl'>captures</div><div class='gn'>224.7 MB of masters, 4.1 MB shipped</div></div><div class='gcell'><div class='gv'>108 s</div><div class='gl'>audio analysed</div><div class='gn'>across 2 clips, after 1 exclusion</div></div><div class='gcell'><div class='gv'>4</div><div class='gl'>level excursions</div><div class='gn'>longest 10.1 s</div></div><div class='gcell'><div class='gv'>14</div><div class='gl'>stopwatch laps</div><div class='gn'>one observer, 12:59:00 to 13:07:19</div></div><div class='gcell'><div class='gv'>56.4/h</div><div class='gl'>observed rate</div><div class='gn'>schedule says 57.7/h</div></div><div class='gcell'><div class='gv'>44%</div><div class='gl'>duty ceiling</div><div class='gn'>at the loosest threshold tested</div></div></div></section>
+<section class='card'><h2>What this is not</h2>
+<p>The obvious thing to do with a phone recording of a loud place is to read a
+level off it. That is refused here, and the refusal is the most important
+methodological statement on the page.</p>
+<ul>
+<li><strong>Automatic gain control was active and cannot be undone.</strong>
+Android applies AGC on the default capture path. A compressor that pulls the
+level down during a loud passage and lets it back up afterwards writes its own
+release curve into the file. Anything computed from the absolute value of
+these samples is a property of Samsung's compressor, not of the bridge.</li>
+<li><strong>The microphone response is unknown and is not flat.</strong> Phone
+MEMS capsules are routinely high-passed in hardware, and low frequency is
+exactly where bridge structural radiation lives. A spectrum taken from this
+material would be missing the part that matters, with no way to tell from the
+file that it is missing.</li>
+<li><strong>There was no calibration and no windscreen.</strong> Both are
+named in <a href="../read/field-capture-protocol.html">Document 5</a> as the
+things that decide whether a session is worth anything, and neither was
+present.</li>
+</ul>
+<p>What survives all three is <strong>timing</strong>. AGC changes how loud a
+sample is; it does not change when the sample was written. Onsets, durations,
+gaps and rates are recoverable from a file whose absolute scale is worthless,
+and every quantitative claim below is one of those four.</p>
+<p class="note">The unit on every chart here is <span class="mono">dBFS</span>
+&mdash; decibels relative to digital full scale, a number about the file. It
+is never <span class="mono">dB(A)</span>. The MTA's measured
+<span class="mono">dB(A)</span> figures used elsewhere in this repository are
+from a calibrated meter and are not comparable to anything on this page.</p>
+</section>
+<section class='card'><h2>Every file, and its fingerprint</h2><div class='tw'><table><thead><tr><th>file</th><th>kind</th><th>place</th><th>clock</th><th>length</th><th>sha-256 (first 16)</th><th>what ships</th></tr></thead><tbody><tr><td>clock-screenshot_20260804_130719_Clock.jpg</td><td>screenshot</td><td>Stopwatch, paused</td><td class='num'>2026-08-04 13:07:19</td><td class='num'>&mdash;</td><td class='mono sha'>6b77c58ab84527c7</td><td><a href='web/clock-screenshot_20260804_130719_Clock.jpg'>image</a></td></tr><tr><td>20260803_190055.jpg</td><td>still</td><td>Under the bridge, evening</td><td class='num'>2026-08-03 19:00:55</td><td class='num'>&mdash;</td><td class='mono sha'>505601476abb7478</td><td><a href='web/20260803_190055.jpg'>image</a></td></tr><tr><td>20260803_190152.jpg</td><td>still</td><td>Under the bridge, evening</td><td class='num'>2026-08-03 19:01:52</td><td class='num'>&mdash;</td><td class='mono sha'>cf64fa29ccdeac04</td><td><a href='web/20260803_190152.jpg'>image</a></td></tr><tr><td>grassy-knoll-20260804_120225.jpg</td><td>still</td><td>Grassy knoll, south of the bridge</td><td class='num'>2026-08-04 12:02:25</td><td class='num'>&mdash;</td><td class='mono sha'>d62b709131cd74af</td><td><a href='web/grassy-knoll-20260804_120225.jpg'>image</a></td></tr><tr><td>canyon-buildings-20260804_115319.mp4</td><td>video</td><td>The canyon, walking</td><td class='num'>2026-08-04 11:53:19</td><td class='num'>61.8 s</td><td class='mono sha'>da4532294a3665e0</td><td><a href='web/canyon-buildings-20260804_115319.m4a'>audio</a> <a href='web/canyon-buildings-20260804_115319-poster.jpg'>poster</a></td></tr><tr><td>canyon-buildings2-20260804_115505.mp4</td><td>video</td><td>The canyon, continued</td><td class='num'>2026-08-04 11:55:05</td><td class='num'>46.7 s</td><td class='mono sha'>905cad6caa9aa119</td><td><a href='web/canyon-buildings2-20260804_115505.m4a'>audio</a> <a href='web/canyon-buildings2-20260804_115505-poster.jpg'>poster</a></td></tr><tr><td>grassy-knoll-20260804_115626.mp4 <span class='pill bad'>excluded</span></td><td>video</td><td>Grassy knoll, south of the bridge</td><td class='num'>2026-08-04 11:56:26</td><td class='num'>10.3 s</td><td class='mono sha'>4745dba0fb3483c5</td><td><a href='web/grassy-knoll-20260804_115626.m4a'>audio</a> <a href='web/grassy-knoll-20260804_115626-poster.jpg'>poster</a></td></tr></tbody></table></div><p class='note'>The masters are not in this repository. One video is 114 MB, which is over GitHub&#x27;s hard file limit, and committing the set would put a quarter of a gigabyte of phone footage into a research repository to no purpose. What ships is a poster frame and an audio track per video and a resized still per photograph. Every master is fingerprinted by SHA-256 above, so a master supplied later can be checked against what was actually analysed.</p><p class='note'>The masters total 224.7 MB and the web versions total 4.1 MB, a factor of 55&times;. Android names a video file at the moment recording <em>starts</em> and writes the container timestamp when it <em>closes</em>, so the clock column is the start and the two differ by the length of the clip. Every capture carried GPS and full EXIF; none of it was stripped before analysis.</p></section>
+<section class='card'><h2>Where each capture actually stood</h2><svg viewBox='0 0 1080 290' width='100%' role='img' class='envsvg' data-kind='geo' aria-label='captures against the alignment'><line x1='52' y1='240.0' x2='1064.0' y2='240.0' stroke='var(--cp-border)' stroke-width='1'/><text x='46' y='243.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-78</text><line x1='52' y1='170.0' x2='1064.0' y2='170.0' stroke='var(--cp-border)' stroke-width='1'/><text x='46' y='173.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>68</text><line x1='52' y1='100.0' x2='1064.0' y2='100.0' stroke='var(--cp-border)' stroke-width='1'/><text x='46' y='103.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>214</text><line x1='52' y1='30.0' x2='1064.0' y2='30.0' stroke='var(--cp-border)' stroke-width='1'/><text x='46' y='33.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>361</text><line x1='52' y1='202.8' x2='1064.0' y2='202.8' stroke='var(--cp-text)' stroke-width='2.5' opacity='0.55'/><text x='1062.0' y='196.8' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>fitted track axis</text><circle cx='159.7' cy='211.6' r='5' fill='none' stroke='var(--cp-text)' stroke-width='1.8'/><line x1='159.7' y1='217.6' x2='159.7' y2='222.6' stroke='var(--cp-border-strong)' stroke-width='1'/><text x='159.7' y='229.6' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>Adams Street Library</text><circle cx='201.4' cy='206.2' r='5' fill='none' stroke='var(--cp-text)' stroke-width='1.8'/><line x1='201.4' y1='212.2' x2='201.4' y2='230.2' stroke='var(--cp-border-strong)' stroke-width='1'/><text x='201.4' y='237.2' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>Front and Pine Street</text><circle cx='460.6' cy='196.8' r='5' fill='none' stroke='var(--cp-text)' stroke-width='1.8'/><line x1='460.6' y1='190.8' x2='460.6' y2='185.8' stroke='var(--cp-border-strong)' stroke-width='1'/><text x='460.6' y='182.8' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>DUMBO Archway</text><circle cx='964.8' cy='49.2' r='5' fill='none' stroke='var(--cp-text)' stroke-width='1.8'/><line x1='964.8' y1='43.2' x2='964.8' y2='38.2' stroke='var(--cp-border-strong)' stroke-width='1'/><text x='964.8' y='35.2' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>Brooklyn Bridge Park</text><circle cx='151.2' cy='125.2' r='4.5' fill='var(--cp-accent)'/><circle cx='158.9' cy='126.6' r='4.5' fill='var(--cp-accent)'/><rect x='641.5' y='216.3' width='9' height='9' fill='var(--cp-accent)'/><rect x='683.1' y='211.0' width='9' height='9' fill='var(--cp-accent)'/><rect x='799.2' y='185.4' width='9' height='9' fill='var(--cp-text-muted)'/><circle cx='866.5' cy='163.7' r='4.5' fill='var(--cp-accent)'/><text x='558.0' y='286' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>chainage along the alignment, m (0 = the DUMBO Archway)</text><text x='10' y='135' font-size='10' fill='var(--cp-text-muted)' transform='rotate(-90 14,135)'>offset, m</text><g font-size='10' fill='var(--cp-text-muted)'><rect x='54' y='262' width='9' height='9' fill='var(--cp-accent)'/><text x='68' y='270'>video</text><circle cx='114' cy='266' r='4.5' fill='var(--cp-accent)'/><text x='124' y='270'>still</text><circle cx='160' cy='266' r='5' fill='none' stroke='var(--cp-text)' stroke-width='1.8'/><text x='170' y='270'>MTA measurement point</text><rect x='310' y='262' width='9' height='9' fill='var(--cp-text-muted)'/><text x='324' y='270'>excluded</text></g></svg><div class='tw'><table><thead><tr><th>capture</th><th>chainage, m</th><th>offset from track, m</th><th>which side</th><th>nearest MTA measurement</th><th>distance to it</th></tr></thead><tbody><tr><td>20260803_190152.jpg</td><td class='num'>-124.7</td><td class='num'>161.9</td><td>west-south-west</td><td>Front and Pine Street</td><td class='num'>170 m</td></tr><tr><td>20260803_190055.jpg</td><td class='num'>-121.6</td><td class='num'>159.0</td><td>west-south-west</td><td>Front and Pine Street</td><td class='num'>167 m</td></tr><tr><td>canyon-buildings-20260804_115319.mp4</td><td class='num'>+74.7</td><td class='num'>37.6</td><td>east-north-east</td><td>DUMBO Archway</td><td class='num'>90 m</td></tr><tr><td>canyon-buildings2-20260804_115505.mp4</td><td class='num'>+91.5</td><td class='num'>26.4</td><td>east-north-east</td><td>DUMBO Archway</td><td class='num'>100 m</td></tr><tr><td>grassy-knoll-20260804_115626.mp4</td><td class='num'>+138.3</td><td class='num'>27.0</td><td>west-south-west</td><td>DUMBO Archway</td><td class='num'>139 m</td></tr><tr><td>grassy-knoll-20260804_120225.jpg</td><td class='num'>+163.6</td><td class='num'>81.6</td><td>west-south-west</td><td>DUMBO Archway</td><td class='num'>178 m</td></tr></tbody></table></div>
+<p>The frame is the one the rest of this repository already uses: distance
+along the fitted track axis, and perpendicular distance from it. Chainage zero
+is the DUMBO Archway, which is itself one of the four points the MTA measured.
+The axis is fitted to 21 OpenStreetMap nodes tagged as subway on the bridge and
+is straight to within 12.5 m over the 1757 m it was fitted across; every
+capture here falls inside that run, so no offset above is an extrapolation.</p>
+<p class="note"><strong>The compass direction is derived, not typed.</strong>
+The first version of this table hard-coded &ldquo;north-east&rdquo; for a
+positive offset. Probing the fitted axis showed positive offset actually points
+east-north-east. A refit that flips the sign would have silently inverted every row, so the
+bearing is now read off the axis at build time.</p>
+<p>Two of the video captures stand <strong>26 m and 27 m</strong> from the
+track. Three of the four points the MTA measured are further from it than that.
+This is not a claim that the captures are better sited &mdash; they carry no
+calibration and the MTA's do &mdash; but it does mean the geometry is not the
+reason nothing here can be compared with a decibel.</p>
+</section>
+<section class='card'><h2>The level traces, and what was picked out of them</h2><p class='sub'>An excursion is a stretch at least 1.5 s long that sits at least 6 dB above the clip's own rolling median, with excursions less than 1.5 s apart merged. It is <em>a level excursion</em>, not <em>a train</em>: the detector cannot tell a train from a truck, and does not try to.</p><h3>canyon-buildings-20260804_115319.mp4</h3><p class='sub'>The canyon, walking &middot; 61.8 s &middot; stereo AAC at 48,000 Hz, decoded to 16,000 Hz mono-per-channel for analysis &middot; 2 level excursions detected</p><svg viewBox='0 0 1080 150' width='100%' role='img' data-kind='envelope' class='envsvg' aria-label='level trace'><rect x='46.5' y='12' width='166.7' height='112' fill='var(--cp-accent)' opacity='0.13'/><rect x='983.9' y='12' width='82.1' height='112' fill='var(--cp-accent)' opacity='0.13'/><line x1='1066.0' y1='12' x2='1066.0' y2='124' stroke='var(--cp-warning)' stroke-width='2' stroke-dasharray='3 3'/><line x1='46' y1='124.0' x2='1066' y2='124.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='127.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-25</text><line x1='46' y1='86.7' x2='1066' y2='86.7' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='89.7' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-20</text><line x1='46' y1='49.3' x2='1066' y2='49.3' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='52.3' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-16</text><line x1='46' y1='12.0' x2='1066' y2='12.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='15.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-11</text><polyline points='46.0,36.5 48.6,48.8 51.1,30.8 53.7,43.9 56.2,46.3 58.8,37.3 61.3,43.1 63.9,49.6 66.5,44.7 69.0,48.0 71.6,46.3 74.1,40.6 76.7,50.4 79.2,44.7 81.8,43.9 84.3,39.0 86.9,43.9 89.5,41.4 92.0,47.2 94.6,48.0 97.1,48.0 99.7,43.9 102.2,44.7 104.8,43.1 107.4,52.1 109.9,49.6 112.5,39.0 115.0,39.8 117.6,49.6 120.1,37.3 122.7,50.4 125.2,46.3 127.8,56.1 130.4,47.2 132.9,48.0 135.5,53.7 138.0,48.0 140.6,56.1 143.1,59.4 145.7,55.3 148.3,46.3 150.8,52.1 153.4,46.3 155.9,52.1 158.5,48.0 161.0,61.1 163.6,55.3 166.2,65.1 168.7,63.5 171.3,55.3 173.8,68.4 176.4,61.9 178.9,46.3 181.5,63.5 184.0,52.9 186.6,54.5 189.2,58.6 191.7,61.1 194.3,61.9 196.8,62.7 199.4,54.5 201.9,73.3 204.5,78.2 207.1,67.6 209.6,70.0 212.2,56.1 214.7,70.9 217.3,62.7 219.8,68.4 222.4,85.6 224.9,85.6 227.5,76.6 230.1,74.1 232.6,91.3 235.2,88.0 237.7,74.9 240.3,71.7 242.8,76.6 245.4,88.0 248.0,83.1 250.5,67.6 253.1,76.6 255.6,88.8 258.2,83.9 260.7,76.6 263.3,83.9 265.8,79.9 268.4,83.9 271.0,88.8 273.5,67.6 276.1,84.8 278.6,77.4 281.2,81.5 283.7,69.2 286.3,66.0 288.9,66.8 291.4,63.5 294.0,52.9 296.5,74.1 299.1,76.6 301.6,71.7 304.2,72.5 306.8,66.8 309.3,66.0 311.9,74.1 314.4,74.1 317.0,82.3 319.5,76.6 322.1,77.4 324.6,70.9 327.2,66.8 329.8,89.7 332.3,70.0 334.9,75.8 337.4,84.8 340.0,67.6 342.5,84.8 345.1,75.8 347.7,70.0 350.2,68.4 352.8,79.9 355.3,72.5 357.9,82.3 360.4,89.7 363.0,79.9 365.5,77.4 368.1,82.3 370.7,84.8 373.2,78.2 375.8,67.6 378.3,60.2 380.9,57.8 383.4,64.3 386.0,63.5 388.6,66.8 391.1,74.9 393.7,90.5 396.2,75.8 398.8,94.6 401.3,84.8 403.9,78.2 406.5,92.1 409.0,83.1 411.6,78.2 414.1,89.7 416.7,70.0 419.2,92.1 421.8,87.2 424.3,100.3 426.9,97.0 429.5,107.6 432.0,103.6 434.6,81.5 437.1,69.2 439.7,86.4 442.2,87.2 444.8,95.4 447.4,92.1 449.9,88.8 452.5,86.4 455.0,70.9 457.6,63.5 460.1,92.9 462.7,79.9 465.2,87.2 467.8,86.4 470.4,88.8 472.9,92.9 475.5,90.5 478.0,103.6 480.6,98.7 483.1,92.1 485.7,78.2 488.3,82.3 490.8,76.6 493.4,66.0 495.9,77.4 498.5,82.3 501.0,77.4 503.6,97.8 506.2,86.4 508.7,74.9 511.3,87.2 513.8,88.0 516.4,92.1 518.9,74.9 521.5,66.0 524.0,75.8 526.6,87.2 529.2,92.9 531.7,73.3 534.3,79.9 536.8,74.9 539.4,80.7 541.9,82.3 544.5,75.8 547.1,74.9 549.6,62.7 552.2,78.2 554.7,91.3 557.3,79.9 559.8,84.8 562.4,83.1 564.9,88.8 567.5,76.6 570.1,81.5 572.6,65.1 575.2,65.1 577.7,88.8 580.3,81.5 582.8,80.7 585.4,85.6 588.0,89.7 590.5,94.6 593.1,83.1 595.6,83.9 598.2,78.2 600.7,87.2 603.3,79.0 605.8,79.0 608.4,81.5 611.0,85.6 613.5,74.1 616.1,74.1 618.6,92.1 621.2,83.1 623.7,82.3 626.3,101.9 628.9,77.4 631.4,83.1 634.0,79.9 636.5,77.4 639.1,78.2 641.6,70.9 644.2,81.5 646.8,78.2 649.3,77.4 651.9,67.6 654.4,69.2 657.0,75.8 659.5,61.1 662.1,49.6 664.6,66.0 667.2,83.9 669.8,59.4 672.3,58.6 674.9,74.1 677.4,79.0 680.0,80.7 682.5,72.5 685.1,79.9 687.7,78.2 690.2,74.9 692.8,86.4 695.3,68.4 697.9,72.5 700.4,79.0 703.0,88.8 705.5,90.5 708.1,85.6 710.7,86.4 713.2,101.9 715.8,93.8 718.3,99.5 720.9,83.9 723.4,93.8 726.0,94.6 728.6,87.2 731.1,95.4 733.7,106.8 736.2,99.5 738.8,104.4 741.3,105.2 743.9,101.9 746.5,83.9 749.0,108.5 751.6,82.3 754.1,95.4 756.7,93.8 759.2,86.4 761.8,87.2 764.3,92.1 766.9,87.2 769.5,93.8 772.0,91.3 774.6,96.2 777.1,106.8 779.7,98.7 782.2,97.0 784.8,86.4 787.4,97.8 789.9,99.5 792.5,108.5 795.0,107.6 797.6,104.4 800.1,101.9 802.7,88.0 805.2,94.6 807.8,89.7 810.4,114.2 812.9,101.1 815.5,101.1 818.0,106.0 820.6,92.9 823.1,100.3 825.7,115.8 828.3,74.9 830.8,88.8 833.4,70.0 835.9,88.8 838.5,97.8 841.0,78.2 843.6,79.9 846.2,100.3 848.7,99.5 851.3,94.6 853.8,85.6 856.4,87.2 858.9,78.2 861.5,74.1 864.0,75.8 866.6,96.2 869.2,81.5 871.7,81.5 874.3,78.2 876.8,80.7 879.4,90.5 881.9,81.5 884.5,83.1 887.1,73.3 889.6,83.9 892.2,77.4 894.7,79.0 897.3,90.5 899.8,79.9 902.4,82.3 904.9,81.5 907.5,73.3 910.1,74.1 912.6,68.4 915.2,69.2 917.7,74.9 920.3,79.9 922.8,78.2 925.4,75.8 928.0,73.3 930.5,76.6 933.1,61.1 935.6,77.4 938.2,66.0 940.7,79.0 943.3,58.6 945.8,68.4 948.4,71.7 951.0,68.4 953.5,69.2 956.1,68.4 958.6,65.1 961.2,63.5 963.7,83.9 966.3,74.9 968.9,67.6 971.4,64.3 974.0,71.7 976.5,66.0 979.1,70.0 981.6,70.9 984.2,58.6 986.8,57.0 989.3,43.9 991.9,36.5 994.4,30.8 997.0,33.3 999.5,44.7 1002.1,42.2 1004.6,34.9 1007.2,58.6 1009.8,44.7 1012.3,37.3 1014.9,46.3 1017.4,30.0 1020.0,25.1 1022.5,35.7 1025.1,34.1 1027.7,34.1 1030.2,20.2 1032.8,25.1 1035.3,21.0 1037.9,34.9 1040.4,25.9 1043.0,24.3 1045.5,28.4 1048.1,34.1 1050.7,39.8 1053.2,29.2 1055.8,34.1 1058.3,27.5 1060.9,26.7 1063.4,31.6 1066.0,31.6' fill='none' stroke='var(--cp-accent)' stroke-width='1.4'/><text x='46.0' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>0s</text><text x='211.2' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>10s</text><text x='376.4' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>20s</text><text x='541.5' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>30s</text><text x='706.7' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>40s</text><text x='871.9' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>50s</text><text x='1037.1' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>60s</text><text x='6' y='68' font-size='10' fill='var(--cp-text-muted)' transform='rotate(-90 12,68)'>dBFS</text></svg><div class='tw narrow'><table><thead><tr><th class='num'>start, s</th><th class='num'>end, s</th><th class='num'>duration, s</th><th class='num'>rise above the clip median, dB</th><th>&nbsp;</th></tr></thead><tbody><tr><td class='num'>0.03</td><td class='num'>10.12</td><td class='num'>10.10</td><td class='num'>+9.6</td><td>complete</td></tr><tr><td class='num'>56.78</td><td class='num'>61.75</td><td class='num'>4.98</td><td class='num'>+10.9</td><td>cut off by the end of the clip</td></tr></tbody></table></div><audio controls preload='metadata' src='web/canyon-buildings-20260804_115319.m4a'></audio><h3>canyon-buildings2-20260804_115505.mp4</h3><p class='sub'>The canyon, continued &middot; 46.7 s &middot; stereo AAC at 48,000 Hz, decoded to 16,000 Hz mono-per-channel for analysis &middot; 2 level excursions detected</p><svg viewBox='0 0 1080 150' width='100%' role='img' data-kind='envelope' class='envsvg' aria-label='level trace'><rect x='273.0' y='12' width='96.2' height='112' fill='var(--cp-accent)' opacity='0.13'/><rect x='407.4' y='12' width='44.2' height='112' fill='var(--cp-accent)' opacity='0.13'/><line x1='46' y1='124.0' x2='1066' y2='124.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='127.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-25</text><line x1='46' y1='86.7' x2='1066' y2='86.7' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='89.7' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-22</text><line x1='46' y1='49.3' x2='1066' y2='49.3' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='52.3' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-19</text><line x1='46' y1='12.0' x2='1066' y2='12.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='15.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-16</text><polyline points='46.0,73.2 48.6,83.6 51.1,102.1 53.7,99.8 56.2,61.6 58.8,79.0 61.3,97.4 63.9,98.6 66.5,99.8 69.0,85.9 71.6,62.8 74.1,87.1 76.7,77.8 79.2,65.1 81.8,82.4 84.3,70.9 86.9,85.9 89.5,103.2 92.0,96.3 94.6,98.6 97.1,73.2 99.7,73.2 102.2,76.7 104.8,88.2 107.4,57.0 109.9,59.3 112.5,94.0 115.0,77.8 117.6,68.6 120.1,70.9 122.7,92.8 125.2,87.1 127.8,83.6 130.4,68.6 132.9,75.5 135.5,91.7 138.0,80.1 140.6,99.8 143.1,88.2 145.7,79.0 148.3,73.2 150.8,74.4 153.4,95.1 155.9,89.4 158.5,69.7 161.0,75.5 163.6,69.7 166.2,84.7 168.7,68.6 171.3,112.5 173.8,102.1 176.4,98.6 178.9,82.4 181.5,94.0 184.0,88.2 186.6,100.9 189.2,105.5 191.7,102.1 194.3,80.1 196.8,85.9 199.4,109.0 201.9,69.7 204.5,90.5 207.1,82.4 209.6,82.4 212.2,88.2 214.7,77.8 217.3,70.9 219.8,77.8 222.4,76.7 224.9,69.7 227.5,61.6 230.1,79.0 232.6,70.9 235.2,83.6 237.7,70.9 240.3,62.8 242.8,55.9 245.4,60.5 248.0,68.6 250.5,61.6 253.1,65.1 255.6,74.4 258.2,64.0 260.7,73.2 263.3,59.3 265.8,62.8 268.4,57.0 271.0,53.6 273.5,42.0 276.1,57.0 278.6,62.8 281.2,30.5 283.7,24.7 286.3,31.6 288.9,75.5 291.4,39.7 294.0,38.6 296.5,38.6 299.1,67.4 301.6,45.5 304.2,45.5 306.8,42.0 309.3,61.6 311.9,70.9 314.4,43.2 317.0,37.4 319.5,68.6 322.1,52.4 324.6,55.9 327.2,58.2 329.8,27.0 332.3,67.4 334.9,66.3 337.4,58.2 340.0,52.4 342.5,53.6 345.1,52.4 347.7,40.9 350.2,44.3 352.8,58.2 355.3,30.5 357.9,54.7 360.4,53.6 363.0,60.5 365.5,53.6 368.1,42.0 370.7,47.8 373.2,50.1 375.8,64.0 378.3,44.3 380.9,61.6 383.4,52.4 386.0,52.4 388.6,54.7 391.1,43.2 393.7,43.2 396.2,60.5 398.8,65.1 401.3,47.8 403.9,46.6 406.5,37.4 409.0,50.1 411.6,38.6 414.1,54.7 416.7,65.1 419.2,76.7 421.8,82.4 424.3,50.1 426.9,65.1 429.5,58.2 432.0,39.7 434.6,40.9 437.1,40.9 439.7,50.1 442.2,60.5 444.8,53.6 447.4,35.1 449.9,23.5 452.5,31.6 455.0,73.2 457.6,68.6 460.1,80.1 462.7,54.7 465.2,85.9 467.8,81.3 470.4,75.5 472.9,77.8 475.5,59.3 478.0,50.1 480.6,75.5 483.1,66.3 485.7,70.9 488.3,61.6 490.8,53.6 493.4,75.5 495.9,61.6 498.5,60.5 501.0,62.8 503.6,70.9 506.2,74.4 508.7,64.0 511.3,75.5 513.8,103.2 516.4,88.2 518.9,65.1 521.5,79.0 524.0,76.7 526.6,84.7 529.2,87.1 531.7,98.6 534.3,83.6 536.8,91.7 539.4,94.0 541.9,53.6 544.5,75.5 547.1,75.5 549.6,68.6 552.2,69.7 554.7,80.1 557.3,90.5 559.8,70.9 562.4,76.7 564.9,73.2 567.5,54.7 570.1,51.3 572.6,68.6 575.2,65.1 577.7,88.2 580.3,95.1 582.8,44.3 585.4,51.3 588.0,84.7 590.5,62.8 593.1,74.4 595.6,61.6 598.2,88.2 600.7,82.4 603.3,103.2 605.8,87.1 608.4,92.8 611.0,85.9 613.5,84.7 616.1,100.9 618.6,85.9 621.2,97.4 623.7,87.1 626.3,84.7 628.9,80.1 631.4,83.6 634.0,91.7 636.5,68.6 639.1,77.8 641.6,88.2 644.2,92.8 646.8,97.4 649.3,88.2 651.9,84.7 654.4,80.1 657.0,75.5 659.5,81.3 662.1,95.1 664.6,92.8 667.2,96.3 669.8,87.1 672.3,98.6 674.9,100.9 677.4,102.1 680.0,100.9 682.5,83.6 685.1,81.3 687.7,79.0 690.2,81.3 692.8,79.0 695.3,68.6 697.9,75.5 700.4,74.4 703.0,73.2 705.5,94.0 708.1,102.1 710.7,82.4 713.2,91.7 715.8,75.5 718.3,81.3 720.9,73.2 723.4,88.2 726.0,83.6 728.6,80.1 731.1,74.4 733.7,77.8 736.2,72.0 738.8,87.1 741.3,66.3 743.9,85.9 746.5,64.0 749.0,64.0 751.6,61.6 754.1,102.1 756.7,58.2 759.2,60.5 761.8,60.5 764.3,66.3 766.9,76.7 769.5,89.4 772.0,80.1 774.6,73.2 777.1,89.4 779.7,65.1 782.2,51.3 784.8,80.1 787.4,83.6 789.9,91.7 792.5,62.8 795.0,65.1 797.6,77.8 800.1,80.1 802.7,83.6 805.2,80.1 807.8,75.5 810.4,84.7 812.9,65.1 815.5,66.3 818.0,55.9 820.6,75.5 823.1,87.1 825.7,60.5 828.3,52.4 830.8,84.7 833.4,75.5 835.9,70.9 838.5,74.4 841.0,87.1 843.6,65.1 846.2,74.4 848.7,69.7 851.3,48.9 853.8,81.3 856.4,69.7 858.9,87.1 861.5,97.4 864.0,99.8 866.6,83.6 869.2,85.9 871.7,83.6 874.3,77.8 876.8,81.3 879.4,72.0 881.9,80.1 884.5,85.9 887.1,83.6 889.6,80.1 892.2,82.4 894.7,104.4 897.3,92.8 899.8,88.2 902.4,82.4 904.9,85.9 907.5,88.2 910.1,79.0 912.6,74.4 915.2,80.1 917.7,88.2 920.3,79.0 922.8,83.6 925.4,88.2 928.0,95.1 930.5,94.0 933.1,96.3 935.6,74.4 938.2,53.6 940.7,72.0 943.3,58.2 945.8,85.9 948.4,67.4 951.0,88.2 953.5,83.6 956.1,91.7 958.6,79.0 961.2,61.6 963.7,69.7 966.3,60.5 968.9,81.3 971.4,88.2 974.0,73.2 976.5,83.6 979.1,91.7 981.6,83.6 984.2,77.8 986.8,85.9 989.3,90.5 991.9,72.0 994.4,87.1 997.0,76.7 999.5,87.1 1002.1,76.7 1004.6,97.4 1007.2,70.9 1009.8,61.6 1012.3,88.2 1014.9,72.0 1017.4,75.5 1020.0,68.6 1022.5,74.4 1025.1,74.4 1027.7,80.1 1030.2,84.7 1032.8,60.5 1035.3,80.1 1037.9,75.5 1040.4,84.7 1043.0,81.3 1045.5,80.1 1048.1,74.4 1050.7,85.9 1053.2,110.1 1055.8,69.7 1058.3,77.8 1060.9,74.4 1063.4,80.1 1066.0,75.5' fill='none' stroke='var(--cp-accent)' stroke-width='1.4'/><text x='46.0' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>0s</text><text x='264.6' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>10s</text><text x='483.3' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>20s</text><text x='701.9' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>30s</text><text x='920.6' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>40s</text><text x='6' y='68' font-size='10' fill='var(--cp-text-muted)' transform='rotate(-90 12,68)'>dBFS</text></svg><div class='tw narrow'><table><thead><tr><th class='num'>start, s</th><th class='num'>end, s</th><th class='num'>duration, s</th><th class='num'>rise above the clip median, dB</th><th>&nbsp;</th></tr></thead><tbody><tr><td class='num'>10.38</td><td class='num'>14.78</td><td class='num'>4.40</td><td class='num'>+7.6</td><td>complete</td></tr><tr><td class='num'>16.53</td><td class='num'>18.55</td><td class='num'>2.02</td><td class='num'>+7.6</td><td>complete</td></tr></tbody></table></div><audio controls preload='metadata' src='web/canyon-buildings2-20260804_115505.m4a'></audio><h3>grassy-knoll-20260804_115626.mp4 <span class='pill bad'>excluded from every statistic</span></h3><p class='sub'>Grassy knoll, south of the bridge &middot; 10.3 s &middot; stereo AAC at 48,000 Hz, decoded to 16,000 Hz mono-per-channel for analysis &middot; 0 level excursions detected</p><svg viewBox='0 0 1080 150' width='100%' role='img' data-kind='envelope' class='envsvg' aria-label='level trace'><line x1='46' y1='124.0' x2='1066' y2='124.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='127.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-21</text><line x1='46' y1='86.7' x2='1066' y2='86.7' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='89.7' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-19</text><line x1='46' y1='49.3' x2='1066' y2='49.3' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='52.3' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-16</text><line x1='46' y1='12.0' x2='1066' y2='12.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='15.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>-13</text><polyline points='46.0,105.6 48.6,38.9 51.1,30.4 53.7,43.2 56.2,31.8 58.8,26.2 61.3,48.9 63.9,53.1 66.5,37.5 69.0,34.7 71.6,36.1 74.1,50.3 76.7,77.2 79.2,71.5 81.8,51.7 84.3,47.4 86.9,50.3 89.5,54.5 92.0,63.0 94.6,57.4 97.1,50.3 99.7,48.9 102.2,43.2 104.8,43.2 107.4,54.5 109.9,67.3 112.5,44.6 115.0,47.4 117.6,67.3 120.1,58.8 122.7,54.5 125.2,68.7 127.8,60.2 130.4,54.5 132.9,78.6 135.5,47.4 138.0,38.9 140.6,58.8 143.1,31.8 145.7,40.4 148.3,63.0 150.8,54.5 153.4,48.9 155.9,38.9 158.5,38.9 161.0,57.4 163.6,65.9 166.2,71.5 168.7,50.3 171.3,54.5 173.8,60.2 176.4,50.3 178.9,36.1 181.5,37.5 184.0,43.2 186.6,54.5 189.2,60.2 191.7,55.9 194.3,58.8 196.8,67.3 199.4,82.9 201.9,57.4 204.5,38.9 207.1,41.8 209.6,50.3 212.2,54.5 214.7,51.7 217.3,47.4 219.8,60.2 222.4,55.9 224.9,47.4 227.5,48.9 230.1,61.6 232.6,57.4 235.2,55.9 237.7,60.2 240.3,65.9 242.8,60.2 245.4,58.8 248.0,48.9 250.5,54.5 253.1,57.4 255.6,54.5 258.2,55.9 260.7,65.9 263.3,77.2 265.8,65.9 268.4,64.5 271.0,71.5 273.5,55.9 276.1,63.0 278.6,84.3 281.2,71.5 283.7,46.0 286.3,50.3 288.9,63.0 291.4,63.0 294.0,74.4 296.5,71.5 299.1,61.6 301.6,50.3 304.2,57.4 306.8,67.3 309.3,58.8 311.9,60.2 314.4,55.9 317.0,70.1 319.5,73.0 322.1,50.3 324.6,43.2 327.2,77.2 329.8,71.5 332.3,64.5 334.9,65.9 337.4,61.6 340.0,54.5 342.5,57.4 345.1,50.3 347.7,64.5 350.2,71.5 352.8,41.8 355.3,46.0 357.9,70.1 360.4,55.9 363.0,41.8 365.5,50.3 368.1,57.4 370.7,43.2 373.2,37.5 375.8,55.9 378.3,67.3 380.9,44.6 383.4,40.4 386.0,65.9 388.6,67.3 391.1,64.5 393.7,71.5 396.2,50.3 398.8,58.8 401.3,68.7 403.9,47.4 406.5,58.8 409.0,73.0 411.6,63.0 414.1,54.5 416.7,55.9 419.2,63.0 421.8,53.1 424.3,36.1 426.9,43.2 429.5,44.6 432.0,48.9 434.6,48.9 437.1,51.7 439.7,47.4 442.2,60.2 444.8,61.6 447.4,48.9 449.9,57.4 452.5,57.4 455.0,41.8 457.6,33.3 460.1,43.2 462.7,38.9 465.2,50.3 467.8,74.4 470.4,48.9 472.9,47.4 475.5,67.3 478.0,53.1 480.6,57.4 483.1,71.5 485.7,61.6 488.3,55.9 490.8,54.5 493.4,58.8 495.9,44.6 498.5,40.4 501.0,50.3 503.6,44.6 506.2,58.8 508.7,50.3 511.3,53.1 513.8,55.9 516.4,64.5 518.9,91.4 521.5,67.3 524.0,43.2 526.6,58.8 529.2,75.8 531.7,44.6 534.3,48.9 536.8,70.1 539.4,53.1 541.9,40.4 544.5,47.4 547.1,54.5 549.6,70.1 552.2,74.4 554.7,46.0 557.3,44.6 559.8,61.6 562.4,67.3 564.9,74.4 567.5,81.5 570.1,57.4 572.6,60.2 575.2,84.3 577.7,63.0 580.3,57.4 582.8,63.0 585.4,55.9 588.0,46.0 590.5,53.1 593.1,67.3 595.6,63.0 598.2,55.9 600.7,55.9 603.3,57.4 605.8,63.0 608.4,48.9 611.0,78.6 613.5,78.6 616.1,58.8 618.6,48.9 621.2,57.4 623.7,61.6 626.3,74.4 628.9,77.2 631.4,47.4 634.0,40.4 636.5,68.7 639.1,68.7 641.6,57.4 644.2,64.5 646.8,58.8 649.3,70.1 651.9,63.0 654.4,54.5 657.0,60.2 659.5,50.3 662.1,31.8 664.6,30.4 667.2,43.2 669.8,37.5 672.3,38.9 674.9,55.9 677.4,58.8 680.0,47.4 682.5,51.7 685.1,61.6 687.7,65.9 690.2,55.9 692.8,47.4 695.3,53.1 697.9,50.3 700.4,48.9 703.0,48.9 705.5,47.4 708.1,51.7 710.7,60.2 713.2,58.8 715.8,54.5 718.3,44.6 720.9,55.9 723.4,63.0 726.0,55.9 728.6,65.9 731.1,71.5 733.7,58.8 736.2,64.5 738.8,77.2 741.3,85.7 743.9,68.7 746.5,67.3 749.0,71.5 751.6,61.6 754.1,82.9 756.7,77.2 759.2,71.5 761.8,67.3 764.3,51.7 766.9,43.2 769.5,55.9 772.0,81.5 774.6,71.5 777.1,61.6 779.7,50.3 782.2,63.0 784.8,107.0 787.4,67.3 789.9,57.4 792.5,67.3 795.0,73.0 797.6,67.3 800.1,95.6 802.7,92.8 805.2,61.6 807.8,70.1 810.4,88.6 812.9,82.9 815.5,64.5 818.0,53.1 820.6,50.3 823.1,54.5 825.7,77.2 828.3,75.8 830.8,75.8 833.4,60.2 835.9,57.4 838.5,75.8 841.0,64.5 843.6,53.1 846.2,46.0 848.7,57.4 851.3,84.3 853.8,101.3 856.4,77.2 858.9,70.1 861.5,53.1 864.0,38.9 866.6,46.0 869.2,47.4 871.7,50.3 874.3,58.8 876.8,65.9 879.4,47.4 881.9,34.7 884.5,48.9 887.1,61.6 889.6,70.1 892.2,78.6 894.7,73.0 897.3,57.4 899.8,46.0 902.4,51.7 904.9,65.9 907.5,55.9 910.1,57.4 912.6,67.3 915.2,55.9 917.7,47.4 920.3,41.8 922.8,55.9 925.4,71.5 928.0,61.6 930.5,60.2 933.1,60.2 935.6,36.1 938.2,30.4 940.7,58.8 943.3,80.1 945.8,60.2 948.4,63.0 951.0,65.9 953.5,53.1 956.1,46.0 958.6,57.4 961.2,73.0 963.7,51.7 966.3,37.5 968.9,41.8 971.4,67.3 974.0,75.8 976.5,68.7 979.1,68.7 981.6,64.5 984.2,47.4 986.8,51.7 989.3,55.9 991.9,43.2 994.4,60.2 997.0,74.4 999.5,60.2 1002.1,63.0 1004.6,54.5 1007.2,55.9 1009.8,71.5 1012.3,75.8 1014.9,70.1 1017.4,44.6 1020.0,44.6 1022.5,51.7 1025.1,55.9 1027.7,48.9 1030.2,43.2 1032.8,47.4 1035.3,53.1 1037.9,50.3 1040.4,57.4 1043.0,97.1 1045.5,109.8 1048.1,92.8 1050.7,75.8 1053.2,84.3 1055.8,84.3 1058.3,67.3 1060.9,65.9 1063.4,80.1 1066.0,78.6' fill='none' stroke='var(--cp-text-muted)' stroke-width='1.4'/><text x='46.0' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>0s</text><text x='1038.2' y='142' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>10s</text><text x='6' y='68' font-size='10' fill='var(--cp-text-muted)' transform='rotate(-90 12,68)'>dBFS</text></svg><audio controls preload='metadata' src='web/grassy-knoll-20260804_115626.m4a'></audio><p class='note bad'>This clip contributes nothing to any number on this page. See the next card.</p></section>
+<section class='card'><h2>One clip was thrown away, and the reason is worth more than the clip</h2>
+<p>After the recordings were made, the operator volunteered two recollections
+about the lawn clip:</p>
+<ul class="quotes"><li>&ldquo;I may have had my hand over the microphone for the drop out period.&rdquo; &mdash; rated 2/5, operator recollection. Tested by: sustained divergence between the two channels.</li><li>&ldquo;Turned phone upside down at some point.&rdquo; &mdash; rated 2/5, operator recollection. Tested by: a sustained sign change in the channel difference.</li></ul>
+<p>Both are testable in the file, and both tests were written <em>after</em>
+the recollection and are free to disagree with it. Recording a recollection as
+evidence would be circular; recording it as a <em>hypothesis</em> and then
+testing it is not.</p>
+<p>The first pass found neither. There was no drop-out at all &mdash; the clip
+sits inside a 5.9 dB band for its whole length &mdash; and no sustained sign
+change between the channels. That looked like a clean negative until the test
+was checked for a blind spot, and it has one:
+<strong>a within-clip test measures each clip against its own median, so an
+obstruction that never lifts moves the baseline with it and becomes
+invisible.</strong></p>
+<p>So a second, between-clip test was written, on three indicators that move
+in known and <em>different</em> directions for a hand over a microphone versus
+a genuinely quiet site. A hand raises the noise floor, compresses the dynamic
+range, and decorrelates the two channels. Quiet <em>lowers</em> the floor and
+leaves the channels agreeing.</p>
+<div class="tw"><table><thead><tr><th>clip</th>
+<th>noise floor, dBFS</th><th>dynamic range, dB</th>
+<th>channel correlation</th><th>indicators flagged</th>
+</tr></thead><tbody><tr class='flagged'><td>grassy-knoll-20260804_115626.mp4</td><td class='num'>-17.9</td><td class='num'>3.5</td><td class='num'>0.826</td><td class='num'>3 of 3</td></tr><tr><td>canyon-buildings-20260804_115319.mp4</td><td class='num'>-22.9</td><td class='num'>10.8</td><td class='num'>0.920</td><td class='num'>0 of 3</td></tr><tr><td>canyon-buildings2-20260804_115505.mp4</td><td class='num'>-24.2</td><td class='num'>7.6</td><td class='num'>0.885</td><td class='num'>0 of 3</td></tr></tbody></table></div>
+<p><strong>All three picked the same clip, unanimously.</strong> All three indicators point at the same clip, grassy-knoll-20260804_115626.mp4. That is what a microphone obstructed for the WHOLE recording looks like, and it is the opposite of what a quiet site looks like - a quiet site lowers the floor and leaves the two channels agreeing. It is consistent with the operator&#x27;s account and it is not proof of it: three indicators over three clips cannot carry a p-value, and no significance is claimed. The consequence does not depend on resolving the cause - the clip is excluded either way.</p>
+<p class="note">The clip is excluded <em>at source</em>, before any statistic
+is computed &mdash; not caveated afterwards. A caveat below a number does not
+stop the number being quoted. The audio span on this page is
+108.4 s, not 118.7 s, because of it, and the conclusion in the corroboration
+card survives losing it.</p>
+</section>
+<section class='card'><h2>A clip shorter than a headway cannot be evidence of quiet</h2>
+<p>The lawn clip is <em>closer</em> to the track than either canyon clip and
+detected nothing. That is the shape of a finding, and it is not one. At
+57.7 trains an hour the expected number of trains inside a 10.3 s window is
+0.16, so the chance of catching none at all is <strong>84.8%</strong>
+regardless of how loud the site is.</p>
+<div class="tw"><table><thead><tr><th>clip</th><th>analysed, s</th>
+<th>trains expected</th><th>excursions observed</th>
+<th>chance of zero by luck alone</th><th>&nbsp;</th>
+</tr></thead><tbody><tr><td>canyon-buildings-20260804_115319.mp4</td><td class='num'>61.8</td><td class='num'>0.99</td><td class='num'>2</td><td class='num'>37.2%</td><td>informative</td></tr><tr><td>canyon-buildings2-20260804_115505.mp4</td><td class='num'>46.6</td><td class='num'>0.75</td><td class='num'>2</td><td class='num'>47.3%</td><td>informative</td></tr><tr class='flagged'><td>grassy-knoll-20260804_115626.mp4</td><td class='num'>10.3</td><td class='num'>0.16</td><td class='num'>0</td><td class='num'>84.8%</td><td><strong>carries no information</strong></td></tr></tbody></table></div>
+<p class="note">A null in a clip shorter than a headway is not a finding. Of the clips here, 1 had a better-than-even chance of containing no train at all regardless of how loud the site is, so their zero counts carry no information about the site and are not used for anything.</p>
+</section>
+<section class='card'><h2>Fourteen taps, two readings, and only one of them can be right</h2><svg viewBox='0 0 1080 150' width='100%' role='img' class='envsvg' data-kind='laps' aria-label='stopwatch laps'><line x1='46' y1='102.0' x2='1066.0' y2='102.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='105.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>0</text><line x1='46' y1='73.3' x2='1066.0' y2='73.3' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='76.3' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>26</text><line x1='46' y1='44.7' x2='1066.0' y2='44.7' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='47.7' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>52</text><line x1='46' y1='16.0' x2='1066.0' y2='16.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='19.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>78</text><rect x='47.0' y='52.5' width='70.9' height='49.5' fill='var(--cp-text-muted)' opacity='0.35'/><text x='82.4' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>45.0</text><text x='82.4' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>1</text><rect x='119.9' y='56.9' width='70.9' height='45.1' fill='var(--cp-accent)' opacity='0.9'/><text x='155.3' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>41.1</text><text x='155.3' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>2</text><rect x='192.7' y='23.8' width='70.9' height='78.2' fill='var(--cp-text-muted)' opacity='0.35'/><text x='228.1' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>71.2</text><text x='228.1' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>3</text><rect x='265.6' y='96.6' width='70.9' height='5.4' fill='var(--cp-accent)' opacity='0.9'/><text x='301.0' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>4.9</text><text x='301.0' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>4</text><rect x='338.4' y='54.8' width='70.9' height='47.2' fill='var(--cp-text-muted)' opacity='0.35'/><text x='373.9' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>43.0</text><text x='373.9' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>5</text><rect x='411.3' y='89.8' width='70.9' height='12.2' fill='var(--cp-accent)' opacity='0.9'/><text x='446.7' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>11.1</text><text x='446.7' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>6</text><rect x='484.1' y='41.8' width='70.9' height='60.2' fill='var(--cp-text-muted)' opacity='0.35'/><text x='519.6' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>54.8</text><text x='519.6' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>7</text><rect x='557.0' y='81.5' width='70.9' height='20.5' fill='var(--cp-accent)' opacity='0.9'/><text x='592.4' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>18.6</text><text x='592.4' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>8</text><rect x='629.9' y='36.5' width='70.9' height='65.5' fill='var(--cp-text-muted)' opacity='0.35'/><text x='665.3' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>59.6</text><text x='665.3' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>9</text><rect x='702.7' y='99.0' width='70.9' height='3.0' fill='var(--cp-accent)' opacity='0.9'/><text x='738.1' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>2.8</text><text x='738.1' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>10</text><rect x='775.6' y='60.5' width='70.9' height='41.5' fill='var(--cp-text-muted)' opacity='0.35'/><text x='811.0' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>37.8</text><text x='811.0' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>11</text><rect x='848.4' y='97.6' width='70.9' height='4.4' fill='var(--cp-accent)' opacity='0.9'/><text x='883.9' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>4.0</text><text x='883.9' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>12</text><rect x='921.3' y='52.2' width='70.9' height='49.8' fill='var(--cp-text-muted)' opacity='0.35'/><text x='956.7' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>45.4</text><text x='956.7' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>13</text><rect x='994.1' y='94.0' width='70.9' height='8.0' fill='var(--cp-accent)' opacity='0.9'/><text x='1029.6' y='118' font-size='9' text-anchor='middle' fill='var(--cp-text-muted)'>7.3</text><text x='1029.6' y='130' font-size='9' text-anchor='middle' fill='var(--cp-text-soft)'>14</text><text x='46' y='144' font-size='10' fill='var(--cp-text-muted)'>lap seconds above, lap number below.</text><rect x='262' y='136' width='9' height='9' fill='var(--cp-accent)' opacity='0.9'/><text x='276' y='144' font-size='10' fill='var(--cp-text-muted)'>read as train noise</text><rect x='404' y='136' width='9' height='9' fill='var(--cp-text-muted)' opacity='0.35'/><text x='418' y='144' font-size='10' fill='var(--cp-text-muted)'>read as quiet between trains</text></svg>
+<p>The stopwatch records a lap every time the observer judged train noise to
+start <em>or</em> stop. The file therefore contains fourteen durations that
+alternate between noise and quiet &mdash; but <strong>it does not record which
+kind the first lap was</strong>, and the observer did not write it down. Both
+interleavings are arithmetically valid and they give opposite answers.</p>
+<div class="rds"><div class='rd ok'><h4>odd laps are quiet &mdash; <strong>taken</strong></h4><table class='kv'><tr><th>events counted</th><td class='num'>7</td></tr><tr><th>mean event</th><td class='num'>12.8 s</td></tr><tr><th>median event</th><td class='num'>7.3 s</td></tr><tr><th>event spread (CV)</th><td class='num'>1.060</td></tr><tr><th>gap spread (CV)</th><td class='num'>0.227</td></tr><tr><th>implied cycle</th><td class='num'>63.8 s</td></tr><tr><th>implied rate</th><td class='num'>56.4/h</td></tr><tr><th>implied duty cycle</th><td class='num'>20.1%</td></tr></table></div><div class='rd no'><h4>odd laps are noise &mdash; <strong>rejected</strong></h4><table class='kv'><tr><th>events counted</th><td class='num'>7</td></tr><tr><th>mean event</th><td class='num'>51.0 s</td></tr><tr><th>median event</th><td class='num'>45.4 s</td></tr><tr><th>event spread (CV)</th><td class='num'>0.227</td></tr><tr><th>gap spread (CV)</th><td class='num'>1.060</td></tr><tr><th>implied cycle</th><td class='num'>63.8 s</td></tr><tr><th>implied rate</th><td class='num'>56.4/h</td></tr><tr><th>implied duty cycle</th><td class='num'>79.9%</td></tr></table></div></div>
+<p>The tie is broken on a property of the railway rather than a preference.
+<strong>Headway is scheduled and event duration is not.</strong> Trains are
+dispatched to a timetable, so the gaps between them should cluster; how long a
+given train sounds loud depends on its speed, its length, which of four tracks
+it is on and where the observer is standing, so the events should scatter. The
+reading whose <em>quiet</em> intervals cluster more tightly is the reading in
+which the quiet intervals are really quiet intervals.</p>
+<p>The two readings differ by a factor of <strong>4.7&times;</strong> in
+exactly that respect, which is not a marginal call. Under the chosen reading
+the gaps between trains have a coefficient of variation of 0.227 and the events
+scatter at 1.060; under the rejected reading those two numbers swap over, which
+would mean the railway runs to no timetable and every train sounds loud for
+almost exactly the same length of time.</p>
+<p class="note"><strong>One event does not fit, and it is not being hidden.
+</strong> Lap 2 is 41.09 s, against 18.63 s for the next longest of the seven
+and a median of 7.3 s &mdash; a 5.6&times; outlier on the median. It is the
+first event of the session, which is where a settling error would sit: someone
+starting a stopwatch on a train already passing, or missing the tap that ends
+the first event and catching the one that ends the second. Both mean the
+duration spans two real intervals rather than one. The mean of the chosen
+reading is 12.8 s and the median is 7.3 s, a gap this one lap almost entirely
+accounts for, which is why the median is quoted beside the mean everywhere it
+matters. The lap was <em>not</em> dropped and the reading was <em>not</em>
+re-chosen to make it go away.</p>
+</section>
+<section class='card'><h2>The audio was analysed without reference to the stopwatch, and it refutes the reading that was rejected</h2><svg viewBox='0 0 1080 210' width='100%' role='img' class='envsvg' data-kind='sweep' aria-label='duty cycle against threshold'><line x1='46' y1='176.0' x2='856.0' y2='176.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='179.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>0%</text><line x1='46' y1='135.5' x2='856.0' y2='135.5' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='138.5' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>22%</text><line x1='46' y1='95.0' x2='856.0' y2='95.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='98.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>45%</text><line x1='46' y1='54.5' x2='856.0' y2='54.5' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='57.5' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>67%</text><line x1='46' y1='14.0' x2='856.0' y2='14.0' stroke='var(--cp-border)' stroke-width='1'/><text x='40' y='17.0' font-size='10' text-anchor='end' fill='var(--cp-text-muted)'>89%</text><line x1='46' y1='31.4' x2='856.0' y2='31.4' stroke='var(--cp-danger)' stroke-width='2' stroke-dasharray='6 4'/><text x='864.0' y='35.4' font-size='11' fill='var(--cp-danger)'>the rejected reading needs 80%</text><line x1='46' y1='96.2' x2='856.0' y2='96.2' stroke='var(--cp-success)' stroke-width='2'/><text x='864.0' y='100.2' font-size='11' fill='var(--cp-success)'>measured ceiling 44%</text><polyline points='46.0,96.2 136.0,121.0 226.0,135.8 316.0,148.3 496.0,167.9 676.0,175.3 856.0,176.0' fill='none' stroke='var(--cp-accent)' stroke-width='1.6'/><line x1='864' y1='138.0' x2='886' y2='138.0' stroke='var(--cp-accent)' stroke-width='1.6'/><text x='892' y='142.0' font-size='10' fill='var(--cp-text-muted)'>canyon-buildings</text><polyline points='46.0,124.6 136.0,151.7 226.0,167.3 316.0,173.3 496.0,176.0 676.0,176.0 856.0,176.0' fill='none' stroke='var(--cp-accent)' stroke-width='1.6' stroke-dasharray='4 3'/><line x1='864' y1='153.0' x2='886' y2='153.0' stroke='var(--cp-accent)' stroke-width='1.6' stroke-dasharray='4 3'/><text x='892' y='157.0' font-size='10' fill='var(--cp-text-muted)'>canyon-buildings2</text><text x='46.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>3</text><text x='136.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>4</text><text x='226.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>5</text><text x='316.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>6</text><text x='496.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>8</text><text x='676.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>10</text><text x='856.0' y='194' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>12</text><text x='451.0' y='207' font-size='10' text-anchor='middle' fill='var(--cp-text-muted)'>detection threshold, dB above the clip's own median</text></svg>
+<p>The two instruments are independent: different day, different place,
+different mechanism, and the audio detector was written and run before the
+stopwatch file was parsed. So the audio can be asked whether the rejected
+reading is even possible.</p>
+<p>The rejected reading requires this corridor to be under train noise about
+<strong>80%</strong> of the time, with each event lasting about
+<strong>51 s</strong>. In 108.4 s of recording the longest sustained level
+excursion of any kind is <strong>10.1 s</strong>, and the duty cycle never
+exceeds <strong>44%</strong> at any detection threshold tested &mdash;
+including thresholds loose enough to be catching footsteps.</p>
+<div class="tw"><table><thead><tr><th>&nbsp;</th>
+<th>rejected reading</th><th>chosen reading</th><th>what the audio shows</th>
+</tr></thead><tbody>
+<tr><th>duty cycle</th><td class='num'>79.9%</td><td class='num'>20.1%</td>
+<td class='num'>ceiling 44.1%</td></tr>
+<tr><th>typical event</th><td class='num'>51.0 s</td><td class='num'>7.3 s</td>
+<td class='num'>longest 10.1 s</td></tr>
+</tbody></table></div>
+<p class="note"><strong>This refutes one reading. It does not confirm the
+other.</strong> The same sweep runs from 44% down to zero as the threshold
+tightens, so the duty figure is threshold-dependent and only its
+<em>ceiling</em> is load-bearing. A ceiling can kill a claim above it and can
+say nothing about a claim below it.</p>
+</section>
+<section class='card'><h2>The rate agrees with the published timetable, within a wide interval</h2>
+<p>The chosen reading counts <strong>7</strong> events in 446.4 s, which is
+<strong>56.4</strong> an hour. The MTA's own schedule for the same weekday
+window puts <strong>8</strong> trains across the bridge, or
+<strong>57.7</strong> an hour.</p>
+<p>Seven events is a small sample. The 95% interval on a Poisson count of
+seven runs from <strong>13.8</strong> to <strong>99.0</strong> an hour, and
+the scheduled rate sits inside it. Seven events is a small sample and the interval is correspondingly wide. This rules out gross error - it does not establish agreement to a few per cent.</p>
+<p class="note">This is the only figure on the page that touches an external
+source, and the direction of the check matters: it was possible for the
+observed rate to land <em>outside</em> the interval, which would have said the
+stopwatch reading was wrong. It did not. That is weak positive evidence, and
+it is reported as weak.</p>
+</section>
+<section class='card'><h2>What it looks like</h2><p class='sub'>None of these is a measurement. They are what the corridor looked like on the two afternoons the recordings were made.</p><div class='gal'><figure><img src='web/20260803_190055.jpg' alt='20260803_190055.jpg' loading='lazy'><figcaption>Under the bridge, evening<br><span class='mono'>20260803_190055.jpg</span></figcaption></figure><figure><img src='web/20260803_190152.jpg' alt='20260803_190152.jpg' loading='lazy'><figcaption>Under the bridge, evening<br><span class='mono'>20260803_190152.jpg</span></figcaption></figure><figure><img src='web/canyon-buildings-20260804_115319-poster.jpg' alt='canyon-buildings-20260804_115319.mp4' loading='lazy'><figcaption>poster frame &mdash; The canyon, walking<br><span class='mono'>canyon-buildings-20260804_115319.mp4</span></figcaption></figure><figure><img src='web/canyon-buildings2-20260804_115505-poster.jpg' alt='canyon-buildings2-20260804_115505.mp4' loading='lazy'><figcaption>poster frame &mdash; The canyon, continued<br><span class='mono'>canyon-buildings2-20260804_115505.mp4</span></figcaption></figure><figure><img src='web/clock-screenshot_20260804_130719_Clock.jpg' alt='clock-screenshot_20260804_130719_Clock.jpg' loading='lazy'><figcaption>Stopwatch, paused<br><span class='mono'>clock-screenshot_20260804_130719_Clock.jpg</span></figcaption></figure><figure><img src='web/grassy-knoll-20260804_115626-poster.jpg' alt='grassy-knoll-20260804_115626.mp4' loading='lazy'><figcaption>poster frame &mdash; Grassy knoll, south of the bridge<br><span class='mono'>grassy-knoll-20260804_115626.mp4</span></figcaption></figure><figure><img src='web/grassy-knoll-20260804_120225.jpg' alt='grassy-knoll-20260804_120225.jpg' loading='lazy'><figcaption>Grassy knoll, south of the bridge<br><span class='mono'>grassy-knoll-20260804_120225.jpg</span></figcaption></figure></div>
+<p>Two of these are worth more than the rest. The poster frame of the first
+canyon clip puts a <strong>John St / DUMBO Historic District</strong> street
+sign directly under the bridge deck, which fixes the location of that
+recording against a street name rather than against a coordinate the reader
+has to trust. The bridge underside fills the top third of the frame.</p>
+<p>The lawn frame is the only image in this repository that shows the
+<strong>receptor rather than the source</strong>. There are three separate
+walking groups in it and one of them has a pushchair. That is not a
+measurement and it is not a count &mdash; a single frame cannot be either
+&mdash; but the population this investigation has been modelling from
+turnstile arithmetic is visible in it, doing the thing the model says it does,
+under the deck.</p>
+<p class="note">People appear in two of these frames at a distance, in a public
+park, incidentally and unidentifiably. The programme's own ethics position in
+<a href="../read/field-capture-protocol.html">Document 5</a> is that this work
+argues for the interests of the people it would incidentally record, so it
+carries that burden voluntarily: no frame here was selected for a person in
+it, no face is resolvable at the published size, and the audio published
+alongside carries no intelligible speech.</p>
+</section>
+<section class='card'><h2>One thing that was asked for and is not separately here</h2>
+<p>The capture list requested an <strong>audio recording at Adams and John
+Street</strong> as a distinct file. No audio-only file exists in the material
+that was handed over. That material appears instead to be
+<em>inside</em> the canyon videos: both were shot at 40.7044, &minus;73.9885,
+which is the John Street block, and the poster frame of the first one shows
+the John Street sign directly. Their audio tracks are extracted and published
+above as <span class="mono">.m4a</span> files, so the recording exists &mdash;
+it is simply not a separate capture.</p>
+<p>This is recorded rather than quietly reconciled because the difference
+matters for what comes next. A separate audio-only capture would have been
+made with the phone held still and pointed; a video's audio track was made by
+someone walking and turning. The second is worse for anything spectral and no
+worse for anything temporal, which is all that is claimed from it here.</p>
+</section>
+<section class='card'><h2>Measured against the protocol this repository wrote for itself</h2>
+<div class="tw"><table><thead><tr><th>capture</th><th>what Document 5 asked
+for</th><th>status</th></tr></thead><tbody>
+<tr><td>C1 &mdash; spectrum</td><td>Third-octave spectrum of a pass-by, to
+replace the invented spectrum in the acoustic demonstration</td>
+<td class="st no"><strong>Not satisfied.</strong> No windscreen, unknown
+microphone response, AGC active. A spectrum from this material would be
+confidently wrong.</td></tr>
+<tr><td>C2 &mdash; envelope</td><td>A measured pass-by envelope, to open the
+closed loop in section 1.7</td>
+<td class="st part"><strong>Partly, and not usefully.</strong> Four excursion
+envelopes were recovered, but AGC deforms exactly the rise and decay that
+section 1.7 assumes a shape for. The durations are usable; the shape is
+not.</td></tr>
+<tr><td>C3 &mdash; headway</td><td>Ninety minutes of event timing, needing no
+calibration at all</td>
+<td class="st part"><strong>Partly.</strong> 446.4 s of stopwatch and 108 s of
+audio against the ninety minutes asked for. It is the capture this material
+comes closest to satisfying, and it is the one that needed the least
+equipment.</td></tr>
+<tr><td>C4 &mdash; attribution</td><td>Acoustic events matched to identified
+trains via GTFS-realtime</td>
+<td class="st no"><strong>Not attempted.</strong> Requires a live feed poller
+running beside the recorder.</td></tr>
+<tr><td>C5 &mdash; photogrammetry</td><td>Structure-from-motion imagery of the
+under-deck</td>
+<td class="st no"><strong>Not satisfied.</strong> Four stills and two walking
+videos are not a photogrammetric set.</td></tr>
+</tbody></table></div>
+<p class="note">Document 5 was written before any of this existed and
+specified five captures. This session satisfies none of them completely and
+two of them partly. That is the honest score, and it is worth stating plainly
+because the temptation with first field data is to let its existence stand in
+for its adequacy.</p>
+</section>
+<section class='card'><h2>Where this is likely to be wrong</h2>
+<ol class="wrong">
+<li><strong>The pairing inference is the load-bearing assumption and it is an
+inference.</strong> Everything the stopwatch contributes rests on deciding
+which laps were noise. The tie-break is principled and the ratio is 4.7&times;
+&mdash; but it is one observer, fourteen laps, and no independent record of
+what the first tap meant. If the pairing is wrong, the duty cycle, the event
+durations and the rate are all wrong together, and the audio corroboration
+only rules out the alternative on duty cycle, not on everything.</li>
+<li><strong>The observer knew what the study is about.</strong> The same
+person who has been writing about train noise for weeks decided, in real time,
+when train noise started and stopped. Expectancy effects are not controlled
+for and cannot be recovered from the file.</li>
+<li><strong>A level excursion is not a train.</strong> The detector responds
+to trucks, to the observer's own footsteps and clothing, to wind, and to
+anything else loud. On a corridor carrying heavy road traffic under the same
+deck, some of the four excursions may not be trains at all.</li>
+<li><strong>Four excursions is not a sample.</strong> Every audio statistic
+here rests on four events in under two minutes of usable recording. Almost
+nothing survives that being an unrepresentative two minutes.</li>
+<li><strong>The exclusion was decided by three indicators over three
+clips.</strong> That cannot carry a p-value and none is claimed. With a
+different third clip the unanimity might not hold. The defence is that the
+consequence does not depend on the cause being resolved &mdash; a clip that
+looks like that is not usable either way.</li>
+<li><strong>The rate agreement is weak and could easily be coincidence.</strong>
+A 95% interval running from 13.8 to 99.0 an hour would have accepted a very
+large range of observed rates.</li>
+<li><strong>The schedule is not the service.</strong> Every comparison with the
+timetable inherits the known problems of GTFS static: it excludes non-revenue
+moves, it is a plan rather than an observation, and its departure times are
+quantised to the half minute.</li>
+<li><strong>The geometry rests on a fitted axis and digitised anchor
+positions.</strong> The MTA memos give locations as descriptions, not
+coordinates. The offsets in the geometry table are good to tens of metres,
+not to metres.</li>
+<li><strong>One consumer handset, two days, one observer, one weather
+condition.</strong> Nothing here establishes anything about a different
+season, a different time of day, wet rail, or a different phone.</li>
+<li><strong>The duty ceiling is a ceiling because of how the sweep was
+defined.</strong> If a real excursion sits below the loosest threshold tested,
+the ceiling is too low and the refutation weakens. The sweep was run to a
+threshold loose enough to catch footsteps specifically to make this
+unlikely, which is an argument and not a proof.</li>
+</ol>
+</section>
+
+<section class="card">
+<h2>Reproducing this</h2>
+<p>Two scripts, both in <span class="mono">pedestrian-site-visits/</span>.
+<span class="mono">build_media_data.py</span> decodes the audio, detects the
+excursions, runs the obstruction and detectability tests, places every capture
+against the alignment, parses the stopwatch and writes
+<span class="mono">media-data.json</span>.
+<span class="mono">build_media_page.py</span> renders this page from that JSON
+and computes nothing.</p>
+<p>The master files are not in the repository &mdash; one of them is over
+GitHub's hard file size limit &mdash; so the first script will not run from a
+clean clone without them. Every master is fingerprinted by SHA-256 in the
+inventory above, so a master supplied later can be checked against the one
+actually analysed. Everything the page displays is in the committed JSON.</p>
+</section>
+</div>
+</body>
+</html>

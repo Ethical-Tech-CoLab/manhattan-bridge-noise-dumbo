@@ -131,6 +131,10 @@ pre code { background: none; border: 0; padding: 0; }
 }
 .mh-bar .mh-nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
 .mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+/* Divides the investigation from the work about the work. Decorative, so it
+   is aria-hidden in the markup and carries no text. */
+.mh-bar .mh-nav .mh-sep { width: 1px; height: 17px; flex: none; margin: 0 7px;
+  background: var(--cp-border-strong); border-radius: 1px; }
 
 .wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
 
@@ -388,7 +392,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 </style>
 </head>
 <body>
-<div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../read/readme.html">README</a><a href="../read/idea-concept.html">1. Concept</a><a href="../read/precedent-and-materials.html">2. Precedent</a><a href="../read/williamsburg-comparator.html">3. Comparator</a><a href="../read/visual-model-framework.html">4. Visual model</a><a href="../read/field-capture-protocol.html">5. Field capture</a><a href="../read/community-evidence-audit.html">6. Community</a><a href="../read/data-collection.html">7. Data</a><a href="../read/usage.html">8. Usage</a><a href="../read/procurement.html" class="on">9. Procurement</a><a href="../index.html#demos">Demos</a></nav></div></div>
+<div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../read/readme.html">README</a><a href="../read/idea-concept.html">1. Concept</a><a href="../read/precedent-and-materials.html">2. Precedent</a><a href="../read/williamsburg-comparator.html">3. Comparator</a><a href="../read/visual-model-framework.html">4. Visual model</a><a href="../read/field-capture-protocol.html">5. Field capture</a><a href="../read/community-evidence-audit.html">6. Community</a><a href="../read/data-collection.html">7. Data</a><a href="../read/pedestrian-site-visits.html">10. Field media</a><a href="../index.html#demos">Demos</a><span class="mh-sep" aria-hidden="true"></span><a href="../read/usage.html">8. AI Usage</a><a href="../read/procurement.html" class="on">9. Procurement</a></nav></div></div>
 <div class="wrap">
 <div class="doclayout">
 <aside class="toc"><div class="h">On this page</div><a href="#the-claim-this-document-exists-to-refuse">The claim this document exists to refuse</a><a href="#three-instruments-deliberately-never-averaged">Three instruments, deliberately never averaged</a><a href="#instrument-b-what-the-delivered-scope-prices-at">Instrument B: what the delivered scope prices at</a><a class="l3" href="#the-rate-source">The rate source</a><a class="l3" href="#the-rate-ladder">The rate ladder</a><a class="l3" href="#the-scope-as-work-packages">The scope, as work packages</a><a class="l3" href="#the-result">The result</a><a class="l3" href="#what-moves-it">What moves it</a><a href="#what-was-not-delivered">What was not delivered</a><a href="#instrument-a-what-buyers-actually-paid">Instrument A: what buyers actually paid</a><a href="#the-disagreement-quantified-and-unreconciled">The disagreement, quantified and unreconciled</a><a href="#the-transparency-asymmetry">The transparency asymmetry</a><a href="#twelve-thousand-project-managers-and-seven-acoustical-engineers">Twelve thousand project managers and seven acoustical engineers</a><a href="#the-human-term">The human term</a><a href="#where-this-document-is-likely-to-be-wrong">Where this document is likely to be wrong</a><a href="#the-question-this-opens">The question this opens</a><a href="#reproducing-this">Reproducing this</a></aside>
@@ -1136,7 +1140,7 @@ and are deduplicated on record id - a naive three-band probe reports 12,916
 project managers where the deduplicated sweep finds 12,913.</p>
 <p>One more, in <code>fetch_awards.py</code>: <code>curl.exe -d $body</code> in PowerShell mangles JSON
 bodies and returns a parse error from the API. Use a real HTTP client.</p>
-<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/README.md">Source on GitHub</a> &middot; Built from <code>885966a</code> on 2026-08-04.</p>
+<p class="foot"><a href="../index.html">&larr; Back to the research overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/README.md">Source on GitHub</a> &middot; Built from <code>628e657</code> on 2026-08-04.</p>
 </main>
 </div>
 

@@ -85,7 +85,12 @@ DOCS = [
      "How many trains, how many people, and for how long? Runnable scripts "
      "against MTA and NYC open data - and the traps that each silently produce a "
      "plausible wrong number."),
-    ("usage/README.md", "usage", "8. Usage and cost", "8. Usage",
+    ("pedestrian-site-visits/README.md", "pedestrian-site-visits",
+     "10. Field media", "10. Field media",
+     "The first material here that was not retrieved from somebody else: two "
+     "days of phone video, audio and stopwatch laps under the bridge - and a "
+     "careful account of why none of it is a decibel."),
+    ("usage/README.md", "usage", "8. AI usage and cost", "8. AI Usage",
      "What did producing this repository consume? A per-request ledger read "
      "from the tool's own store, set against the argument that inference is "
      "becoming metered infrastructure - and what follows from measuring it."),
@@ -96,6 +101,12 @@ DOCS = [
      "by side and never averaged - and the disagreement between them is the "
      "result."),
 ]
+
+# Documents about the work rather than about the bridge. They are research and
+# they are linked from every page - but they are grouped apart in the nav and
+# placed last on the index, because someone arriving here is looking for the
+# noise problem, not for what it cost to study it.
+BEHIND_THE_SCENES = {"usage", "procurement"}
 
 # (path, kind, title, what it demonstrates, what to look at first)
 ARTIFACTS = [
@@ -139,6 +150,14 @@ ARTIFACTS = [
      "The first panel: the same itinerary started ninety seconds apart gets a "
      "different dose. Then the rejected-propagation panel, which is a negative "
      "result and the most important thing on the page."),
+    ("pedestrian-site-visits/media.html", "Field", "Field media, first capture",
+     "Two days of phone video, audio and stopwatch laps under the bridge, "
+     "analysed as relative envelopes rather than levels: level traces with "
+     "detected events, a duty-cycle sweep, the stopwatch laps, and where each "
+     "capture stood against every point anyone has ever measured.",
+     "The second card, which refuses to call any of this a decibel. Then the "
+     "obstruction finding - the between-clip test flagged the one recording "
+     "the operator later said he may have covered, before he said it."),
     ("usage/usage-dashboard.html", "Meta", "Usage and cost dashboard",
      "What this investigation cost to produce, from the tool's own per-request "
      "log: every model call priced by channel, time measured four ways that "
@@ -249,6 +268,17 @@ DATASETS = [
 # different marker, because a full tick beside "the week has not been run"
 # would overstate it.
 DONE = [
+    ("Method 38 - the first captured field material", 38,
+     "One afternoon, a phone already owned",
+     "Two days of video, audio, stopwatch laps and stills under the bridge - "
+     "<b>the first material in this repository that was captured rather than "
+     "retrieved</b>. The recording chain has an unknown gain, so nothing in it "
+     "is reported as a decibel; what survives is a <b>duty-cycle ceiling of "
+     "44%</b> that refutes one reading of the stopwatch without confirming the "
+     "other, and a rate that agrees with the timetable inside an interval wide "
+     "enough to say so plainly. <b>Its most useful output was a defect</b>: a "
+     "between-clip test flagged the one recording the operator later said he "
+     "may have covered, before he said it."),
     ("Method 33 - the cost of the study itself", 33,
      "One SQLite read, free",
      "A per-request ledger of what producing this repository consumed, priced "
@@ -305,11 +335,13 @@ DONE = [
      "done</b>, so this is a mark on the code and not on the result - which is "
      "why the census still appears in the queue below."),
     ("The field capture protocol", "partial",
-     "Written; nothing has been captured",
+     "Written, and now partly attempted",
      "A complete protocol for a consumer phone targeting the four things the "
-     "MTA's five-number table discarded. <b>Marked for the protocol being "
-     "finished, not for anyone having stood in the park.</b> Captures C1-C5 "
-     "remain in the queue below."),
+     "MTA's five-number table discarded. <b>One session has now been run "
+     "against it</b> and scored honestly: C1 not satisfied, C2 partly and not "
+     "usefully, C3 partly, C4 and C5 not attempted. The gap between what the "
+     "protocol asked for and what a first outing produced is itself the "
+     "useful part."),
     ("Method 37 - price the same deliverable against the market", 37,
      "Two free federal APIs, no key",
      "What this would have cost to buy, from three instruments reported side "
@@ -364,9 +396,22 @@ TODO = [
     ("field", "Captures C1 to C5 - the phone protocol",
      "A Galaxy S23+, public ground, no permission and no funding",
      "The only proposal in the programme that requires nothing the programme "
-     "does not already have. <b>C2, the temporal envelope, is the highest-value "
-     "item</b>: it is the one measurement that could establish that this "
-     "repository's own derived result is wrong."),
+     "does not already have. <b>One outing has been made</b> and it satisfied "
+     "none of C1, C4 or C5 and only part of C2 and C3. <b>C2, the temporal "
+     "envelope, remains the highest-value item</b>: it is the one measurement "
+     "that could establish that this repository's own derived result is wrong, "
+     "and the first attempt showed why it needs a windscreen and a capture "
+     "path with the compressor disabled."),
+    ("cheap", "Q56 - how much does the phone's compressor bias a duty cycle?",
+     "An afternoon on a bench, no equipment beyond the phone",
+     "The 44% duty ceiling is the strongest result the field material produced "
+     "and it was computed from audio that passed through automatic gain "
+     "control. <b>The interaction has a sign</b>: a compressor shrinks "
+     "excursions above a clip's own median, so the ceiling is biased low and "
+     "may be too low to carry the refutation resting on it. Play a signal of "
+     "known duty cycle through a speaker, record it on the same handset, and "
+     "the known input gives the answer. <b>One of the three outcomes withdraws "
+     "a number this repository published.</b>"),
     ("review", "Red-team the three newest results",
      "Reading and arithmetic",
      "Issues <a href=\"" + ISSUES + "26\">#26</a> (is the cohort model's "
@@ -652,6 +697,10 @@ pre code { background: none; border: 0; padding: 0; }
 }
 .mh-bar .mh-nav a:hover { background: var(--cp-accent-soft); color: var(--cp-accent); text-decoration: none; }
 .mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+/* Divides the investigation from the work about the work. Decorative, so it
+   is aria-hidden in the markup and carries no text. */
+.mh-bar .mh-nav .mh-sep { width: 1px; height: 17px; flex: none; margin: 0 7px;
+  background: var(--cp-border-strong); border-radius: 1px; }
 
 .wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
 
@@ -976,9 +1025,16 @@ LOGO = (
 def bar(active, depth):
     """The masthead, identical on every page of the site.
 
-    `active` is a document slug, "home", or "demos" for the hand-written
+    `active` is a document slug, "home", or "demos" for the interactive
     artifacts, which are not documents but still need to report where you are.
     `depth` is 1 for anything in a subdirectory.
+
+    The nav is in two groups, separated by a rule. The first is the
+    investigation: the README, the numbered research documents, and the
+    demonstrations they produced. The second is the work ABOUT the work - what
+    it cost to make and what it would have cost to buy - which is real research
+    and is deliberately not in the same group, because a reader arriving at
+    this site is looking for the bridge, not for the method.
 
     The same string is emitted for generated pages and injected into
     hand-written ones by ensure_masthead(), so there is exactly one definition
@@ -987,12 +1043,24 @@ def bar(active, depth):
     used .bar for something else entirely.
     """
     up = "../" if depth else ""
-    items = []
+
+    def link(href, label, on):
+        return '<a href="%s"%s>%s</a>' % (href, ' class="on"' if on else "",
+                                          label)
+
+    main, meta = [], []
     for _, slug, _, label, _ in DOCS:
-        cls = ' class="on"' if active == slug else ""
-        items.append('<a href="%sread/%s.html"%s>%s</a>' % (up, slug, cls, label))
-    items.append('<a href="%sindex.html#demos"%s>Demos</a>'
-                 % (up, ' class="on"' if active == "demos" else ""))
+        (meta if slug in BEHIND_THE_SCENES else main).append(
+            link("%sread/%s.html" % (up, slug), label, active == slug))
+
+    # Demos belongs with the investigation and ahead of the meta group. It is
+    # a jump to the section of the index that lists them, because the demos
+    # are seven separate files and a nav pill cannot point at seven things.
+    main.append(link("%sindex.html#demos" % up, "Demos", active == "demos"))
+
+    items = main
+    if meta:
+        items = main + ['<span class="mh-sep" aria-hidden="true"></span>'] + meta
     home = ' aria-current="page"' if active == "home" else ""
     return (
         '<div class="mh-bar"><div class="mh-in">'
@@ -1000,6 +1068,7 @@ def bar(active, depth):
         '<span class="mh-wm">Silencing the Span</span></a>'
         '<nav class="mh-nav">%s</nav></div></div>'
         % (up, home, LOGO, "".join(items)))
+
 
 
 def shell(title, desc, body, active, depth):
@@ -1256,6 +1325,11 @@ def build_index(stats):
     A('</div></div>')
 
     # -- demonstrations ----------------------------------------------------
+    # Only the demonstrations. The two "Meta" dashboards are about the work
+    # rather than about the bridge, and listing them here is what made the
+    # demos section and the usage section look like the same thing.
+    demos = [a for a in ARTIFACTS if a[1] != "Meta"]
+    metas = [a for a in ARTIFACTS if a[1] == "Meta"]
     A('<div class="card" id="demos">')
     A('<h2>Interactive demonstrations</h2>')
     A('<p>Each is a <strong>single self-contained HTML file</strong>: no build '
@@ -1263,7 +1337,7 @@ def build_index(stats):
       'it here, or download it and double-click. Each applies the same '
       'provenance discipline to a different medium.</p>')
     A('<div class="tiles">')
-    for path, kind, title, what, look in ARTIFACTS:
+    for path, kind, title, what, look in demos:
         A('<a class="tile" href="%s">'
           '<div class="t">%s <span class="badge acc">%s</span></div>'
           '<div class="d">%s</div>'
@@ -1276,7 +1350,7 @@ def build_index(stats):
       'itineraries are <strong>invented</strong>. These are instruments for '
       'reasoning about a problem, not evidence about it &mdash; and each says '
       'so in its own interface rather than in a footnote somewhere else.</div>'
-      % spell(len(ARTIFACTS)))
+      % spell(len(demos)))
     A('</div>')
 
     # -- status board ------------------------------------------------------
@@ -1590,6 +1664,44 @@ def build_index(stats):
     A('</ol>')
     A('</div>')
 
+    # -- behind the scenes -------------------------------------------------
+    # Placed here deliberately, near the foot. This is real research and it is
+    # linked from every page in the header, but a reader arriving at this site
+    # came for the bridge. Putting the cost of the study above the study
+    # inverts that, and previously these two dashboards sat in the demos
+    # section, where they read as if they were part of the investigation's
+    # findings rather than an account of how it was made.
+    A('<div class="card" id="behind">')
+    A('<h2>Behind the scenes</h2>')
+    A('<p class="lede">Two pieces of work <strong>about</strong> this '
+      'investigation rather than about the bridge: what it cost to produce, '
+      'measured from the tool\'s own per-request log, and what the same '
+      'deliverable would have cost to buy from a consultancy. Both are held '
+      'to the same evidence standard as everything else here, and both '
+      'withdraw a headline claim on their own front page.</p>')
+    A('<div class="tiles">')
+    for src, slug, title, _label, desc in DOCS:
+        if slug not in BEHIND_THE_SCENES:
+            continue
+        A('<a class="tile" href="read/%s.html">'
+          '<div class="t">%s <span class="badge acc">Document</span></div>'
+          '<div class="d">%s</div></a>' % (slug, title, desc))
+    for path, kind, title, what, look in metas:
+        A('<a class="tile" href="%s">'
+          '<div class="t">%s <span class="badge acc">%s</span></div>'
+          '<div class="d">%s</div>'
+          '<div class="look">%s</div></a>'
+          % (path, title, kind, what, look))
+    A('</div>')
+    A('<div class="note">Why this is published at all: the cost of producing '
+      'research with these tools is <strong>routinely asserted and almost '
+      'never measured</strong>. Both pages exist so that the assertion here '
+      'can be checked, including the parts that come out unflattering '
+      '&mdash; the human direction time alone costs about '
+      '<strong>eight and a half times</strong> the entire metered inference '
+      'bill, which is the opposite of the usual claim.</div>')
+    A('</div>')
+
     # -- help --------------------------------------------------------------
     A('<div class="card" id="help">')
     A('<h2>How to help</h2>')
@@ -1704,11 +1816,32 @@ MASTHEAD_CSS = """
 .mh-bar .mh-nav a:hover { background: var(--cp-accent-soft);
   color: var(--cp-accent); text-decoration: none; }
 .mh-bar .mh-nav a.on { background: var(--cp-accent); color: var(--cp-accent-fg); }
+.mh-bar .mh-nav .mh-sep { width: 1px; height: 17px; flex: none; margin: 0 7px;
+  background: var(--cp-border-strong); border-radius: 1px; }
 @media (max-width: 560px) { .mh-bar .mh-home .mh-wm { display: none; } }
 """
 
 MAST_OPEN = "<!--MASTHEAD-->"
 MAST_CLOSE = "<!--/MASTHEAD-->"
+
+
+def artifact_nav_state(rel):
+    """Which nav pill should light up when standing on a hand-written page.
+
+    Not every hand-written page is a demonstration. The usage and procurement
+    dashboards belong to their own documents, and marking them "demos" told a
+    reader standing on the AI usage dashboard that they were looking at the
+    interactive demos - which is how the meta pages came to appear to have
+    taken the demos' place in the header.
+
+    Derived from the artifact's own directory, so adding a dashboard under an
+    existing document picks up the right state without another edit here.
+    """
+    d = os.path.dirname(rel).replace("\\", "/").split("/")[0]
+    for _src, slug, _t, _l, _desc in DOCS:
+        if slug in BEHIND_THE_SCENES and d == slug:
+            return slug
+    return "demos"
 
 
 def ensure_masthead(rel):
@@ -1731,7 +1864,7 @@ def ensure_masthead(rel):
         text = fh.read()
     before = text
 
-    html = MAST_OPEN + bar("demos", 1) + MAST_CLOSE
+    html = MAST_OPEN + bar(artifact_nav_state(rel), 1) + MAST_CLOSE
     css = MAST_OPEN + "<style>" + MASTHEAD_CSS + "</style>" + MAST_CLOSE
 
     # A page assembled by copying another page's <head> arrives carrying the

@@ -1,0 +1,31 @@
+# The master captures are NOT committed, and the reason is a hard limit rather
+# than a preference: the largest is 114 MB and GitHub rejects any file over
+# 100 MB. Even under the limit, 236 MB of phone video in a research repository
+# would dominate every clone of it forever.
+#
+# What is committed instead:
+#   web/            derivatives - full-length mono audio, stills, posters
+#   media-data.json every number extracted from the masters
+#   *.txt           the stopwatch export, which is the raw data
+#
+# Every master is identified in media-data.json by SHA-256, so anyone holding
+# a copy can prove it is the same file. AUDIO IS COMMITTED IN FULL - timing is
+# the only acoustic quantity this work claims, and timing is in the audio.
+# Video is where the bytes are and video is what is dropped.
+
+*.mp4
+*.mov
+
+# Camera originals. The 1600 px derivatives in web/ are what the page uses.
+# The leading slash matters: without it these patterns match at ANY depth and
+# silently exclude the derivatives in web/ as well, which produces a page full
+# of broken images and a build that reports success.
+/20260803_*.jpg
+/grassy-knoll-*.jpg
+/clock-screenshot_*.jpg
+
+_*.py
+_*.js
+_*.html
+_*.png
+__pycache__/
