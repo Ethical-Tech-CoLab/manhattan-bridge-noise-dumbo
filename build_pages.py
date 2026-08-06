@@ -96,7 +96,7 @@ DOCS = [
      "becoming metered infrastructure - and what follows from measuring it."),
     ("procurement/README.md", "procurement", "9. What this would have cost to buy",
      "9. Procurement",
-     "What would the same deliverable have cost from Accenture, EY or the "
+     "What would the same deliverable have cost from a large schedule holder or the "
      "cheapest decile of the same schedule? Three instruments, reported side "
      "by side and never averaged - and the disagreement between them is the "
      "result."),
@@ -460,6 +460,21 @@ TODO = [
      "The tooling is built and verified. It is now the only route to the "
      "coincidence distribution, since the schedule feed was shown to be "
      "quantised to 30 s and unable to answer it."),
+    ("field", "Methods 39, 40 and 41 - the instrumented session",
+     "One afternoon plus one quiet hour, with gear already owned",
+     "Three questions that need no calibration, because all three are ratios "
+     "or timings and an unknown microphone sensitivity cancels out of both. "
+     "<b>Direction and speed</b> from two timecode-synchronised recorders "
+     "separated 50&ndash;80 m along the track axis, read off the order of the "
+     "two level peaks. <b>The decay tail</b> &mdash; the operator's "
+     "&ldquo;noise time on clock versus floor time&rdquo; &mdash; which no "
+     "instrument here has ever measured, because automatic gain control "
+     "pushes gain up as a sound fades and so flattens exactly the thing "
+     "being measured. <b>Simultaneous crossings</b>, which the published "
+     "schedule cannot answer at all: every departure in the feed falls on an "
+     "exact :00 or :30 second, so the window in which two trains merge "
+     "acoustically is empty by construction. The session card is "
+     "<a href=\"pedestrian-site-visits/FIELD-KIT.md\">FIELD-KIT.md</a>."),
     ("field", "Extend the walk: York Street to Fulton Ferry along the water",
      "One afternoon on foot, the phone already owned",
      "The drawn walk currently stops at the water's edge. <b>That is not the "

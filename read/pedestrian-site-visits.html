@@ -395,15 +395,16 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../index.html">Overview</a><a href="../index.html#demos">Demos</a><a href="../research.html" class="on">Research</a></nav></div></div>
 <div class="wrap">
 <div class="doclayout">
-<aside class="toc"><div class="h">On this page</div><a href="#0-what-was-corrected-in-v11-and-why-it-matters-more-than-what-was-kept">0. What was corrected in v1.1, and why it matters more than what was kept</a><a href="#1-the-refusal-first">1. The refusal, first</a><a href="#2-what-was-captured">2. What was captured</a><a class="l3" href="#the-gitignore-nearly-shipped-a-page-of-broken-images">The .gitignore nearly shipped a page of broken images</a><a href="#3-where-the-captures-actually-stood">3. Where the captures actually stood</a><a class="l3" href="#two-guards-that-exist-because-the-first-version-was-wrong">Two guards that exist because the first version was wrong</a><a href="#4-the-stopwatch-and-the-inference-the-whole-reading-rests-on">4. The stopwatch, and the inference the whole reading rests on</a><a class="l3" href="#the-operators-own-reading-points-the-other-way">The operator's own reading points the other way</a><a class="l3" href="#only-the-cycle-is-pairing-independent">Only the cycle is pairing-independent</a><a class="l3" href="#one-event-does-not-fit-and-it-is-not-hidden">One event does not fit and it is not hidden</a><a href="#5-the-audio-which-is-a-by-product-and-is-treated-as-one">5. The audio, which is a by-product and is treated as one</a><a class="l3" href="#the-withdrawal">The withdrawal</a><a class="l3" href="#what-survives">What survives</a><a href="#6-a-microphone-was-obstructed-and-finding-that-out-was-worth-more-than-the-clip">6. A microphone was obstructed, and finding that out was worth more than the clip</a><a class="l3" href="#the-mono-mixdown-had-to-be-undone-first">The mono mixdown had to be undone first</a><a class="l3" href="#the-first-result-was-negative-and-checking-it-found-a-blind-spot">The first result was negative, and checking it found a blind spot</a><a class="l3" href="#the-between-clip-test-on-three-indicators-that-disagree-by-design">The between-clip test, on three indicators that disagree by design</a><a href="#7-a-null-shorter-than-a-headway-is-not-a-finding">7. A null shorter than a headway is not a finding</a><a href="#8-the-rate-agrees-with-the-timetable-within-a-wide-interval">8. The rate agrees with the timetable, within a wide interval</a><a href="#81-what-was-asked-for-and-is-not-separately-here">8.1 What was asked for and is not separately here</a><a href="#82-measured-against-the-protocol-this-repository-wrote-for-itself">8.2 Measured against the protocol this repository wrote for itself</a><a href="#9-where-this-is-likely-to-be-wrong">9. Where this is likely to be wrong</a><a href="#10-what-this-changes-and-what-it-does-not">10. What this changes, and what it does not</a><a href="#11-the-question-this-opens">11. The question this opens</a><a href="#12-ethics">12. Ethics</a></aside>
+<aside class="toc"><div class="h">On this page</div><a href="#0-what-was-corrected-in-v11-and-why-it-matters-more-than-what-was-kept">0. What was corrected in v1.1, and why it matters more than what was kept</a><a href="#1-the-refusal-first">1. The refusal, first</a><a href="#2-what-was-captured">2. What was captured</a><a class="l3" href="#the-gitignore-nearly-shipped-a-page-of-broken-images">The .gitignore nearly shipped a page of broken images</a><a href="#3-where-the-captures-actually-stood">3. Where the captures actually stood</a><a class="l3" href="#two-guards-that-exist-because-the-first-version-was-wrong">Two guards that exist because the first version was wrong</a><a href="#4-the-stopwatch-and-the-inference-the-whole-reading-rests-on">4. The stopwatch, and the inference the whole reading rests on</a><a class="l3" href="#the-operators-own-reading-points-the-other-way">The operator's own reading points the other way</a><a class="l3" href="#only-the-cycle-is-pairing-independent">Only the cycle is pairing-independent</a><a class="l3" href="#one-event-does-not-fit-and-it-is-not-hidden">One event does not fit and it is not hidden</a><a href="#5-the-audio-which-is-a-by-product-and-is-treated-as-one">5. The audio, which is a by-product and is treated as one</a><a class="l3" href="#the-withdrawal">The withdrawal</a><a class="l3" href="#what-survives">What survives</a><a href="#6-a-microphone-was-obstructed-and-finding-that-out-was-worth-more-than-the-clip">6. A microphone was obstructed, and finding that out was worth more than the clip</a><a class="l3" href="#the-mono-mixdown-had-to-be-undone-first">The mono mixdown had to be undone first</a><a class="l3" href="#the-first-result-was-negative-and-checking-it-found-a-blind-spot">The first result was negative, and checking it found a blind spot</a><a class="l3" href="#the-between-clip-test-on-three-indicators-that-disagree-by-design">The between-clip test, on three indicators that disagree by design</a><a href="#7-a-null-shorter-than-a-headway-is-not-a-finding">7. A null shorter than a headway is not a finding</a><a href="#8-the-rate-agrees-with-the-timetable-within-a-wide-interval">8. The rate agrees with the timetable, within a wide interval</a><a href="#81-what-was-asked-for-and-is-not-separately-here">8.1 What was asked for and is not separately here</a><a href="#82-measured-against-the-protocol-this-repository-wrote-for-itself">8.2 Measured against the protocol this repository wrote for itself</a><a href="#9-where-this-is-likely-to-be-wrong">9. Where this is likely to be wrong</a><a href="#10-what-this-changes-and-what-it-does-not">10. What this changes, and what it does not</a><a href="#101-the-evening-stills-as-pedestrian-cohort-evidence">10.1 The evening stills as pedestrian-cohort evidence</a><a class="l3" href="#what-the-metadata-establishes">What the metadata establishes</a><a class="l3" href="#what-this-establishes-for-the-cohort-model">What this establishes for the cohort model</a><a class="l3" href="#what-this-does-not-establish">What this does not establish</a><a class="l3" href="#the-tourists-interpretation">The "tourists" interpretation</a><a class="l3" href="#relationship-to-the-cohort-model">Relationship to the cohort model</a><a class="l3" href="#privacy-and-ethics">Privacy and ethics</a><a href="#11-the-questions-this-opens">11. The questions this opens</a><a href="#12-ethics">12. Ethics</a></aside>
 <main class="doc">
-<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/README.md"><code>pedestrian-site-visits/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 5,609 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/README.md"><code>pedestrian-site-visits/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 8,251 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
 <h1 id="field-media-what-a-consumer-phone-actually-recorded-under-the-bridge">Field media: what a consumer phone actually recorded under the bridge</h1>
 <p><strong>Page:</strong> <a href="../pedestrian-site-visits/media.html"><code>media.html</code></a> &middot;
 <strong>Data:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/media-data.json"><code>media-data.json</code></a> &middot;
 <strong>Analysis:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/build_media_data.py"><code>build_media_data.py</code></a> &middot;
 <strong>Renderer:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/build_media_page.py"><code>build_media_page.py</code></a> &middot;
-<strong>Harness:</strong> <a href="../pedestrian-site-visits/verify_media.js"><code>verify_media.js</code></a></p>
+<strong>Harness:</strong> <a href="../pedestrian-site-visits/verify_media.js"><code>verify_media.js</code></a> &middot;
+<strong>Next session:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/FIELD-KIT.md"><code>FIELD-KIT.md</code></a></p>
 <p>This is the first material in this programme that was not retrieved from
 somebody else. On 3 and 4 August 2026 an observer stood under the Manhattan
 Bridge in DUMBO with a Samsung Galaxy S23+ and filmed the buildings that wall
@@ -494,13 +495,13 @@ put the two on one axis should be resisted permanently.</p>
 <tr>
 <td><code>20260803_190055.jpg</code></td>
 <td>still</td>
-<td>under the bridge, evening</td>
+<td>Washington Street, evening pedestrians</td>
 <td>&mdash;</td>
 </tr>
 <tr>
 <td><code>20260803_190152.jpg</code></td>
 <td>still</td>
-<td>under the bridge, evening</td>
+<td>Washington Street, evening pedestrians</td>
 <td>&mdash;</td>
 </tr>
 <tr>
@@ -1080,6 +1081,14 @@ content of this document is replaced rather than extended.</p>
     on them; it would have flagged the clip had they never been offered.
     <strong>The statements of intent in section 0 are a different kind of thing</strong>
     and are rated 5/5 &mdash; nobody else can say what a capture was for.</li>
+<li><strong>The evening-presence count is one frame, and it is a floor.</strong> More than a
+    hundred people in one photograph at one instant on one Monday cannot
+    establish a rate, a dwell time, a cohort split, or a typical evening. It is
+    existence evidence and a lower bound on one frame. The two frames were shot
+    at <strong>different focal lengths &mdash; 23 mm and 69 mm equivalent</strong> &mdash; so
+    they cover different depths of street and
+    <strong>cannot be compared to each other at all</strong>, in either direction. If any of
+    this is read as a density, a rate or a corridor total, it is over-read.</li>
 </ol>
 <h2 id="10-what-this-changes-and-what-it-does-not">10. What this changes, and what it does not</h2>
 <p>It does <strong>not</strong> change any published number about the bridge. No decibel here,
@@ -1097,6 +1106,15 @@ no exposure figure, no revision to any MTA-derived quantity.</p>
   repository showing people, in the corridor, under the deck, including a
   family group with a pushchair. It is not a count. It is the population the
   cohort model has only ever inferred from turnstile arithmetic.</li>
+<li><strong>Evening weekday presence is directly observed for the first time.</strong> Two
+  stills from 3 August 2026 (a Monday) at 19:00:55 and 19:01:52, 57 seconds
+  and 4.3 m apart on Washington Street, show the roadway occupied kerb to kerb.
+  The <strong>camera</strong> stood 159&ndash;162 m from the fitted track axis; the people in
+  the frame lie between it and the bridge, so <strong>their</strong> distances run from about
+  that figure down toward zero. The operator states
+  these were captured to show evening pedestrian presence on a weekday night.
+  They are read for that purpose, not for the echo-chamber purpose the video
+  serves. What they establish and what they do not is set out in section 10.1.</li>
 <li><strong>The captures are placed against the measured points.</strong> Two stand 26 m and
   27 m from the fitted track axis, closer than three of the four points anyone
   has ever measured. That is geometry from embedded GPS and is unaffected by
@@ -1118,7 +1136,208 @@ no exposure figure, no revision to any MTA-derived quantity.</p>
   range is withdrawn. Section 1.7 of <a href="idea-concept.html">Document 1</a> remains
   unchecked against anything observed.</li>
 </ul>
-<h2 id="11-the-question-this-opens">11. The question this opens</h2>
+<h2 id="101-the-evening-stills-as-pedestrian-cohort-evidence">10.1 The evening stills as pedestrian-cohort evidence</h2>
+<p><strong>Added in v1.2.</strong> The operator states:</p>
+<blockquote>
+<p>The first 2 photos that are described as 'under the bridge, evening' were not
+taken with the same purpose. Those 2 photos are useful for showing tourists in
+the evening on a weekday night. The metadata on the photo shows the exact
+location and time. This should go into the study on the pedestrian cohort as
+evidence.</p>
+</blockquote>
+<p>Rated <strong>5/5, OPERATOR STATEMENT OF INTENT</strong>. This reassigns the two evening
+stills from the echo-chamber material to the pedestrian presence study.</p>
+<h3 id="what-the-metadata-establishes">What the metadata establishes</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th><code>20260803_190055.jpg</code></th>
+<th><code>20260803_190152.jpg</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Capture time</td>
+<td>2026-08-03 19:00:55 EDT</td>
+<td>2026-08-03 19:01:52 EDT</td>
+</tr>
+<tr>
+<td>Day of week</td>
+<td>Monday (weekday)</td>
+<td>Monday (weekday)</td>
+</tr>
+<tr>
+<td>GPS latitude</td>
+<td>40.702069 N</td>
+<td>40.702033 N</td>
+</tr>
+<tr>
+<td>GPS longitude</td>
+<td>73.989732 W</td>
+<td>73.989749 W</td>
+</tr>
+<tr>
+<td>Altitude (GPS)</td>
+<td>3 m</td>
+<td>9 m</td>
+</tr>
+<tr>
+<td>Orientation</td>
+<td>1 (landscape)</td>
+<td>6 (portrait, rotated 90&deg; CW)</td>
+</tr>
+<tr>
+<td>Device</td>
+<td>Samsung Galaxy S23+</td>
+<td>Samsung Galaxy S23+</td>
+</tr>
+<tr>
+<td>Chainage</td>
+<td>&minus;121.6 m</td>
+<td>&minus;124.7 m</td>
+</tr>
+<tr>
+<td>Offset from track (camera)</td>
+<td>159.0 m WSW</td>
+<td>161.9 m WSW</td>
+</tr>
+<tr>
+<td>Nearest MTA anchor</td>
+<td>Front and Pine St, 167 m</td>
+<td>Front and Pine St, 170 m</td>
+</tr>
+<tr>
+<td>Focal length (35 mm equiv.)</td>
+<td><strong>23 mm</strong></td>
+<td><strong>69 mm</strong></td>
+</tr>
+<tr>
+<td>Digital zoom ratio</td>
+<td>1.00</td>
+<td><strong>3.63</strong></td>
+</tr>
+<tr>
+<td>Horizontal field of view</td>
+<td><strong>~74&deg;</strong></td>
+<td><strong>~21&deg;</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>The two positions are <strong>4.3 m apart</strong> &mdash; the same location to within phone
+GPS accuracy in a street canyon. The time separation is <strong>57 seconds</strong>. They are
+two frames from one spot at one moment, not two samples from two places.</p>
+<p><strong>They are not, however, two views of the same scene.</strong> That is the single most
+important fact about reading them. The EXIF shows the first frame at a
+35 mm-equivalent focal length of <strong>23 mm</strong> and the second at <strong>69 mm</strong> with a
+digital zoom ratio of <strong>3.63</strong> &mdash; the wide camera and then the telephoto.
+The horizontal angular field differs by a factor of about <strong>3.5</strong>, and because
+Washington Street runs straight toward the bridge, the narrower frame does not
+show a <em>smaller</em> scene. It shows a <strong>much longer</strong> one: the same angular
+resolution reaches perhaps three times further up the street before individuals
+stop being separable.</p>
+<p>Two consequences follow, and both cut against the obvious reading:</p>
+<ul>
+<li><strong>The two counts are not comparable and neither is a density.</strong> More people in
+  the telephoto frame does not mean a denser crowd; it means a longer sightline
+  through the same crowd. Any comparison between the frames measures the lens.</li>
+<li><strong>The single offset in the table belongs to the camera, not to the people.</strong>
+  The figures visible in the telephoto frame lie <em>between</em> the camera and the
+  bridge, spread along a few hundred metres of street. Their distances from the
+  fitted track axis therefore run from about 162 m down toward zero &mdash; most
+  of them are <strong>closer</strong> to the track than the camera is, and the ones furthest
+  up the street are close to directly beneath it. That widens what the frame
+  evidences and narrows what a single distance figure can be attached to.</li>
+</ul>
+<h3 id="what-this-establishes-for-the-cohort-model">What this establishes for the cohort model</h3>
+<p>The cohort model (<code>build_cohort_model.py</code>) infers weekday 19:00 presence at
+approximately <strong>20,614 total</strong> in the corridor, of which <strong>2,761 non-residents</strong>.
+Until now, no direct observation of evening presence existed anywhere in this
+corpus. Every figure was derived from turnstile arithmetic and a fitted survival
+function.</p>
+<p><strong>These two photographs are the first direct observation of presence in the DUMBO corridor at any hour.</strong> They establish:</p>
+<ol>
+<li><strong>Existence.</strong> People were present on Washington Street at 19:00&ndash;19:02
+   on a Monday evening in August. That is trivially obvious to anyone who has
+   been there and it was never in doubt &mdash; but it had never been
+   <em>observed</em> in this corpus. Every prior presence figure was inferred.</li>
+<li><strong>A floor on the count at one instant, and not an estimate.</strong> The telephoto
+   frame (portrait, looking north up Washington Street toward the Brooklyn
+   tower) shows the roadway occupied kerb to kerb. A deliberate count of
+   separable figures in the resolvable band alone passes <strong>one hundred</strong>, and
+   the crowd continues beyond that band into a mass in which individuals cannot
+   be told apart at any published resolution.
+   <strong>The correct output is therefore a floor and not a range:</strong> more than 100
+   people were within this one frame, and the true number is larger by an
+   amount the photograph cannot supply.
+   The wide frame, covering a much shorter stretch of the same street, holds
+   several dozen. Neither number is a density and the two are not comparable,
+   for the reason given above. <strong>This is one frame at one instant, not a rate.</strong></li>
+</ol>
+<h3 id="what-this-does-not-establish">What this does not establish</h3>
+<ol start="3">
+<li><strong>Not a rate.</strong> Two frames 57 seconds apart cannot measure a flow. Nobody
+   entered or left the frame in a way that can be counted across both images.</li>
+<li><strong>Not a dwell time.</strong> A photograph records who is present, not how long they
+   have been there or how long they will stay.</li>
+<li><strong>Not a cohort split.</strong> The operator's word "tourists" is an interpretation,
+   rated <strong>2/5 as operator recollection</strong>. A photograph carries no job titles,
+   no home addresses and no itineraries. Whether the people visible are
+   workers, visitors, transients or residents cannot be determined from
+   appearance, and attempting to distinguish them from clothing or behaviour
+   would be both methodologically unsound and ethically poor.</li>
+<li><strong>Not a typical evening.</strong> One Monday in August is one Monday in August. It
+   cannot establish what any other Monday evening looks like.</li>
+<li><strong>Not a count for the whole corridor.</strong> The wide frame covers roughly one
+   block of Washington Street and the telephoto frame a longer strip of the same
+   street. The corridor extends over a kilometre and includes streets these
+   frames never see. Extrapolation from one vantage point to the corridor
+   population is not licensed by these data &mdash; and the lens difference
+   means the frames cannot even be used to estimate the coverage factor that
+   such an extrapolation would need.</li>
+</ol>
+<h3 id="the-tourists-interpretation">The "tourists" interpretation</h3>
+<p>The operator describes the subjects as "tourists." That word is a statement about
+who the operator believed the people to be. It is rated <strong>2/5, OPERATOR RECOLLECTION</strong> &mdash; not 5/5, because this is a recollection about the world,
+not a statement of intent. The photographs themselves cannot distinguish a
+tourist from a resident from a worker leaving late. The presence is high-
+confidence; the characterisation is not.</p>
+<h3 id="relationship-to-the-cohort-model">Relationship to the cohort model</h3>
+<p>The cohort model's weekday 19:00 estimate of ~2,761 non-residents is a
+<strong>corridor-wide</strong> figure. Counting more than a hundred people in a single frame
+does not confirm or refute it &mdash; the two are not commensurable without a
+spatial coverage factor and a separation of residents from non-residents,
+neither of which these photographs supply. It is worth noting only that the
+frame is a small fraction of the corridor and the count in it is a floor, so
+nothing here suggests the model is <em>too high</em>; that is the one direction the
+observation can weakly speak to, and it speaks to it weakly.</p>
+<p>What the photographs do supply is the <strong>qualitative confirmation</strong> that the
+corridor is populated at this hour &mdash; which the model predicted and which
+is now observed rather than inferred. That is a genuine contribution, and it
+is a small one. It does not substitute for Method 28 (dwell-time measurement).</p>
+<h3 id="privacy-and-ethics">Privacy and ethics</h3>
+<p>The two evening frames are taken on a public street from a normal standing
+height and show a crowd at moderate distance. At the derivative resolution
+published in <code>web/</code> (1600 px on the long edge), the
+<strong>largest face in either frame spans roughly 50&ndash;60 pixels</strong> — measured on
+the published file, not
+assumed — and every other face is smaller, turned away, or softened by motion
+and low evening light. That is at or below the size at which automated
+recognition is generally considered reliable. The claim made here is the
+narrow one it can support:
+<strong>no individual is identifiable from what is published.</strong>
+It is not a claim about what any particular system could do. The
+masters (4000 &times; 3000) are <strong>not</strong> committed to this repository and are
+excluded by <code>.gitignore</code>; at master resolution some foreground faces do
+approach identifiability, which is the reason they are withheld rather than an
+incidental consequence of file size.</p>
+<p><strong>No crop, enlargement or annotation that would make any individual identifiable is published.</strong>
+Counts are reported rather than faces. This is consistent with
+the standing ethical position in section 12 below and with the standing condition
+on Method 24 in <a href="community-evidence-audit.html">Document 6</a>: these are
+residents and visitors, not subjects, and this programme takes the burden of
+privacy voluntarily.</p>
+<h2 id="11-the-questions-this-opens">11. The questions this opens</h2>
 <p><strong>Q56.</strong> <strong>Which way does automatic gain control bias a duty cycle, and by how much?</strong></p>
 <p>This question was framed in v1.0 to defend a number that is now withdrawn. It
 is kept, and its value has changed rather than disappeared: it is no longer
@@ -1158,15 +1377,93 @@ runs isolates the compressor from everything else in the chain.</p>
 should be run <em>before</em> the shielded capture rather than after, because it
 determines whether that capture needs <code>UNPROCESSED</code> enabled to be worth
 taking.</p>
+<p><strong>Q57.</strong> <strong>What can a timed photographic survey at two or three vantage points establish about corridor presence that turnstile arithmetic cannot?</strong></p>
+<p>Two frames 57 seconds apart proved existence and gave an approximate count at
+one instant. A deliberate survey &mdash; timed frames at known intervals from
+fixed positions &mdash; could establish a <strong>flow rate</strong>, which is the quantity
+Method 28 asks for and which no existing dataset in this programme provides.
+The question is whether the information gain justifies the privacy cost: every
+frame of a deliberate pedestrian survey is a frame taken <em>because</em> people are
+in it, which is a different ethical posture from incidental capture. The
+standing condition on Method 24 applies.</p>
+<p><strong>Q58.</strong> <strong>Does the direction of travel change the noise?</strong></p>
+<p>Every level in this corpus is direction-blind: the MTA memos report a receptor,
+not a heading, and the schedule feed shows the two directions very nearly
+balanced in every period (weekday daytime 372 northbound / 367 southbound), so
+no existing instrument can distinguish a Manhattan-bound crossing from a
+Brooklyn-bound one. The operator states directly that direction appears to
+matter and should be captured next session &mdash; rated <strong>2/5, OPERATOR RECOLLECTION</strong> of an event, not a finding.</p>
+<p>Settled by Method 39: two timecode-synchronised recorders separated 50&ndash;80 m
+along the fitted track bearing of <strong>336.93&deg;</strong>, at matched perpendicular
+offset. The <em>order</em> of the two level peaks gives direction; the interval gives
+speed: <code>v = d / (t₂ − t₁)</code>. It needs no calibration,
+because it uses no level &mdash; only the sign of a time difference. A
+perpendicular-offset mismatch of 20 m contributes about 0.06 s against a signal
+of several seconds, so the geometry is forgiving. The session that establishes
+it should also log direction <strong>by eye</strong>, because that is what validates the
+array against ground truth and licenses its use unattended afterwards. See
+<a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/FIELD-KIT.md"><code>FIELD-KIT.md</code></a> for the operational specification.</p>
+<p><strong>Q59.</strong> <strong>How long does a crossing remain audible, and what fraction of the day does that cover?</strong></p>
+<p>This is the operator's "noise time on clock versus floor time." It has never
+been measurable here, and the reason is specific: <strong>automatic gain control actively destroys decay tails</strong> &mdash; it pushes gain up as the sound fades, so
+a recorded tail reads both longer and shallower than it is. Any duty cycle
+computed from such a record is a statement about Samsung's compressor rather
+than about the railway.</p>
+<p>During the stopwatch session (section 4 above) the operator was listening for
+the <em>first</em> train noise in either direction, so the stopwatch marked <strong>onsets, not durations</strong>. That is consistent with the finding that the 63.8 s cycle is
+pairing-independent &mdash; the tail was never measured by any instrument in
+this corpus. The threshold sweep in section 5 quantifies this gap: the same
+audio yields a duty figure anywhere from 44% down to zero depending only on
+where the threshold is placed.</p>
+<p>Settled by Method 40. A fixed-gain linear recording makes
+time-above-<code>(peak &amp;minus; 10 dB)</code>, time-above-<code>(background + 3 dB)</code> and a
+fitted decay constant all computable, and all of them are gain-independent. The
+measurement is <strong>background-limited</strong>: a quiet-hour session will measure a
+materially longer tail than a midday one, and the difference between the two is
+itself informative &mdash; it answers how much of the day the tail actually
+covers. This converts the v1.1 threshold sweep from a caution into a
+deliverable. See <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/FIELD-KIT.md"><code>FIELD-KIT.md</code></a>.</p>
+<p><strong>Q60.</strong> <strong>What happens to the level when two trains cross the bridge at the same time?</strong></p>
+<p>The published schedule <strong>cannot</strong> answer this and never could. Every scheduled
+departure in the MTA feed falls on an exact <code>:00</code> or <code>:30</code> second &mdash; 1,073
+weekday traversals return only <code>{0: 528, 30: 545}</code> &mdash; so the entire
+0&ndash;30 s window in which two crossings merge acoustically is <em>empty by
+construction</em>. That is what forced the withdrawal of the merged-pair table in
+this repository's own phase 9 work, and it means observation is the only
+available instrument.</p>
+<p>Two incoherent equal sources sum to <strong>+3.01 dB</strong>; a materially larger rise would
+indicate that simple energy summation is not what happens on a four-track
+suspended deck, which would be a new result. Because it is a difference between
+two events <strong>in the same recording</strong>, unknown gain cancels entirely &mdash; so
+this is answerable from the same uncalibrated consumer capture that cannot carry
+an absolute level.</p>
+<p>Settled by Method 41, which is pure observation during any field session and
+costs nothing beyond being present when it happens. At a weekday daytime rate of
+61.6 crossings per hour, the expected waiting time for a simultaneous pair is
+short. See <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/FIELD-KIT.md"><code>FIELD-KIT.md</code></a>.</p>
 <h2 id="12-ethics">12. Ethics</h2>
-<p>People appear in two frames at a distance, in a public park, incidentally and
-unidentifiably. No frame was selected for a person in it, no face is resolvable
-at the published size, and the published audio carries no intelligible speech.</p>
+<p>People appear in the lawn frame at a distance, in a public park, incidentally
+and unidentifiably. The two evening stills on Washington Street show a crowd at
+moderate distance; at the published derivative size no face is individually
+identifiable, and the masters are not committed. No face is resolvable at the
+published size, and the published audio carries no intelligible speech.</p>
+<p><strong>The v1.1 blanket claim is withdrawn.</strong> It read "no frame was selected for a
+person in it", and that no longer holds for the whole set. The two
+evening stills were taken <em>for</em> the people in them — that is the operator's
+stated intent, it is why they were reassigned to the cohort study, and pretending
+otherwise would be claiming a weaker ethical exposure than the material actually
+carries. It remains true of every other frame here. What replaces it is a
+narrower and checkable commitment:
+<strong>counts are reported rather than faces</strong>, and
+<strong>no crop, enlargement or annotation that would make any individual identifiable is published anywhere in this repository.</strong>
+That is the constraint a deliberate
+pedestrian survey would also have to meet, which is why Q57 asks whether the
+information gain justifies the privacy cost before any such survey is designed.</p>
 <p>That is the position <a href="field-capture-protocol.html">Document 5</a> set out and it
 is carried voluntarily: this programme argues for the interests of the people it
 would incidentally record, so it takes the burden rather than waiting to be
 made to.</p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/README.md">Source on GitHub</a> &middot; Built from <code>5c71ff3</code> on 2026-08-04.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/README.md">Source on GitHub</a> &middot; Built from <code>eb332be</code> on 2026-08-05.</p>
 </main>
 </div>
 

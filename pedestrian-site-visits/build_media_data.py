@@ -94,9 +94,9 @@ MIN_GAP_S = 1.5        # two peaks closer than this are one event
 # is read from the file; only what a person had to write down appears here.
 SESSIONS = {
     "20260803_190055.jpg": ("2026-08-03 19:00:55", "still",
-                            "Under the bridge, evening"),
+                            "Washington Street, evening pedestrians"),
     "20260803_190152.jpg": ("2026-08-03 19:01:52", "still",
-                            "Under the bridge, evening"),
+                            "Washington Street, evening pedestrians"),
     "canyon-buildings-20260804_115319.mp4": ("2026-08-04 11:53:19", "video",
                                              "The canyon, walking"),
     "canyon-buildings2-20260804_115505.mp4": ("2026-08-04 11:55:05", "video",
@@ -178,6 +178,21 @@ CAPTURE_INTENT = [
      "consequence": "The by-product audio is superseded before anything was "
                     "built on it. That is the reason to demote it now rather "
                     "than defend it."},
+    {"subject": "the evening stills (20260803_190055.jpg, 20260803_190152.jpg)",
+     "claim": "The first 2 photos that are described as 'under the bridge, "
+              "evening' were not taken with the same purpose. Those 2 photos "
+              "are useful for showing tourists in the evening on a weekday "
+              "night. The metadata on the photo shows the exact location and "
+              "time. This should go into the study on the pedestrian cohort "
+              "as evidence.",
+     "rating": 5, "status": "OPERATOR STATEMENT OF INTENT",
+     "consequence": "These two stills were NOT captured for the echo-chamber "
+                    "or canyon-buildings purpose. They were captured to show "
+                    "evening pedestrian presence on a weekday. They are read "
+                    "for that purpose and not for the acoustic or geometric "
+                    "purpose the other captures serve. They contribute to the "
+                    "pedestrian cohort study as direct observational evidence "
+                    "of presence."},
 ]
 
 

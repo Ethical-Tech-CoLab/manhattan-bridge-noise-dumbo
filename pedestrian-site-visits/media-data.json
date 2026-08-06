@@ -34,6 +34,13 @@
    "rating": 5,
    "status": "OPERATOR STATEMENT OF INTENT",
    "subject": "what comes next"
+  },
+  {
+   "claim": "The first 2 photos that are described as 'under the bridge, evening' were not taken with the same purpose. Those 2 photos are useful for showing tourists in the evening on a weekday night. The metadata on the photo shows the exact location and time. This should go into the study on the pedestrian cohort as evidence.",
+   "consequence": "These two stills were NOT captured for the echo-chamber or canyon-buildings purpose. They were captured to show evening pedestrian presence on a weekday. They are read for that purpose and not for the acoustic or geometric purpose the other captures serve. They contribute to the pedestrian cohort study as direct observational evidence of presence.",
+   "rating": 5,
+   "status": "OPERATOR STATEMENT OF INTENT",
+   "subject": "the evening stills (20260803_190055.jpg, 20260803_190152.jpg)"
   }
  ],
  "constant_obstruction": {
@@ -214,7 +221,7 @@
    "lon": -73.989732,
    "model": "Galaxy S23+",
    "name": "20260803_190055.jpg",
-   "place": "Under the bridge, evening",
+   "place": "Washington Street, evening pedestrians",
    "sha256": "505601476abb747861a34314b88f92079dd379584001adf9e6607fb1c96db8f6",
    "width": 4000
   },
@@ -228,7 +235,7 @@
    "lon": -73.989749,
    "model": "Galaxy S23+",
    "name": "20260803_190152.jpg",
-   "place": "Under the bridge, evening",
+   "place": "Washington Street, evening pedestrians",
    "sha256": "cf64fa29ccdeac0410198cf5c142ab31e8dd6a389bb04a11c46e508a1f14b2a4",
    "width": 4000
   },
@@ -2683,7 +2690,7 @@
    "width": 4000
   }
  ],
- "generated_at": "2026-08-04T21:21:13",
+ "generated_at": "2026-08-06T11:42:03",
  "generator": "pedestrian-site-visits/build_media_data.py",
  "geo": {
   "anchors": [

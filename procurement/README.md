@@ -79,13 +79,12 @@ a login-free endpoint. Index `ceilingrates-2026-08-04_02-00-02`. The rates are
 awarded ceilings on federal schedule contracts, inclusive of the Industrial
 Funding Fee, for the current contract year.
 
-Cross-validated against Accenture Federal Services' own published rate card
-(GSA MAS `GS-35F-540GA`, SIN 54151S, modification PA-0045 dated 9/25/2024,
-contract period 12 July 2022 to 11 July 2027). The card carries the note:
+Cross-validated against a large schedule holder's own published rate card
+(SIN 54151S, current contract year). The card carries the note:
 
 > Prices include the 0.75% Industrial Funding Fee (IFF).
 
-Year 10 OFFSITE, from the vendor's own PDF, matched against the GSA index:
+Year 10 OFFSITE, from the holder's own PDF, matched against the GSA index:
 
 | Category | Vendor card | GSA index |
 | --- | --- | --- |
@@ -107,7 +106,7 @@ Three rungs, and one deliberately missing.
 
 | Rung | Basis |
 | --- | --- |
-| Named global consultancy | Accenture Federal Services awarded ceiling rates, by category |
+| Whole-schedule upper quartile | 75th percentile of awarded ceiling rates for the discipline, across every holder |
 | Whole-schedule median | Median across all awarded holders of the matching category |
 | Whole-schedule 10th percentile | The cheapest decile of awarded holders on the same schedule |
 
@@ -149,7 +148,7 @@ point estimate appears anywhere in this document.
 
 | Rung | Delivered scope |
 | --- | --- |
-| Named global consultancy | $219,377 - $686,531 |
+| Whole-schedule upper quartile | $219,377 - $686,531 |
 | Whole-schedule median | $177,387 - $554,466 |
 | Whole-schedule 10th percentile | $114,516 - $356,900 |
 
@@ -188,17 +187,39 @@ DUMBO" would deliver those, and a client would expect them.
 
 | Rung | Not-delivered scope |
 | --- | --- |
-| Named global consultancy | $71,777 - $207,785 |
+| Whole-schedule upper quartile | $71,777 - $207,785 |
 | Whole-schedule median | $52,975 - $151,556 |
 | Whole-schedule 10th percentile | $36,079 - $102,979 |
 
-**None of these four disciplines has a matching category on the vendor's own rate card.**
-Accenture Federal Services publishes no acoustical engineer, no
-survey field staff, no licensed architect and no attorney. For the consultancy
-rung the model substitutes the whole-schedule 75th percentile for that
-discipline and says so in the data file (`rate_vendor_why`). That is a weaker
-figure than the delivered-scope consultancy column, which is drawn from
-matched, cent-for-cent verified categories.
+Published here as a distinction between the two columns:
+
+> **None of these four disciplines has a matching category on the holder's own rate card.** [...] For the upper-quartile rung the model substitutes the whole-schedule 75th percentile for that discipline and says so in the data file. That is a weaker figure than the delivered-scope upper-quartile column, which is drawn from matched, cent-for-cent verified categories.
+
+**That is withdrawn.** There is no such distinction, because
+**the delivered-scope column is not drawn from matched categories either.**
+The model carried a lookup
+that consulted one holder's own published categories before falling back to the
+whole-schedule 75th percentile, and **that lookup never returned a match once** —
+not for any of the eight delivered disciplines and not for any of the four
+below. Every figure in every upper-quartile column, in both tables, has always
+been the whole-schedule 75th percentile.
+
+The cause is the same taxonomy problem this document already reports from the
+other direction: **holders publish internal job titles, not discipline names.**
+The categories on an individual card read `Cyber Programmer 1` and
+`Business Functions Consultant 1`, which no discipline regex can match, so the
+fallback was not a fallback — it was the only path.
+
+**No number moves.** Every rate in both tables is the figure it always was; what
+changes is the description of where it came from, the name of the rung, and the
+field name in the data file, which is now `rate_upper_why` and reads
+`whole-schedule 75th percentile` for every discipline. The dead lookup has been
+removed rather than left in place, because a branch that never returns is a
+claim the model does not honour.
+**The upper quartile remains a genuine 5/5 figure** —
+it is drawn from the same GSA awarded-ceiling index as the other two
+rungs, and that index is independently cross-validated above. It is simply not,
+and never was, a vendor-specific number.
 
 **The model refuses to emit an all-in figure.** Adding the two columns would
 produce a number describing a deliverable that does not exist, and it would
@@ -274,19 +295,12 @@ into a range.
 
 ## The transparency asymmetry
 
-Ernst & Young LLP holds GSA contract `GS-00F-290CA`, period 8 September 2015
-to 7 September 2030, current through modification PS-0041 effective 2 April
-2026. Its published GSA Advantage price file is five pages long and contains
-**no rates at all**. Page 5 reads:
-
-> Use of or reference to the rate card or any information contained herein is
-> limited to EY's GPS Federal US48. Use of or reference to the rate card or any
-> information contained herein by other EY BU must be approved in advance of
-> such use or reference by David M. Lewandoski, Director of Federal Contract
-> Management.
+One large schedule holder's published GSA Advantage price file is five pages
+long and contains **no rates at all**. The file's final page carries a legal
+notice restricting internal use of the rate card.
 
 The same contract's awarded labour categories appear in GSA's own ceiling-rate
-index - **56 of them**, retrievable without a login, an account or a key. Both
+index — dozens of them, retrievable without a login, an account or a key. Both
 facts are true simultaneously. The restriction is real and the data is public.
 
 This is not an accusation; it is a note about where public information lives.
@@ -453,6 +467,28 @@ python procurement/build_procurement_data.py
 The first three write `rates.json`, `awards.json` and `usage/usage-data.json`.
 The fourth combines them, writes `procurement-data.json`, and injects the
 result into `procurement-dashboard.html`.
+
+**What a fresh clone cannot re-run.** Stated so the reproducibility claim above
+is not larger than it is. `fetch_rates.py` sweeps the schedule by discipline
+and, separately, can sweep it by a named holder. The discipline sweep is the
+one every figure in this document rests on and it runs from a clean checkout
+with no configuration. The holder sweep does not: its query terms are read
+from an untracked `procurement/vendor_terms.json`, and with that file absent —
+which is the normal state of this repository — those groups are simply skipped
+and nothing downstream changes, because
+**no rate published here is derived from a holder-specific query.**
+The cross-validation described in
+[The rate source](#the-rate-source) was checked by hand against a published
+card, not by that code path.
+
+`rates.json` carries **no vendor name and no contract number** for any row. A
+contract number resolves to a holder in a single search, so the two are one
+field for this purpose and neither is carried. This is a study of published
+rates and not of firms, and the file is exactly as useful for that without
+them: every statistic here is computed over discipline and price, and both
+survive. It does mean a reader cannot audit *which* holders a percentile was
+drawn from — only that it was drawn from every holder on the schedule, which
+is what the rung now claims.
 
 Two silent failure modes in the GSA endpoint are guarded in `fetch_rates.py`
 and both were hit live during development:

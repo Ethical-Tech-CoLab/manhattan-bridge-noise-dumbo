@@ -24,6 +24,7 @@ import html
 import io
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -413,6 +414,14 @@ def build():
     rate = d["rate_check"]
     co = d["constant_obstruction"]
     det = d["detectability"]
+
+    # Files the operator has reassigned to the pedestrian-cohort purpose.
+    # Driven by the statement of intent itself, so that removing or extending
+    # that statement moves the page with it.
+    reassigned = set()
+    for it in intent:
+        if "evening still" in it["subject"]:
+            reassigned.update(re.findall(r"\b[\w-]+\.jpg\b", it["subject"]))
 
     parts = []
 
@@ -900,21 +909,30 @@ it is reported as weak.</p>
             rate["ci95_low"], rate["ci95_high"], esc(rate["note"]))))
 
     # ---- gallery --------------------------------------------------------
-    gal = []
-    for f in sorted(caps, key=lambda r: r["name"]):
+    def figure(f):
         dv = deriv["files"].get(f["name"], {})
         src = (dv.get("image") or dv.get("poster") or {}).get("file")
         if not src:
-            continue
+            return None
         cap = f.get("place") or f["kind"]
         if f["kind"] == "video":
             cap = "poster frame &mdash; " + esc(cap)
         else:
             cap = esc(cap)
-        gal.append("<figure><img src='%s' alt='%s' loading='lazy'>"
-                   "<figcaption>%s<br><span class='mono'>%s</span></figcaption>"
-                   "</figure>" % (esc(src), esc(f["name"]), cap,
-                                  esc(f["name"])))
+        return ("<figure><img src='%s' alt='%s' loading='lazy'>"
+                "<figcaption>%s<br><span class='mono'>%s</span></figcaption>"
+                "</figure>" % (esc(src), esc(f["name"]), cap, esc(f["name"])))
+
+    gal, evening = [], []
+    for f in sorted(caps, key=lambda r: r["name"]):
+        fig = figure(f)
+        if fig is None:
+            continue
+        (evening if f["name"] in reassigned else gal).append(fig)
+
+    if len(evening) != len(reassigned):
+        sys.exit("reassigned frames missing from the gallery: expected %d, "
+                 "built %d" % (len(reassigned), len(evening)))
     parts.append(card(
         "The echo chamber, which is what the video was actually for",
         "<div class='gal'>%s</div>" % "".join(gal)
@@ -945,13 +963,55 @@ it, doing the thing the model says it does, under the deck.</p>
 park, incidentally and unidentifiably. The programme's own ethics position in
 <a href="../read/field-capture-protocol.html">Document 5</a> is that this work
 argues for the interests of the people it would incidentally record, so it
-carries that burden voluntarily: no frame here was selected for a person in
-it, no face is resolvable at the published size, and the audio published
-alongside carries no intelligible speech.</p>
+carries that burden voluntarily: no frame in <em>this</em> card was selected for
+a person in it, no face is resolvable at the published size, and the audio
+published alongside carries no intelligible speech.</p>
 """,
         "The video was captured to record the buildings that form the echo "
         "chamber around the bridge near the water. That is what it is used "
         "for here."))
+
+    # ---- the reassigned evening stills ----------------------------------
+    parts.append(card(
+        "The evening stills, which were taken for the people in them",
+        "<div class='gal'>%s</div>" % "".join(evening)
+        + """
+<p><strong>These two frames are read for a different purpose from everything
+else on this page</strong>, and not because the analysis found something in
+them. The operator states they were captured to show evening pedestrian
+presence on a weekday night. That is a statement of <em>intent</em>, it is
+rated <strong>5/5</strong>, and nobody else is in a position to make it &mdash;
+which is why it moves the frames out of the echo-chamber material above.</p>
+<p>They were shot 57 seconds and 4.3 m apart, at
+<strong>19:00:55</strong> and <strong>19:01:52</strong> on Monday
+3 August 2026, looking north up Washington Street toward the Brooklyn tower.
+They are the <strong>first direct observation of pedestrian presence</strong>
+anywhere in this investigation. Every presence figure before them was inferred
+from turnstile arithmetic and a fitted survival function.</p>
+<p><strong>The two frames cannot be compared with each other.</strong> The EXIF
+puts the first at a 35 mm-equivalent focal length of <strong>23 mm</strong> and
+the second at <strong>69 mm</strong> with a digital zoom ratio of 3.63 &mdash;
+the wide camera, then the telephoto. Because the street runs straight at the
+bridge, the narrower frame does not show a smaller scene; it shows a
+<strong>longer</strong> one. More people in it means a longer sightline, not a
+denser crowd, and neither frame yields a density.</p>
+<p>What they support is a <strong>floor</strong>: more than a hundred separable
+figures stand in the telephoto frame before the crowd merges into a mass that no
+published resolution can resolve. They do not support a rate, a dwell time, a
+cohort split, a typical evening, or any corridor total. The full account of what
+they establish and what they do not is in
+<a href="../read/pedestrian-site-visits.html#101-the-evening-stills-as-pedestrian-cohort-evidence">section
+10.1 of the document</a>.</p>
+<p class="note">These frames, unlike the rest, <em>were</em> taken because people
+were in them &mdash; so the blanket claim that no frame here was selected for a
+person does not cover them, and it is not made. What is undertaken instead is
+narrower and checkable: counts are reported rather than faces, no face is
+resolvable at the published size, the masters are not committed, and no crop,
+enlargement or annotation that would make any individual identifiable is
+published anywhere in this repository.</p>
+""",
+        "Reassigned by the operator's statement of intent from the "
+        "echo-chamber material to the pedestrian cohort study."))
 
     # ---- adams/john -----------------------------------------------------
     parts.append(card(

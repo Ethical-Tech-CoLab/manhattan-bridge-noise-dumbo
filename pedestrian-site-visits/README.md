@@ -4,7 +4,8 @@
 **Data:** [`media-data.json`](media-data.json) &middot;
 **Analysis:** [`build_media_data.py`](build_media_data.py) &middot;
 **Renderer:** [`build_media_page.py`](build_media_page.py) &middot;
-**Harness:** [`verify_media.js`](verify_media.js)
+**Harness:** [`verify_media.js`](verify_media.js) &middot;
+**Next session:** [`FIELD-KIT.md`](FIELD-KIT.md)
 
 This is the first material in this programme that was not retrieved from
 somebody else. On 3 and 4 August 2026 an observer stood under the Manhattan
@@ -103,8 +104,8 @@ put the two on one axis should be resisted permanently.
 
 | capture | kind | where | length |
 | --- | --- | --- | --- |
-| `20260803_190055.jpg` | still | under the bridge, evening | &mdash; |
-| `20260803_190152.jpg` | still | under the bridge, evening | &mdash; |
+| `20260803_190055.jpg` | still | Washington Street, evening pedestrians | &mdash; |
+| `20260803_190152.jpg` | still | Washington Street, evening pedestrians | &mdash; |
 | `canyon-buildings-20260804_115319.mp4` | video | the canyon, walking | 61.8 s |
 | `canyon-buildings2-20260804_115505.mp4` | video | the canyon, continued | 46.7 s |
 | `grassy-knoll-20260804_115626.mp4` | video | the lawn, south of the bridge | 10.3 s |
@@ -538,6 +539,14 @@ content of this document is replaced rather than extended.
     on them; it would have flagged the clip had they never been offered.
     **The statements of intent in section 0 are a different kind of thing**
     and are rated 5/5 &mdash; nobody else can say what a capture was for.
+12. **The evening-presence count is one frame, and it is a floor.** More than a
+    hundred people in one photograph at one instant on one Monday cannot
+    establish a rate, a dwell time, a cohort split, or a typical evening. It is
+    existence evidence and a lower bound on one frame. The two frames were shot
+    at **different focal lengths &mdash; 23 mm and 69 mm equivalent** &mdash; so
+    they cover different depths of street and
+    **cannot be compared to each other at all**, in either direction. If any of
+    this is read as a density, a rate or a corridor total, it is over-read.
 
 ## 10. What this changes, and what it does not
 
@@ -557,6 +566,15 @@ What it changes:
   repository showing people, in the corridor, under the deck, including a
   family group with a pushchair. It is not a count. It is the population the
   cohort model has only ever inferred from turnstile arithmetic.
+- **Evening weekday presence is directly observed for the first time.** Two
+  stills from 3 August 2026 (a Monday) at 19:00:55 and 19:01:52, 57 seconds
+  and 4.3 m apart on Washington Street, show the roadway occupied kerb to kerb.
+  The **camera** stood 159&ndash;162 m from the fitted track axis; the people in
+  the frame lie between it and the bridge, so **their** distances run from about
+  that figure down toward zero. The operator states
+  these were captured to show evening pedestrian presence on a weekday night.
+  They are read for that purpose, not for the echo-chamber purpose the video
+  serves. What they establish and what they do not is set out in section 10.1.
 - **The captures are placed against the measured points.** Two stand 26 m and
   27 m from the fitted track axis, closer than three of the four points anyone
   has ever measured. That is geometry from embedded GPS and is unaffected by
@@ -578,7 +596,163 @@ What it explicitly does **not** change, after the withdrawal in section 5:
   range is withdrawn. Section 1.7 of [Document 1](../IDEA-CONCEPT.md) remains
   unchecked against anything observed.
 
-## 11. The question this opens
+## 10.1 The evening stills as pedestrian-cohort evidence
+
+**Added in v1.2.** The operator states:
+
+> The first 2 photos that are described as 'under the bridge, evening' were not
+> taken with the same purpose. Those 2 photos are useful for showing tourists in
+> the evening on a weekday night. The metadata on the photo shows the exact
+> location and time. This should go into the study on the pedestrian cohort as
+> evidence.
+
+Rated **5/5, OPERATOR STATEMENT OF INTENT**. This reassigns the two evening
+stills from the echo-chamber material to the pedestrian presence study.
+
+### What the metadata establishes
+
+| | `20260803_190055.jpg` | `20260803_190152.jpg` |
+| --- | --- | --- |
+| Capture time | 2026-08-03 19:00:55 EDT | 2026-08-03 19:01:52 EDT |
+| Day of week | Monday (weekday) | Monday (weekday) |
+| GPS latitude | 40.702069 N | 40.702033 N |
+| GPS longitude | 73.989732 W | 73.989749 W |
+| Altitude (GPS) | 3 m | 9 m |
+| Orientation | 1 (landscape) | 6 (portrait, rotated 90&deg; CW) |
+| Device | Samsung Galaxy S23+ | Samsung Galaxy S23+ |
+| Chainage | &minus;121.6 m | &minus;124.7 m |
+| Offset from track (camera) | 159.0 m WSW | 161.9 m WSW |
+| Nearest MTA anchor | Front and Pine St, 167 m | Front and Pine St, 170 m |
+| Focal length (35 mm equiv.) | **23 mm** | **69 mm** |
+| Digital zoom ratio | 1.00 | **3.63** |
+| Horizontal field of view | **~74&deg;** | **~21&deg;** |
+
+The two positions are **4.3 m apart** &mdash; the same location to within phone
+GPS accuracy in a street canyon. The time separation is **57 seconds**. They are
+two frames from one spot at one moment, not two samples from two places.
+
+**They are not, however, two views of the same scene.** That is the single most
+important fact about reading them. The EXIF shows the first frame at a
+35 mm-equivalent focal length of **23 mm** and the second at **69 mm** with a
+digital zoom ratio of **3.63** &mdash; the wide camera and then the telephoto.
+The horizontal angular field differs by a factor of about **3.5**, and because
+Washington Street runs straight toward the bridge, the narrower frame does not
+show a *smaller* scene. It shows a **much longer** one: the same angular
+resolution reaches perhaps three times further up the street before individuals
+stop being separable.
+
+Two consequences follow, and both cut against the obvious reading:
+
+- **The two counts are not comparable and neither is a density.** More people in
+  the telephoto frame does not mean a denser crowd; it means a longer sightline
+  through the same crowd. Any comparison between the frames measures the lens.
+- **The single offset in the table belongs to the camera, not to the people.**
+  The figures visible in the telephoto frame lie *between* the camera and the
+  bridge, spread along a few hundred metres of street. Their distances from the
+  fitted track axis therefore run from about 162 m down toward zero &mdash; most
+  of them are **closer** to the track than the camera is, and the ones furthest
+  up the street are close to directly beneath it. That widens what the frame
+  evidences and narrows what a single distance figure can be attached to.
+
+### What this establishes for the cohort model
+
+The cohort model (`build_cohort_model.py`) infers weekday 19:00 presence at
+approximately **20,614 total** in the corridor, of which **2,761 non-residents**.
+Until now, no direct observation of evening presence existed anywhere in this
+corpus. Every figure was derived from turnstile arithmetic and a fitted survival
+function.
+
+**These two photographs are the first direct observation of presence in the DUMBO corridor at any hour.** They establish:
+
+1. **Existence.** People were present on Washington Street at 19:00&ndash;19:02
+   on a Monday evening in August. That is trivially obvious to anyone who has
+   been there and it was never in doubt &mdash; but it had never been
+   *observed* in this corpus. Every prior presence figure was inferred.
+2. **A floor on the count at one instant, and not an estimate.** The telephoto
+   frame (portrait, looking north up Washington Street toward the Brooklyn
+   tower) shows the roadway occupied kerb to kerb. A deliberate count of
+   separable figures in the resolvable band alone passes **one hundred**, and
+   the crowd continues beyond that band into a mass in which individuals cannot
+   be told apart at any published resolution.
+   **The correct output is therefore a floor and not a range:** more than 100
+   people were within this one frame, and the true number is larger by an
+   amount the photograph cannot supply.
+   The wide frame, covering a much shorter stretch of the same street, holds
+   several dozen. Neither number is a density and the two are not comparable,
+   for the reason given above. **This is one frame at one instant, not a rate.**
+
+### What this does not establish
+
+3. **Not a rate.** Two frames 57 seconds apart cannot measure a flow. Nobody
+   entered or left the frame in a way that can be counted across both images.
+4. **Not a dwell time.** A photograph records who is present, not how long they
+   have been there or how long they will stay.
+5. **Not a cohort split.** The operator's word "tourists" is an interpretation,
+   rated **2/5 as operator recollection**. A photograph carries no job titles,
+   no home addresses and no itineraries. Whether the people visible are
+   workers, visitors, transients or residents cannot be determined from
+   appearance, and attempting to distinguish them from clothing or behaviour
+   would be both methodologically unsound and ethically poor.
+6. **Not a typical evening.** One Monday in August is one Monday in August. It
+   cannot establish what any other Monday evening looks like.
+7. **Not a count for the whole corridor.** The wide frame covers roughly one
+   block of Washington Street and the telephoto frame a longer strip of the same
+   street. The corridor extends over a kilometre and includes streets these
+   frames never see. Extrapolation from one vantage point to the corridor
+   population is not licensed by these data &mdash; and the lens difference
+   means the frames cannot even be used to estimate the coverage factor that
+   such an extrapolation would need.
+
+### The "tourists" interpretation
+
+The operator describes the subjects as "tourists." That word is a statement about
+who the operator believed the people to be. It is rated **2/5, OPERATOR RECOLLECTION** &mdash; not 5/5, because this is a recollection about the world,
+not a statement of intent. The photographs themselves cannot distinguish a
+tourist from a resident from a worker leaving late. The presence is high-
+confidence; the characterisation is not.
+
+### Relationship to the cohort model
+
+The cohort model's weekday 19:00 estimate of ~2,761 non-residents is a
+**corridor-wide** figure. Counting more than a hundred people in a single frame
+does not confirm or refute it &mdash; the two are not commensurable without a
+spatial coverage factor and a separation of residents from non-residents,
+neither of which these photographs supply. It is worth noting only that the
+frame is a small fraction of the corridor and the count in it is a floor, so
+nothing here suggests the model is *too high*; that is the one direction the
+observation can weakly speak to, and it speaks to it weakly.
+
+What the photographs do supply is the **qualitative confirmation** that the
+corridor is populated at this hour &mdash; which the model predicted and which
+is now observed rather than inferred. That is a genuine contribution, and it
+is a small one. It does not substitute for Method 28 (dwell-time measurement).
+
+### Privacy and ethics
+
+The two evening frames are taken on a public street from a normal standing
+height and show a crowd at moderate distance. At the derivative resolution
+published in `web/` (1600 px on the long edge), the
+**largest face in either frame spans roughly 50&ndash;60 pixels** — measured on
+the published file, not
+assumed — and every other face is smaller, turned away, or softened by motion
+and low evening light. That is at or below the size at which automated
+recognition is generally considered reliable. The claim made here is the
+narrow one it can support:
+**no individual is identifiable from what is published.**
+It is not a claim about what any particular system could do. The
+masters (4000 &times; 3000) are **not** committed to this repository and are
+excluded by `.gitignore`; at master resolution some foreground faces do
+approach identifiability, which is the reason they are withheld rather than an
+incidental consequence of file size.
+
+**No crop, enlargement or annotation that would make any individual identifiable is published.**
+Counts are reported rather than faces. This is consistent with
+the standing ethical position in section 12 below and with the standing condition
+on Method 24 in [Document 6](../COMMUNITY-EVIDENCE-AUDIT.md): these are
+residents and visitors, not subjects, and this programme takes the burden of
+privacy voluntarily.
+
+## 11. The questions this opens
 
 **Q56.** **Which way does automatic gain control bias a duty cycle, and by how much?**
 
@@ -626,11 +800,103 @@ should be run *before* the shielded capture rather than after, because it
 determines whether that capture needs `UNPROCESSED` enabled to be worth
 taking.
 
+**Q57.** **What can a timed photographic survey at two or three vantage points establish about corridor presence that turnstile arithmetic cannot?**
+
+Two frames 57 seconds apart proved existence and gave an approximate count at
+one instant. A deliberate survey &mdash; timed frames at known intervals from
+fixed positions &mdash; could establish a **flow rate**, which is the quantity
+Method 28 asks for and which no existing dataset in this programme provides.
+The question is whether the information gain justifies the privacy cost: every
+frame of a deliberate pedestrian survey is a frame taken *because* people are
+in it, which is a different ethical posture from incidental capture. The
+standing condition on Method 24 applies.
+
+**Q58.** **Does the direction of travel change the noise?**
+
+Every level in this corpus is direction-blind: the MTA memos report a receptor,
+not a heading, and the schedule feed shows the two directions very nearly
+balanced in every period (weekday daytime 372 northbound / 367 southbound), so
+no existing instrument can distinguish a Manhattan-bound crossing from a
+Brooklyn-bound one. The operator states directly that direction appears to
+matter and should be captured next session &mdash; rated **2/5, OPERATOR RECOLLECTION** of an event, not a finding.
+
+Settled by Method 39: two timecode-synchronised recorders separated 50&ndash;80 m
+along the fitted track bearing of **336.93&deg;**, at matched perpendicular
+offset. The *order* of the two level peaks gives direction; the interval gives
+speed: `v = d / (t₂ − t₁)`. It needs no calibration,
+because it uses no level &mdash; only the sign of a time difference. A
+perpendicular-offset mismatch of 20 m contributes about 0.06 s against a signal
+of several seconds, so the geometry is forgiving. The session that establishes
+it should also log direction **by eye**, because that is what validates the
+array against ground truth and licenses its use unattended afterwards. See
+[`FIELD-KIT.md`](FIELD-KIT.md) for the operational specification.
+
+**Q59.** **How long does a crossing remain audible, and what fraction of the day does that cover?**
+
+This is the operator's "noise time on clock versus floor time." It has never
+been measurable here, and the reason is specific: **automatic gain control actively destroys decay tails** &mdash; it pushes gain up as the sound fades, so
+a recorded tail reads both longer and shallower than it is. Any duty cycle
+computed from such a record is a statement about Samsung's compressor rather
+than about the railway.
+
+During the stopwatch session (section 4 above) the operator was listening for
+the *first* train noise in either direction, so the stopwatch marked **onsets, not durations**. That is consistent with the finding that the 63.8 s cycle is
+pairing-independent &mdash; the tail was never measured by any instrument in
+this corpus. The threshold sweep in section 5 quantifies this gap: the same
+audio yields a duty figure anywhere from 44% down to zero depending only on
+where the threshold is placed.
+
+Settled by Method 40. A fixed-gain linear recording makes
+time-above-`(peak &minus; 10 dB)`, time-above-`(background + 3 dB)` and a
+fitted decay constant all computable, and all of them are gain-independent. The
+measurement is **background-limited**: a quiet-hour session will measure a
+materially longer tail than a midday one, and the difference between the two is
+itself informative &mdash; it answers how much of the day the tail actually
+covers. This converts the v1.1 threshold sweep from a caution into a
+deliverable. See [`FIELD-KIT.md`](FIELD-KIT.md).
+
+**Q60.** **What happens to the level when two trains cross the bridge at the same time?**
+
+The published schedule **cannot** answer this and never could. Every scheduled
+departure in the MTA feed falls on an exact `:00` or `:30` second &mdash; 1,073
+weekday traversals return only `{0: 528, 30: 545}` &mdash; so the entire
+0&ndash;30 s window in which two crossings merge acoustically is *empty by
+construction*. That is what forced the withdrawal of the merged-pair table in
+this repository's own phase 9 work, and it means observation is the only
+available instrument.
+
+Two incoherent equal sources sum to **+3.01 dB**; a materially larger rise would
+indicate that simple energy summation is not what happens on a four-track
+suspended deck, which would be a new result. Because it is a difference between
+two events **in the same recording**, unknown gain cancels entirely &mdash; so
+this is answerable from the same uncalibrated consumer capture that cannot carry
+an absolute level.
+
+Settled by Method 41, which is pure observation during any field session and
+costs nothing beyond being present when it happens. At a weekday daytime rate of
+61.6 crossings per hour, the expected waiting time for a simultaneous pair is
+short. See [`FIELD-KIT.md`](FIELD-KIT.md).
+
 ## 12. Ethics
 
-People appear in two frames at a distance, in a public park, incidentally and
-unidentifiably. No frame was selected for a person in it, no face is resolvable
-at the published size, and the published audio carries no intelligible speech.
+People appear in the lawn frame at a distance, in a public park, incidentally
+and unidentifiably. The two evening stills on Washington Street show a crowd at
+moderate distance; at the published derivative size no face is individually
+identifiable, and the masters are not committed. No face is resolvable at the
+published size, and the published audio carries no intelligible speech.
+
+**The v1.1 blanket claim is withdrawn.** It read "no frame was selected for a
+person in it", and that no longer holds for the whole set. The two
+evening stills were taken *for* the people in them — that is the operator's
+stated intent, it is why they were reassigned to the cohort study, and pretending
+otherwise would be claiming a weaker ethical exposure than the material actually
+carries. It remains true of every other frame here. What replaces it is a
+narrower and checkable commitment:
+**counts are reported rather than faces**, and
+**no crop, enlargement or annotation that would make any individual identifiable is published anywhere in this repository.**
+That is the constraint a deliberate
+pedestrian survey would also have to meet, which is why Q57 asks whether the
+information gain justifies the privacy cost before any such survey is designed.
 
 That is the position [Document 5](../FIELD-CAPTURE-PROTOCOL.md) set out and it
 is carried voluntarily: this programme argues for the interests of the people it

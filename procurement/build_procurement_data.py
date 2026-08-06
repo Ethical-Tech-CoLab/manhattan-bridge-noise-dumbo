@@ -110,8 +110,8 @@ NOT_DELIVERED = [
 ]
 
 RATE_LADDER = [
-    ("vendor", "Named global consultancy",
-     "GSA ceiling rate, the vendor's own published card"),
+    ("upper", "Whole-schedule upper quartile",
+     "75th percentile of awarded ceiling rates for the discipline across every MAS holder"),
     ("median", "Whole-schedule median",
      "Median awarded ceiling rate for the discipline across every MAS holder"),
     ("low", "Whole-schedule 10th percentile",
@@ -272,38 +272,26 @@ def rate_for(rates, group, kind):
     return None
 
 
-def vendor_rate_for(rates, group):
-    """The named-consultancy rung.
+def upper_quartile_rate_for(rates, group):
+    """The upper-quartile rung.
 
-    Priced from the vendor's own card where the vendor publishes a category
-    that matches the discipline by name, and otherwise from the 75th
-    percentile of the whole schedule, which is stated in the output so the
-    substitution is visible rather than silent.
+    Every discipline prices from the 75th percentile of awarded ceiling
+    rates across the whole schedule.
+
+    An earlier version of this function first consulted one individual
+    holder's own published categories and used a name-matching one where
+    it existed, falling back to the percentile otherwise. That branch
+    never fired once -- not for any of the eight delivered disciplines
+    and not for any of the four not delivered -- because holders publish
+    internal job titles ("Cyber Programmer 1", "Business Functions
+    Consultant 1") rather than discipline names. It is removed rather
+    than left in place: a lookup that never returns is a claim the model
+    does not honour, and it made the output describe a substitution that
+    was in fact the only path ever taken.
     """
-    aliases = {
-        "disc:sme": r"^subject matter expert 2$",
-        "disc:project-manager": r"^project manager$",
-        "disc:technical-writer": r"^technical writer$",
-        "disc:data-engineer": r"^data (engineer|architect)$",
-        "disc:data-scientist": r"^data scientist$",
-        "disc:software-engineer": r"^(software engineer|engineer 2)$",
-        "disc:web-developer": r"^web designer$",
-    }
-    pat = aliases.get(group)
-    if pat:
-        rx = re.compile(pat, re.I)
-        best = None
-        for r in rates["groups"]["vendor:accenture"].get("rows", []) or \
-                rates["groups"]["vendor:accenture"].get("sample", []):
-            if rx.match((r.get("labor_category") or "").strip()) and \
-                    r.get("worksite") == "Contractor_Facility":
-                if best is None or r["current_price"] > best["current_price"]:
-                    best = r
-        if best:
-            return best["current_price"], "Accenture: %s" % best["labor_category"]
     g = rates["groups"].get(group)
     if g and g["stats"].get("n"):
-        return g["stats"]["p75"], "no matching vendor category; schedule p75 substituted"
+        return g["stats"]["p75"], "whole-schedule 75th percentile"
     return None, "unpriced"
 
 
@@ -329,13 +317,13 @@ def main():
         h_lo, h_hi = q * plo, q * phi
         lo_h += h_lo
         hi_h += h_hi
-        vr, vwhy = vendor_rate_for(rates, group)
+        vr, vwhy = upper_quartile_rate_for(rates, group)
         packages.append({
             "key": key, "label": label, "group": group,
             "measure": measure, "quantity": round(q, 2), "unit": unit,
             "per_unit_low": plo, "per_unit_high": phi,
             "hours_low": round(h_lo, 1), "hours_high": round(h_hi, 1),
-            "rate_vendor": vr, "rate_vendor_why": vwhy,
+            "rate_upper": vr, "rate_upper_why": vwhy,
             "rate_median": rate_for(rates, group, "median"),
             "rate_low": rate_for(rates, group, "low"),
         })
@@ -345,13 +333,13 @@ def main():
         h_lo, h_hi = base_lo * flo, base_hi * fhi
         lo_h += h_lo
         hi_h += h_hi
-        vr, vwhy = vendor_rate_for(rates, group)
+        vr, vwhy = upper_quartile_rate_for(rates, group)
         packages.append({
             "key": key, "label": label, "group": group,
             "measure": "fraction of packages above", "quantity": None,
             "unit": "share", "per_unit_low": flo, "per_unit_high": fhi,
             "hours_low": round(h_lo, 1), "hours_high": round(h_hi, 1),
-            "rate_vendor": vr, "rate_vendor_why": vwhy,
+            "rate_upper": vr, "rate_upper_why": vwhy,
             "rate_median": rate_for(rates, group, "median"),
             "rate_low": rate_for(rates, group, "low"),
         })
@@ -367,11 +355,11 @@ def main():
     # ---- the scope that was not delivered ---------------------------------
     nd = []
     for key, label, h_lo, h_hi, group, why in NOT_DELIVERED:
-        vr, vwhy = vendor_rate_for(rates, group)
+        vr, vwhy = upper_quartile_rate_for(rates, group)
         nd.append({
             "key": key, "label": label, "group": group, "why": why,
             "hours_low": h_lo, "hours_high": h_hi,
-            "rate_vendor": vr, "rate_vendor_why": vwhy,
+            "rate_upper": vr, "rate_upper_why": vwhy,
             "rate_median": rate_for(rates, group, "median"),
             "rate_low": rate_for(rates, group, "low"),
         })

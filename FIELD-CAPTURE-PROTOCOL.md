@@ -232,6 +232,18 @@ A **miniDSP UMIK-1** is a USB measurement microphone supplied with an **individu
 
 Rated 3/5 `SNIPPET` on the specific Android compatibility claim. **Verify UMIK-1 + USB Audio Recorder PRO on the actual S23+ before depending on it in the field** — USB audio class support on Android is device-specific and has historically been inconsistent.
 
+### 3.2 The upgrade that actually arrived
+
+**In August 2026 the operator acquired a RØDE Wireless Pro and a RØDE VideoMic NTG.** The session card for that gear is [`pedestrian-site-visits/FIELD-KIT.md`](pedestrian-site-visits/FIELD-KIT.md), and it should be read instead of Part 4 of this document for any session using it.
+
+**Nothing in §3.1 is withdrawn** — the UMIK-1 remains the only route to a defensible *absolute* decibel, because it is the only device named here that ships with a calibration file. But the Wireless Pro changes the verdict in Part 3 further than §3.1 anticipated, on a different axis:
+
+- Each transmitter records **32-bit float to its own onboard memory**. The recording is written *inside the transmitter*, so the phone's speech DSP chain — the subject of §4.4 and the reason for the prohibitions above — **is not in the primary signal path at all**.
+- 32-bit float **cannot clip**, which removes gain staging as a failure mode across a 65–99 dB(A) range.
+- **Two transmitters share SMPTE/LTC timecode.** That is two microphones in two places on one clock, and it is what makes train direction, train speed and simultaneous crossings measurable from timing alone — none of which needs calibration.
+
+Rated **4/5 `SNIPPET`** (retailer and review listings in agreement; RØDE's own documentation not fetched directly). **The claim that onboard recording removes automatic gain from the primary record is an inference from the architecture and is rated 3/5 until Test A in §4.6 is run against the actual units.** Whether RØDE's GainAssist feature also touches the internal file is not documented in anything retrieved.
+
 ---
 
 ## Part 4 — Software, and how to configure it

@@ -192,72 +192,72 @@
  "crosscheck": {
   "awards_imply": {
    "max": {
-    "hours_at_blended": 11773.0,
-    "share_of_bottom_up_low": 9.621,
+    "hours_at_blended": 11822.8,
+    "share_of_bottom_up_low": 9.078,
     "usd": 1740857.0
    },
    "median": {
-    "hours_at_blended": 462.8,
-    "share_of_bottom_up_low": 0.378,
+    "hours_at_blended": 464.8,
+    "share_of_bottom_up_low": 0.357,
     "usd": 68440.5
    },
    "p25": {
-    "hours_at_blended": 145.9,
-    "share_of_bottom_up_low": 0.119,
+    "hours_at_blended": 146.5,
+    "share_of_bottom_up_low": 0.113,
     "usd": 21578.64
    },
    "p75": {
-    "hours_at_blended": 1363.8,
-    "share_of_bottom_up_low": 1.114,
+    "hours_at_blended": 1369.5,
+    "share_of_bottom_up_low": 1.052,
     "usd": 201657.76
    },
    "p90": {
-    "hours_at_blended": 2551.5,
-    "share_of_bottom_up_low": 2.085,
+    "hours_at_blended": 2562.3,
+    "share_of_bottom_up_low": 1.967,
     "usd": 377285.14
    }
   },
-  "blended_rate_usd_per_hour": 147.87,
+  "blended_rate_usd_per_hour": 147.25,
   "bottom_up_hours": {
-   "high": 3794.4,
-   "low": 1259.1,
-   "mid": 2526.7
+   "high": 4044.9,
+   "low": 1341.1,
+   "mid": 2693.0
   },
   "reading": "The bottom-up band and the award distribution do not agree. They are reported side by side and neither is adjusted to meet the other."
  },
  "delivered": {
   "low": {
-   "high": 364455.47,
-   "low": 116789.67
+   "high": 387040.02,
+   "low": 123811.3
   },
   "median": {
-   "high": 566302.21,
-   "low": 180941.04
+   "high": 601297.04,
+   "low": 191776.58
   },
-  "vendor": {
-   "high": 701302.24,
-   "low": 223812.3
+  "upper": {
+   "high": 744728.63,
+   "low": 237247.56
   }
  },
  "generated_at": "2026-08-04T13:10:24Z",
  "generator": "procurement/build_procurement_data.py",
  "hours": {
-  "high": 3794.4,
-  "low": 1259.1
+  "high": 4044.9,
+  "low": 1341.1
  },
  "inventory": {
-  "artifact_sloc": 7205,
+  "artifact_sloc": 7404,
   "artifacts": 7,
-  "data_sloc": 969,
-  "doc_words": 104223,
-  "documents": 10,
+  "data_sloc": 977,
+  "doc_words": 117379,
+  "documents": 12,
   "external_urls": 7,
-  "model_sloc": 1696,
-  "quoted_loci": 309,
+  "model_sloc": 1683,
+  "quoted_loci": 328,
   "scripts": 14,
-  "site_sloc": 3225,
-  "sources": 264,
-  "total_sloc": 13095
+  "site_sloc": 3595,
+  "sources": 284,
+  "total_sloc": 13659
  },
  "measured": {
   "counterfactual_uncached_usd": 1292.11,
@@ -280,7 +280,7 @@
    "high": 151556.0,
    "low": 52975.68
   },
-  "vendor": {
+  "upper": {
    "high": 207785.2,
    "low": 71777.52
   }
@@ -294,8 +294,8 @@
    "label": "Field acoustic measurement (Methods 11, 28, 31; captures C1-C5)",
    "rate_low": 90.54,
    "rate_median": 131.21,
-   "rate_vendor": 136.77,
-   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "rate_upper": 136.77,
+   "rate_upper_why": "whole-schedule 75th percentile",
    "why": "Five capture campaigns plus instrument calibration, analysis and reporting."
   },
   {
@@ -306,8 +306,8 @@
    "label": "Pedestrian origin-destination and dwell survey (Method 28)",
    "rate_low": 70.17,
    "rate_median": 108.13,
-   "rate_vendor": 139.43,
-   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "rate_upper": 139.43,
+   "rate_upper_why": "whole-schedule 75th percentile",
    "why": "Timed cordon counts across three day types, plus analysis. The single blocking unknown for any absolute exposure figure."
   },
   {
@@ -318,8 +318,8 @@
    "label": "Licensed architectural and structural design",
    "rate_low": 99.15,
    "rate_median": 142.01,
-   "rate_vendor": 211.77,
-   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "rate_upper": 211.77,
+   "rate_upper_why": "whole-schedule 75th percentile",
    "why": "Nothing in this repository is a design. A design-build proposal needs a licensed architect and a structural engineer of record."
   },
   {
@@ -330,112 +330,112 @@
    "label": "Preemption opinion (Q42)",
    "rate_low": 73.18,
    "rate_median": 137.66,
-   "rate_vendor": 218.79,
-   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "rate_upper": 218.79,
+   "rate_upper_why": "whole-schedule 75th percentile",
    "why": "Whether 40 CFR Part 201 preempts municipal regulation of a wholly intrastate rapid transit system. One lawyer, one day, per the register."
   }
  ],
  "packages": [
   {
    "group": "disc:sme",
-   "hours_high": 396.0,
-   "hours_low": 132.0,
+   "hours_high": 426.0,
+   "hours_low": 142.0,
    "key": "retrieval",
    "label": "Source retrieval and appraisal",
    "measure": "sources",
    "per_unit_high": 1.5,
    "per_unit_low": 0.5,
-   "quantity": 264,
+   "quantity": 284,
    "rate_low": 125.78,
    "rate_median": 201.97,
-   "rate_vendor": 255.79,
-   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "rate_upper": 255.79,
+   "rate_upper_why": "whole-schedule 75th percentile",
    "unit": "source"
   },
   {
    "group": "disc:technical-writer",
-   "hours_high": 677.4,
-   "hours_low": 260.6,
+   "hours_high": 763.0,
+   "hours_low": 293.4,
    "key": "authorship",
    "label": "Document authorship, cited",
    "measure": "doc_words",
    "per_unit_high": 6.5,
    "per_unit_low": 2.5,
-   "quantity": 104.22,
+   "quantity": 117.38,
    "rate_low": 62.85,
    "rate_median": 95.76,
-   "rate_vendor": 118.35,
-   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "rate_upper": 118.35,
+   "rate_upper_why": "whole-schedule 75th percentile",
    "unit": "1k words"
   },
   {
    "group": "disc:data-engineer",
-   "hours_high": 121.1,
-   "hours_low": 48.4,
+   "hours_high": 122.1,
+   "hours_low": 48.8,
    "key": "dataeng",
    "label": "Data acquisition and pipelines",
    "measure": "data_sloc",
    "per_unit_high": 12.5,
    "per_unit_low": 5.0,
-   "quantity": 9.69,
+   "quantity": 9.77,
    "rate_low": 99.04,
    "rate_median": 149.77,
-   "rate_vendor": 182.72,
-   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "rate_upper": 182.72,
+   "rate_upper_why": "whole-schedule 75th percentile",
    "unit": "100 SLOC"
   },
   {
    "group": "disc:data-scientist",
-   "hours_high": 254.4,
-   "hours_low": 101.8,
+   "hours_high": 252.4,
+   "hours_low": 101.0,
    "key": "modelling",
    "label": "Quantitative modelling",
    "measure": "model_sloc",
    "per_unit_high": 15.0,
    "per_unit_low": 6.0,
-   "quantity": 16.96,
+   "quantity": 16.83,
    "rate_low": 110.81,
    "rate_median": 167.81,
-   "rate_vendor": 203.09,
-   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "rate_upper": 203.09,
+   "rate_upper_why": "whole-schedule 75th percentile",
    "unit": "100 SLOC"
   },
   {
    "group": "disc:software-engineer",
-   "hours_high": 900.6,
-   "hours_low": 360.2,
+   "hours_high": 925.5,
+   "hours_low": 370.2,
    "key": "artifacts",
    "label": "Interactive artifacts",
    "measure": "artifact_sloc",
    "per_unit_high": 12.5,
    "per_unit_low": 5.0,
-   "quantity": 72.05,
+   "quantity": 74.04,
    "rate_low": 88.24,
    "rate_median": 138.26,
-   "rate_vendor": 171.07,
-   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "rate_upper": 171.07,
+   "rate_upper_why": "whole-schedule 75th percentile",
    "unit": "100 SLOC"
   },
   {
    "group": "disc:web-developer",
-   "hours_high": 322.5,
-   "hours_low": 129.0,
+   "hours_high": 359.5,
+   "hours_low": 143.8,
    "key": "publication",
    "label": "Site generation and publication",
    "measure": "site_sloc",
    "per_unit_high": 10.0,
    "per_unit_low": 4.0,
-   "quantity": 32.25,
+   "quantity": 35.95,
    "rate_low": 82.3,
    "rate_median": 120.45,
-   "rate_vendor": 146.85,
-   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "rate_upper": 146.85,
+   "rate_upper_why": "whole-schedule 75th percentile",
    "unit": "100 SLOC"
   },
   {
    "group": "disc:sme",
-   "hours_high": 534.4,
-   "hours_low": 103.2,
+   "hours_high": 569.7,
+   "hours_low": 109.9,
    "key": "qa",
    "label": "Review and quality assurance",
    "measure": "fraction of packages above",
@@ -444,14 +444,14 @@
    "quantity": null,
    "rate_low": 125.78,
    "rate_median": 201.97,
-   "rate_vendor": 255.79,
-   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "rate_upper": 255.79,
+   "rate_upper_why": "whole-schedule 75th percentile",
    "unit": "share"
   },
   {
    "group": "disc:project-manager",
-   "hours_high": 587.9,
-   "hours_low": 123.8,
+   "hours_high": 626.7,
+   "hours_low": 131.9,
    "key": "pm",
    "label": "Engagement management",
    "measure": "fraction of packages above",
@@ -460,16 +460,16 @@
    "quantity": null,
    "rate_low": 99.78,
    "rate_median": 151.95,
-   "rate_vendor": 183.58,
-   "rate_vendor_why": "no matching vendor category; schedule p75 substituted",
+   "rate_upper": 183.58,
+   "rate_upper_why": "whole-schedule 75th percentile",
    "unit": "share"
   }
  ],
  "rate_ladder": [
   {
-   "key": "vendor",
-   "label": "Named global consultancy",
-   "note": "GSA ceiling rate, the vendor's own published card"
+   "key": "upper",
+   "label": "Whole-schedule upper quartile",
+   "note": "75th percentile of awarded ceiling rates for the discipline across every MAS holder"
   },
   {
    "key": "median",
@@ -585,35 +585,35 @@
    "min": 35.06,
    "n": 1181
   },
-  "vendor:accenture": {
+  "vendor:large-schedule-holder-a": {
    "max": 488.26,
    "median": 211.16,
    "min": 61.22,
    "n": 2101
   },
-  "vendor:booz": {
-   "max": 498.06,
-   "median": 151.19,
-   "min": 37.48,
-   "n": 1886
-  },
-  "vendor:deloitte": {
-   "max": 472.66,
-   "median": 231.02,
-   "min": 40.8,
-   "n": 1826
-  },
-  "vendor:ey": {
+  "vendor:large-schedule-holder-b": {
    "max": 437.13,
    "median": 275.41,
    "min": 133.39,
    "n": 56
   },
-  "vendor:kpmg": {
+  "vendor:large-schedule-holder-c": {
+   "max": 472.66,
+   "median": 231.02,
+   "min": 40.8,
+   "n": 1826
+  },
+  "vendor:large-schedule-holder-d": {
    "max": 450.36,
    "median": 207.85,
    "min": 93.39,
    "n": 94
+  },
+  "vendor:large-schedule-holder-e": {
+   "max": 498.06,
+   "median": 151.19,
+   "min": 37.48,
+   "n": 1886
   }
  },
  "rates_provenance": {
@@ -632,52 +632,52 @@
  "schema": "procurement-comparison/1",
  "sensitivity": [
   {
-   "band_width_usd": 87089.46,
+   "band_width_usd": 92865.81,
    "key": "qa",
    "label": "Review and quality assurance",
-   "share_of_midpoint": 0.1723
+   "share_of_midpoint": 0.1731
   },
   {
-   "band_width_usd": 74715.7,
+   "band_width_usd": 76775.78,
    "key": "artifacts",
    "label": "Interactive artifacts",
-   "share_of_midpoint": 0.2333
+   "share_of_midpoint": 0.2259
   },
   {
-   "band_width_usd": 70519.99,
+   "band_width_usd": 75184.86,
    "key": "pm",
    "label": "Engagement management",
+   "share_of_midpoint": 0.1453
+  },
+  {
+   "band_width_usd": 57359.48,
+   "key": "retrieval",
+   "label": "Source retrieval and appraisal",
    "share_of_midpoint": 0.1447
   },
   {
-   "band_width_usd": 53320.08,
-   "key": "retrieval",
-   "label": "Source retrieval and appraisal",
-   "share_of_midpoint": 0.1427
-  },
-  {
-   "band_width_usd": 39912.77,
+   "band_width_usd": 44968.9,
    "key": "authorship",
    "label": "Document authorship, cited",
-   "share_of_midpoint": 0.1202
+   "share_of_midpoint": 0.1276
   },
   {
-   "band_width_usd": 25607.81,
-   "key": "modelling",
-   "label": "Quantitative modelling",
-   "share_of_midpoint": 0.08
-  },
-  {
-   "band_width_usd": 23307.08,
+   "band_width_usd": 25981.06,
    "key": "publication",
    "label": "Site generation and publication",
-   "share_of_midpoint": 0.0728
+   "share_of_midpoint": 0.0764
   },
   {
-   "band_width_usd": 10888.28,
+   "band_width_usd": 25406.43,
+   "key": "modelling",
+   "label": "Quantitative modelling",
+   "share_of_midpoint": 0.0748
+  },
+  {
+   "band_width_usd": 10978.14,
    "key": "dataeng",
    "label": "Data acquisition and pipelines",
-   "share_of_midpoint": 0.034
+   "share_of_midpoint": 0.0323
   }
  ]
 }

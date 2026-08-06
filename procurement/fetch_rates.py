@@ -74,13 +74,32 @@ FULL_ROWS = 200       # keep every row for a group no larger than this
 # returned rows belong to the group and the exclude removes near-homographs:
 # the index does a loose full-text match and will hand back "Computer Data
 # Architect II" and "Architectural Historian" for the keyword "architect".
-QUERIES = [
-    # --- named vendors, matched on vendor_name -------------------------
-    ("vendor:accenture", "ACCENTURE", r"^ACCENTURE", None, "vendor_name"),
-    ("vendor:ey", "ERNST", r"^ERNST", None, "vendor_name"),
-    ("vendor:deloitte", "DELOITTE", r"^DELOITTE", None, "vendor_name"),
-    ("vendor:kpmg", "KPMG", r"^KPMG", None, "vendor_name"),
-    ("vendor:booz", "BOOZ ALLEN", r"^BOOZ", None, "vendor_name"),
+#
+# The vendor groups exist only to cross-check the whole-schedule index
+# against individual schedule holders' own awarded cards. Which holders
+# were used is not a property of the result and is not carried in this
+# repository: supply a local, untracked vendor_terms.json to reproduce
+# them. Without it the vendor groups are simply skipped, and every
+# whole-schedule statistic is unaffected.
+VENDOR_TERMS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                 "vendor_terms.json")
+
+
+def load_vendor_queries():
+    """Vendor groups from an optional untracked file. Absent is normal."""
+    try:
+        with io.open(VENDOR_TERMS_FILE, encoding="utf-8") as fh:
+            terms = json.load(fh)
+    except (IOError, OSError):
+        return []
+    return [("vendor:large-schedule-holder-" + t["code"],
+             t["keyword"], t["matcher"], t.get("exclude"), "vendor_name")
+            for t in terms]
+
+
+_VENDOR_QUERIES = load_vendor_queries()
+
+QUERIES = _VENDOR_QUERIES + [
     # --- disciplines, matched on labor_category ------------------------
     ("disc:program-manager", "program manager", r"\bprogram manager\b", None, "labor_category"),
     ("disc:project-manager", "project manager", r"\bproject manager\b", None, "labor_category"),
@@ -116,10 +135,18 @@ QUERIES = [
 ]
 
 KEEP = (
-    "id", "vendor_name", "labor_category", "current_price", "next_year_price",
+    "id", "labor_category", "current_price", "next_year_price",
     "min_years_experience", "education_level", "worksite", "sin",
-    "schedule", "idv_piid", "business_size", "contract_start", "contract_end",
+    "schedule", "business_size", "contract_start", "contract_end",
 )
+
+# Vendor identity is deliberately NOT carried into the output. This is a
+# study of what the schedule publishes as a rate, not of which firms hold
+# it, and a dataset that names holders invites being read as though it
+# were about them. Dropping vendor_name and idv_piid is total and needs
+# no list of names to maintain: a contract number resolves to a holder in
+# one search, so both fields go together or neither does. Deduplication
+# above still uses them, because it runs on the raw API rows.
 
 STATE = {"index": "", "calls": 0, "unresolved": []}
 

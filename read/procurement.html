@@ -397,7 +397,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <div class="doclayout">
 <aside class="toc"><div class="h">On this page</div><a href="#the-claim-this-document-exists-to-refuse">The claim this document exists to refuse</a><a href="#three-instruments-deliberately-never-averaged">Three instruments, deliberately never averaged</a><a href="#instrument-b-what-the-delivered-scope-prices-at">Instrument B: what the delivered scope prices at</a><a class="l3" href="#the-rate-source">The rate source</a><a class="l3" href="#the-rate-ladder">The rate ladder</a><a class="l3" href="#the-scope-as-work-packages">The scope, as work packages</a><a class="l3" href="#the-result">The result</a><a class="l3" href="#what-moves-it">What moves it</a><a href="#what-was-not-delivered">What was not delivered</a><a href="#instrument-a-what-buyers-actually-paid">Instrument A: what buyers actually paid</a><a href="#the-disagreement-quantified-and-unreconciled">The disagreement, quantified and unreconciled</a><a href="#the-transparency-asymmetry">The transparency asymmetry</a><a href="#twelve-thousand-project-managers-and-seven-acoustical-engineers">Twelve thousand project managers and seven acoustical engineers</a><a href="#the-human-term">The human term</a><a href="#where-this-document-is-likely-to-be-wrong">Where this document is likely to be wrong</a><a href="#the-question-this-opens">The question this opens</a><a href="#reproducing-this">Reproducing this</a></aside>
 <main class="doc">
-<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/README.md"><code>procurement/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 3,590 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/README.md"><code>procurement/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 3,984 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
 <h1 id="9-what-this-would-have-cost-to-buy">9. What this would have cost to buy</h1>
 <p>A procurement comparison for the Manhattan Bridge / DUMBO rail-noise
 investigation. Companion to <a href="usage.html">Document 8, usage and cost</a>,
@@ -484,13 +484,12 @@ only informative thing here.</p>
 a login-free endpoint. Index <code>ceilingrates-2026-08-04_02-00-02</code>. The rates are
 awarded ceilings on federal schedule contracts, inclusive of the Industrial
 Funding Fee, for the current contract year.</p>
-<p>Cross-validated against Accenture Federal Services' own published rate card
-(GSA MAS <code>GS-35F-540GA</code>, SIN 54151S, modification PA-0045 dated 9/25/2024,
-contract period 12 July 2022 to 11 July 2027). The card carries the note:</p>
+<p>Cross-validated against a large schedule holder's own published rate card
+(SIN 54151S, current contract year). The card carries the note:</p>
 <blockquote>
 <p>Prices include the 0.75% Industrial Funding Fee (IFF).</p>
 </blockquote>
-<p>Year 10 OFFSITE, from the vendor's own PDF, matched against the GSA index:</p>
+<p>Year 10 OFFSITE, from the holder's own PDF, matched against the GSA index:</p>
 <div class="tw"><table>
 <thead>
 <tr>
@@ -551,8 +550,8 @@ and removes any need to parse vendor PDFs to build the model.</p>
 </thead>
 <tbody>
 <tr>
-<td>Named global consultancy</td>
-<td>Accenture Federal Services awarded ceiling rates, by category</td>
+<td>Whole-schedule upper quartile</td>
+<td>75th percentile of awarded ceiling rates for the discipline, across every holder</td>
 </tr>
 <tr>
 <td>Whole-schedule median</td>
@@ -635,7 +634,7 @@ point estimate appears anywhere in this document.</p>
 </thead>
 <tbody>
 <tr>
-<td>Named global consultancy</td>
+<td>Whole-schedule upper quartile</td>
 <td>$219,377 - $686,531</td>
 </tr>
 <tr>
@@ -741,7 +740,7 @@ DUMBO" would deliver those, and a client would expect them.</p>
 </thead>
 <tbody>
 <tr>
-<td>Named global consultancy</td>
+<td>Whole-schedule upper quartile</td>
 <td>$71,777 - $207,785</td>
 </tr>
 <tr>
@@ -754,13 +753,33 @@ DUMBO" would deliver those, and a client would expect them.</p>
 </tr>
 </tbody>
 </table></div>
-<p><strong>None of these four disciplines has a matching category on the vendor's own rate card.</strong>
-Accenture Federal Services publishes no acoustical engineer, no
-survey field staff, no licensed architect and no attorney. For the consultancy
-rung the model substitutes the whole-schedule 75th percentile for that
-discipline and says so in the data file (<code>rate_vendor_why</code>). That is a weaker
-figure than the delivered-scope consultancy column, which is drawn from
-matched, cent-for-cent verified categories.</p>
+<p>Published here as a distinction between the two columns:</p>
+<blockquote>
+<p><strong>None of these four disciplines has a matching category on the holder's own rate card.</strong> [...] For the upper-quartile rung the model substitutes the whole-schedule 75th percentile for that discipline and says so in the data file. That is a weaker figure than the delivered-scope upper-quartile column, which is drawn from matched, cent-for-cent verified categories.</p>
+</blockquote>
+<p><strong>That is withdrawn.</strong> There is no such distinction, because
+<strong>the delivered-scope column is not drawn from matched categories either.</strong>
+The model carried a lookup
+that consulted one holder's own published categories before falling back to the
+whole-schedule 75th percentile, and <strong>that lookup never returned a match once</strong> —
+not for any of the eight delivered disciplines and not for any of the four
+below. Every figure in every upper-quartile column, in both tables, has always
+been the whole-schedule 75th percentile.</p>
+<p>The cause is the same taxonomy problem this document already reports from the
+other direction: <strong>holders publish internal job titles, not discipline names.</strong>
+The categories on an individual card read <code>Cyber Programmer 1</code> and
+<code>Business Functions Consultant 1</code>, which no discipline regex can match, so the
+fallback was not a fallback — it was the only path.</p>
+<p><strong>No number moves.</strong> Every rate in both tables is the figure it always was; what
+changes is the description of where it came from, the name of the rung, and the
+field name in the data file, which is now <code>rate_upper_why</code> and reads
+<code>whole-schedule 75th percentile</code> for every discipline. The dead lookup has been
+removed rather than left in place, because a branch that never returns is a
+claim the model does not honour.
+<strong>The upper quartile remains a genuine 5/5 figure</strong> —
+it is drawn from the same GSA awarded-ceiling index as the other two
+rungs, and that index is independently cross-validated above. It is simply not,
+and never was, a vendor-specific number.</p>
 <p><strong>The model refuses to emit an all-in figure.</strong> Adding the two columns would
 produce a number describing a deliverable that does not exist, and it would
 look more authoritative than either column alone. The two are reported
@@ -889,19 +908,11 @@ disagreement is therefore <strong>published as the finding</strong> rather than 
 into a range.</p>
 <hr />
 <h2 id="the-transparency-asymmetry">The transparency asymmetry</h2>
-<p>Ernst &amp; Young LLP holds GSA contract <code>GS-00F-290CA</code>, period 8 September 2015
-to 7 September 2030, current through modification PS-0041 effective 2 April
-2026. Its published GSA Advantage price file is five pages long and contains
-<strong>no rates at all</strong>. Page 5 reads:</p>
-<blockquote>
-<p>Use of or reference to the rate card or any information contained herein is
-limited to EY's GPS Federal US48. Use of or reference to the rate card or any
-information contained herein by other EY BU must be approved in advance of
-such use or reference by David M. Lewandoski, Director of Federal Contract
-Management.</p>
-</blockquote>
+<p>One large schedule holder's published GSA Advantage price file is five pages
+long and contains <strong>no rates at all</strong>. The file's final page carries a legal
+notice restricting internal use of the rate card.</p>
 <p>The same contract's awarded labour categories appear in GSA's own ceiling-rate
-index - <strong>56 of them</strong>, retrievable without a login, an account or a key. Both
+index — dozens of them, retrievable without a login, an account or a key. Both
 facts are true simultaneously. The restriction is real and the data is public.</p>
 <p>This is not an accusation; it is a note about where public information lives.
 A researcher who accepts the vendor's own published file as the authoritative
@@ -1125,6 +1136,26 @@ python procurement/build_procurement_data.py
 <p>The first three write <code>rates.json</code>, <code>awards.json</code> and <code>usage/usage-data.json</code>.
 The fourth combines them, writes <code>procurement-data.json</code>, and injects the
 result into <code>procurement-dashboard.html</code>.</p>
+<p><strong>What a fresh clone cannot re-run.</strong> Stated so the reproducibility claim above
+is not larger than it is. <code>fetch_rates.py</code> sweeps the schedule by discipline
+and, separately, can sweep it by a named holder. The discipline sweep is the
+one every figure in this document rests on and it runs from a clean checkout
+with no configuration. The holder sweep does not: its query terms are read
+from an untracked <code>procurement/vendor_terms.json</code>, and with that file absent —
+which is the normal state of this repository — those groups are simply skipped
+and nothing downstream changes, because
+<strong>no rate published here is derived from a holder-specific query.</strong>
+The cross-validation described in
+<a href="#the-rate-source">The rate source</a> was checked by hand against a published
+card, not by that code path.</p>
+<p><code>rates.json</code> carries <strong>no vendor name and no contract number</strong> for any row. A
+contract number resolves to a holder in a single search, so the two are one
+field for this purpose and neither is carried. This is a study of published
+rates and not of firms, and the file is exactly as useful for that without
+them: every statistic here is computed over discipline and price, and both
+survive. It does mean a reader cannot audit <em>which</em> holders a percentile was
+drawn from — only that it was drawn from every holder on the schedule, which
+is what the rung now claims.</p>
 <p>Two silent failure modes in the GSA endpoint are guarded in <code>fetch_rates.py</code>
 and both were hit live during development:</p>
 <ul>
@@ -1140,7 +1171,7 @@ and are deduplicated on record id - a naive three-band probe reports 12,916
 project managers where the deduplicated sweep finds 12,913.</p>
 <p>One more, in <code>fetch_awards.py</code>: <code>curl.exe -d $body</code> in PowerShell mangles JSON
 bodies and returns a parse error from the API. Use a real HTTP client.</p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/README.md">Source on GitHub</a> &middot; Built from <code>5c71ff3</code> on 2026-08-04.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/procurement/README.md">Source on GitHub</a> &middot; Built from <code>eb332be</code> on 2026-08-05.</p>
 </main>
 </div>
 
