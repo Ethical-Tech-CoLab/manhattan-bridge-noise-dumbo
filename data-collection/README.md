@@ -895,6 +895,93 @@ comparison, and
 it converts an open-ended plea for more evidence into one named missing
 measurement, capture C1. Method 43.
 
+### When people arrive, and the objection it retires
+
+The model's arrival process was, until this was checked, a deterministic ramp -
+a fixed number of groups admitted per tick, with no random draw anywhere - sitting
+underneath a code comment that described it as
+"a Poisson-ish trickle". That is withdrawn.
+It was not Poisson-ish; a constant rate is the one thing arrivals never are, and
+a subway station is the least plausible place on earth to find one. A door opens
+and a slug of people climbs the stairs together.
+
+So three arrival processes were implemented and compared: the original ramp, a
+Poisson process, and a burst process in which groups entering at the York Street
+or High Street gateways are admitted in slugs on their feeder line's headway,
+spread by a stair-climb delay. Groups who walked over the bridge or stepped off
+the ferry keep the Poisson process, because
+**there is no starting gun for someone who walked here**.
+
+The population is built before the schedule is assigned, from a separate random
+stream, so group *i* is the same group under all three processes - same persona,
+same party size, same itinerary, same gateways. A diff across processes is
+therefore a diff of timing and of nothing else, and the verification harness
+asserts exactly that rather than trusting it.
+
+**The result is a clean negative, and it is worth more than a positive would have been.**
+Across twelve seeds run pairwise:
+
+| Process | Peak groups/min | Mean dose | Contention events |
+|---|---|---|---|
+| Uniform ramp | 14.0 | 86.083 dB | 57.1 |
+| Poisson | 31.5 | 86.082 dB | 58.0 |
+| Train doors | 58.9 | 86.083 dB | 65.0 |
+
+Bunching rises **4.2x**. The paired burst-minus-Poisson difference in mean dose
+is **+0.001 dB**, and the largest single-seed difference across twelve seeds is
+**0.037 dB**. A sensitivity sweep tightened the stair-climb spread from 25-150 s
+down to 0-2 s - a whole train emptying onto the street at once, which is
+physically impossible - and the answer did not move.
+
+**That null has a mechanism, which is why it is reportable rather than merely observed.**
+Arrival time sets a group's phase against the train cycle, and phase
+can only matter if the visit is comparable to the headway. Weekday daytime
+headway on the bridge is **58 s**, and even the shortest-dwell tenth of the
+modelled population is in the corridor for a median of about **430 s** - roughly
+seven crossings. Shifting phase moves that by at most one crossing in seven, and
+across a population it cancels.
+
+**Crowding is the exception, and it is real.** Contention events rise from about
+58 to 65, a paired difference of **+7.0** (sd 6.4), positive in eleven of twelve
+seeds. People who arrive together compete for the same bench at the same moment.
+So the arrival process is irrelevant to the quantity this model exists to
+compute, and relevant to the one it computes as a side effect.
+
+This bounds an objection rather than answering a question, which is the useful
+thing about it. "Your arrivals are invented, therefore your exposure numbers are
+invented" was true and remains true - but for the dose it is now invented
+*within 0.04 dB*, far below every other uncertainty in the model.
+
+**Q63.** **What is the shortest time anyone actually spends in this corridor?**
+The whole null above rests on one comparison: dwell against headway. It holds
+because the shortest-dwell decile in the model sits at about 430 s against a 58 s
+headway. That 430 s is itself modelled, not measured, and it inherits every
+weakness of the cohort model - which cannot identify its own cohort labels. If a
+real cohort crosses in under a minute, arrival phase reaches them and the null
+does not apply to the people it would matter most for, because the shortest
+visits are the ones a single badly-timed crossing can dominate. This is Method 28
+asked from a new direction: not "what is the mean dwell?" but
+**"what is the bottom of the distribution?"**
+Method 28 as specified would answer it at no extra cost, provided the tally
+records individual crossings rather than only a total.
+
+**Q64.** **Does crowding push people into louder places, and by how much?**
+The one quantity that does respond to arrival structure is contention, and every
+input to it is invented: the place capacities, the feeder headways
+(**1/5**, plausible timetable intervals), and the stair-climb dispersal
+(**1/5**, invented). The feeder headways are one constant away from being
+computed - `bridge_schedule.py` line 41 reads `BRIDGE_ROUTES = {"B","D","N","Q"}`,
+and changing it to `{"F"}` or `{"A","C"}` produces them by hour and day type in
+about a minute. The capacities are not: they would need counting benches, and
+then watching whether a full bench actually sends someone toward the bridge
+rather than away from it. Method 44.
+
+Note what this pair does to the priority order. The cheap half of Method 44 - the
+feeder headways - now has a *known small* payoff, because the quantity it feeds
+has been shown not to reach the dose. Running it anyway is defensible only as
+part of the crowding question, and saying so is the honest reading of a negative
+result: it retires work as well as motivating it.
+
 ## What shape of space they are standing in
 
 `fetch_geodata.py` answers the last question the other five leave open. The

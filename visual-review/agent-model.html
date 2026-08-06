@@ -302,6 +302,7 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
     <div class="ctl"><label for="popIn">Groups spawned</label>
       <input type="number" id="popIn" value="600" min="20" max="1200" step="20" style="width:110px"></div>
     <div class="ctl"><label>Policy rung</label><div class="seg" id="segRung"></div></div>
+    <div class="ctl"><label>Arrivals</label><div class="seg" id="segArrival"></div></div>
     <div class="ctl"><label>&nbsp;</label>
       <div style="display:flex;gap:8px">
         <button class="btn" id="btnRun">Run</button>
@@ -379,12 +380,35 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
     That is enforced rather than promised. Class membership is drawn from its own random stream, so
     switching this layer on leaves the dose of every group whose itinerary it did not change
     <em>bit for bit identical</em> &mdash; checked group by group, not in aggregate. The groups whose
-    dose does move are exactly the ones now walking a dog, and they move because they genuinely go
+    dose does move are the ones now walking a dog, and they move because they genuinely go
     somewhere else, which is a change of itinerary and not a change of physics.
     <span class="hint">The check is
-    <span class="mono">visual-review/verify_agent_model.js</span>, and it has already caught two real
-    defects in this page.</span>
+    <span class="mono">visual-review/verify_agent_model.js</span>, and it has already caught three
+    real defects in this page.</span>
   </p>
+  <div class="note bad">
+    <strong>One sentence above was too strong, and the check that enforces it found out.</strong>
+    <blockquote>
+      &ldquo;The groups whose dose does move are <em>exactly</em> the ones now walking a dog&rdquo;
+    </blockquote>
+    <strong>That is withdrawn.</strong> At a population of 400 the harness found a group with an
+    identical persona, an identical itinerary and an identical arrival time whose dose moved by
+    <span class="mono">0.97 dB</span> when this layer was switched on. It had not changed. Someone
+    <em>else</em> had. Nineteen groups were rerouted to the dog run, one of them out of a place that
+    was at capacity, and the group that had been turned away from that place was no longer turned
+    away &mdash; so it stayed <span class="mono">1,100 s</span> longer, somewhere quieter, and its
+    dose fell.
+    <p style="margin:10px 0 0">
+      <strong>That is the race condition this model was built to demonstrate, arriving unannounced in
+      its own verification output.</strong> The rule still holds in the form that matters &mdash;
+      no decibel anywhere is multiplied by anything about a person &mdash; but the weaker claim that
+      the layer is <em>separable</em> from the dose is false once capacity is modelled. Occupancy is
+      a shared resource, and a shared resource couples strangers to each other. The test now
+      distinguishes the two: a dose may move only if the group's re-plan count moved with it, and a
+      dose that moves with the same plan, the same arrival time <em>and</em> the same re-plan count
+      is a desynchronised random stream and fails the build.
+    </p>
+  </div>
   <div class="grid2">
     <div>
       <div class="sub">Exposure by class, this run</div>
@@ -441,6 +465,81 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
     exposure are different measurements, so the defensible output is a bracket with its assumptions
     named &mdash; and a bracket that straddles the measured peak would be as informative as either
     clean result.
+  </p>
+</div>
+
+<div class="card">
+  <h2 id="arrivals">How people arrive, and whether it matters</h2>
+  <p>
+    Everyone in this model walks in through one of four gateways &mdash; the York Street F platform,
+    the High Street A/C platform, the Brooklyn Bridge walkway, or Fulton Ferry Landing &mdash; drawn
+    per persona, with the exit sampled independently. So arrivals were never all from one place.
+    <strong>They were, however, at a perfectly constant rate</strong>, and that is a description of
+    nothing that has ever happened at a subway station.
+  </p>
+  <div class="note bad">
+    <strong>A false comment, quoted and withdrawn.</strong>
+    <blockquote>
+      &ldquo;Arrival is a Poisson-ish trickle spread over the first three quarters of the window&rdquo;
+    </blockquote>
+    The line underneath it contained no random draw of any kind. It admitted
+    <span class="mono">floor(pop &times; t / window)</span> groups &mdash; a deterministic ramp, which
+    is not Poisson-ish but perfectly regular, the one thing arrivals never are.
+    <strong>That is withdrawn.</strong> The arrival process is now explicit and selectable, and the
+    default has moved from the ramp to Poisson.
+  </div>
+  <p>
+    <strong>A subway door is a starting gun.</strong> Nobody trickles out of a train: the doors open
+    and a slug of people climbs the stairs together, walks the same way at the same time, and wants
+    the same bench. So a third process models arrivals at the two gateways that <em>have</em> a door,
+    in slugs on the feeder line's headway, while people who walked over the bridge or stepped off the
+    ferry keep the Poisson process &mdash; because there is no gun for them.
+  </p>
+  <div class="sub">The three processes, run against the same seed</div>
+  <div id="arrivalTable"></div>
+  <p class="hint" style="margin-bottom:10px">
+    Group <span class="mono">i</span> is the same group under all three: same persona, same party
+    size, same itinerary, same susceptibilities. Only the moment it walks in changes, because the
+    schedule is built from its own random stream. <strong>The diff is therefore a diff of timing and
+    of nothing else.</strong>
+  </p>
+  <button type="button" class="btn" id="runArrivals">Run all three at this seed</button>
+  <span class="hint" id="arrivalNote">Takes a few seconds, and resets the view afterwards.</span>
+
+  <div class="note" style="margin-top:16px">
+    <strong>The answer, over twelve seeds, paired run against run.</strong>
+    Bursts do what they should: peak arrivals per minute go from <span class="mono">14.0</span> under
+    the ramp to <span class="mono">31.5</span> under Poisson to <span class="mono">58.9</span> under
+    train doors &mdash; a <strong>4.2&times;</strong> increase in bunching.
+    <strong>And the dose does not move at all.</strong> The paired burst-minus-Poisson difference in
+    mean dose is <span class="mono">+0.001 dB</span> (sd 0.019), with a largest single-seed
+    difference of <span class="mono">0.037 dB</span>. Tightening the stair-climb spread to
+    <span class="mono">0&ndash;2 s</span>, so that a whole train empties onto the street
+    simultaneously, does not rescue it either.
+  </div>
+  <p>
+    <strong>That null has a mechanism, which is why it is reportable rather than merely observed.</strong>
+    Arrival time sets a group's <em>phase</em> against the train cycle, and phase can only matter if
+    the visit is comparable to the headway. It is not. Weekday daytime headway on the bridge is
+    <span class="mono">58 s</span>, and even the shortest-dwell tenth of the population is in the
+    corridor for a median of about <span class="mono">430 s</span> &mdash; roughly seven crossings.
+    Shifting phase moves that by at most one crossing in seven, and across a population it cancels.
+  </p>
+  <div class="note bad">
+    <strong>Crowding is the exception, and it is a real one.</strong>
+    Contention events rise from a base of about <span class="mono">58</span> per run to
+    <span class="mono">65</span> under train doors &mdash; a paired difference of
+    <span class="mono">+7.0</span> (sd 6.4), positive in eleven of twelve seeds. People who arrive
+    together compete for the same bench at the same moment, which is exactly what a burst should do.
+    <strong>So the arrival process is irrelevant to the quantity this page exists to compute, and
+    relevant to the one it computes as a side effect.</strong>
+  </div>
+  <p class="hint">
+    This bounds a worry that has been near the top of the weaknesses list since the model was built.
+    &ldquo;The arrivals are invented&rdquo; was true and is still true &mdash; but for the dose it is
+    now invented <em>within 0.04 dB</em>, which is far below every other uncertainty on this page.
+    <strong>It would stop being true for anyone whose time in the corridor approached the headway</strong>,
+    and nothing in DUMBO produces that: the corridor takes minutes to cross at any pace.
   </p>
 </div>
 
@@ -641,12 +740,27 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
     by construction, because avoidance is a cost that never appears as exposure.</li>
     <li><strong>The population totals are inherited from the cohort model,</strong> and that model
     cannot identify its own cohort labels. Errors there propagate here unchanged.</li>
-    <li><strong>Arrivals are a ramp, not the measured curve.</strong> The turnstile and
+    <li><strong>Arrivals are Poisson, not the measured curve.</strong> The turnstile and
     origin-destination work in this repository produced an hourly arrival profile for York St and High
-    St. This model does not use it: groups trickle in evenly over the first part of the run so that
-    every visit can finish inside it. That is a convenience of the demonstration, and it means the
-    <em>mix</em> of personas present at a given hour is shaped by assumption rather than by the data
-    that exists. Connecting the two is the single most obvious next piece of work.</li>
+    St. This model does not use it: the arrival <em>rate</em> is set so that every visit finishes
+    inside the run, and only the arrival <em>structure</em> is modelled. What that costs is now
+    bounded rather than guessed &mdash; across twelve paired seeds, moving from the flattest possible
+    arrivals to the burstiest moves the mean dose by
+    <span class="mono">0.001 dB</span> and never by more than
+    <span class="mono">0.037 dB</span>. So the rate matters for the <em>mix</em> of personas present
+    at a given hour, and the structure does not matter for the dose at all.</li>
+    <li><strong>The feeder headways are invented, and the stair-climb spread is invented.</strong>
+    Both are rated 1/5. The feeder headways are one constant away from being measured &mdash;
+    <span class="mono">bridge_schedule.py</span> already computes exactly this and has only ever been
+    pointed at the four bridge routes. The stair spread has no route to measurement short of standing
+    at a fare gate with a stopwatch. Neither is load-bearing for the dose, because the sensitivity
+    sweep tightened the spread to two seconds and the answer did not move; <strong>both are
+    load-bearing for the crowding result</strong>, which is the one quantity that does respond to
+    bursts.</li>
+    <li><strong>An hour is not a day.</strong> The run models a single hour at a single headway.
+    Nothing here spreads a population across a day, so the model cannot say anything about how
+    exposure accumulates for someone who is in the corridor at several different times &mdash; which
+    is every resident.</li>
     <li><strong>It has not been validated against anything.</strong> There is no observation of DUMBO
     pedestrian movement to validate it against. Until there is, agreement between this model and any
     other quantity in the repository is agreement between two assumptions.</li>
@@ -689,7 +803,11 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
   Susceptibility prevalences <span class="tag d">4/5</span> in the populations they were measured
   in, <span class="tag u">1/5</span> as a statement about who is in this corridor.
   The share of groups that bring a dog <span class="tag u">1/5</span> &mdash; reasoned from a transit
-  rule, not counted.</p>
+  rule, not counted.
+  Feeder-line headways at York St and High St <span class="tag u">1/5</span> &mdash; plausible
+  timetable intervals, one constant away from being computed from the GTFS tooling already here.
+  Stair-climb dispersal <span class="tag u">1/5</span> &mdash; invented, and swept rather than
+  asserted.</p>
 </div>
 
 <p class="hint" style="text-align:center;margin-top:26px">
@@ -912,7 +1030,16 @@ const personaById = Object.fromEntries(PERSONAS.map(p => [p.id, p]));
    does not change because of who is standing in it. Nothing below is ever
    multiplied into a level. Membership is drawn from its OWN random stream so
    that turning this layer on cannot perturb any dose the model already
-   produced -- a run at a given seed is byte-identical in every other field.
+   produced.
+
+   THAT IS TRUE OF THE ACOUSTICS AND NOT OF THE MODEL AS A WHOLE, and the
+   difference took a verification failure to notice. Once capacity is
+   modelled, occupancy is a shared resource: rerouting a dog walker frees a
+   place, and the stranger who was being turned away from that place now gets
+   it, stays longer and accrues a different dose without anything about them
+   having changed. So this layer is NOT separable from the dose -- it is
+   separable from the FIELD. The harness therefore tests the sharper thing: a
+   dose may move only alongside a change in that group's re-plan count.
 
    Each class carries two separate ratings, because two separate things are
    being claimed:
@@ -1039,13 +1166,121 @@ const RUNG_RANK = Object.fromEntries(RUNGS.map((r, i) => [r.id, i]));
 const atLeast = id => RUNG_RANK[state.rung] >= RUNG_RANK[id];
 
 /* ============================================================================
+   ARRIVAL PROCESSES
+   How people get here, as opposed to what they do once they have arrived.
+
+   This was one line for most of the model's life and the line was wrong. It
+   is separated out here because the choice turns out to be testable, and
+   because a corridor fed by subway doors has no reason to receive people at a
+   constant rate.
+   ========================================================================= */
+const SPAWN_WINDOW = 2600;    // seconds over which the population is admitted
+
+/* Feeder headways -- the interval between the trains that DELIVER people,
+   which are not the trains that make the noise.
+
+   NOT MEASURED, AND CHEAPLY MEASURABLE. This repository already contains GTFS
+   tooling that computes exactly this number, and it has only ever been pointed
+   at the four bridge routes: bridge_schedule.py line 41 reads
+   BRIDGE_ROUTES = {"B", "D", "N", "Q"}. Changing that one constant to {"F"} or
+   {"A", "C"} produces these values, by hour and day type, in about a minute.
+   Until that is run these are plausible timetable intervals and rated 1/5. */
+const FEEDER = { york: 480, high: 600 };
+
+/* Time from the doors opening to reaching the street. Stairs, fare gates, and
+   the fact that a slug of people does not climb as fast as one person. Also
+   unmeasured -- and it turns out to be the assumption the whole burst question
+   rests on, so it is declared with `let` and swept by the verification
+   harness rather than asserted once. */
+let DISPERSE_MIN = 25, DISPERSE_MAX = 150;
+
+const ARRIVALS = [
+  { id: "ramp", label: "Uniform ramp",
+    what: "A fixed number of groups per tick, with no randomness whatsoever.",
+    why: "The original behaviour, kept so that the change is auditable. It is " +
+         "not a model of arrivals; it is a scheduling convenience that made " +
+         "every visit fit inside the run.", r: 0 },
+  { id: "poisson", label: "Poisson",
+    what: "Independent arrivals at a constant mean rate. Gaps are exponential.",
+    why: "The standard null model for arrivals that are unrelated to each " +
+         "other. It has the same mean as the ramp and, unlike the ramp, it " +
+         "has variance -- so people occasionally clump by chance alone.", r: 2 },
+  { id: "burst", label: "Train doors",
+    what: "Groups entering at a subway gateway are admitted in slugs, one per " +
+          "feeder train, spread by a stair-climb delay. Groups arriving on " +
+          "foot keep the Poisson process.",
+    why: "A subway door is a starting gun. Nobody trickles out of a train.", r: 1 }
+];
+const arrivalById = Object.fromEntries(ARRIVALS.map(a => [a.id, a]));
+
+/* Which gateways have a door that opens. The Brooklyn Bridge walkway and the
+   ferry landing do not deliver people in slugs -- there is no gun for someone
+   who walked here, so those keep the Poisson process even in burst mode. */
+const DOORS = { york: "york", high: "high" };
+
+/* Start times for every group, built once per run from their own PRNG stream
+   so that changing the arrival process cannot shift a single draw in the
+   streams that decide WHO each group is or WHERE it goes. Group i is the same
+   group under all three processes; only the moment it walks in changes. */
+function buildSpawnSchedule(groups) {
+  const rt = mulberry32(subSeed(state.seed, "arr" + state.day + state.hour));
+  const n = groups.length, at = new Array(n);
+  if (state.arrival === "ramp") {
+    for (let i = 0; i < n; i++) at[i] = SPAWN_WINDOW * i / n;
+    return at;
+  }
+  // Exponential gaps at the same mean rate. Used wholesale for "poisson", and
+  // for the doorless gateways under "burst".
+  const mean = SPAWN_WINDOW / n;
+  let acc = 0;
+  const poissonAt = new Array(n);
+  for (let i = 0; i < n; i++) {
+    acc += -Math.log(1 - rt()) * mean;
+    poissonAt[i] = Math.min(acc, SPAWN_WINDOW);
+  }
+  if (state.arrival === "poisson") return poissonAt;
+
+  // Burst. Each door runs its own train clock, with its own phase, and the
+  // groups using that door are dealt out across its trains in order.
+  const byDoor = {};
+  for (const d in DOORS) byDoor[d] = [];
+  for (let i = 0; i < n; i++)
+    if (byDoor[groups[i].ingress]) byDoor[groups[i].ingress].push(i);
+
+  for (const d in byDoor) {
+    const idx = byDoor[d];
+    if (!idx.length) continue;
+    const hw = FEEDER[d];
+    // A phase per door, because two lines are not synchronised with each other
+    // and certainly not with the bridge.
+    const phase = rt() * hw;
+    const nTrains = Math.max(1, Math.ceil((SPAWN_WINDOW - phase) / hw));
+    const per = Math.ceil(idx.length / nTrains);
+    for (let k = 0; k < idx.length; k++) {
+      const train = Math.floor(k / per);
+      const doors = phase + train * hw;
+      const climb = DISPERSE_MIN + rt() * (DISPERSE_MAX - DISPERSE_MIN);
+      at[idx[k]] = Math.min(doors + climb, SPAWN_WINDOW);
+    }
+  }
+  // Everyone else walked here.
+  for (let i = 0; i < n; i++) if (at[i] === undefined) at[i] = poissonAt[i];
+  return at;
+}
+
+/* ============================================================================
    ENGINE
    ========================================================================= */
 const DT = 5;                 // seconds of model time per tick
 const state = {
   seed: 20260731, day: "Weekday", hour: 14, pop: 600, rung: "sensitive",
+  arrival: "poisson",
   running: false, t: 0, tick: 0, groups: [], log: [], seq: 0, counts: {},
   spawnCursor: 0, showField: true, showPaths: false, rate: 20, done: false,
+  // Groups are built up front and admitted by clock, because the arrival
+  // process has to be able to reorder them in time without changing who they
+  // are. pending[i] and spawnAt[i] refer to the same group.
+  pending: [], spawnAt: [],
   // Running accumulators. Same rule as state.counts: anything a panel needs to
   // COUNT is counted as it happens, because the log is a ring buffer and
   // forgets, and a counter does not.
@@ -1200,13 +1435,19 @@ function tickOnce() {
   if (state.done) return;
   state.tick++; state.t += DT;
 
-  // 1. OPEN -- spawn arrivals for this tick. Arrival is a Poisson-ish trickle
-  // spread over the first three quarters of the window so that everyone has
-  // time to complete a visit inside the run.
-  const spawnWindow = 2600;
-  const want = Math.min(state.pop, Math.floor(state.pop * Math.min(1, state.t / spawnWindow)));
-  while (state.spawnCursor < want) {
-    const gr = spawnGroup(state.spawnCursor);
+  // 1. OPEN -- admit everyone whose start time has come. The schedule was
+  // built in reset(); this loop only opens the gate.
+  //
+  // CORRECTION, because the comment that stood here was false. It read:
+  //   "Arrival is a Poisson-ish trickle spread over the first three quarters
+  //    of the window"
+  // and the line beneath it was a deterministic linear ramp with no random
+  // draw in it at all -- not Poisson-ish but perfectly regular, which is the
+  // one thing arrivals never are. THAT IS WITHDRAWN. The arrival process is
+  // now explicit, selectable, and the default has moved to Poisson.
+  while (state.spawnCursor < state.pending.length &&
+         state.spawnAt[state.spawnCursor] <= state.t) {
+    const gr = state.pending[state.spawnCursor];
     gr.startT = state.t;
     state.groups.push(gr);
     emit("agent.registered", gr.id,
@@ -1879,6 +2120,59 @@ function drawRungTable() {
   $("rungTable").innerHTML = s;
 }
 
+function drawArrivalTable(res) {
+  let s = '<table><thead><tr><th>Process</th><th>What it does</th><th>Why it is here</th>';
+  if (res) s += '<th>Peak groups/min</th><th>Mean dose</th><th>Spread</th><th>Contention</th>';
+  s += "</tr></thead><tbody>";
+  for (const a of ARRIVALS) {
+    const cur = a.id === state.arrival;
+    s += "<tr><td>" + (cur ? "<strong>" : "") + esc(a.label) + (cur ? "</strong>" : "") +
+         "</td><td>" + esc(a.what) + "</td><td>" + esc(a.why) + "</td>";
+    if (res) {
+      const r = res[a.id];
+      s += '<td class="mono">' + r.peakMin + '</td><td class="mono">' + r.mean.toFixed(3) +
+           '</td><td class="mono">&plusmn;' + r.sd.toFixed(3) + '</td><td class="mono">' +
+           r.contended + "</td>";
+    }
+    s += "</tr>";
+  }
+  s += "</tbody></table>";
+  $("arrivalTable").innerHTML = s;
+}
+
+/* Runs the same seed under all three arrival processes and tabulates the
+   result. It is a button and not an automatic redraw because it runs three
+   full simulations, and because a page that silently re-runs the model every
+   time you look at it is a page whose numbers you cannot trace to an action. */
+function compareArrivals() {
+  const keep = state.arrival;
+  const res = {};
+  for (const a of ARRIVALS) {
+    state.arrival = a.id;
+    reset(true);
+    let guard = 0;
+    while (!state.done && guard++ < 400000) tickOnce();
+    const d = state.groups.filter(g => g.secs > 0).map(doseLeq);
+    const mean = d.reduce((x, y) => x + y, 0) / Math.max(d.length, 1);
+    const sd = Math.sqrt(d.reduce((x, y) => x + (y - mean) * (y - mean), 0) /
+                         Math.max(d.length, 1));
+    const bins = {};
+    state.spawnAt.forEach(t => { const k = Math.floor(t / 60); bins[k] = (bins[k] || 0) + 1; });
+    res[a.id] = { mean, sd, peakMin: Math.max(...Object.values(bins), 0),
+                  contended: state.counts["place.contended"] || 0 };
+  }
+  state.arrival = keep;
+  drawArrivalTable(res);
+  const dm = res.burst.mean - res.poisson.mean;
+  const dc = res.burst.contended - res.poisson.contended;
+  $("arrivalNote").innerHTML = "Seed " + state.seed + ", " + state.day + " " +
+    String(state.hour).padStart(2, "0") + ":00, " + state.pop + " groups. " +
+    "Bunching " + (res.poisson.peakMin ? (res.burst.peakMin / res.poisson.peakMin).toFixed(1) : "?") +
+    "&times;, dose " + (dm >= 0 ? "+" : "") + dm.toFixed(3) + " dB, contention " +
+    (dc >= 0 ? "+" : "") + dc + ".";
+  reset();
+}
+
 const SCHEMAS = {
   schemaPlace:
 `Place {
@@ -1979,9 +2273,17 @@ function reset(keepLog) {
   if (!keepLog) state.log = [];
   PLACES.forEach(p => { p.occupancy = 0; p.visits = 0; p.peopleSec = 0;
                         p.sensSec = 0; p.dogSec = 0; });
+  // Build the whole population first, then decide when each of them walks in.
+  // The two steps are separate on purpose: group i is the same group under
+  // every arrival process, so a diff across processes is a diff of TIMING and
+  // of nothing else.
+  state.pending = [];
+  for (let i = 0; i < state.pop; i++) state.pending.push(spawnGroup(i));
+  state.spawnAt = buildSpawnSchedule(state.pending);
   emit("run.started", "system",
        { seed: state.seed, day: state.day, hour: state.hour,
-         rung: state.rung, groups: state.pop, headway_s: headway(), dt_s: DT });
+         rung: state.rung, arrival: state.arrival, groups: state.pop,
+         headway_s: headway(), dt_s: DT });
   redrawAll();
 }
 
@@ -2010,6 +2312,8 @@ function wire() {
       state.day, v => { state.day = v; reset(); drawRace(); });
   seg($("segRung"), RUNGS.map(r => [r.id, r.label]), state.rung,
       v => { state.rung = v; reset(); });
+  seg($("segArrival"), ARRIVALS.map(a => [a.id, a.label]), state.arrival,
+      v => { state.arrival = v; reset(); drawArrivalTable(); });
 
   const hourTxt = () => {
     const p = period(state.hour);
@@ -2035,6 +2339,17 @@ function wire() {
   $("btnReset").addEventListener("click", () => {
     state.running = false; $("btnRun").textContent = "Run"; reset(); });
 
+  $("runArrivals").addEventListener("click", () => {
+    state.running = false; $("btnRun").textContent = "Run";
+    $("runArrivals").disabled = true;
+    $("arrivalNote").textContent = "Running three simulations\u2026";
+    // Yield a frame so the disabled state and the notice actually paint before
+    // the main thread is taken for several seconds.
+    setTimeout(() => {
+      try { compareArrivals(); } finally { $("runArrivals").disabled = false; }
+    }, 30);
+  });
+
   const syncToggles = () => {
     $("btnField").setAttribute("aria-pressed", state.showField);
     $("btnPaths").setAttribute("aria-pressed", state.showPaths);
@@ -2056,6 +2371,7 @@ function init() {
     const el = $(id); if (el) el.textContent = txt;
   });
   drawAnchorTable(); drawPersonaDefs(); drawSensDefs(); drawScenarioDefs(); drawPlaceDefs(); drawRungTable();
+  drawArrivalTable();
   wire();
   reset();
   drawRace();

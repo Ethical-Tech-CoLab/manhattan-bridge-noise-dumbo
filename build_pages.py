@@ -211,10 +211,15 @@ ARTIFACTS = [
      "A fifth rung models who is standing in that dose - reduced sound "
      "tolerance, autistic listeners with hyperacusis, over-65s, carried "
      "infants, people with a history of cancer, and dogs - and changes "
-     "nobody's decibels by doing so.",
+     "nobody's decibels by doing so. Three selectable arrival processes let "
+     "the same population walk in as a flat trickle, at random, or in slugs "
+     "off a train.",
      "The first panel: the same itinerary started ninety seconds apart gets a "
-     "different dose. Then the rejected-propagation panel, which is a negative "
-     "result and the most important thing on the page. Then, at the "
+     "different dose. Then the arrival card, where multiplying peak bunching "
+     "by 4.2 times moves the mean dose by 0.001 dB - and the reason it does "
+     "not move is the interesting part. Then the rejected-propagation panel, "
+     "which is a negative result and the most important thing on the page. "
+     "Then, at the "
      "susceptibility rung, the card that refuses to compute the one number "
      "that would settle the argument, and names the single measurement that "
      "would unblock it."),
@@ -441,7 +446,10 @@ TODO = [
      "further arithmetic will substitute for measuring it. <b>This is the single "
      "blocking unknown for any design-build case.</b> <b>Method 42 rides along "
      "with it at no extra cost</b> &mdash; the same observer, at the same "
-     "cordon, tallying prams, dogs, mobility aids and apparent age band."),
+     "cordon, tallying prams, dogs, mobility aids and apparent age band. "
+     "<b>Record individual crossings, not only a total.</b> The arrival-process "
+     "result in the agent model turns on the <i>bottom</i> of the dwell "
+     "distribution rather than its mean, and a running tally throws that away."),
     ("cheap", "Method 42 - count the corridor by attribute, not just by head",
      "The same session as Method 28, one extra clicker",
      "Every susceptibility share in the agent model is a <b>national "
@@ -454,6 +462,18 @@ TODO = [
      "observable; hyperacusis, autism and a cancer history are not. It must "
      "publish which shares it moved and which it left national, or it will "
      "read as having verified all of them."),
+    ("cheap", "Method 44 - the crowding half, and only if the whole of it is run",
+     "The feeder headways are one constant and a minute; the rest is a study",
+     "Three arrival processes were compared in the agent model at a fixed "
+     "population, and <b>multiplying peak bunching by 4.2 times moved the mean "
+     "dose by 0.001 dB</b> &mdash; never more than 0.037 dB on any seed &mdash; "
+     "because dwell dominates headway. Contention is the one quantity that does "
+     "respond, up about 12%. So this method has been <b>demoted by a result "
+     "rather than by a judgement</b>, and it is listed here mostly to say so. "
+     "<code>bridge_schedule.py</code> already computes the feeder headways if "
+     "one constant is changed, and running that alone would produce a real "
+     "number that reaches nothing. <b>The part that matters is behavioural</b>: "
+     "whether a full bench sends someone toward the bridge or away from it."),
     ("cheap", "Method 31 - the decay transect",
      "One afternoon, free if a sound level meter is borrowed",
      "Walk outward from the structure with a meter and establish where the "

@@ -395,9 +395,9 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../index.html">Overview</a><a href="../index.html#demos">Demos</a><a href="../research.html" class="on">Research</a></nav></div></div>
 <div class="wrap">
 <div class="doclayout">
-<aside class="toc"><div class="h">On this page</div><a href="#why-not-google-maps">Why not Google Maps</a><a href="#the-premise-correction">The premise correction</a><a href="#four-traps-all-of-which-silently-produce-a-wrong-number">Four traps, all of which silently produce a wrong number</a><a href="#the-result">The result</a><a class="l3" href="#by-noise-period">By noise period</a><a class="l3" href="#the-dashboard">The dashboard</a><a href="#three-findings-that-were-not-being-looked-for">Three findings that were not being looked for</a><a class="l3" href="#1-peak-park-use-and-peak-train-frequency-are-out-of-phase---narrowed">1. Peak park use and peak train frequency are out of phase - narrowed</a><a class="l3" href="#2-the-mtas-own-train-counts-do-not-match-the-mtas-own-schedule">2. The MTA's own train counts do not match the MTA's own schedule</a><a class="l3" href="#3-explanation-3-would-undermine-this-programmes-own-derived-result">3. Explanation 3 would undermine this programme's own derived result</a><a class="l3" href="#what-can-honestly-be-said-instead">What can honestly be said instead</a><a href="#what-these-scripts-still-do-not-give-you">What these scripts still do not give you</a><a href="#counting-the-denominator">Counting the denominator</a><a class="l3" href="#the-direction-trap">The direction trap</a><a class="l3" href="#four-sources-none-of-which-counts-a-pedestrian">Four sources, none of which counts a pedestrian</a><a class="l3" href="#what-it-found">What it found</a><a class="l3" href="#the-corridor-fills-in-the-morning-and-empties-in-the-evening">The corridor fills in the morning and empties in the evening</a><a class="l3" href="#a-cross-check-that-was-not-designed-in">A cross-check that was not designed in</a><a class="l3" href="#residents">Residents</a><a class="l3" href="#littles-law-half-solved">Little's Law, half solved</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong">Where this section is likely to be wrong</a><a href="#who-is-actually-here-hour-by-hour">Who is actually here, hour by hour</a><a class="l3" href="#the-model">The model</a><a class="l3" href="#what-it-is-fitted-to">What it is fitted to</a><a class="l3" href="#the-visitor-prior-and-what-it-costs">The visitor prior, and what it costs</a><a class="l3" href="#the-finding-cohort-labels-are-not-identifiable">The finding: cohort labels are not identifiable</a><a class="l3" href="#the-other-thing-the-curve-is-not">The other thing the curve is not</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong_1">Where this section is likely to be wrong</a><a class="l3" href="#what-would-actually-move-this">What would actually move this</a><a href="#where-the-people-go-not-merely-how-many-there-are">Where the people go, not merely how many there are</a><a class="l3" href="#who-is-standing-in-it-and-the-number-that-is-refused">Who is standing in it, and the number that is refused</a><a href="#what-shape-of-space-they-are-standing-in">What shape of space they are standing in</a></aside>
+<aside class="toc"><div class="h">On this page</div><a href="#why-not-google-maps">Why not Google Maps</a><a href="#the-premise-correction">The premise correction</a><a href="#four-traps-all-of-which-silently-produce-a-wrong-number">Four traps, all of which silently produce a wrong number</a><a href="#the-result">The result</a><a class="l3" href="#by-noise-period">By noise period</a><a class="l3" href="#the-dashboard">The dashboard</a><a href="#three-findings-that-were-not-being-looked-for">Three findings that were not being looked for</a><a class="l3" href="#1-peak-park-use-and-peak-train-frequency-are-out-of-phase---narrowed">1. Peak park use and peak train frequency are out of phase - narrowed</a><a class="l3" href="#2-the-mtas-own-train-counts-do-not-match-the-mtas-own-schedule">2. The MTA's own train counts do not match the MTA's own schedule</a><a class="l3" href="#3-explanation-3-would-undermine-this-programmes-own-derived-result">3. Explanation 3 would undermine this programme's own derived result</a><a class="l3" href="#what-can-honestly-be-said-instead">What can honestly be said instead</a><a href="#what-these-scripts-still-do-not-give-you">What these scripts still do not give you</a><a href="#counting-the-denominator">Counting the denominator</a><a class="l3" href="#the-direction-trap">The direction trap</a><a class="l3" href="#four-sources-none-of-which-counts-a-pedestrian">Four sources, none of which counts a pedestrian</a><a class="l3" href="#what-it-found">What it found</a><a class="l3" href="#the-corridor-fills-in-the-morning-and-empties-in-the-evening">The corridor fills in the morning and empties in the evening</a><a class="l3" href="#a-cross-check-that-was-not-designed-in">A cross-check that was not designed in</a><a class="l3" href="#residents">Residents</a><a class="l3" href="#littles-law-half-solved">Little's Law, half solved</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong">Where this section is likely to be wrong</a><a href="#who-is-actually-here-hour-by-hour">Who is actually here, hour by hour</a><a class="l3" href="#the-model">The model</a><a class="l3" href="#what-it-is-fitted-to">What it is fitted to</a><a class="l3" href="#the-visitor-prior-and-what-it-costs">The visitor prior, and what it costs</a><a class="l3" href="#the-finding-cohort-labels-are-not-identifiable">The finding: cohort labels are not identifiable</a><a class="l3" href="#the-other-thing-the-curve-is-not">The other thing the curve is not</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong_1">Where this section is likely to be wrong</a><a class="l3" href="#what-would-actually-move-this">What would actually move this</a><a href="#where-the-people-go-not-merely-how-many-there-are">Where the people go, not merely how many there are</a><a class="l3" href="#who-is-standing-in-it-and-the-number-that-is-refused">Who is standing in it, and the number that is refused</a><a class="l3" href="#when-people-arrive-and-the-objection-it-retires">When people arrive, and the objection it retires</a><a href="#what-shape-of-space-they-are-standing-in">What shape of space they are standing in</a></aside>
 <main class="doc">
-<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md"><code>data-collection/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 8,660 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md"><code>data-collection/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 9,546 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
 <h1 id="establishing-train-frequency-over-the-manhattan-bridge-and-who-is-under-it">Establishing train frequency over the Manhattan Bridge, and who is under it</h1>
 <p>Six scripts that answer four questions this programme had been asserting
 answers to without ever deriving them: how many trains actually cross the
@@ -1914,6 +1914,105 @@ comparison, and
 <strong>the refusal is worth more than the estimate would have been</strong>:
 it converts an open-ended plea for more evidence into one named missing
 measurement, capture C1. Method 43.</p>
+<h3 id="when-people-arrive-and-the-objection-it-retires">When people arrive, and the objection it retires</h3>
+<p>The model's arrival process was, until this was checked, a deterministic ramp -
+a fixed number of groups admitted per tick, with no random draw anywhere - sitting
+underneath a code comment that described it as
+"a Poisson-ish trickle". That is withdrawn.
+It was not Poisson-ish; a constant rate is the one thing arrivals never are, and
+a subway station is the least plausible place on earth to find one. A door opens
+and a slug of people climbs the stairs together.</p>
+<p>So three arrival processes were implemented and compared: the original ramp, a
+Poisson process, and a burst process in which groups entering at the York Street
+or High Street gateways are admitted in slugs on their feeder line's headway,
+spread by a stair-climb delay. Groups who walked over the bridge or stepped off
+the ferry keep the Poisson process, because
+<strong>there is no starting gun for someone who walked here</strong>.</p>
+<p>The population is built before the schedule is assigned, from a separate random
+stream, so group <em>i</em> is the same group under all three processes - same persona,
+same party size, same itinerary, same gateways. A diff across processes is
+therefore a diff of timing and of nothing else, and the verification harness
+asserts exactly that rather than trusting it.</p>
+<p><strong>The result is a clean negative, and it is worth more than a positive would have been.</strong>
+Across twelve seeds run pairwise:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Process</th>
+<th>Peak groups/min</th>
+<th>Mean dose</th>
+<th>Contention events</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Uniform ramp</td>
+<td>14.0</td>
+<td>86.083 dB</td>
+<td>57.1</td>
+</tr>
+<tr>
+<td>Poisson</td>
+<td>31.5</td>
+<td>86.082 dB</td>
+<td>58.0</td>
+</tr>
+<tr>
+<td>Train doors</td>
+<td>58.9</td>
+<td>86.083 dB</td>
+<td>65.0</td>
+</tr>
+</tbody>
+</table></div>
+<p>Bunching rises <strong>4.2x</strong>. The paired burst-minus-Poisson difference in mean dose
+is <strong>+0.001 dB</strong>, and the largest single-seed difference across twelve seeds is
+<strong>0.037 dB</strong>. A sensitivity sweep tightened the stair-climb spread from 25-150 s
+down to 0-2 s - a whole train emptying onto the street at once, which is
+physically impossible - and the answer did not move.</p>
+<p><strong>That null has a mechanism, which is why it is reportable rather than merely observed.</strong>
+Arrival time sets a group's phase against the train cycle, and phase
+can only matter if the visit is comparable to the headway. Weekday daytime
+headway on the bridge is <strong>58 s</strong>, and even the shortest-dwell tenth of the
+modelled population is in the corridor for a median of about <strong>430 s</strong> - roughly
+seven crossings. Shifting phase moves that by at most one crossing in seven, and
+across a population it cancels.</p>
+<p><strong>Crowding is the exception, and it is real.</strong> Contention events rise from about
+58 to 65, a paired difference of <strong>+7.0</strong> (sd 6.4), positive in eleven of twelve
+seeds. People who arrive together compete for the same bench at the same moment.
+So the arrival process is irrelevant to the quantity this model exists to
+compute, and relevant to the one it computes as a side effect.</p>
+<p>This bounds an objection rather than answering a question, which is the useful
+thing about it. "Your arrivals are invented, therefore your exposure numbers are
+invented" was true and remains true - but for the dose it is now invented
+<em>within 0.04 dB</em>, far below every other uncertainty in the model.</p>
+<p><strong>Q63.</strong> <strong>What is the shortest time anyone actually spends in this corridor?</strong>
+The whole null above rests on one comparison: dwell against headway. It holds
+because the shortest-dwell decile in the model sits at about 430 s against a 58 s
+headway. That 430 s is itself modelled, not measured, and it inherits every
+weakness of the cohort model - which cannot identify its own cohort labels. If a
+real cohort crosses in under a minute, arrival phase reaches them and the null
+does not apply to the people it would matter most for, because the shortest
+visits are the ones a single badly-timed crossing can dominate. This is Method 28
+asked from a new direction: not "what is the mean dwell?" but
+<strong>"what is the bottom of the distribution?"</strong>
+Method 28 as specified would answer it at no extra cost, provided the tally
+records individual crossings rather than only a total.</p>
+<p><strong>Q64.</strong> <strong>Does crowding push people into louder places, and by how much?</strong>
+The one quantity that does respond to arrival structure is contention, and every
+input to it is invented: the place capacities, the feeder headways
+(<strong>1/5</strong>, plausible timetable intervals), and the stair-climb dispersal
+(<strong>1/5</strong>, invented). The feeder headways are one constant away from being
+computed - <code>bridge_schedule.py</code> line 41 reads <code>BRIDGE_ROUTES = {"B","D","N","Q"}</code>,
+and changing it to <code>{"F"}</code> or <code>{"A","C"}</code> produces them by hour and day type in
+about a minute. The capacities are not: they would need counting benches, and
+then watching whether a full bench actually sends someone toward the bridge
+rather than away from it. Method 44.</p>
+<p>Note what this pair does to the priority order. The cheap half of Method 44 - the
+feeder headways - now has a <em>known small</em> payoff, because the quantity it feeds
+has been shown not to reach the dose. Running it anyway is defensible only as
+part of the crowding question, and saying so is the honest reading of a negative
+result: it retires work as well as motivating it.</p>
 <h2 id="what-shape-of-space-they-are-standing-in">What shape of space they are standing in</h2>
 <p><code>fetch_geodata.py</code> answers the last question the other five leave open. The
 frequency work established how often trains cross; the pedestrian and cohort
@@ -2013,7 +2112,7 @@ python build_carousel.py
 <p>A 30 s poll against an 85-300 s headway samples every train several times
 before it arrives. Shorter intervals gain nothing and are less polite to a
 free public endpoint.</p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md">Source on GitHub</a> &middot; Built from <code>c99c878</code> on 2026-08-06.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md">Source on GitHub</a> &middot; Built from <code>7a5a7f9</code> on 2026-08-06.</p>
 </main>
 </div>
 
