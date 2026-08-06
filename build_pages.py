@@ -207,10 +207,17 @@ ARTIFACTS = [
     ("visual-review/agent-model.html", "Agents", "Agentic population model",
      "Groups - not individuals - enter DUMBO at persona-specific gateways, "
      "follow scenario itineraries, contend for capacity and accumulate a noise "
-     "dose along their actual path. Deterministic, seeded, fully event-logged.",
+     "dose along their actual path. Deterministic, seeded, fully event-logged. "
+     "A fifth rung models who is standing in that dose - reduced sound "
+     "tolerance, autistic listeners with hyperacusis, over-65s, carried "
+     "infants, people with a history of cancer, and dogs - and changes "
+     "nobody's decibels by doing so.",
      "The first panel: the same itinerary started ninety seconds apart gets a "
      "different dose. Then the rejected-propagation panel, which is a negative "
-     "result and the most important thing on the page."),
+     "result and the most important thing on the page. Then, at the "
+     "susceptibility rung, the card that refuses to compute the one number "
+     "that would settle the argument, and names the single measurement that "
+     "would unblock it."),
     ("pedestrian-site-visits/media.html", "Field", "Field media, first capture",
      "Two days of phone video, stills, by-product audio and stopwatch laps "
      "under the bridge: level traces, a threshold sweep, the stopwatch laps, "
@@ -376,7 +383,11 @@ DONE = [
      "dose accumulated along a path. Built as a <b>mechanism demonstration and "
      "labelled as one on its own face</b>, because every itinerary in it is "
      "invented. Its most useful output was a negative result: the propagation "
-     "model over the four MTA points could not be fitted."),
+     "model over the four MTA points could not be fitted. A fifth rung now "
+     "models <b>who is standing in the dose</b> and applies <b>no decibel "
+     "penalty to any of them</b> - a per-class adjustment would be a "
+     "fabricated exposure-response function wearing the costume of a "
+     "measurement."),
     ("The acoustic demonstration", "done",
      "Synthesised, and labelled synthetic in the interface",
      "A train approaching, passing and departing at the measured decibel "
@@ -428,7 +439,21 @@ TODO = [
      "Presence is L = &lambda;W. Method 27 produced &lambda;. Without W there is "
      "no absolute exposure figure, and the cohort model proved that no amount of "
      "further arithmetic will substitute for measuring it. <b>This is the single "
-     "blocking unknown for any design-build case.</b>"),
+     "blocking unknown for any design-build case.</b> <b>Method 42 rides along "
+     "with it at no extra cost</b> &mdash; the same observer, at the same "
+     "cordon, tallying prams, dogs, mobility aids and apparent age band."),
+    ("cheap", "Method 42 - count the corridor by attribute, not just by head",
+     "The same session as Method 28, one extra clicker",
+     "Every susceptibility share in the agent model is a <b>national "
+     "prevalence applied flat to a corridor nobody has ever counted by any "
+     "attribute at all</b>, and each is rated 1/5 on whether it applies here. "
+     "A flat rate is knowably wrong at a place whose purpose selects for a "
+     "class, and this corridor is full of them: a dog run, a carousel, a lawn, "
+     "and the residential blocks at Farragut Houses. <b>The honest half of the "
+     "method is what it cannot do:</b> an age band, a pram and a lead are "
+     "observable; hyperacusis, autism and a cancer history are not. It must "
+     "publish which shares it moved and which it left national, or it will "
+     "read as having verified all of them."),
     ("cheap", "Method 31 - the decay transect",
      "One afternoon, free if a sound level meter is borrowed",
      "Walk outward from the structure with a meter and establish where the "
@@ -508,6 +533,20 @@ TODO = [
      "compressor unless <code>AudioSource.UNPROCESSED</code> is explicitly "
      "enabled, so this test decides whether the next session needs its "
      "capture path changed to be worth taking."),
+    ("cheap", "Method 43 - what licenses comparing dB HL to dB(A)?",
+     "One afternoon at a desk, but strictly blocked on capture C1",
+     "Loudness discomfort centres near <b>100 dB HL</b> for normal-hearing "
+     "listeners and hyperacusis is commonly marked at <b>90 dB HL or below</b>; "
+     "the MTA measured <b>98.90 dB(A)</b> peaks at the dog run. Those look "
+     "comparable and <b>they are not the same units</b> - one is per-frequency, "
+     "pure-tone and headphone-presented, the other broadband, free-field and "
+     "weighted by a single fixed curve. Bridging them needs the third-octave "
+     "spectrum of the actual sound, which does not exist for either bridge. "
+     "<b>That is the value of the question:</b> it turns an open-ended plea "
+     "for more evidence into one named missing measurement. It will not give "
+     "a clean verdict even then - the defensible output is a bracket with its "
+     "assumptions named, and a bracket that straddles the measured peak would "
+     "be as informative as either clean result."),
     ("review", "Red-team the three newest results",
      "Reading and arithmetic",
      "Issues <a href=\"" + ISSUES + "26\">#26</a> (is the cohort model's "

@@ -395,9 +395,9 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../index.html">Overview</a><a href="../index.html#demos">Demos</a><a href="../research.html" class="on">Research</a></nav></div></div>
 <div class="wrap">
 <div class="doclayout">
-<aside class="toc"><div class="h">On this page</div><a href="#why-not-google-maps">Why not Google Maps</a><a href="#the-premise-correction">The premise correction</a><a href="#four-traps-all-of-which-silently-produce-a-wrong-number">Four traps, all of which silently produce a wrong number</a><a href="#the-result">The result</a><a class="l3" href="#by-noise-period">By noise period</a><a class="l3" href="#the-dashboard">The dashboard</a><a href="#three-findings-that-were-not-being-looked-for">Three findings that were not being looked for</a><a class="l3" href="#1-peak-park-use-and-peak-train-frequency-are-out-of-phase---narrowed">1. Peak park use and peak train frequency are out of phase - narrowed</a><a class="l3" href="#2-the-mtas-own-train-counts-do-not-match-the-mtas-own-schedule">2. The MTA's own train counts do not match the MTA's own schedule</a><a class="l3" href="#3-explanation-3-would-undermine-this-programmes-own-derived-result">3. Explanation 3 would undermine this programme's own derived result</a><a class="l3" href="#what-can-honestly-be-said-instead">What can honestly be said instead</a><a href="#what-these-scripts-still-do-not-give-you">What these scripts still do not give you</a><a href="#counting-the-denominator">Counting the denominator</a><a class="l3" href="#the-direction-trap">The direction trap</a><a class="l3" href="#four-sources-none-of-which-counts-a-pedestrian">Four sources, none of which counts a pedestrian</a><a class="l3" href="#what-it-found">What it found</a><a class="l3" href="#the-corridor-fills-in-the-morning-and-empties-in-the-evening">The corridor fills in the morning and empties in the evening</a><a class="l3" href="#a-cross-check-that-was-not-designed-in">A cross-check that was not designed in</a><a class="l3" href="#residents">Residents</a><a class="l3" href="#littles-law-half-solved">Little's Law, half solved</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong">Where this section is likely to be wrong</a><a href="#who-is-actually-here-hour-by-hour">Who is actually here, hour by hour</a><a class="l3" href="#the-model">The model</a><a class="l3" href="#what-it-is-fitted-to">What it is fitted to</a><a class="l3" href="#the-visitor-prior-and-what-it-costs">The visitor prior, and what it costs</a><a class="l3" href="#the-finding-cohort-labels-are-not-identifiable">The finding: cohort labels are not identifiable</a><a class="l3" href="#the-other-thing-the-curve-is-not">The other thing the curve is not</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong_1">Where this section is likely to be wrong</a><a class="l3" href="#what-would-actually-move-this">What would actually move this</a><a href="#where-the-people-go-not-merely-how-many-there-are">Where the people go, not merely how many there are</a><a href="#what-shape-of-space-they-are-standing-in">What shape of space they are standing in</a></aside>
+<aside class="toc"><div class="h">On this page</div><a href="#why-not-google-maps">Why not Google Maps</a><a href="#the-premise-correction">The premise correction</a><a href="#four-traps-all-of-which-silently-produce-a-wrong-number">Four traps, all of which silently produce a wrong number</a><a href="#the-result">The result</a><a class="l3" href="#by-noise-period">By noise period</a><a class="l3" href="#the-dashboard">The dashboard</a><a href="#three-findings-that-were-not-being-looked-for">Three findings that were not being looked for</a><a class="l3" href="#1-peak-park-use-and-peak-train-frequency-are-out-of-phase---narrowed">1. Peak park use and peak train frequency are out of phase - narrowed</a><a class="l3" href="#2-the-mtas-own-train-counts-do-not-match-the-mtas-own-schedule">2. The MTA's own train counts do not match the MTA's own schedule</a><a class="l3" href="#3-explanation-3-would-undermine-this-programmes-own-derived-result">3. Explanation 3 would undermine this programme's own derived result</a><a class="l3" href="#what-can-honestly-be-said-instead">What can honestly be said instead</a><a href="#what-these-scripts-still-do-not-give-you">What these scripts still do not give you</a><a href="#counting-the-denominator">Counting the denominator</a><a class="l3" href="#the-direction-trap">The direction trap</a><a class="l3" href="#four-sources-none-of-which-counts-a-pedestrian">Four sources, none of which counts a pedestrian</a><a class="l3" href="#what-it-found">What it found</a><a class="l3" href="#the-corridor-fills-in-the-morning-and-empties-in-the-evening">The corridor fills in the morning and empties in the evening</a><a class="l3" href="#a-cross-check-that-was-not-designed-in">A cross-check that was not designed in</a><a class="l3" href="#residents">Residents</a><a class="l3" href="#littles-law-half-solved">Little's Law, half solved</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong">Where this section is likely to be wrong</a><a href="#who-is-actually-here-hour-by-hour">Who is actually here, hour by hour</a><a class="l3" href="#the-model">The model</a><a class="l3" href="#what-it-is-fitted-to">What it is fitted to</a><a class="l3" href="#the-visitor-prior-and-what-it-costs">The visitor prior, and what it costs</a><a class="l3" href="#the-finding-cohort-labels-are-not-identifiable">The finding: cohort labels are not identifiable</a><a class="l3" href="#the-other-thing-the-curve-is-not">The other thing the curve is not</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong_1">Where this section is likely to be wrong</a><a class="l3" href="#what-would-actually-move-this">What would actually move this</a><a href="#where-the-people-go-not-merely-how-many-there-are">Where the people go, not merely how many there are</a><a class="l3" href="#who-is-standing-in-it-and-the-number-that-is-refused">Who is standing in it, and the number that is refused</a><a href="#what-shape-of-space-they-are-standing-in">What shape of space they are standing in</a></aside>
 <main class="doc">
-<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md"><code>data-collection/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 8,182 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md"><code>data-collection/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 8,660 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
 <h1 id="establishing-train-frequency-over-the-manhattan-bridge-and-who-is-under-it">Establishing train frequency over the Manhattan Bridge, and who is under it</h1>
 <p>Six scripts that answer four questions this programme had been asserting
 answers to without ever deriving them: how many trains actually cross the
@@ -1871,6 +1871,49 @@ survives any plausible correction to the positions. It matters because
 under-deck treatment - the intervention most often proposed, including in the
 November 2025 residents' petition - would be applied where the measured problem
 is smallest.</p>
+<h3 id="who-is-standing-in-it-and-the-number-that-is-refused">Who is standing in it, and the number that is refused</h3>
+<p>The agent model now carries a fifth capability rung that models the
+<strong>susceptibility composition</strong> of the people on those paths: general decreased
+sound tolerance, autistic listeners with current hyperacusis, people aged 65 or
+over, infants who are carried, people living with a history of cancer, and dogs.</p>
+<p><strong>No class is given a decibel penalty anywhere in the model, and that restraint is the design.</strong>
+A per-class adjustment to the dose would be a fabricated
+exposure-response function wearing the costume of a measurement. The dose is a
+property of the air; it does not change because of who is standing in it. What
+the layer changes is who is standing there, and whether they chose to be. That
+invariance is asserted on the page and it is
+<strong>tested</strong>: <code>../visual-review/verify_agent_model.js</code> runs the model with the
+layer off and on at the same seed and fails the build if any group whose
+itinerary did not change receives a different dose.</p>
+<p>Two questions come out of building it, and both are cheap.</p>
+<p><strong>Q61.</strong> <strong>Who is actually in this corridor, by attribute?</strong> Every share in the
+layer is a national prevalence applied flat, and every one is rated
+<strong>1/5 on whether it applies here</strong>,
+because nobody has ever counted the people in this
+corridor by any attribute at all. A flat national rate is <em>knowably</em> wrong at a
+place whose purpose selects for a class, and this corridor is full of them: a
+dog run, a carousel, a lawn, and the residential blocks at Farragut Houses. The
+correction is a clicker at the same cordon Method 28 already requires, tallying
+prams, dogs, mobility aids and apparent age band.
+<strong>The honest half of the method is what it cannot do:</strong>
+an age band, a pram and a lead are observable;
+hyperacusis, autism and a cancer history are not, so three of the six shares
+stay national and the method must say which. Method 42.</p>
+<p><strong>Q62.</strong> <strong>What licenses comparing a discomfort threshold to a field level?</strong>
+Loudness discomfort centres near <strong>100 dB HL</strong> for normal-hearing listeners and
+hyperacusis is commonly marked at <strong>90 dB HL or below</strong>; the MTA measured
+<strong>98.90 dB(A)</strong> peaks at the Brooklyn Bridge dog run. Those look comparable and
+<strong>they are not the same units</strong>
+- one is per-frequency, pure-tone and
+headphone-presented against audiometric zero, the other broadband, free-field
+and weighted by one fixed curve. Bridging them requires the frequency-specific
+reference thresholds <em>and</em> the third-octave spectrum of the actual sound, and
+this repository has no spectrum for either bridge - which its own field protocol
+names as the largest single fabrication in the corpus. So the model refuses the
+comparison, and
+<strong>the refusal is worth more than the estimate would have been</strong>:
+it converts an open-ended plea for more evidence into one named missing
+measurement, capture C1. Method 43.</p>
 <h2 id="what-shape-of-space-they-are-standing-in">What shape of space they are standing in</h2>
 <p><code>fetch_geodata.py</code> answers the last question the other five leave open. The
 frequency work established how often trains cross; the pedestrian and cohort
@@ -1970,7 +2013,7 @@ python build_carousel.py
 <p>A 30 s poll against an 85-300 s headway samples every train several times
 before it arrives. Shorter intervals gain nothing and are less polite to a
 free public endpoint.</p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md">Source on GitHub</a> &middot; Built from <code>eb332be</code> on 2026-08-05.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md">Source on GitHub</a> &middot; Built from <code>c99c878</code> on 2026-08-06.</p>
 </main>
 </div>
 

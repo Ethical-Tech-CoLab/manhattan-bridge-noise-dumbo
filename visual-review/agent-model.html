@@ -49,6 +49,12 @@
   --cp-p-resident: #b8860b;
   --cp-p-worker: #4a7d3f;
   --cp-p-commuter: #a8552a;
+  --cp-s-dst: #b11f4b;
+  --cp-s-autism: #7b3fb8;
+  --cp-s-elder: #1f6f8b;
+  --cp-s-infant: #c26a00;
+  --cp-s-onco: #2f7d6a;
+  --cp-s-dog: #8a6a2f;
 }
 html[data-theme="dark"] {
   color-scheme: dark;
@@ -85,6 +91,12 @@ html[data-theme="dark"] {
   --cp-p-resident: #e0b840;
   --cp-p-worker: #8ecb7f;
   --cp-p-commuter: #e0916a;
+  --cp-s-dst: #fd8ea1;
+  --cp-s-autism: #c09bf0;
+  --cp-s-elder: #6fc4e0;
+  --cp-s-infant: #f0a95c;
+  --cp-s-onco: #6fd0b6;
+  --cp-s-dog: #d8b871;
 }
 
 * { box-sizing: border-box; }
@@ -349,6 +361,90 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
 </div>
 
 <div class="card">
+  <h2 id="susceptibility">Who is standing in it</h2>
+  <p>
+    Every number above is a level or a duration. Neither says anything about <em>whose</em> ear it
+    arrived at. A person with hyperacusis, an eighty-year-old with recruitment, a baby in a pram and
+    a dog on a lead are all, to the model so far, one unit of exposure each.
+  </p>
+  <div class="note bad">
+    <strong>The dose is not weighted, and it never will be on this page.</strong>
+    The obvious move is a per-class penalty in decibels &mdash; add a few dB for a sensitive
+    listener and report the result as their exposure. That would be a fabricated dose&ndash;response
+    wearing the costume of a measurement, and it would be the more dangerous for looking like
+    arithmetic. Sound pressure is a property of the air. It does not change because of who is
+    standing in it.
+  </div>
+  <p>
+    That is enforced rather than promised. Class membership is drawn from its own random stream, so
+    switching this layer on leaves the dose of every group whose itinerary it did not change
+    <em>bit for bit identical</em> &mdash; checked group by group, not in aggregate. The groups whose
+    dose does move are exactly the ones now walking a dog, and they move because they genuinely go
+    somewhere else, which is a change of itinerary and not a change of physics.
+    <span class="hint">The check is
+    <span class="mono">visual-review/verify_agent_model.js</span>, and it has already caught two real
+    defects in this page.</span>
+  </p>
+  <div class="grid2">
+    <div>
+      <div class="sub">Exposure by class, this run</div>
+      <div id="sensTable"></div>
+      <p class="hint">
+        Classes overlap on purpose: membership is drawn per person, so one person can appear in two
+        rows. <strong>Summing this column double-counts.</strong> The &ldquo;any class&rdquo; row is
+        the only correct total, and it is produced by the draw rather than by addition.
+      </p>
+    </div>
+    <div>
+      <div class="sub">Who chose to be there</div>
+      <div id="agencyTable"></div>
+      <p class="hint">
+        The one question an agent model can answer that a cohort model cannot. A cohort has an
+        exposure; it does not have an itinerary, and so it cannot be asked who picked the route.
+      </p>
+    </div>
+  </div>
+  <div class="sub">Where the classes accumulate</div>
+  <div id="sensPlaceTable"></div>
+</div>
+
+<div class="card">
+  <h2>The number that would answer this, and why it cannot be computed</h2>
+  <p>
+    The natural way to say what this noise does to a sound-sensitive person is a threshold. Audiology
+    has one: the loudness discomfort level, the point at which a sound is reported as uncomfortably
+    loud. For normal-hearing listeners without a tolerance problem it averages around
+    <span class="mono">100 dB HL</span> across the audiometric frequencies, and hyperacusis is
+    commonly marked at <span class="mono">90 dB HL</span> or below. The MTA measured
+    <span class="mono">98.90 dB(A)</span> peaks at the dog run. Those two numbers are begging to be
+    compared.
+  </p>
+  <div class="note bad">
+    <strong>They are not in the same units, and the conversion needs a measurement nobody has taken.</strong>
+    Hearing level is referenced to audiometric zero <em>at each frequency</em>, measured with pure
+    tones under headphones. A-weighted sound pressure is broadband, free-field, and weighted by a
+    single fixed curve. Going from one to the other requires the reference threshold at each
+    frequency <em>and the spectrum of the actual sound</em>. This repository has no third-octave
+    spectrum for this source &mdash; its own field protocol calls the assumed spectrum the largest
+    fabrication in the corpus. So the comparison is refused here rather than performed badly.
+  </div>
+  <p>
+    That refusal is the most useful thing on this page, because it converts a vague call for
+    &ldquo;more data&rdquo; into one specific missing measurement. A third-octave spectrum of a
+    pass-by is the thing standing between this model and a defensible statement about a
+    sound-sensitive listener &mdash; and it is a capture that has already been specified, costed and
+    left undone. It is <strong>capture C1</strong> in this programme's field protocol, and the desk
+    work that would follow it is <strong>Method 43</strong>.
+  </p>
+  <p class="hint">
+    It will not give a clean verdict even then. A headphone threshold and a free-field broadband
+    exposure are different measurements, so the defensible output is a bracket with its assumptions
+    named &mdash; and a bracket that straddles the measured peak would be as informative as either
+    clean result.
+  </p>
+</div>
+
+<div class="card">
   <h2 id="noise">The noise field, and the propagation model that was rejected</h2>
   <p>
     The obvious way to give every point on the map a sound level is a propagation model: take the track
@@ -411,6 +507,8 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
       <pre id="schemaScenario"></pre>
       <div class="sub">Group &mdash; the unit that actually moves</div>
       <pre id="schemaGroup"></pre>
+      <div class="sub">Sensitivity &mdash; who is standing in the dose</div>
+      <pre id="schemaSens"></pre>
     </div>
   </div>
   <div class="note">
@@ -423,6 +521,17 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
   </div>
   <div class="sub">The personas</div>
   <div id="personaDefTable"></div>
+  <div class="sub">The susceptibility classes, and what each rate is actually a rate of</div>
+  <div id="sensDefTable"></div>
+  <p class="hint">
+    Two ratings, because two things are being claimed. <strong>Prevalence</strong> is how well
+    established the share is in the population it was measured in. <strong>Applies here</strong> is
+    whether the same share walks through DUMBO, and it is 1/5 for every row without exception,
+    because nobody has ever counted who is in this corridor by any attribute at all. A flat national
+    rate is knowably wrong in places whose whole purpose selects for a class &mdash; a dog run, a
+    playground, the residential blocks at Farragut Houses &mdash; and it is wrong in a different
+    direction at each of them.
+  </p>
   <div class="sub">The itinerary archetypes</div>
   <div id="scenarioDefTable"></div>
   <div class="sub">The places</div>
@@ -474,10 +583,23 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
       <h3>Capability is a ladder, not a flag</h3>
       <div id="rungTable"></div>
       <p class="hint">
-        Four separate policies rather than four options on one policy, so that what each layer adds can
+        Five separate policies rather than five options on one policy, so that what each layer adds can
         be read off by running them against the same seed and diffing the result. Switching rung
         re-runs from the same seed for exactly that reason.
       </p>
+      <div class="note bad">
+        <strong>A correction to that claim, which was false until this version.</strong>
+        <blockquote>
+          &ldquo;what each layer adds can be read off by diffing runs at the same seed&rdquo;
+        </blockquote>
+        The group sub-seed included the rung. Diffing two rungs at one seed therefore compared two
+        different random samples rather than the same people under a richer policy, so the diff
+        measured resampling as much as it measured the policy. The rung has been removed from the
+        sub-seed and the ladder is now genuinely paired. <strong>This changes the numbers every rung
+        reports.</strong> No claim elsewhere in this repository rests on them &mdash; the figures on
+        this page are computed in the reader's own browser and are never quoted as findings &mdash;
+        but the change is stated rather than absorbed.
+      </div>
       <h3>Seeded and idempotent</h3>
       <p>
         The same seed, day type, hour, population and rung produce a byte-identical event log. Sub-seeds
@@ -528,6 +650,33 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
     <li><strong>It has not been validated against anything.</strong> There is no observation of DUMBO
     pedestrian movement to validate it against. Until there is, agreement between this model and any
     other quantity in the repository is agreement between two assumptions.</li>
+    <li><strong>Every susceptibility share is a national rate applied flat to a corridor.</strong>
+    The prevalences are real and most are well established in the populations they were measured in.
+    Nothing establishes that the same shares walk through DUMBO, and the places most worth asking
+    about are precisely the ones that select for a class: a dog run selects for dogs, a carousel and
+    a lawn select for prams, and the residential blocks at Farragut Houses have an age structure
+    nobody here has looked up. The flat rate is therefore wrong at every one of those places and
+    wrong in a different direction at each.</li>
+    <li><strong>The dog rate is the weakest input on the page.</strong> A single per-persona
+    probability, set from the fact that the MTA requires dogs to travel in a container &mdash; so
+    dogs in the corridor are overwhelmingly walked from home rather than carried off a train. That
+    reasoning is sound and the number attached to it is not measured. It drives every dog-hour
+    reported here and it would take one afternoon with a clicker at the run gate to replace.</li>
+    <li><strong>There is no exposure&ndash;response function anywhere in this layer, and its absence
+    is the finding rather than a gap to be filled later.</strong> The model can say who was standing
+    there and for how long. It cannot say what that did to them, because the unit conversion
+    required is blocked on a third-octave spectrum this programme has never measured.</li>
+    <li><strong>Class membership is drawn independently per person,</strong> so the model treats
+    being over 65 and living with a history of cancer as unrelated events. They are not: the classes
+    correlate strongly with each other and with age in the real population. The any-class total is
+    therefore biased, and the sign is knowable &mdash; independent draws spread membership across
+    more distinct people than reality does, so the any-class figure is an over-estimate and the
+    double-membership figure an under-estimate.</li>
+    <li><strong>Nobody in this model is prevented from coming at all.</strong> If the noise is why a
+    parent does not take the pram under the bridge, or why a handler drives to a quieter run, then
+    the classes most sensitive to it are the ones most likely to be missing from the corridor
+    entirely &mdash; and this page would report that as low exposure rather than as exclusion. That
+    is the same avoidance blind spot listed above, and it bites hardest exactly here.</li>
   </ol>
   <p class="foot"><strong>Ratings.</strong>
   Measured sound levels <span class="tag v">5/5</span> &mdash; MTA's own instrumented sessions.
@@ -536,7 +685,11 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
   Noise field between anchors <span class="tag u">1/5</span> &mdash; interpolation with no physics.
   Itineraries, group sizes, walking speeds <span class="tag u">1/5</span> &mdash; invented.
   Visitor dwell <span class="tag d">4/5</span> for Louisville, <span class="tag u">2/5</span> as a
-  transfer to Brooklyn.</p>
+  transfer to Brooklyn.
+  Susceptibility prevalences <span class="tag d">4/5</span> in the populations they were measured
+  in, <span class="tag u">1/5</span> as a statement about who is in this corridor.
+  The share of groups that bring a dog <span class="tag u">1/5</span> &mdash; reasoned from a transit
+  rule, not counted.</p>
 </div>
 
 <p class="hint" style="text-align:center;margin-top:26px">
@@ -696,6 +849,10 @@ const PLACES = [
   P("mainpark", "Main Street Park lawn",       "waterfront",40.7040,-73.9945,  400, 44,  26, false),
   P("pier1",    "Pier 1 lawn and promenade",   "waterfront",40.7008,-73.9975,  700, 51,  30, false),
   P("archway",  "DUMBO Archway",               "attraction",40.7036,-73.9887,  200, 15,   9, false),
+  /* The loudest public place in the MTA's own table, and until now the one place
+     on this map with no agent standing in it. The MTA's memo names it
+     "Brooklyn Bridge Dog Run (public)": 87.50 dB(A) Leq, 98.90 dB(A) peak. */
+  P("dogrun",   "Brooklyn Bridge Dog Run",     "dogrun",  40.7042, -73.9930,   90, 27,  15, false),
   P("empire",   "Empire Stores",               "shop",    40.7029, -73.9945,  300, 34,  19, true),
   P("waterst",  "Water Street shops",          "shop",    40.7033, -73.9900,  160, 22,  13, true),
   P("frontst",  "Front Street shops",          "shop",    40.7024, -73.9885,  160, 20,  12, true),
@@ -720,32 +877,112 @@ const INDOOR_ATTEN = 13;
    ========================================================================= */
 const PERSONAS = [
   { id: "tourist_solo", label: "Tourist, solo or pair", v: "--cp-p-tourist",
-    group: [[1, 0.42], [2, 0.58]], pace: 1.28, dwellMul: 1.0,
+    group: [[1, 0.42], [2, 0.58]], pace: 1.28, dwellMul: 1.0, dogRate: 0.02,
     ingress: [["york", 3], ["high", 2], ["bbwalk", 4], ["ferry", 1]],
     egress:  [["york", 3], ["high", 2], ["bbwalk", 3], ["ferry", 2]],
     scenarios: [["quick_pics", 4], ["full_tour", 3], ["tour_eat", 2], ["water", 2], ["shops", 1]] },
   { id: "tourist_family", label: "Tourist family group", v: "--cp-p-family",
-    group: [[3, 0.34], [4, 0.40], [5, 0.18], [6, 0.08]], pace: 0.98, dwellMul: 1.35,
+    group: [[3, 0.34], [4, 0.40], [5, 0.18], [6, 0.08]], pace: 0.98, dwellMul: 1.35, dogRate: 0.01,
     ingress: [["york", 3], ["high", 2], ["bbwalk", 4], ["ferry", 2]],
     egress:  [["york", 3], ["high", 2], ["bbwalk", 3], ["ferry", 2]],
     scenarios: [["quick_pics", 2], ["full_tour", 3], ["tour_eat", 4], ["water", 4], ["shops", 1]] },
   { id: "local_resident", label: "Local resident", v: "--cp-p-resident",
-    group: [[1, 0.55], [2, 0.33], [3, 0.12]], pace: 1.42, dwellMul: 0.72,
+    group: [[1, 0.55], [2, 0.33], [3, 0.12]], pace: 1.42, dwellMul: 0.72, dogRate: 0.30,
     ingress: [["homes", 6], ["farragut", 4]],
     egress:  [["homes", 6], ["farragut", 4]],
     scenarios: [["water", 3], ["shops", 3], ["tour_eat", 2], ["errand", 5]] },
   { id: "worker", label: "Local worker", v: "--cp-p-worker",
-    group: [[1, 0.72], [2, 0.28]], pace: 1.45, dwellMul: 0.6,
+    group: [[1, 0.72], [2, 0.28]], pace: 1.45, dwellMul: 0.6, dogRate: 0.04,
     ingress: [["york", 4], ["high", 3], ["ferry", 1]],
     egress:  [["york", 4], ["high", 3], ["ferry", 1]],
     scenarios: [["errand", 5], ["tour_eat", 3], ["water", 2]] },
   { id: "commuter", label: "Passing commuter", v: "--cp-p-commuter",
-    group: [[1, 0.88], [2, 0.12]], pace: 1.55, dwellMul: 0.2,
+    group: [[1, 0.88], [2, 0.12]], pace: 1.55, dwellMul: 0.2, dogRate: 0.01,
     ingress: [["york", 4], ["high", 4], ["bbwalk", 2]],
     egress:  [["york", 4], ["high", 4], ["bbwalk", 2]],
     scenarios: [["through", 10]] }
 ];
 const personaById = Object.fromEntries(PERSONAS.map(p => [p.id, p]));
+
+/* ============================================================================
+   SENSITIVITIES
+   Who is standing there, and what a decibel means to them.
+
+   THE RULE THIS TABLE IS BUILT AROUND: the dose is a property of the air. It
+   does not change because of who is standing in it. Nothing below is ever
+   multiplied into a level. Membership is drawn from its OWN random stream so
+   that turning this layer on cannot perturb any dose the model already
+   produced -- a run at a given seed is byte-identical in every other field.
+
+   Each class carries two separate ratings, because two separate things are
+   being claimed:
+     rPrev   how well established the PREVALENCE is in the population it was
+             measured in
+     rApply  how well established it is that the same share walks through
+             DUMBO. This is 1/5 everywhere, and it is the honest number: no
+             one has ever counted who is in this corridor, by any attribute.
+   ========================================================================= */
+const SENSITIVITIES = [
+  { id: "dst", label: "Reports everyday sounds as too loud", v: "--cp-s-dst",
+    kind: "person", share: 0.059, agency: "chose", tolerance: true,
+    what: "Decreased sound tolerance in the general adult population.",
+    basis: "The largest class by far, and the one most likely to be left out of a " +
+           "framing that treats noise sensitivity as a minority condition.",
+    locus: "\u201cBased on data from the 2014 National Health Interview Survey, an estimated " +
+           "5.9% of U.S. adults report sensitivity to everyday sounds\u2026\u201d",
+    src: "Zelaya et al. 2015, quoted in Williams et al., Ear &amp; Hearing 2021",
+    rPrev: 4, rApply: 1 },
+  { id: "autism", label: "Autistic, with current hyperacusis", v: "--cp-s-autism",
+    kind: "person", share: 0.0221 * 0.4142, agency: "chose", tolerance: true,
+    what: "A compound rate, not an asserted one: the share of adults who are autistic, " +
+          "multiplied by the pooled share of autistic people with current hyperacusis.",
+    basis: "Both factors are published and are multiplied here rather than stated, so a " +
+           "reader can move either one.",
+    locus: "\u201cthe pooled prevalence of current hyperacusis was 41.42% (95% CrI [37.23, 45.84]) " +
+           "when assessed with an interview/questionnaire\u201d",
+    src: "Williams et al., Ear &amp; Hearing 2021, meta-analysis of 13,093 individuals with ASD; " +
+         "adult autism share 2.21% from Dietz et al. 2020",
+    rPrev: 5, rApply: 1 },
+  { id: "elder", label: "Aged 65 or over", v: "--cp-s-elder",
+    kind: "person", share: 0.180, agency: "chose", tolerance: false,
+    what: "Age-related hearing loss is common, and it does not simply make the world quieter.",
+    basis: "Recruitment makes loudness grow abnormally fast above threshold, so the same sound " +
+           "can be harder to hear and less comfortable at once. Reduced hearing is not " +
+           "reduced exposure.",
+    locus: "\u201cPersons 65 years and over, percent\u201d",
+    src: "U.S. Census Bureau QuickFacts, United States",
+    rPrev: 4, rApply: 1 },
+  { id: "infant", label: "Under two, carried or in a pram", v: "--cp-s-infant",
+    kind: "person", share: 0.022, agency: "did not choose", tolerance: false,
+    what: "Interpolated from the published under-five share, which is 5.4%.",
+    basis: "The class that cannot leave. Route, pace and stopping place are all chosen by " +
+           "somebody else, and the noise is not in that person's objective function.",
+    locus: "\u201cPersons under 5 years, percent\u201d",
+    src: "U.S. Census Bureau QuickFacts; the under-two share is my interpolation, not theirs",
+    rPrev: 2, rApply: 1 },
+  { id: "onco", label: "Living with a history of cancer", v: "--cp-s-onco",
+    kind: "person", share: 0.054, agency: "chose", tolerance: false,
+    what: "18.6 million people against a population of about 341.8 million.",
+    basis: "Platinum chemotherapy is ototoxic and the damage is permanent and high-frequency. " +
+           "The share of this class that received it is NOT published in anything retrieved " +
+           "here, so this class is too wide for the ototoxicity argument and too narrow for " +
+           "the treatment-burden one. It is carried at full width and that is stated.",
+    locus: "\u201cAs of January 1, 2025, about 18.6 million people were living in the United States " +
+           "with a history of cancer\u201d",
+    src: "Wagle et al., Cancer treatment and survivorship statistics, 2025",
+    rPrev: 4, rApply: 1 },
+  { id: "dog", label: "Dogs with documented noise sensitivity", v: "--cp-s-dog",
+    kind: "animal", share: 0.32, agency: "did not choose", tolerance: true,
+    what: "Share of DOGS PRESENT, not of people. Applied to the dogs the model spawns.",
+    basis: "On a lead, in a place chosen by the handler, and the destination is a run whose " +
+           "entire purpose is to be let off it.",
+    locus: "\u201cnoise sensitivity stands out as the most common canine anxiety with a prevalence " +
+           "of 32% in this study\u201d",
+    src: "Salonen et al., Scientific Reports 2020, 13,700 Finnish pet dogs",
+    rPrev: 4, rApply: 1 }
+];
+const sensById = Object.fromEntries(SENSITIVITIES.map(s => [s.id, s]));
+const PERSON_SENS = SENSITIVITIES.filter(s => s.kind === "person");
 
 /* ============================================================================
    SCENARIOS - itinerary archetypes
@@ -766,6 +1003,8 @@ const SCENARIOS = [
     slots: [["shop", 1.0], ["shop", 0.6], ["eatery", 0.5]], dwellMul: 0.95 },
   { id: "errand", label: "Local errand or lunch break",
     slots: [["eatery", 0.7], ["shop", 0.6]], dwellMul: 0.7 },
+  { id: "dog_walk", label: "Walking the dog",
+    slots: [["dogrun", 1.0], ["waterfront", 0.45]], dwellMul: 1.0 },
   { id: "through", label: "Walking through, not stopping",
     slots: [], dwellMul: 0 }
 ];
@@ -788,17 +1027,30 @@ const RUNGS = [
     teaches: "Does counting groups rather than people move the exposure totals, or only the headcount?" },
   { id: "contend", label: "walker_with_contention",
     adds: "Place capacity, deterministic contention, re-planning when blocked.",
-    teaches: "Does crowding push people into louder places? This is where the literal race condition enters." }
+    teaches: "Does crowding push people into louder places? This is where the literal race condition enters." },
+  { id: "sensitive", label: "walker_with_susceptibility",
+    adds: "Class membership per person, dogs as led companions, the dog run as a destination.",
+    teaches: "Whose exposure is it? Nothing here changes a decibel; it changes who is standing in it, and whether they chose to be." }
 ];
+/* Rungs are cumulative, so a capability test is a rank comparison and never an
+   equality. Writing state.rung === "contend" would silently switch contention
+   OFF at the rung above it. */
+const RUNG_RANK = Object.fromEntries(RUNGS.map((r, i) => [r.id, i]));
+const atLeast = id => RUNG_RANK[state.rung] >= RUNG_RANK[id];
 
 /* ============================================================================
    ENGINE
    ========================================================================= */
 const DT = 5;                 // seconds of model time per tick
 const state = {
-  seed: 20260731, day: "Weekday", hour: 14, pop: 600, rung: "contend",
+  seed: 20260731, day: "Weekday", hour: 14, pop: 600, rung: "sensitive",
   running: false, t: 0, tick: 0, groups: [], log: [], seq: 0, counts: {},
-  spawnCursor: 0, showField: true, showPaths: false, rate: 20, done: false
+  spawnCursor: 0, showField: true, showPaths: false, rate: 20, done: false,
+  // Running accumulators. Same rule as state.counts: anything a panel needs to
+  // COUNT is counted as it happens, because the log is a ring buffer and
+  // forgets, and a counter does not.
+  sensSec: {}, sensEnergy: {}, anySensSec: 0, anySensEnergy: 0,
+  carriedSec: 0, chosenSec: 0, ledSec: 0
 };
 
 function period(h) { return (h >= 23 || h < 7) ? "night" : (h >= 19 ? "evening" : "day"); }
@@ -851,14 +1103,29 @@ function planFor(gr, r) {
 }
 
 function spawnGroup(i) {
-  const r = mulberry32(subSeed(state.seed, "g" + i + state.day + state.hour + state.rung));
+  // The rung is deliberately NOT in this seed. It used to be, which meant that
+  // diffing two rungs at the same seed compared two different random samples
+  // rather than the same people under a richer policy -- and reading off what a
+  // layer adds is the entire purpose of the ladder. Removing it makes the diff
+  // paired. It also changes the numbers every rung reports, which is why it is
+  // said here rather than quietly done.
+  const r = mulberry32(subSeed(state.seed, "g" + i + state.day + state.hour));
   const persona = state.rung === "walker"
     ? personaById.tourist_solo
     : personaById[weighted(r, personaMix())];
-  const size = state.rung === "walker" || state.rung === "persona"
-    ? 1 : weighted(r, persona.group);
-  const scenario = state.rung === "walker"
-    ? "full_tour" : weighted(r, persona.scenarios);
+  const size = !atLeast("group") ? 1 : weighted(r, persona.group);
+  // Dogs and class membership are drawn from a SEPARATE stream, so that adding
+  // this layer cannot shift a single draw in the stream that produced the doses.
+  const rs = mulberry32(subSeed(state.seed, "s" + i + state.day + state.hour));
+  const dogs = atLeast("sensitive") && rs() < persona.dogRate ? 1 : 0;
+  // The scenario draw is ALWAYS consumed, even when it is about to be
+  // overridden, so that the r stream stays aligned across rungs. Skipping it
+  // inside the override was the first version of this line and it silently
+  // desynchronised every draw after it.
+  const drawn = state.rung === "walker" ? "full_tour" : weighted(r, persona.scenarios);
+  // Consistency by construction: only a group with a dog can be walking one.
+  // The reverse is not forced -- plenty of dogs are out on other errands.
+  const scenario = (dogs > 0 && rs() < 0.55) ? "dog_walk" : drawn;
   const inId = weighted(r, persona.ingress);
   // Entering and leaving by the same door with nothing in between is not a
   // visit, it is a rounding error. Resample rather than emit a zero-length one.
@@ -873,11 +1140,36 @@ function spawnGroup(i) {
     dwellMul: (state.rung === "walker" ? 1 : persona.dwellMul) * scenarioById[scenario].dwellMul,
     pos: byId[inId].pos.slice(), state: "travelling", plan: [], idx: 0,
     dwellLeft: 0, energy: 0, secs: 0, peakDB: 0, trail: [], replans: 0,
-    startT: 0, r
+    dogs, sens: {}, nCarried: 0, startT: 0, r
   };
+  assignSensitivity(gr, rs);
   gr.plan = planFor(gr, r);
   gr.plan.push(outId);
   return gr;
+}
+
+/* Per-PERSON draws, not a per-group flag. A family of four is four independent
+   chances, which is why the classes overlap correctly by construction: one
+   person can land in two of them and is counted once in each and once in the
+   "any class" total. SUMMING THE SHARE COLUMN WOULD DOUBLE-COUNT; running the
+   draw does not. */
+function assignSensitivity(gr, rs) {
+  gr.sens = {};
+  gr.anySens = 0;
+  gr.nCarried = 0;
+  if (!atLeast("sensitive")) return;
+  for (let k = 0; k < gr.size; k++) {
+    let any = false;
+    for (const s of PERSON_SENS) {
+      if (rs() < s.share) { gr.sens[s.id] = (gr.sens[s.id] || 0) + 1; any = true;
+        if (s.agency === "did not choose") gr.nCarried++; }
+    }
+    if (any) gr.anySens++;
+  }
+  // The dog class is a share of dogs present, so it is drawn against the dogs
+  // this group brought and never against its people.
+  for (let k = 0; k < gr.dogs; k++)
+    if (rs() < sensById.dog.share) gr.sens.dog = (gr.sens.dog || 0) + 1;
 }
 
 function personaMix() {
@@ -971,7 +1263,7 @@ function tickOnce() {
           gr.idx++;
           break;
         }
-        if (state.rung === "contend" && p.occupancy + gr.size > p.capacity) {
+        if (atLeast("contend") && p.occupancy + gr.size > p.capacity) {
           emit("place.contended", gr.id, { place: p.id, occupancy: p.occupancy, capacity: p.capacity });
           gr.replans++;
           const alt = PLACES.filter(q => q.kind === p.kind && q.occupancy + gr.size <= q.capacity);
@@ -1001,6 +1293,24 @@ function tickOnce() {
     }
     gr.energy += dB2p(db) * DT; gr.secs += DT;
     if (db > gr.peakDB) gr.peakDB = db;
+    // The class layer reads the level; it never writes it. db is already final
+    // at this point and nothing below is allowed to touch it.
+    if (atLeast("sensitive")) {
+      const e = dB2p(db) * DT;
+      for (const k in gr.sens) {
+        state.sensSec[k] = (state.sensSec[k] || 0) + gr.sens[k] * DT;
+        state.sensEnergy[k] = (state.sensEnergy[k] || 0) + gr.sens[k] * e;
+      }
+      state.anySensSec += gr.anySens * DT;
+      state.anySensEnergy += gr.anySens * e;
+      state.carriedSec += gr.nCarried * DT;
+      state.chosenSec += Math.max(0, gr.size - gr.nCarried) * DT;
+      state.ledSec += gr.dogs * DT;
+      if (gr.state === "dwelling") {
+        const p = byId[gr.plan[gr.idx]];
+        if (p) { p.sensSec += gr.anySens * DT; p.dogSec += gr.dogs * DT; }
+      }
+    }
     if (state.showPaths && state.tick % 6 === 0) {
       gr.trail.push([gr.pos[0], gr.pos[1]]);
       if (gr.trail.length > 60) gr.trail.shift();
@@ -1351,6 +1661,113 @@ function drawPersonaTable() {
   $("personaTable").innerHTML = s;
 }
 
+/* ---- the susceptibility layer -------------------------------------------- */
+function drawSensTable() {
+  if (!atLeast("sensitive")) {
+    $("sensTable").innerHTML = '<p class="hint">This layer is off. Select the ' +
+      '<span class="mono">walker_with_susceptibility</span> rung to switch it on.</p>';
+    return;
+  }
+  const totSec = Object.values(state.sensSec).reduce((a, b) => a + b, 0);
+  const personSec = state.groups.reduce((s, gr) => s + gr.secs * gr.size, 0);
+  let s = '<table><thead><tr><th>Class</th><th>Assumed share</th><th>Exposure-hours</th>' +
+          '<th>Mean dose L<span style="font-size:0.8em">eq</span></th><th>Share of all exposure-hours</th></tr></thead><tbody>';
+  for (const sn of SENSITIVITIES) {
+    const sec = state.sensSec[sn.id] || 0;
+    const en = state.sensEnergy[sn.id] || 0;
+    const leq = sec > 0 ? p2dB(en / sec).toFixed(1) : "&mdash;";
+    const unit = sn.kind === "animal" ? " dog-h" : " person-h";
+    s += "<tr><td><span class='sw' style='background:" + cssv(sn.v) + "'></span>" + esc(sn.label) +
+         '</td><td class="mono">' + (100 * sn.share).toFixed(2) + "%</td>" +
+         '<td class="mono">' + (sec / 3600).toFixed(2) + unit + "</td>" +
+         '<td class="mono">' + leq + "</td>" +
+         '<td class="mono">' + (personSec > 0 && sn.kind === "person"
+            ? (100 * sec / personSec).toFixed(2) + "%" : "&mdash;") + "</td></tr>";
+  }
+  const anyLeq = state.anySensSec > 0
+    ? p2dB(state.anySensEnergy / state.anySensSec).toFixed(1) : "&mdash;";
+  s += '<tr style="font-weight:600"><td>Any class, counted once per person</td>' +
+       '<td class="mono">by draw, not by sum</td>' +
+       '<td class="mono">' + (state.anySensSec / 3600).toFixed(2) + " person-h</td>" +
+       '<td class="mono">' + anyLeq + "</td>" +
+       '<td class="mono">' + (personSec > 0 ? (100 * state.anySensSec / personSec).toFixed(2) + "%" : "&mdash;") +
+       "</td></tr>";
+  s += "</tbody></table>";
+  // The sum of the class rows exceeds the any-class row whenever people hold two
+  // memberships. Reporting that gap is cheaper than explaining it twice.
+  if (state.anySensSec > 0) {
+    const psSec = SENSITIVITIES.filter(x => x.kind === "person")
+      .reduce((a, x) => a + (state.sensSec[x.id] || 0), 0);
+    s += '<p class="hint">Rows above sum to ' + (psSec / 3600).toFixed(2) +
+         " person-hours against an any-class total of " + (state.anySensSec / 3600).toFixed(2) +
+         ". The difference is people holding two memberships at once, and it is exactly the " +
+         "error a reader makes by adding the column.</p>";
+  }
+  if (totSec === 0) s += '<p class="hint">Nothing accrued yet.</p>';
+  $("sensTable").innerHTML = s;
+}
+
+function drawAgencyTable() {
+  if (!atLeast("sensitive")) {
+    $("agencyTable").innerHTML = '<p class="hint">This layer is off.</p>';
+    return;
+  }
+  const tot = state.chosenSec + state.carriedSec;
+  const rows = [
+    ["Chose the route themselves", (state.chosenSec / 3600).toFixed(2) + " person-h",
+     tot > 0 ? (100 * state.chosenSec / tot).toFixed(1) + "%" : "&mdash;",
+     "Choice here is nominal. A resident walking home has a route, not an option."],
+    ["Carried, and did not choose", (state.carriedSec / 3600).toFixed(2) + " person-h",
+     tot > 0 ? (100 * state.carriedSec / tot).toFixed(1) + "%" : "&mdash;",
+     "Under two. Route, pace and stopping place are all set by somebody whose own comfort is the thing being optimised."],
+    ["Led on a lead, and did not choose", (state.ledSec / 3600).toFixed(2) + " dog-h",
+     "&mdash;",
+     "Dogs. Counted separately because a dog-hour is not a person-hour and adding them would be a category error."]
+  ];
+  $("agencyTable").innerHTML =
+    '<table><thead><tr><th>Agency over the route</th><th>Accrued</th><th>Share</th><th>Why it is separated</th></tr></thead><tbody>' +
+    rows.map(r => "<tr><td>" + r[0] + '</td><td class="mono">' + r[1] + '</td><td class="mono">' +
+      r[2] + "</td><td>" + r[3] + "</td></tr>").join("") + "</tbody></table>";
+}
+
+function drawSensPlaceTable() {
+  if (!atLeast("sensitive")) {
+    $("sensPlaceTable").innerHTML = '<p class="hint">This layer is off.</p>';
+    return;
+  }
+  const rows = PLACES.filter(p => p.sensSec > 0 || p.dogSec > 0)
+                     .sort((x, y) => (y.sensSec + y.dogSec) - (x.sensSec + x.dogSec));
+  if (!rows.length) { $("sensPlaceTable").innerHTML = '<p class="hint">No arrivals yet.</p>'; return; }
+  let s = '<table><thead><tr><th>Place</th><th>Peak level here</th><th>Any-class person-hours</th>' +
+          '<th>Dog-hours</th><th>Share of that place&rsquo;s person-hours</th></tr></thead><tbody>';
+  for (const p of rows) {
+    s += "<tr><td>" + esc(p.name) + '</td><td class="mono">' +
+         p.peakDB.toFixed(1) + (p.indoor ? " &minus;" + INDOOR_ATTEN : "") + '</td>' +
+         '<td class="mono">' + (p.sensSec / 3600).toFixed(2) + '</td>' +
+         '<td class="mono">' + (p.dogSec / 3600).toFixed(2) + '</td>' +
+         '<td class="mono">' + (p.peopleSec > 0 ? (100 * p.sensSec / p.peopleSec).toFixed(1) + "%" : "&mdash;") +
+         "</td></tr>";
+  }
+  s += "</tbody></table>";
+  $("sensPlaceTable").innerHTML = s;
+}
+
+function drawSensDefs() {
+  const tag = n => n >= 4 ? "v" : n >= 3 ? "s" : "u";
+  let s = '<table><thead><tr><th>Class</th><th>Rate</th><th>What the rate is a rate of</th>' +
+          '<th>Why it is in the model</th><th>Locus</th><th>Prevalence</th><th>Applies here</th></tr></thead><tbody>';
+  for (const sn of SENSITIVITIES) {
+    s += "<tr><td><span class='sw' style='background:" + cssv(sn.v) + "'></span>" + esc(sn.label) +
+         '</td><td class="mono">' + (100 * sn.share).toFixed(2) + "%</td>" +
+         "<td>" + sn.what + "</td><td>" + sn.basis + "</td>" +
+         "<td><em>" + sn.locus + "</em><br><span class='hint'>" + sn.src + "</span></td>" +
+         '<td><span class="tag ' + tag(sn.rPrev) + '">' + sn.rPrev + "/5</span></td>" +
+         '<td><span class="tag u">' + sn.rApply + "/5</span></td></tr>";
+  }
+  s += "</tbody></table>";
+  $("sensDefTable").innerHTML = s;
+}
+
 function drawPlaceTable() {
   const rows = PLACES.filter(p => p.visits > 0).sort((x, y) => y.peopleSec - x.peopleSec);
   if (!rows.length) { $("placeTable").innerHTML = '<p class="hint">No arrivals yet.</p>'; return; }
@@ -1484,6 +1901,10 @@ const SCHEMAS = {
   pace        m/s           free-walking speed, jittered per group
   dwellMul    float         multiplies every dwell in the itinerary
   scenarios   [[scenId,w]]  what this persona is here to do
+  dogRate     0..1          probability this group brings a dog. Near zero for
+                            anyone arriving by subway: the MTA requires a dog
+                            to travel in a container, so dogs in the corridor
+                            are walked from home rather than carried off a train.
 }`,
   schemaScenario:
 `Scenario {
@@ -1511,7 +1932,29 @@ const SCHEMAS = {
   energy      Pa^2-seconds  the accumulated dose; the whole point
   secs        seconds       exposure duration, so that energy/secs is Leq
   peakDB      dB            highest instantaneous level encountered
+  dogs        int           dogs travelling with this group, on a lead
+  sens        {id: count}   people in each susceptibility class; a person may
+                            appear in two, which is why this is a count map
+                            and not a flag
+  anySens     int           people in AT LEAST ONE class. Never derived by
+                            summing sens, which would double-count.
+  nCarried    int           people with no say in the route
   r           PRNG          sub-seeded from (runSeed, group index)
+}`,
+  schemaSens:
+`Sensitivity {               WHO IS STANDING IN THE DOSE. NEVER APPLIED TO IT.
+  id          string
+  kind        enum          person | animal. A dog-hour is not a person-hour
+                            and the two are never added.
+  share       0..1          prevalence in the population it was MEASURED in
+  tolerance   bool          true where the evidence is about reduced sound
+                            TOLERANCE; false where it is about vulnerability
+                            to an effect. Two different claims, kept apart.
+  agency      enum          chose | did not choose -- who picked the route
+  locus       string        the quoted sentence the share comes from
+  rPrev       1..5          how good the prevalence evidence is
+  rApply      1..5          whether that share walks through DUMBO. 1/5
+                            everywhere, and that is the honest number.
 }`
 };
 
@@ -1531,8 +1974,11 @@ function seg(el, opts, cur, cb) {
 function reset(keepLog) {
   state.running = false; state.t = 0; state.tick = 0; state.groups = [];
   state.spawnCursor = 0; state.seq = 0; state.done = false; state.counts = {};
+  state.sensSec = {}; state.sensEnergy = {}; state.anySensSec = 0; state.anySensEnergy = 0;
+  state.carriedSec = 0; state.chosenSec = 0; state.ledSec = 0;
   if (!keepLog) state.log = [];
-  PLACES.forEach(p => { p.occupancy = 0; p.visits = 0; p.peopleSec = 0; });
+  PLACES.forEach(p => { p.occupancy = 0; p.visits = 0; p.peopleSec = 0;
+                        p.sensSec = 0; p.dogSec = 0; });
   emit("run.started", "system",
        { seed: state.seed, day: state.day, hour: state.hour,
          rung: state.rung, groups: state.pop, headway_s: headway(), dt_s: DT });
@@ -1542,6 +1988,7 @@ function reset(keepLog) {
 function redrawAll() {
   drawMap(); drawMapLegend(); drawStats(); drawCommons(); drawLog();
   drawDose(); drawPersonaTable(); drawPlaceTable();
+  drawSensTable(); drawAgencyTable(); drawSensPlaceTable();
 }
 
 let raf = null;
@@ -1608,7 +2055,7 @@ function init() {
   Object.entries(SCHEMAS).forEach(([id, txt]) => {
     const el = $(id); if (el) el.textContent = txt;
   });
-  drawAnchorTable(); drawPersonaDefs(); drawScenarioDefs(); drawPlaceDefs(); drawRungTable();
+  drawAnchorTable(); drawPersonaDefs(); drawSensDefs(); drawScenarioDefs(); drawPlaceDefs(); drawRungTable();
   wire();
   reset();
   drawRace();

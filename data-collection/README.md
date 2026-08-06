@@ -846,6 +846,55 @@ under-deck treatment - the intervention most often proposed, including in the
 November 2025 residents' petition - would be applied where the measured problem
 is smallest.
 
+### Who is standing in it, and the number that is refused
+
+The agent model now carries a fifth capability rung that models the
+**susceptibility composition** of the people on those paths: general decreased
+sound tolerance, autistic listeners with current hyperacusis, people aged 65 or
+over, infants who are carried, people living with a history of cancer, and dogs.
+
+**No class is given a decibel penalty anywhere in the model, and that restraint is the design.**
+A per-class adjustment to the dose would be a fabricated
+exposure-response function wearing the costume of a measurement. The dose is a
+property of the air; it does not change because of who is standing in it. What
+the layer changes is who is standing there, and whether they chose to be. That
+invariance is asserted on the page and it is
+**tested**: `../visual-review/verify_agent_model.js` runs the model with the
+layer off and on at the same seed and fails the build if any group whose
+itinerary did not change receives a different dose.
+
+Two questions come out of building it, and both are cheap.
+
+**Q61.** **Who is actually in this corridor, by attribute?** Every share in the
+layer is a national prevalence applied flat, and every one is rated
+**1/5 on whether it applies here**,
+because nobody has ever counted the people in this
+corridor by any attribute at all. A flat national rate is *knowably* wrong at a
+place whose purpose selects for a class, and this corridor is full of them: a
+dog run, a carousel, a lawn, and the residential blocks at Farragut Houses. The
+correction is a clicker at the same cordon Method 28 already requires, tallying
+prams, dogs, mobility aids and apparent age band.
+**The honest half of the method is what it cannot do:**
+an age band, a pram and a lead are observable;
+hyperacusis, autism and a cancer history are not, so three of the six shares
+stay national and the method must say which. Method 42.
+
+**Q62.** **What licenses comparing a discomfort threshold to a field level?**
+Loudness discomfort centres near **100 dB HL** for normal-hearing listeners and
+hyperacusis is commonly marked at **90 dB HL or below**; the MTA measured
+**98.90 dB(A)** peaks at the Brooklyn Bridge dog run. Those look comparable and
+**they are not the same units**
+- one is per-frequency, pure-tone and
+headphone-presented against audiometric zero, the other broadband, free-field
+and weighted by one fixed curve. Bridging them requires the frequency-specific
+reference thresholds *and* the third-octave spectrum of the actual sound, and
+this repository has no spectrum for either bridge - which its own field protocol
+names as the largest single fabrication in the corpus. So the model refuses the
+comparison, and
+**the refusal is worth more than the estimate would have been**:
+it converts an open-ended plea for more evidence into one named missing
+measurement, capture C1. Method 43.
+
 ## What shape of space they are standing in
 
 `fetch_geodata.py` answers the last question the other five leave open. The
