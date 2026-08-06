@@ -19,8 +19,12 @@ const PAGE = 'file:///' + path.join(__dirname, 'procurement-dashboard.html')
   .replace(/\\/g, '/');
 
 const EXPECT = {
-  cards: 13,        // every card in the body
-  tables: 8,
+  // Floors, not equalities. A hardcoded equality fails whenever a card is
+  // legitimately added -- which is exactly when the page most needs checking
+  // -- and it trains you to edit the test rather than read the page. The
+  // named CARD_IDS list below is what actually pins the page's structure.
+  minCards: 15,     // every card in the body
+  minTables: 12,
   minRows: 55,      // tbody rows across all tables once data is injected
   minBars: 25,      // bar-chart rows
   minStats: 10,     // headline stat cells
@@ -30,8 +34,9 @@ const EXPECT = {
 // Every card must be present by id. A card that is deleted or renamed shows up
 // here rather than as a quietly shorter page.
 const CARD_IDS = [
-  'head', 'refuse', 'delivered', 'ladder', 'bottomup', 'awards', 'crosscheck',
-  'notdelivered', 'seven', 'transparency', 'measured', 'weak', 'method',
+  'head', 'refuse', 'delivered', 'ladder', 'bottomup', 'awards', 'design',
+  'direction', 'crosscheck', 'notdelivered', 'seven', 'transparency',
+  'measured', 'weak', 'method',
 ];
 
 (async () => {
@@ -82,8 +87,8 @@ const CARD_IDS = [
     }, CARD_IDS);
 
     if (errs.length) fail('console/page/http errors: ' + JSON.stringify(errs.slice(0, 6)));
-    if (r.cards !== EXPECT.cards) fail('cards ' + r.cards + ' != ' + EXPECT.cards);
-    if (r.tables !== EXPECT.tables) fail('tables ' + r.tables + ' != ' + EXPECT.tables);
+    if (r.cards < EXPECT.minCards) fail('cards ' + r.cards + ' < ' + EXPECT.minCards);
+    if (r.tables < EXPECT.minTables) fail('tables ' + r.tables + ' < ' + EXPECT.minTables);
     if (r.rows < EXPECT.minRows) fail('tbody rows ' + r.rows + ' < ' + EXPECT.minRows);
     if (r.bars < EXPECT.minBars) fail('bars ' + r.bars + ' < ' + EXPECT.minBars);
     if (r.stats < EXPECT.minStats) fail('stats ' + r.stats + ' < ' + EXPECT.minStats);

@@ -43,6 +43,36 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 REPO = "Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo"
 BLOB = "https://github.com/" + REPO + "/blob/main/"
 ISSUES = "https://github.com/" + REPO + "/issues/"
+NEW_ISSUE = "https://github.com/" + REPO + "/issues/new"
+
+
+def _proc():
+    """Figures derived by procurement/build_procurement_data.py.
+
+    Read here rather than typed, because the direction multiple moved by a
+    factor of three the first time this engagement ran on past the day the
+    sentence describing it was written, and nothing caught it. Anything on
+    this site that quotes a number the procurement model computes must read
+    it from the model's output.
+    """
+    import json
+    path = os.path.join(ROOT, "procurement", "procurement-data.json")
+    with open(path, encoding="utf-8") as fh:
+        d = json.load(fh)
+    dr = d["direction"]
+    by = {r["key"]: r for r in dr["rates"]}
+    mult = [r["times_metered_low"] for r in dr["rates"] if r["times_metered_low"]]
+    return {
+        "usd": d["measured"]["usd"],
+        "dir_lo": min(mult), "dir_hi": max(r["times_metered_high"] for r in dr["rates"]),
+        "dir_sme": by["sme"]["times_metered_low"],
+        "dir_operator": by["operator"]["times_metered_low"],
+        "design_median": d["design"]["stats"]["median"],
+        "design_n": d["design"]["stats"]["n"],
+    }
+
+
+PROC = _proc()
 
 # ---------------------------------------------------------------------------
 # What is in the repository
@@ -100,6 +130,12 @@ DOCS = [
      "cheapest decile of the same schedule? Three instruments, reported side "
      "by side and never averaged - and the disagreement between them is the "
      "result."),
+    ("pedestrian-site-visits/OBSERVATION-PROTOCOL.md", "observation-protocol",
+     "11. Observation protocol", "11. Observe",
+     "Everything about trains here is measured and almost everything about "
+     "people is invented. Ten things a person walking through DUMBO can count "
+     "that would move a number - each with what it moves, what it would be "
+     "rated, and what a result of zero would mean."),
 ]
 
 # What each document FOUND, as against what it asks. One line each, shown on
@@ -154,13 +190,20 @@ HIGHLIGHTS = {
                               "withdraws v1.0's headline</b>, because two "
                               "correctly-computed datasets were joined that "
                               "had never been joined in the field.",
-    "usage": "<b>Human direction time costs about eight and a half times the "
-             "entire metered inference bill.</b> That is the opposite of the "
-             "usual claim, and it is measured rather than asserted.",
+    "usage": "<b>Human direction time costs between %s and %s times the "
+             "entire metered inference bill</b>, depending on whose rate you "
+             "apply to it. That is the opposite of the usual claim, and it "
+             "is measured rather than asserted."
+             % (PROC["dir_lo"], PROC["dir_hi"]),
     "procurement": "Three instruments, reported side by side and never "
                    "averaged. <b>The disagreement between them is the "
                    "result</b>, and the obvious headline is withdrawn before "
                    "it is made.",
+    "observation-protocol": "<b>An absence, counted, is data. An absence, "
+                            "remembered, is not.</b> Ten countable "
+                            "observations, each naming the invented number it "
+                            "would replace &mdash; and a submission path built "
+                            "so the provenance fields cannot be skipped.",
 }
 
 # Documents about the work rather than about the bridge. They are research and
@@ -474,6 +517,45 @@ TODO = [
      "one constant is changed, and running that alone would produce a real "
      "number that reaches nothing. <b>The part that matters is behavioural</b>: "
      "whether a full bench sends someone toward the bridge or away from it."),
+    ("cheap", "Method 45 - count dogs boarding, with a denominator",
+     "Free, and it rides along with a commute somebody is already taking",
+     "<b>The cheapest correction available in this repository.</b> The agent "
+     "model documents its dog rate as <i>&ldquo;near zero for anyone arriving "
+     "by subway&rdquo;</i> and then assigns 0.02, 0.04 and 0.01 to the three "
+     "subway-ingress personas. If the true rate is nearer 0.2%, <b>the comment "
+     "and the constants disagree by up to a factor of twenty</b> &mdash; and "
+     "nobody noticed, because nobody counted. <b>A result of zero is the "
+     "expected result and is fully publishable:</b> no occurrence in <i>n</i> "
+     "boardings bounds the rate at about 3/<i>n</i>, so 400 boardings observed "
+     "across a month of ordinary commuting bound it below 0.75%, which is "
+     "tighter than anything now in the model. <b>The denominator is the whole "
+     "method.</b> A tally of dogs without one is an anecdote."),
+    ("cheap", "Method 47 - does a listener hear two crossings as one event",
+     "Ninety minutes standing still, no gear at all",
+     "A clicker tally of audible train events against the traversal count from "
+     "the feed for the same window. This is what licenses comparing any "
+     "observed event rate to a scheduled one &mdash; a comparison this "
+     "repository has already made once, at 56.4/hr against 57.7/hr, on seven "
+     "events whose interval runs 13.8 to 99.0. <b>The schedule cannot settle "
+     "it and never could</b>: every departure in the feed falls on an exact "
+     ":00 or :30 second, so the window in which two crossings merge is empty "
+     "by construction, which is what forced the withdrawal of this "
+     "repository's own merged-pair table. <b>Take the count before looking at "
+     "the feed</b>, or ambiguous events will be resolved toward the number the "
+     "timetable predicts."),
+    ("cheap", "Method 46 - the matched-pair exclusion count",
+     "Two observers for ninety minutes, or one observer on two days",
+     "The same cordon count under the deck and at a control two blocks "
+     "outside the canyon, at the same hour. <b>It is the only method specified "
+     "here that could establish exclusion rather than exposure.</b> Every "
+     "susceptibility figure in the agent model is a flat national prevalence, "
+     "which structurally cannot represent a person who does not come at all: "
+     "a class that avoids the corridor is reported as <i>low exposure</i> "
+     "rather than as <i>exclusion</i>, and that is the flattering direction. "
+     "<b>It is also the method most easily made to lie</b> &mdash; two blocks "
+     "in DUMBO differ in footway width, retail frontage and grade, so an "
+     "unmatched control measures land use. A null is publishable; a positive "
+     "is not causal."),
     ("cheap", "Method 31 - the decay transect",
      "One afternoon, free if a sound level meter is borrowed",
      "Walk outward from the structure with a meter and establish where the "
@@ -1007,6 +1089,17 @@ html[data-theme="light"] .wc .u { color: #ff9bad; }
 .note.bad { border-left-color: var(--cp-danger); background: rgba(220,38,38,0.07); }
 .note.good { border-left-color: var(--cp-success); background: rgba(22,163,74,0.07); }
 .note.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,0.09); }
+
+a.cta {
+  display: inline-block; margin: 4px 8px 0 0; padding: 9px 16px;
+  border: 1px solid var(--cp-accent); border-radius: 0.5rem;
+  background: var(--cp-accent); color: #fff; font-weight: 700;
+  font-size: 0.88rem; text-decoration: none;
+}
+a.cta:hover { filter: brightness(1.08); text-decoration: none; }
+a.cta + a.cta {
+  background: transparent; color: var(--cp-accent);
+}
 
 .tw { overflow-x: auto; margin: 16px 0; }
 table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
@@ -1944,9 +2037,10 @@ def sec_behind(stats, c):
       'research with these tools is <strong>routinely asserted and almost '
       'never measured</strong>. Both pages exist so that the assertion here '
       'can be checked, including the parts that come out unflattering '
-      '&mdash; the human direction time alone costs about '
-      '<strong>eight and a half times</strong> the entire metered inference '
-      'bill, which is the opposite of the usual claim.</div>')
+      '&mdash; the human direction time alone costs between '
+      '<strong>%s and %s times</strong> the entire metered inference '
+      'bill, which is the opposite of the usual claim.</div>'
+      % (PROC["dir_lo"], PROC["dir_hi"]))
     A('</div>')
     return o
 
@@ -1960,7 +2054,42 @@ def sec_help(stats, c):
     A('<h2>How to help</h2>')
     A('<p>This is a working research repository, not a publication. Corrections '
       'are more valuable than agreement.</p>')
+
+    A('<div class="note good"><strong>There is now a way in.</strong> '
+      'Everything here about <em>trains</em> is measured. Almost everything '
+      'about <em>people</em> is invented, and it is why no absolute exposure '
+      'figure has ever been published on this site. '
+      '<a href="read/observation-protocol.html">Document 11</a> lists ten '
+      'things a person walking through DUMBO can count that would each replace '
+      'one of those invented numbers &mdash; what each moves, what it would be '
+      'rated, and what a result of zero would mean.<br><br>'
+      '<a class="cta" href="' + NEW_ISSUE + '?template=observation.yml">'
+      'Submit a field observation</a> '
+      '<a class="cta" href="' + NEW_ISSUE + '?template=correction.yml">'
+      'File a correction</a></div>')
+
+    A('<p><strong>Why a form rather than an email address.</strong> A count '
+      'without a denominator cannot be used, and a count whose purpose was '
+      'never stated can be read for the wrong thing &mdash; which is how a '
+      'headline was withdrawn here once. The forms make those fields '
+      'structurally required rather than politely requested. A GitHub issue '
+      'also carries provenance an email cannot: an identified author, a '
+      'server-side timestamp, a citable permanent reference, and a public edit '
+      'history. Email is accepted as a fallback and is filed one rating step '
+      'lower, and the record says so.</p>')
+
+    A('<p><strong>A result of zero is a result.</strong> If something does not '
+      'happen in <i>n</i> observations, the 95% upper bound on its rate is '
+      'about <code>3/n</code>. Nobody has ever counted dogs boarding a train '
+      'in this city; a commuter with a notes app would bound it inside a '
+      'month, and that single number would settle a constant in the agent '
+      'model that its own documentation currently contradicts.</p>')
+
     A('<ul>'
+      '<li><strong>Count something.</strong> The ten observations, ordered by '
+      'how much they move rather than how easy they are, are in '
+      '<a href="read/observation-protocol.html">Document 11</a>. Two of them '
+      'need nothing but a clicker and a stated corner.</li>'
       '<li><strong>Post a recording.</strong> See '
       '<a href="read/field-capture-protocol.html">the field capture protocol</a> '
       'for what makes one usable.</li>'
@@ -2133,7 +2262,23 @@ def sec_handoff(stats, c):
       '<div class="look">Q1&ndash;Q%d are numbered, attributed, and none of '
       'them rhetorical.</div></a>'
       % (stats["withdrawals"], stats["max_q"]))
+    A('<a class="tile" href="read/observation-protocol.html">'
+      '<div class="t">Count something &rarr;</div>'
+      '<div class="d">Everything here about <b>trains</b> is measured. Almost '
+      'everything about <b>people</b> is invented, and that is why no absolute '
+      'exposure figure has ever been published on this site. Ten things a '
+      'person walking through DUMBO can count that would each replace one of '
+      'those invented numbers.</div>'
+      '<div class="look">Two of them need nothing but a clicker and a stated '
+      'corner &mdash; and <b>a result of zero is a real result</b>.</div></a>')
     A('</div>')
+    A('<p class="small"><a href="' + NEW_ISSUE + '?template=observation.yml">'
+      'Submit a field observation</a> &nbsp;&middot;&nbsp; '
+      '<a href="' + NEW_ISSUE + '?template=correction.yml">'
+      'File a correction</a> &mdash; both forms make the provenance fields '
+      '(where, when, out of what, and what it was for) structurally required, '
+      'because a count without a denominator cannot be used and a count whose '
+      'purpose was never stated can be read for the wrong thing.</p>')
     A('</div>')
     return o
 

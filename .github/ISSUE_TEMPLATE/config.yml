@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: The observation protocol
+    url: https://ethical-tech-colab.github.io/manhattan-bridge-noise-dumbo/read/observation-protocol.html
+    about: Ten things you can count in DUMBO, what each one moves, and why a result of zero is still a result.
+  - name: How anything here is rated
+    url: https://ethical-tech-colab.github.io/manhattan-bridge-noise-dumbo/research.html#method
+    about: The 1-5 source rubric, the withdraw-in-place rule, and why every quantity carries a quoted locus.

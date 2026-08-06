@@ -1,6 +1,6 @@
 {
  "schema": "copilot-usage/1",
- "generated_at": "2026-08-04T13:10:24Z",
+ "generated_at": "2026-08-06T20:07:33Z",
  "generator": "usage/build_usage_data.py",
  "project": {
   "name": "Manhattan Bridge Design",
@@ -11,7 +11,7 @@
  "session": {
   "id": "427b73d5-2337-48d8-ac50-a2e20a220074",
   "created_at": "2026-08-01T12:46:25.992Z",
-  "updated_at": "2026-08-04T12:45:22.792Z"
+  "updated_at": "2026-08-06T19:19:35.356Z"
  },
  "units": {
   "aiu_is": "one US cent",
@@ -19,53 +19,54 @@
   "note": "AIU prices in the store match the per-model prices the client publishes in models.json, which in turn match three vendor list prices to the cent. See usage/README.md."
  },
  "totals": {
-  "requests": 1756,
-  "turns": 27,
-  "models": 2,
-  "subagents": 3,
-  "subagent_requests": 37,
-  "nano_aiu": 23660625850000,
-  "aiu": 23660.626,
-  "usd": 236.61,
+  "requests": 3443,
+  "turns": 47,
+  "models": 3,
+  "subagents": 5,
+  "subagent_requests": 223,
+  "nano_aiu": 43735183475000,
+  "aiu": 43735.183,
+  "usd": 437.35,
   "tokens": {
-   "input": 24817,
-   "cache_read": 237584487,
-   "cache_write": 10904220,
-   "output": 1971302,
-   "reasoning": 363866
+   "input": 64095,
+   "cache_read": 487787022,
+   "cache_write": 18604995,
+   "output": 3064025,
+   "reasoning": 593700
   },
-  "premium_requests": 24,
+  "premium_requests": 43,
   "multipliers": [
-   1.0
+   1.0,
+   3.0
   ]
  },
  "time": {
   "first_request": "2026-08-01T12:46:34.717Z",
-  "last_request": "2026-08-04T13:10:23.007Z",
-  "wall_span_s": 260628.3,
-  "inference_sum_s": 26905.8,
-  "inference_union_s": 24706.5,
-  "busy_blocks": 1565,
+  "last_request": "2026-08-06T20:07:32.338Z",
+  "wall_span_s": 458457.6,
+  "inference_sum_s": 44307.3,
+  "inference_union_s": 39956.2,
+  "busy_blocks": 2933,
   "active": [
    {
     "cutoff_s": 120,
-    "active_s": 23447.6,
-    "sittings": 52
+    "active_s": 41955.3,
+    "sittings": 82
    },
    {
     "cutoff_s": 300,
-    "active_s": 27453.0,
-    "sittings": 29
+    "active_s": 48056.2,
+    "sittings": 48
    },
    {
     "cutoff_s": 600,
-    "active_s": 33195.4,
-    "sittings": 14
+    "active_s": 59187.7,
+    "sittings": 21
    },
    {
     "cutoff_s": 1800,
-    "active_s": 40807.1,
-    "sittings": 7
+    "active_s": 67909.5,
+    "sittings": 13
    }
   ]
  },
@@ -74,28 +75,37 @@
    "model": "claude-opus-5",
    "type": "cache_read",
    "price_nano_per_token": 50000,
-   "tokens": 235432725,
-   "nano_aiu": 11771636250000,
-   "usd": 117.7164,
+   "tokens": 468603040,
+   "nano_aiu": 23430152000000,
+   "usd": 234.3015,
    "usd_per_1m": 0.5
   },
   {
    "model": "claude-opus-5",
    "type": "cache_write",
    "price_nano_per_token": 625000,
-   "tokens": 10630108,
-   "nano_aiu": 6643817500000,
-   "usd": 66.4382,
+   "tokens": 18078233,
+   "nano_aiu": 11298895625000,
+   "usd": 112.989,
    "usd_per_1m": 6.25
   },
   {
    "model": "claude-opus-5",
    "type": "output",
    "price_nano_per_token": 2500000,
-   "tokens": 1920101,
-   "nano_aiu": 4800252500000,
-   "usd": 48.0025,
+   "tokens": 2955953,
+   "nano_aiu": 7389882500000,
+   "usd": 73.8988,
    "usd_per_1m": 25.0
+  },
+  {
+   "model": "claude-opus-4.6",
+   "type": "cache_read",
+   "price_nano_per_token": 50000,
+   "tokens": 17032220,
+   "nano_aiu": 851611000000,
+   "usd": 8.5161,
+   "usd_per_1m": 0.5
   },
   {
    "model": "gpt-5.6-sol",
@@ -107,6 +117,15 @@
    "usd_per_1m": 6.25
   },
   {
+   "model": "claude-opus-4.6",
+   "type": "cache_write",
+   "price_nano_per_token": 625000,
+   "tokens": 252650,
+   "nano_aiu": 157906250000,
+   "usd": 1.5791,
+   "usd_per_1m": 6.25
+  },
+  {
    "model": "gpt-5.6-sol",
    "type": "output",
    "price_nano_per_token": 3000000,
@@ -114,6 +133,15 @@
    "nano_aiu": 153603000000,
    "usd": 1.536,
    "usd_per_1m": 30.0
+  },
+  {
+   "model": "claude-opus-4.6",
+   "type": "output",
+   "price_nano_per_token": 2500000,
+   "tokens": 56871,
+   "nano_aiu": 142177500000,
+   "usd": 1.4218,
+   "usd_per_1m": 25.0
   },
   {
    "model": "gpt-5.6-sol",
@@ -128,9 +156,18 @@
    "model": "claude-opus-5",
    "type": "input",
    "price_nano_per_token": 500000,
-   "tokens": 24706,
-   "nano_aiu": 12353000000,
-   "usd": 0.1235,
+   "tokens": 51062,
+   "nano_aiu": 25531000000,
+   "usd": 0.2553,
+   "usd_per_1m": 5.0
+  },
+  {
+   "model": "claude-opus-4.6",
+   "type": "input",
+   "price_nano_per_token": 500000,
+   "tokens": 12922,
+   "nano_aiu": 6461000000,
+   "usd": 0.0646,
    "usd_per_1m": 5.0
   },
   {
@@ -146,15 +183,27 @@
  "models": [
   {
    "model": "claude-opus-5",
-   "requests": 1719,
-   "nano_aiu": 23228059250000,
-   "duration_ms": 26072106,
-   "reasoning": 330130,
-   "input": 24706,
-   "cache_read": 235432725,
-   "cache_write": 10630108,
-   "output": 1920101,
-   "usd": 232.2806
+   "requests": 3220,
+   "nano_aiu": 42144461125000,
+   "duration_ms": 42047169,
+   "reasoning": 559080,
+   "input": 51062,
+   "cache_read": 468603040,
+   "cache_write": 18078233,
+   "output": 2955953,
+   "usd": 421.4446
+  },
+  {
+   "model": "claude-opus-4.6",
+   "requests": 186,
+   "nano_aiu": 1158155750000,
+   "duration_ms": 1426406,
+   "reasoning": 884,
+   "input": 12922,
+   "cache_read": 17032220,
+   "cache_write": 252650,
+   "output": 56871,
+   "usd": 11.5816
   },
   {
    "model": "gpt-5.6-sol",
@@ -172,89 +221,89 @@
  "initiators": [
   {
    "initiator": "agent",
-   "requests": 1675,
-   "nano_aiu": 19044494050000,
-   "duration_ms": 23272929,
-   "reasoning": 303002,
-   "input": 24618,
-   "cache_read": 234044276,
-   "cache_write": 4917758,
-   "output": 1702549,
-   "usd": 190.4449
+   "requests": 3144,
+   "nano_aiu": 35287933400000,
+   "duration_ms": 37551655,
+   "reasoning": 515840,
+   "input": 50910,
+   "cache_read": 465452518,
+   "cache_write": 8745492,
+   "output": 2609568,
+   "usd": 352.8793
   },
   {
    "initiator": "compaction",
-   "requests": 20,
-   "nano_aiu": 2621436925000,
-   "duration_ms": 2208004,
+   "requests": 33,
+   "nano_aiu": 4267338450000,
+   "duration_ms": 3528973,
    "reasoning": 0,
-   "input": 40,
-   "cache_read": 640526,
-   "cache_write": 3426905,
-   "output": 179030,
-   "usd": 26.2144
+   "input": 66,
+   "cache_read": 1101584,
+   "cache_write": 5602302,
+   "output": 284315,
+   "usd": 42.6734
   },
   {
    "initiator": "user",
-   "requests": 24,
-   "nano_aiu": 1562128275000,
-   "duration_ms": 591173,
-   "reasoning": 27128,
-   "input": 48,
-   "cache_read": 747923,
-   "cache_write": 2285445,
-   "output": 38522,
-   "usd": 15.6213
+   "requests": 43,
+   "nano_aiu": 2589189275000,
+   "duration_ms": 966541,
+   "reasoning": 43240,
+   "input": 86,
+   "cache_read": 2048938,
+   "cache_write": 3730439,
+   "output": 62070,
+   "usd": 25.8919
   },
   {
    "initiator": "sub-agent",
-   "requests": 37,
-   "nano_aiu": 432566600000,
-   "duration_ms": 833733,
-   "reasoning": 33736,
-   "input": 111,
-   "cache_read": 2151762,
-   "cache_write": 274112,
-   "output": 51201,
-   "usd": 4.3257
+   "requests": 223,
+   "nano_aiu": 1590722350000,
+   "duration_ms": 2260139,
+   "reasoning": 34620,
+   "input": 13033,
+   "cache_read": 19183982,
+   "cache_write": 526762,
+   "output": 108072,
+   "usd": 15.9072
   }
  ],
  "efforts": [
   {
    "effort": "xhigh",
-   "requests": 1444,
-   "nano_aiu": 17442482425000,
-   "duration_ms": 19895454,
-   "reasoning": 289750,
-   "input": 14791,
-   "cache_read": 201752801,
-   "cache_write": 5893583,
-   "output": 1465583,
-   "usd": 174.4248
+   "requests": 2932,
+   "nano_aiu": 34712982775000,
+   "duration_ms": 34549548,
+   "reasoning": 518700,
+   "input": 41121,
+   "cache_read": 434462058,
+   "cache_write": 11166311,
+   "output": 2396150,
+   "usd": 347.1298
   },
   {
    "effort": null,
-   "requests": 20,
-   "nano_aiu": 2621436925000,
-   "duration_ms": 2208004,
+   "requests": 33,
+   "nano_aiu": 4267338450000,
+   "duration_ms": 3528973,
    "reasoning": 0,
-   "input": 40,
-   "cache_read": 640526,
-   "cache_write": 3426905,
-   "output": 179030,
-   "usd": 26.2144
+   "input": 66,
+   "cache_read": 1101584,
+   "cache_write": 5602302,
+   "output": 284315,
+   "usd": 42.6734
   },
   {
    "effort": "medium",
-   "requests": 133,
-   "nano_aiu": 1779393250000,
-   "duration_ms": 2158899,
-   "reasoning": 20681,
-   "input": 273,
-   "cache_read": 17090720,
-   "cache_write": 888434,
-   "output": 145953,
-   "usd": 17.7939
+   "requests": 319,
+   "nano_aiu": 2937549000000,
+   "duration_ms": 3585305,
+   "reasoning": 21565,
+   "input": 13195,
+   "cache_read": 34122940,
+   "cache_write": 1141084,
+   "output": 202824,
+   "usd": 29.3755
   },
   {
    "effort": "max",
@@ -282,6 +331,40 @@
   }
  ],
  "agents": [
+  {
+   "agent": "toolu_01SCwXQv9qoHZyDnBkEjWZvo",
+   "requests": 81,
+   "nano_aiu": 635364300000,
+   "duration_ms": 755640,
+   "reasoning": 853,
+   "input": 8116,
+   "cache_read": 9299901,
+   "cache_write": 154970,
+   "output": 27782,
+   "usd": 6.3536,
+   "started": "2026-08-06T15:19:25.895Z",
+   "turn": 40,
+   "models": [
+    "claude-opus-4.6"
+   ]
+  },
+  {
+   "agent": "toolu_018MJPuH7uyqkfPMLSccWioA",
+   "requests": 105,
+   "nano_aiu": 522791450000,
+   "duration_ms": 670766,
+   "reasoning": 31,
+   "input": 4806,
+   "cache_read": 7732319,
+   "cache_write": 97680,
+   "output": 29089,
+   "usd": 5.2279,
+   "started": "2026-08-06T15:19:27.579Z",
+   "turn": 40,
+   "models": [
+    "claude-opus-4.6"
+   ]
+  },
   {
    "agent": "toolu_01EFseCxBf8exs9YGKDWZPJW",
    "requests": 15,
@@ -727,52 +810,352 @@
   },
   {
    "index": 26,
-   "label": "",
+   "label": "before going further, can I get an audit of how much we have spent on this specific project, how...",
    "started": "2026-08-04T12:45:42.255Z",
-   "requests": 97,
-   "nano_aiu": 1468575725000,
-   "usd": 14.686,
-   "duration_ms": 1508961,
-   "reasoning": 25625,
-   "input": 568,
-   "cache_read": 14208997,
-   "cache_write": 780575,
-   "output": 107993,
+   "requests": 103,
+   "nano_aiu": 1510570825000,
+   "usd": 15.106,
+   "duration_ms": 1545145,
+   "reasoning": 26448,
+   "input": 580,
+   "cache_read": 14894754,
+   "cache_write": 783605,
+   "output": 110316,
+   "subagent_requests": 0
+  },
+  {
+   "index": 27,
+   "label": "Questions for the main project: 1/what work needs to be done on the cohorts to better solve for ...",
+   "started": "2026-08-04T13:11:58.968Z",
+   "requests": 50,
+   "nano_aiu": 529779525000,
+   "usd": 5.298,
+   "duration_ms": 570225,
+   "reasoning": 8762,
+   "input": 1365,
+   "cache_read": 7844253,
+   "cache_write": 70815,
+   "output": 37050,
+   "subagent_requests": 0
+  },
+  {
+   "index": 28,
+   "label": "1/We need the logo (created for the bridge browser icon), and header you see on the opening page...",
+   "started": "2026-08-04T13:55:52.833Z",
+   "requests": 147,
+   "nano_aiu": 1622673475000,
+   "usd": 16.227,
+   "duration_ms": 1091257,
+   "reasoning": 9921,
+   "input": 2093,
+   "cache_read": 22822577,
+   "cache_write": 496717,
+   "output": 68020,
+   "subagent_requests": 0
+  },
+  {
+   "index": 29,
+   "label": "1/add a detailed comparison of what this would likely would have cost if contracted out to Accen...",
+   "started": "2026-08-04T14:19:08.393Z",
+   "requests": 5,
+   "nano_aiu": 64691125000,
+   "usd": 0.647,
+   "duration_ms": 94609,
+   "reasoning": 1846,
+   "input": 10,
+   "cache_read": 969185,
+   "cache_write": 6483,
+   "output": 4870,
+   "subagent_requests": 0
+  },
+  {
+   "index": 30,
+   "label": "(tool or skill context, not a typed request)",
+   "started": "2026-08-04T14:20:24.512Z",
+   "requests": 186,
+   "nano_aiu": 2202076225000,
+   "usd": 22.021,
+   "duration_ms": 2231165,
+   "reasoning": 25347,
+   "input": 372,
+   "cache_read": 27660017,
+   "cache_write": 679735,
+   "output": 157622,
+   "subagent_requests": 0
+  },
+  {
+   "index": 31,
+   "label": "I want to add a pedestrian media page to store files captured and draw intelligence from them th...",
+   "started": "2026-08-04T19:07:43.029Z",
+   "requests": 61,
+   "nano_aiu": 842969450000,
+   "usd": 8.43,
+   "duration_ms": 870291,
+   "reasoning": 16375,
+   "input": 122,
+   "cache_read": 8242094,
+   "cache_write": 441302,
+   "output": 61996,
+   "subagent_requests": 0
+  },
+  {
+   "index": 32,
+   "label": "two things are possibly impacting grassy knoll sound capture: I may have had my hand over the mi...",
+   "started": "2026-08-04T19:27:36.444Z",
+   "requests": 18,
+   "nano_aiu": 188158250000,
+   "usd": 1.882,
+   "duration_ms": 243445,
+   "reasoning": 5498,
+   "input": 36,
+   "cache_read": 2615155,
+   "cache_write": 25820,
+   "output": 16498,
+   "subagent_requests": 0
+  },
+  {
+   "index": 33,
+   "label": "8. Usage page and Demos page seem to overlap or one contributes to the other. I would rather the...",
+   "started": "2026-08-04T19:31:47.229Z",
+   "requests": 27,
+   "nano_aiu": 289323775000,
+   "usd": 2.893,
+   "duration_ms": 209117,
+   "reasoning": 2394,
+   "input": 54,
+   "cache_read": 4756923,
+   "cache_write": 32429,
+   "output": 12473,
+   "subagent_requests": 0
+  },
+  {
+   "index": 34,
+   "label": "models?",
+   "started": "2026-08-05T00:07:08.791Z",
+   "requests": 12,
+   "nano_aiu": 208324750000,
+   "usd": 2.083,
+   "duration_ms": 150770,
+   "reasoning": 1915,
+   "input": 24,
+   "cache_read": 1673105,
+   "cache_write": 157792,
+   "output": 10415,
+   "subagent_requests": 0
+  },
+  {
+   "index": 35,
+   "label": "pick up where we left off: creating a pedestrian-site-visits section and other modifications req...",
+   "started": "2026-08-05T00:09:47.910Z",
+   "requests": 195,
+   "nano_aiu": 2251296400000,
+   "usd": 22.513,
+   "duration_ms": 2040431,
+   "reasoning": 17897,
+   "input": 390,
+   "cache_read": 30058828,
+   "cache_write": 651016,
+   "output": 136510,
+   "subagent_requests": 0
+  },
+  {
+   "index": 36,
+   "label": "The stopwatch is an independent sample. There is no correlation between it and any video or audi...",
+   "started": "2026-08-05T01:06:24.685Z",
+   "requests": 4,
+   "nano_aiu": 112962575000,
+   "usd": 1.13,
+   "duration_ms": 74766,
+   "reasoning": 4292,
+   "input": 8,
+   "cache_read": 379134,
+   "cache_write": 130079,
+   "output": 5081,
+   "subagent_requests": 0
+  },
+  {
+   "index": 37,
+   "label": "The video was primarily used to show the buildings that create an echo chamber around the bridge...",
+   "started": "2026-08-05T01:07:58.630Z",
+   "requests": 1,
+   "nano_aiu": 15749325000,
+   "usd": 0.157,
+   "duration_ms": 41902,
+   "reasoning": 2370,
+   "input": 2,
+   "cache_read": 130079,
+   "cache_write": 3475,
+   "output": 2829,
+   "subagent_requests": 0
+  },
+  {
+   "index": 38,
+   "label": "The user is going to capture better audio later this week with a microphone shield and audio met...",
+   "started": "2026-08-05T01:08:38.350Z",
+   "requests": 112,
+   "nano_aiu": 1244148450000,
+   "usd": 12.441,
+   "duration_ms": 934768,
+   "reasoning": 3153,
+   "input": 1642,
+   "cache_read": 17772349,
+   "cache_write": 310524,
+   "output": 64253,
+   "subagent_requests": 0
+  },
+  {
+   "index": 39,
+   "label": "I want to reorganize the sitemap & pages of the website so that it is more accessible to someone...",
+   "started": "2026-08-05T12:19:51.497Z",
+   "requests": 80,
+   "nano_aiu": 797107875000,
+   "usd": 7.971,
+   "duration_ms": 709974,
+   "reasoning": 10801,
+   "input": 499,
+   "cache_read": 11432605,
+   "cache_write": 180529,
+   "output": 44959,
+   "subagent_requests": 0
+  },
+  {
+   "index": 40,
+   "label": "0/for the \"buy\" research, we need to scrub the consultancy names from the research. We can refer...",
+   "started": "2026-08-06T15:17:13.018Z",
+   "requests": 428,
+   "nano_aiu": 4837353000000,
+   "usd": 48.374,
+   "duration_ms": 4307288,
+   "reasoning": 47710,
+   "input": 16958,
+   "cache_read": 56319580,
+   "cache_write": 2356112,
+   "output": 216130,
+   "subagent_requests": 186
+  },
+  {
+   "index": 41,
+   "label": "what is the best way to test and fix the deployment? i need the site updated",
+   "started": "2026-08-06T18:16:47.112Z",
+   "requests": 13,
+   "nano_aiu": 331542300000,
+   "usd": 3.315,
+   "duration_ms": 186129,
+   "reasoning": 3949,
+   "input": 26,
+   "cache_read": 1855161,
+   "cache_write": 343550,
+   "output": 9621,
+   "subagent_requests": 0
+  },
+  {
+   "index": 42,
+   "label": "Can we do the deployment manually instead of waiting for Actions to pick it up?",
+   "started": "2026-08-06T18:28:58.875Z",
+   "requests": 6,
+   "nano_aiu": 73635450000,
+   "usd": 0.736,
+   "duration_ms": 113948,
+   "reasoning": 3566,
+   "input": 12,
+   "cache_read": 1076214,
+   "cache_write": 6770,
+   "output": 6235,
+   "subagent_requests": 0
+  },
+  {
+   "index": 43,
+   "label": "back off a little on the polling, but keep monitoring so we can deploy asap",
+   "started": "2026-08-06T18:37:47.855Z",
+   "requests": 12,
+   "nano_aiu": 362365550000,
+   "usd": 3.624,
+   "duration_ms": 229085,
+   "reasoning": 2345,
+   "input": 24,
+   "cache_read": 1626896,
+   "cache_write": 389290,
+   "output": 15081,
+   "subagent_requests": 0
+  },
+  {
+   "index": 44,
+   "label": "on the Agentic model, we do need to add sensitivity for special people categories, such as elder...",
+   "started": "2026-08-06T18:40:44.521Z",
+   "requests": 155,
+   "nano_aiu": 1825311250000,
+   "usd": 18.253,
+   "duration_ms": 1577021,
+   "reasoning": 28202,
+   "input": 6149,
+   "cache_read": 25356635,
+   "cache_write": 449376,
+   "output": 109418,
+   "subagent_requests": 0
+  },
+  {
+   "index": 45,
+   "label": "1/github status? 2/does the Run of the Agentic model consider that we need to spawn cohorts from...",
+   "started": "2026-08-06T19:19:56.174Z",
+   "requests": 151,
+   "nano_aiu": 2008114175000,
+   "usd": 20.081,
+   "duration_ms": 1467854,
+   "reasoning": 24648,
+   "input": 9366,
+   "cache_read": 24892636,
+   "cache_write": 822903,
+   "output": 97794,
+   "subagent_requests": 0
+  },
+  {
+   "index": 47,
+   "label": "",
+   "started": "2026-08-06T20:03:58.963Z",
+   "requests": 18,
+   "nano_aiu": 224979600000,
+   "usd": 2.25,
+   "duration_ms": 221240,
+   "reasoning": 8020,
+   "input": 114,
+   "cache_read": 2033352,
+   "cache_write": 143028,
+   "output": 13545,
    "subagent_requests": 0
   }
  ],
  "counterfactual": {
-  "actual_usd": 236.61,
-  "uncached_usd": 1292.11,
-  "ratio": 5.461,
+  "actual_usd": 437.35,
+  "uncached_usd": 2609.14,
+  "ratio": 5.966,
   "models_without_an_input_price_sample": []
  },
  "energy": {
-  "requests": 1756,
+  "requests": 3443,
   "scenarios": [
    {
     "scenario": "Traditional query, IQR low",
     "wh_per_request": 0.18,
-    "kwh": 0.316,
-    "household_hours": 0.26
+    "kwh": 0.62,
+    "household_hours": 0.52
    },
    {
     "scenario": "Traditional query, median",
     "wh_per_request": 0.34,
-    "kwh": 0.597,
-    "household_hours": 0.5
+    "kwh": 1.171,
+    "household_hours": 0.98
    },
    {
     "scenario": "Traditional query, IQR high",
     "wh_per_request": 0.67,
-    "kwh": 1.177,
-    "household_hours": 0.98
+    "kwh": 2.307,
+    "household_hours": 1.92
    },
    {
     "scenario": "Test-time scaling, median",
     "wh_per_request": 4.32,
-    "kwh": 7.586,
-    "household_hours": 6.33
+    "kwh": 14.874,
+    "household_hours": 12.41
    }
   ],
   "spread": 24.0,
@@ -793,9 +1176,10 @@
   }
  },
  "catalogue": {
-  "offered": 40,
-  "selectable": 21,
+  "offered": 39,
+  "selectable": 20,
   "used": [
+   "claude-opus-4.6",
    "claude-opus-5",
    "gpt-5.6-sol"
   ],
@@ -814,7 +1198,7 @@
     "input_price": 500,
     "output_price": 2500,
     "picker": true,
-    "used": false
+    "used": true
    },
    {
     "id": "claude-opus-4.7",
@@ -858,14 +1242,6 @@
    },
    {
     "id": "claude-sonnet-4.6",
-    "vendor": "Anthropic",
-    "input_price": 300,
-    "output_price": 1500,
-    "picker": true,
-    "used": false
-   },
-   {
-    "id": "claude-sonnet-4.5",
     "vendor": "Anthropic",
     "input_price": 300,
     "output_price": 1500,
@@ -1224,24 +1600,96 @@
     "sha": "d7a3113",
     "at": "2026-08-03T15:39:37-04:00",
     "subject": "chore: rebuild Pages so the site cites the current commit"
+   },
+   {
+    "sha": "cce4966",
+    "at": "2026-08-04T09:11:40-04:00",
+    "subject": "fix: restore the lost code fence in data-collection/README.md"
+   },
+   {
+    "sha": "c7a83f2",
+    "at": "2026-08-04T09:11:59-04:00",
+    "subject": "feat: usage and cost audit, and a modular per-project usage dashboard"
+   },
+   {
+    "sha": "2e8a683",
+    "at": "2026-08-04T09:12:13-04:00",
+    "subject": "chore: rebuild Pages"
+   },
+   {
+    "sha": "29286f2",
+    "at": "2026-08-04T09:20:08-04:00",
+    "subject": "feat: Methods 34-36 and Q52-54 - what would actually improve the cohort model"
+   },
+   {
+    "sha": "73f2ac3",
+    "at": "2026-08-04T09:20:22-04:00",
+    "subject": "build: commit the markdown checker, and rebuild Pages"
+   },
+   {
+    "sha": "885966a",
+    "at": "2026-08-04T10:19:53-04:00",
+    "subject": "feat: shared masthead on every page, and reframe the usage page as an explainer"
+   },
+   {
+    "sha": "628e657",
+    "at": "2026-08-04T11:09:30-04:00",
+    "subject": "Add Document 9, the procurement comparison, and Method 37"
+   },
+   {
+    "sha": "30b9857",
+    "at": "2026-08-04T20:44:19-04:00",
+    "subject": "Phase 19: field media page, Document 10, Method 38 and Q56"
+   },
+   {
+    "sha": "5c71ff3",
+    "at": "2026-08-04T21:22:56-04:00",
+    "subject": "Document 10 v1.1: withdraw the cross-instrument claim"
+   },
+   {
+    "sha": "eb332be",
+    "at": "2026-08-05T08:33:41-04:00",
+    "subject": "Reorganise the site for a reader who has never heard of this problem"
+   },
+   {
+    "sha": "c99c878",
+    "at": "2026-08-06T12:01:51-04:00",
+    "subject": "Field kit for the instrumented session, Methods 39-41, and Document 10 v1.2"
+   },
+   {
+    "sha": "7a5a7f9",
+    "at": "2026-08-06T15:08:47-04:00",
+    "subject": "Model who is standing in the noise, without weighting anyone's decibels"
+   },
+   {
+    "sha": "0f62138",
+    "at": "2026-08-06T15:39:06-04:00",
+    "subject": "Arrival processes in the agent model, and the objection they retire"
+   },
+   {
+    "sha": "58959e6",
+    "at": "2026-08-06T15:51:00-04:00",
+    "subject": "Correct the arrival-comparison figures to the model's default settings"
    }
   ],
-  "commit_count": 20,
-  "insertions": 31504,
-  "deletions": 837,
-  "tracked_files": 47,
+  "commit_count": 34,
+  "insertions": 84809,
+  "deletions": 19002,
+  "tracked_files": 88,
   "files_by_ext": {
-   ".html": 15,
-   ".py": 9,
-   ".md": 8,
-   ".json": 6,
-   ".jpg": 4,
-   "(none)": 3,
+   ".html": 22,
+   ".py": 18,
+   ".md": 12,
+   ".jpg": 11,
+   ".json": 11,
+   ".js": 5,
+   "(none)": 4,
+   ".m4a": 3,
    ".png": 1,
-   ".js": 1
+   ".txt": 1
   },
-  "bytes": 4998773,
-  "markdown_words": 96527
+  "bytes": 10849373,
+  "markdown_words": 121082
  },
  "not_measured": [
   [

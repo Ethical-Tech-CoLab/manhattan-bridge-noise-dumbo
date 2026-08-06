@@ -118,8 +118,81 @@ RATE_LADDER = [
      "Cheapest decile of awarded ceiling rates for the same discipline"),
 ]
 
+# --------------------------------------------------------------------------
+# A PUBLISHED ARCHITECT-ENGINEER RATE SCHEDULE.
+#
+# The GSA index cannot price this rung. The statutory note to 40 U.S.C.
+# 1103 closes the multiple-award schedule to architectural and engineering
+# services unless they are awarded under the Brooks Act procedures, and
+# those procedures select on qualifications with price negotiated only
+# afterwards (40 U.S.C. 1103(d), 1104(a)). There is therefore no A-E
+# equivalent of the awarded ceiling rate that instrument B is built on.
+#
+# What exists instead is the rate schedule a public body adopts when it
+# appoints its A-E panel, published as an exhibit to the resolution. The
+# figures below are read from one such resolution -- a New York public
+# authority's 2025-2027 A-E appointment, five firms, each exhibit carrying
+# its own ladder. Rated 5/5 VERIFIED as published rates; rated 2/5 as a
+# guide to what a signature design practice in New York City would charge,
+# because an upstate county panel is not that market and the direction of
+# the difference is knowable only in sign, not size.
+#
+# Only the top-of-ladder rows are carried, because the only use made of
+# them is a comparison against a single stated rate for one person.
+# --------------------------------------------------------------------------
+AE_SCHEDULE = {
+    "locus": ("Resolution 2025-14, Awarding Architecture/Engineering Contracts "
+              "2025-2027, adopted; Exhibits A-C, hourly rate schedules"),
+    "url": ("https://broomelandbank.org/wp-content/uploads/2025/05/"
+            "2025_14_Resolution-Awarding-Architecture-Engineering-Contracts-"
+            "2025-2027_Adopted.pdf"),
+    "jurisdiction": "New York public authority A-E panel appointment",
+    "effective": "2025",
+    "rating": "5/5 VERIFIED as published rates; 2/5 as a guide to the New York City market",
+    # label, hourly rate, as printed
+    "top_of_ladder": [
+        ("Principal", 275.0),
+        ("Principal, MEP engineering services", 250.0),
+        ("Principal, engineered solutions", 200.0),
+        ("Managing member", 190.0),
+        ("Partner-in-charge, architectural services", 180.0),
+        ("Principal structural engineer, PE", 180.0),
+    ],
+    "other_rows": [
+        ("Senior project manager", 250.0),
+        ("Project manager", 220.0),
+        ("Senior project architect/engineer", 190.0),
+        ("Project architect", 140.0),
+        ("Senior environmental scientist", 180.0),
+    ],
+}
+
+# The operator's own rate for the time spent directing this work.
+#
+# THIS IS AN INPUT, NOT AN OBSERVATION. It is a statement by the person who
+# did the work about what that person's hour is worth, and it is rated the
+# way this repository rates every operator statement of intent: 5/5 as a
+# statement, and not evidence of anything about a market. It is carried
+# beside two rates that ARE market observations so the gap is visible
+# rather than absorbed.
+OPERATOR_RATE = 1000.0
+OPERATOR_RATE_RATING = ("5/5 as a stated rate, 0/5 as a market observation - "
+                        "it is the operator's valuation of the operator's own hour")
+
 CODE_EXT = (".py", ".js")
 DOC_GLOB = (".md",)
+
+
+def _pct(vals, p):
+    """Linear-interpolated percentile over a pre-sorted list."""
+    if not vals:
+        return 0.0
+    if len(vals) == 1:
+        return vals[0]
+    k = (len(vals) - 1) * p
+    f = int(k)
+    c = min(f + 1, len(vals) - 1)
+    return vals[f] + (vals[c] - vals[f]) * (k - f)
 
 
 def sloc(path):
@@ -413,6 +486,108 @@ def main():
 
     # ---- instrument C: what it actually cost ------------------------------
     t = usage["time"]
+
+    # ---- the design-practice rung -----------------------------------------
+    #
+    # Answers "what would a design practice charge for this?" with the one
+    # instrument that is legally available for the question. See the
+    # AE_SCHEDULE comment and fetch_awards.py for why instrument B is not.
+    dz = awards.get("design", {})
+    dstats = dz.get("stats", {"n": 0})
+    dsub = {}
+    for a in dz.get("awards", []):
+        dsub.setdefault(a["matched"], []).append(a["amount"])
+    design = {
+        "stats": dstats,
+        "note": dz.get("note"),
+        "filters": dz.get("filters"),
+        "by_keyword": [
+            {"keyword": k, "n": len(v), "median": round(_pct(sorted(v), 0.5), 2),
+             "min": round(min(v), 2), "max": round(max(v), 2)}
+            for k, v in sorted(dsub.items(), key=lambda kv: -len(kv[1]))
+        ],
+        "examples": [
+            {k: a[k] for k in ("amount", "description", "agency", "psc", "matched")}
+            for a in dz.get("awards", [])
+            if dstats.get("p25") and dstats["p25"] <= a["amount"] <= dstats.get("p90", 0)
+        ][:12],
+        "ratio_to_noise_median": (
+            round(dstats["median"] / awards["stats"]["median"], 2)
+            if dstats.get("median") and awards["stats"].get("median") else None),
+        "why_not_instrument_b": (
+            "The statutory note to 40 U.S.C. 1103 bars architectural and "
+            "engineering services from GSA multiple-award schedule contracts "
+            "unless awarded under the Brooks Act procedures, and those select "
+            "on qualifications with compensation negotiated only after "
+            "selection. There is no A-E awarded ceiling rate to multiply by."),
+        "ae_schedule": {
+            "locus": AE_SCHEDULE["locus"],
+            "url": AE_SCHEDULE["url"],
+            "jurisdiction": AE_SCHEDULE["jurisdiction"],
+            "effective": AE_SCHEDULE["effective"],
+            "rating": AE_SCHEDULE["rating"],
+            "top_of_ladder": [{"label": l, "usd_per_hour": r}
+                              for l, r in AE_SCHEDULE["top_of_ladder"]],
+            "other_rows": [{"label": l, "usd_per_hour": r}
+                           for l, r in AE_SCHEDULE["other_rows"]],
+            "top_min": min(r for _, r in AE_SCHEDULE["top_of_ladder"]),
+            "top_max": max(r for _, r in AE_SCHEDULE["top_of_ladder"]),
+        },
+    }
+
+    # ---- the direction term, derived rather than typed --------------------
+    #
+    # This block used to be three numbers typed into procurement/README.md.
+    # They went stale the moment the engagement continued past the day they
+    # were written, which is the failure mode build_pages.py exists to stop
+    # everywhere else on this site. They are derived here now.
+    #
+    # The hours band is the active-attention measure from the usage ledger
+    # at its two tightest idle cutoffs. It is 2/5: it is inferred from gaps
+    # between request timestamps and cannot tell a person reading carefully
+    # from a person who walked away.
+    act = {a["cutoff_s"]: a for a in t["active"]}
+    h_lo = act[120]["active_s"] / 3600.0
+    h_hi = act[300]["active_s"] / 3600.0
+    sme_rate, _ = upper_quartile_rate_for(rates, "disc:sme")
+    ae_lo = design["ae_schedule"]["top_min"]
+    ae_hi = design["ae_schedule"]["top_max"]
+    direction_rates = [
+        ("operator", "Operator's stated rate", OPERATOR_RATE, OPERATOR_RATE_RATING),
+        ("ae_top", "Top of a published A-E schedule", ae_hi,
+         AE_SCHEDULE["rating"]),
+        ("ae_low", "Lowest principal on the same schedule", ae_lo,
+         AE_SCHEDULE["rating"]),
+        ("sme", "Subject-matter expert, schedule upper quartile", sme_rate,
+         "5/5 VERIFIED - published GSA awarded ceiling rate"),
+    ]
+    metered = usage["totals"]["usd"]
+    direction = {
+        "hours_low": round(h_lo, 2),
+        "hours_high": round(h_hi, 2),
+        "hours_basis": ("Active attention from the usage ledger, at idle cutoffs "
+                        "of 120 s and 300 s. Sittings %d and %d respectively."
+                        % (act[120]["sittings"], act[300]["sittings"])),
+        "hours_rating": "2/5 UNVERIFIED - inferred from request timestamps, not a stopwatch",
+        "wall_span_h": round(t["wall_span_s"] / 3600.0, 2),
+        "inference_sum_h": round(t["inference_sum_s"] / 3600.0, 2),
+        "inference_union_h": round(t["inference_union_s"] / 3600.0, 2),
+        "metered_inference_usd": metered,
+        "rates": [
+            {"key": k, "label": lab, "usd_per_hour": r, "rating": rat,
+             "usd_low": round(h_lo * r, 2), "usd_high": round(h_hi * r, 2),
+             "times_metered_low": round(h_lo * r / metered, 1) if metered else None,
+             "times_metered_high": round(h_hi * r / metered, 1) if metered else None}
+            for k, lab, r, rat in direction_rates if r
+        ],
+        "operator_over_ae_top": round(OPERATOR_RATE / ae_hi, 2),
+        "operator_over_sme": round(OPERATOR_RATE / sme_rate, 2) if sme_rate else None,
+        "reading": ("The operator's rate is a stated input and the other three are "
+                    "market observations. They are listed together so the gap is "
+                    "visible; they are never averaged and the stated rate is never "
+                    "described as what the market pays."),
+    }
+
     measured = {
         "usd": usage["totals"]["usd"],
         "requests": usage["totals"]["requests"],
@@ -445,6 +620,8 @@ def main():
         "sensitivity": sens,
         "crosscheck": crosscheck,
         "measured": measured,
+        "design": design,
+        "direction": direction,
         "awards": {
             "n": awards["stats"]["n"],
             "stats": awards["stats"],
@@ -464,6 +641,10 @@ def main():
             "instrument_b_hours": "1/5 INVENTED - this repository's own estimate, carried as a band",
             "instrument_c_measured": "5/5 VERIFIED - the client's own billing telemetry",
             "not_delivered_hours": "1/5 INVENTED - no scoping exercise has been done",
+            "design_awards": "5/5 VERIFIED - obligated dollars on real federal A-E awards",
+            "ae_schedule": AE_SCHEDULE["rating"],
+            "operator_rate": OPERATOR_RATE_RATING,
+            "direction_hours": "2/5 UNVERIFIED - inferred from request timestamps",
         },
     }
 
@@ -493,6 +674,26 @@ def main():
           % (awards["stats"]["n"], format(int(awards["stats"]["median"]), ","),
              format(int(awards["stats"]["p25"]), ","),
              format(int(awards["stats"]["p75"]), ",")))
+    print("\nWHAT A DESIGN PRACTICE IS PAID TO DEFINE A PROBLEM")
+    print("  n=%d  p25 $%s  median $%s  p75 $%s   (%sx the noise-study median)"
+          % (design["stats"]["n"], format(int(design["stats"]["p25"]), ","),
+             format(int(design["stats"]["median"]), ","),
+             format(int(design["stats"]["p75"]), ","),
+             design["ratio_to_noise_median"]))
+    for b in design["by_keyword"]:
+        print("    %-34s n=%-4d median $%s"
+              % (b["keyword"], b["n"], format(int(b["median"]), ",")))
+    print("  no schedule rate exists for this rung: %s"
+          % design["why_not_instrument_b"].split(".")[0])
+
+    print("\nTHE DIRECTION TERM   %.1f - %.1f active hours" %
+          (direction["hours_low"], direction["hours_high"]))
+    for r in direction["rates"]:
+        print("  %-46s $%7.2f/h  ->  $%9s - $%-9s  (%sx - %sx metered)"
+              % (r["label"], r["usd_per_hour"],
+                 format(int(r["usd_low"]), ","), format(int(r["usd_high"]), ","),
+                 r["times_metered_low"], r["times_metered_high"]))
+
     print("\nSENSITIVITY (widest band first)")
     for s in sens[:5]:
         print("  %-34s band $%-10s  %.1f%% of midpoint"

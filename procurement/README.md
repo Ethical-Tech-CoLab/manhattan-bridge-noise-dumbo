@@ -20,14 +20,14 @@ half of the question: what would the same deliverable have cost to *buy*.
 
 There is an obvious headline available here and it is wrong.
 
-> This investigation cost $236.61 in metered inference. A consultancy would
+> This investigation cost $437.35 in metered inference. A consultancy would
 > have charged six figures for the same work. Therefore the saving is roughly
 > three orders of magnitude.
 
 That is withdrawn before it is made. It fails in three independent ways, and
 each failure is large enough on its own to invalidate the ratio.
 
-**It compares a measured number to an invented one.** The $236.61 is a
+**It compares a measured number to an invented one.** The $437.35 is a
 reconciled per-request ledger rated 5/5 VERIFIED. The six-figure comparator is
 an hours estimate multiplied by a rate. The rates are 5/5.
 **The hours are 1/5 INVENTED.**
@@ -148,9 +148,9 @@ point estimate appears anywhere in this document.
 
 | Rung | Delivered scope |
 | --- | --- |
-| Whole-schedule upper quartile | $219,377 - $686,531 |
-| Whole-schedule median | $177,387 - $554,466 |
-| Whole-schedule 10th percentile | $114,516 - $356,900 |
+| Whole-schedule upper quartile | $251,112 - $786,920 |
+| Whole-schedule median | $203,009 - $635,441 |
+| Whole-schedule 10th percentile | $131,046 - $408,987 |
 
 ### What moves it
 
@@ -158,11 +158,11 @@ Sensitivity, widest band first, as a share of that package's own midpoint:
 
 | Package | Band width | Share of midpoint |
 | --- | --- | --- |
-| Review and quality assurance | $85,291 | 17.2% |
-| Interactive artifacts | $74,715 | 23.8% |
-| Engagement management | $69,046 | 14.5% |
-| Source retrieval and appraisal | $50,290 | 13.7% |
-| Document authorship, cited | $38,313 | 11.8% |
+| Review and quality assurance | $98,076 | 17.3% |
+| Interactive artifacts | $84,656 | 23.6% |
+| Engagement management | $79,409 | 14.5% |
+| Source retrieval and appraisal | $58,369 | 13.9% |
+| Document authorship, cited | $46,376 | 12.4% |
 
 The largest single uncertainty is **not** the research and not the code. It is
 **how much review the work receives**. That is worth stating plainly: the term
@@ -260,20 +260,105 @@ invented, and no analyst chose them.
 
 ---
 
+## What a design practice charges to define a problem
+
+Asked directly what an architecture or design-build practice would have charged
+for a study of this shape, the obvious move is to price it the way this document
+prices everything else: hours multiplied by a published schedule rate.
+
+**That move is unavailable, and the reason is the more interesting half of the answer.** Architectural and engineering services are not bought on price. The
+statutory note to 40 U.S.C. §1103 is explicit that the schedule route is closed
+to them:
+
+> Architectural and engineering services (as defined in section 1102 of title 40,
+> United States Code) **shall not be offered under multiple-award schedule > contracts** entered into by the Administrator of General Services [...] unless
+> such services [...] are awarded in accordance with the selection procedures set
+> forth in chapter 11 of title 40, United States Code.
+
+And chapter 11 selects on qualifications, with price entering only afterwards.
+§1103(d) directs the agency head to rank at least three firms by competence;
+§1104(a) then has the agency negotiate compensation **with the firm already chosen**. Price is not a selection criterion, so there is no awarded ceiling rate
+for architecture the way there is for a data engineer or a project manager.
+
+This is the **fifth** time this corpus has run into the same shape: an absence in
+a classification system that makes a real thing unaskable. The others were the
+noise code's missing rail category inherited by 311 and SONYC, the blank cell on
+form 1204-a, the twelve thousand project managers against seven acoustical
+engineers, and the schedule holders who publish job titles rather than
+disciplines. This one is the strongest of the five, because it is not an
+oversight — **it is deliberate federal policy, and it is written down.**
+
+### So the rung is priced with instrument A instead
+
+A second population of USASpending awards: product-service code C, award
+descriptions naming a **study** rather than a building, same period and award
+types as the noise population. It is kept separate and never pooled — the two
+answer different questions, and a combined percentile would answer neither.
+
+| | Amount |
+| --- | --- |
+| n | 123 awards |
+| minimum | $11,210 |
+| 25th percentile | $78,843 |
+| **median** | **$243,899** |
+| 75th percentile | $590,235 |
+| 90th percentile | $1,823,006 |
+| maximum | $11,666,796 |
+
+**3.6 times the median federal noise study.** A design practice is not paid to
+write a report; it is paid to run a process that ends in a decision, and that
+costs more.
+
+The population is dominated by one award description — the **design charrette**,
+108 of 123 — which is a practice being paid to sit with a client and establish
+what the problem is before anything is designed. That is the closest commercial
+analogue this study has, so the dominance is the population converging on the
+right thing rather than a contaminant. It is broken out on the dashboard so a
+reader can judge that rather than take it. The charrette sub-population medians
+at $238,452, within 2.3% of the whole.
+
+### And a published rate ladder, since the schedule has none
+
+Public bodies that appoint an A-E panel publish the rate schedule as an exhibit
+to the appointing resolution. One such resolution — a New York public authority's
+2025-2027 A-E appointment, five firms, each with its own ladder — gives:
+
+| Labour title, as printed | Hourly rate |
+| --- | --- |
+| Principal | $275 |
+| Principal, MEP engineering services | $250 |
+| Senior project manager | $250 |
+| Project manager | $220 |
+| Principal, engineered solutions | $200 |
+| Senior project architect/engineer | $190 |
+| Managing member | $190 |
+| Partner-in-charge, architectural services | $180 |
+| Principal structural engineer, PE | $180 |
+| Senior environmental scientist | $180 |
+| Project architect | $140 |
+
+**5/5 as published rates. 2/5 as a guide to the New York City market.** An
+upstate county panel is not a Brooklyn signature practice; the direction of the
+difference is obvious and its size is not. The ladder is therefore used for one
+purpose only — as a published reference point beside a single stated rate — and
+it is not multiplied by anything.
+
+---
+
 ## The disagreement, quantified and unreconciled
 
 Convert the awards to implied hours at the model's own blended rate of
-$147.80/h, against a bottom-up midpoint of 2,476 hours:
+$147.31/h, against a bottom-up midpoint of 2,846 hours:
 
 | Award percentile | Amount | Implied hours | As % of bottom-up low |
 | --- | --- | --- | --- |
-| 25th | $21,579 | 146 | 12% |
-| median | $68,441 | 463 | 39% |
-| 75th | $201,658 | 1,364 | 114% |
-| 90th | $377,285 | 2,552 | 213% |
-| maximum | $1,740,857 | 11,778 | 981% |
+| 25th | $21,579 | 146 | 11% |
+| median | $68,441 | 464 | 34% |
+| 75th | $201,658 | 1,369 | 99% |
+| 90th | $377,285 | 2,561 | 186% |
+| maximum | $1,740,857 | 11,817 | 857% |
 
-The bottom-up low lands at about **114% of the award 75th percentile**. On the
+The bottom-up low lands at about **99% of the award 75th percentile**. On the
 population of federal noise studies actually purchased, a corpus of this size
 prices like an **upper-quartile** engagement.
 
@@ -360,26 +445,60 @@ abundant coordinator.
 
 ## The human term
 
-What the billing ledger does not price:
+What the billing ledger does not price. **Every figure in this section is derived at build time** by `build_procurement_data.py` from the usage ledger and the rate
+files. Three of them used to be typed here by hand, and they went stale by close
+to a factor of two the moment the engagement continued past the day they were
+written.
 
 | | |
 | --- | --- |
-| Wall-clock span of the engagement | 72.4 hours |
-| Metered model inference | 6.86 - 7.47 hours |
-| Estimated active human attention | roughly 9 - 11 hours |
+| Wall-clock span of the engagement | 127.4 hours |
+| Metered model inference | 12.31 hours summed, 11.10 once overlap is removed |
+| Estimated active human attention | 11.7 - 13.4 hours |
 
 The active-attention figure is **2/5 UNVERIFIED**. It is derived from request
 timestamps and inter-request gaps, not from a stopwatch, and it cannot
-distinguish a person reading output carefully from a person who walked away.
+distinguish a person reading output carefully from a person who walked away. The
+band is the same measure at idle cutoffs of 120 s and 300 s.
 
-At the consultancy subject-matter-expert rate of $201.97/h, 10 hours of human
-direction is about **$2,020** - roughly **eight and a half times** the entire
-metered inference cost of $236.61. Any framing of this project's economics
-that reports only the inference cost is understating the true cost by close to
-an order of magnitude, before any allowance for the fact that the direction
-required domain judgement that the model demonstrably did not supply. Three
-claims in this repository were withdrawn because a human noticed they were
-wrong.
+### The same hours, at four different rates
+
+| Rate applied | Per hour | Cost of direction | Times the metered bill |
+| --- | --- | --- | --- |
+| Operator's stated rate | $1,000.00 | $11,654 - $13,348 | 26.6x - 30.5x |
+| Top of the published A-E schedule | $275.00 | $3,204 - $3,670 | 7.3x - 8.4x |
+| Subject-matter expert, schedule upper quartile | $255.79 | $2,981 - $3,414 | 6.8x - 7.8x |
+| Lowest principal on the same A-E schedule | $180.00 | $2,097 - $2,402 | 4.8x - 5.5x |
+
+**One of those four rows is not evidence, and it is the first one.**
+The operator's rate is a statement by the person who did the work about what that
+person's hour is worth. It is rated
+**5/5 as a stated rate and 0/5 as a market observation** —
+the same way this repository rates every operator statement of intent. It is
+**3.64 times** the highest rate on the five-firm published A-E schedule above, and
+**3.91 times** the subject-matter-expert upper quartile on the GSA index. Those
+ratios are printed rather than smoothed away, because a stated rate sitting nearly
+four times above every published comparator is a claim a reader is entitled to
+discount, and burying it in a blended average would deny them that.
+
+The four are never averaged. Averaging a valuation with three observations
+launders the valuation, which is the same failure this document refuses at the
+level of the three instruments.
+
+### What survives whichever rate is picked
+
+At **every** rate tested, including the lowest, the human hours cost several times
+more than the model:
+
+> The direction of this work costs between **4.8 and 30.5 times** the entire
+> metered inference bill of $437.35, and the multiple never falls below five.
+
+Any framing of this project's economics that reports only the inference cost is
+understating it by close to an order of magnitude at best, and by a factor of
+thirty at the operator's own valuation — before any allowance for the fact that
+the direction required domain judgement the model demonstrably did not supply.
+Several claims in this repository were withdrawn because a human noticed they
+were wrong.
 
 ---
 

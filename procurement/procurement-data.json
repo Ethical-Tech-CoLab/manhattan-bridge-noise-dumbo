@@ -192,84 +192,352 @@
  "crosscheck": {
   "awards_imply": {
    "max": {
-    "hours_at_blended": 11822.8,
-    "share_of_bottom_up_low": 9.078,
+    "hours_at_blended": 11817.9,
+    "share_of_bottom_up_low": 8.575,
     "usd": 1740857.0
    },
    "median": {
-    "hours_at_blended": 464.8,
-    "share_of_bottom_up_low": 0.357,
+    "hours_at_blended": 464.6,
+    "share_of_bottom_up_low": 0.337,
     "usd": 68440.5
    },
    "p25": {
     "hours_at_blended": 146.5,
-    "share_of_bottom_up_low": 0.113,
+    "share_of_bottom_up_low": 0.106,
     "usd": 21578.64
    },
    "p75": {
-    "hours_at_blended": 1369.5,
-    "share_of_bottom_up_low": 1.052,
+    "hours_at_blended": 1369.0,
+    "share_of_bottom_up_low": 0.993,
     "usd": 201657.76
    },
    "p90": {
-    "hours_at_blended": 2562.3,
-    "share_of_bottom_up_low": 1.967,
+    "hours_at_blended": 2561.2,
+    "share_of_bottom_up_low": 1.858,
     "usd": 377285.14
    }
   },
-  "blended_rate_usd_per_hour": 147.25,
+  "blended_rate_usd_per_hour": 147.31,
   "bottom_up_hours": {
-   "high": 4044.9,
-   "low": 1341.1,
-   "mid": 2693.0
+   "high": 4273.3,
+   "low": 1418.5,
+   "mid": 2845.9
   },
   "reading": "The bottom-up band and the award distribution do not agree. They are reported side by side and neither is adjusted to meet the other."
  },
  "delivered": {
   "low": {
-   "high": 387040.02,
-   "low": 123811.3
+   "high": 408986.68,
+   "low": 131045.63
   },
   "median": {
-   "high": 601297.04,
-   "low": 191776.58
+   "high": 635440.63,
+   "low": 203009.2
   },
   "upper": {
-   "high": 744728.63,
-   "low": 237247.56
+   "high": 786920.2,
+   "low": 251111.76
   }
  },
- "generated_at": "2026-08-04T13:10:24Z",
+ "design": {
+  "ae_schedule": {
+   "effective": "2025",
+   "jurisdiction": "New York public authority A-E panel appointment",
+   "locus": "Resolution 2025-14, Awarding Architecture/Engineering Contracts 2025-2027, adopted; Exhibits A-C, hourly rate schedules",
+   "other_rows": [
+    {
+     "label": "Senior project manager",
+     "usd_per_hour": 250.0
+    },
+    {
+     "label": "Project manager",
+     "usd_per_hour": 220.0
+    },
+    {
+     "label": "Senior project architect/engineer",
+     "usd_per_hour": 190.0
+    },
+    {
+     "label": "Project architect",
+     "usd_per_hour": 140.0
+    },
+    {
+     "label": "Senior environmental scientist",
+     "usd_per_hour": 180.0
+    }
+   ],
+   "rating": "5/5 VERIFIED as published rates; 2/5 as a guide to the New York City market",
+   "top_max": 275.0,
+   "top_min": 180.0,
+   "top_of_ladder": [
+    {
+     "label": "Principal",
+     "usd_per_hour": 275.0
+    },
+    {
+     "label": "Principal, MEP engineering services",
+     "usd_per_hour": 250.0
+    },
+    {
+     "label": "Principal, engineered solutions",
+     "usd_per_hour": 200.0
+    },
+    {
+     "label": "Managing member",
+     "usd_per_hour": 190.0
+    },
+    {
+     "label": "Partner-in-charge, architectural services",
+     "usd_per_hour": 180.0
+    },
+    {
+     "label": "Principal structural engineer, PE",
+     "usd_per_hour": 180.0
+    }
+   ],
+   "url": "https://broomelandbank.org/wp-content/uploads/2025/05/2025_14_Resolution-Awarding-Architecture-Engineering-Contracts-2025-2027_Adopted.pdf"
+  },
+  "by_keyword": [
+   {
+    "keyword": "design charrette",
+    "max": 5699322.72,
+    "median": 238451.67,
+    "min": 15867.35,
+    "n": 108
+   },
+   {
+    "keyword": "feasibility study design",
+    "max": 11666796.13,
+    "median": 224268.39,
+    "min": 11210.0,
+    "n": 8
+   },
+   {
+    "keyword": "concept design study",
+    "max": 1511817.0,
+    "median": 272338.73,
+    "min": 22920.0,
+    "n": 5
+   },
+   {
+    "keyword": "planning and feasibility study",
+    "max": 1624241.0,
+    "median": 1546826.69,
+    "min": 1469412.37,
+    "n": 2
+   }
+  ],
+  "examples": [
+   {
+    "agency": "Department of Defense",
+    "amount": 82685.91,
+    "description": "EIE480 AND EIE488 VALUE BASED DESIGN CHARRETTE.",
+    "matched": "design charrette",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: OTHER"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 90488.59,
+    "description": "PKC-RIVERA-MORO-31 CES- AE-DESIGN CHARRETTE ASHE 22-1013 FOR NEW ELECTRICAL SUBSTATIONS FACILITIES: FAC921, 946 AND 151, AVIANO AB, ITALY",
+    "matched": "design charrette",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: LANDSCAPING, INTERIOR LAYOUT, AND DESIGNING"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 91000.0,
+    "description": "IGF::OT::IGF THE A/E SHALL FACILITATE A DESIGN CHARRETTE FOR THE C-5/C-17 HANGAR DAFB, DELAWARE",
+    "matched": "design charrette",
+    "psc": "ARCHITECT AND ENGINEERING- CONSTRUCTION: OTHER NON-BUILDING FACILITIES"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 94813.26,
+    "description": "PKC-RIVERA-BREDA-31 CES- AE-DESIGN CHARRETTE RPR & MOD ELECTRIC SCADA SYS, AVIANO AB, ITALY",
+    "matched": "design charrette",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: LANDSCAPING, INTERIOR LAYOUT, AND DESIGNING"
+   },
+   {
+    "agency": "Department of Commerce",
+    "amount": 96980.0,
+    "description": "A/E SERVICES FOR A PROGRAMMING STUDY AND DESIGN CHARRETTE FOR THE GULF OF MEXICO DISASTER RECOVERY CENTER AT MOBILE, ALABAMA.",
+    "matched": "design charrette",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: LANDSCAPING, INTERIOR LAYOUT, AND DESIGNING"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 99918.0,
+    "description": "THE A-E IS RESPONSIBLE FOR THE DESIGN CHARRETTE FOR THE MULTI LEVEL SECURE GRE AND SRF FACILITIES TO SUPPORT RANGE OPERATIONS ON EGLIN AFB; CONDUCT A USER CHARRETTE TO DEFINE REQUIREMENTS TO LOCATE AND SIZE BOTH BUILDINGS ON AN EMPTY LOT BETWEEN EXISTING EGLIN AIR FORCE BASE BUILDINGS 40 AND 44, ADJACENT AND SOUTH OF CHOCTAWHATCHEE AVENUE. THE CHARRETTE WILL ALSO PRESENT PLANNING OPTIONS TO ALIGN THESE FACILITIES WITH THE INSTALLATION DEVELOPMENT COMMITTEE SITING APPROVAL.",
+    "matched": "design charrette",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: LANDSCAPING, INTERIOR LAYOUT, AND DESIGNING"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 99964.83,
+    "description": "PKC-RIVERA-BREDA-31 CES- AE-DESIGN CHARRETTE FOR REPAIR WYVERN GYM, FAC 1430, AVIANO AB, ITALY",
+    "matched": "design charrette",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: LANDSCAPING, INTERIOR LAYOUT, AND DESIGNING"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 103649.0,
+    "description": "TASK 1-2 DESIGN CHARRETTE AND VE STUDY",
+    "matched": "design charrette",
+    "psc": "ARCHITECT AND ENGINEERING- CONSTRUCTION: RESTORATION OF REAL PROPERTY (PUBLIC OR PRIVATE)"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 106748.91,
+    "description": "DESIGN CHARRETTE 7.5MW GEN PLANT",
+    "matched": "design charrette",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: LANDSCAPING, INTERIOR LAYOUT, AND DESIGNING"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 107418.83,
+    "description": "KUWAIT: ARCENT HQ FORWARD CONCEPT DESIGN CHARRETTE",
+    "matched": "design charrette",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: LANDSCAPING, INTERIOR LAYOUT, AND DESIGNING"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 117771.11,
+    "description": "IGF::OT::IGF DESIGN CHARRETTE",
+    "matched": "design charrette",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: OTHER"
+   },
+   {
+    "agency": "Department of Defense",
+    "amount": 118637.0,
+    "description": "THE PRIMARY PURPOSE OF THIS PRE-DESIGN CHARRETTE IS TO PROVIDE SPECIFIC, DETAILED INFORMATION TO GUIDE BUILDING DESIGN BY DEFINING THE PROJECT SCOPE OF WORK IN ACCORDANCE WITH THE CURRENT AFMAN 211154 SHOP AIRCRAFT MAIN ORGANIZATIONAL.",
+    "matched": "design charrette",
+    "psc": "ARCHITECT AND ENGINEERING- GENERAL: OTHER"
+   }
+  ],
+  "filters": {
+   "award_type_codes": [
+    "A",
+    "B",
+    "C",
+    "D"
+   ],
+   "keywords": [
+    "feasibility study design",
+    "concept design study",
+    "planning and feasibility study",
+    "design charrette",
+    "architectural programming study",
+    "site investigation and concept"
+   ],
+   "psc_codes": [
+    "C"
+   ],
+   "time_period": {
+    "end": "2026-08-01",
+    "start": "2015-01-01"
+   }
+  },
+  "note": "Architect-engineer awards whose description names a STUDY rather than a building. Priced this way because the GSA multiple-award schedule is closed to A-E services by the statutory note to 40 U.S.C. 1103, so the hours-times-rate instrument used for every other discipline in this comparison is not how this one is bought.",
+  "ratio_to_noise_median": 3.56,
+  "stats": {
+   "max": 11666796.13,
+   "mean": 718860.81,
+   "median": 243898.79,
+   "min": 11210.0,
+   "n": 123,
+   "p10": 40353.94,
+   "p25": 78842.96,
+   "p75": 590234.84,
+   "p90": 1823005.99,
+   "total": 88419879.93
+  },
+  "why_not_instrument_b": "The statutory note to 40 U.S.C. 1103 bars architectural and engineering services from GSA multiple-award schedule contracts unless awarded under the Brooks Act procedures, and those select on qualifications with compensation negotiated only after selection. There is no A-E awarded ceiling rate to multiply by."
+ },
+ "direction": {
+  "hours_basis": "Active attention from the usage ledger, at idle cutoffs of 120 s and 300 s. Sittings 82 and 48 respectively.",
+  "hours_high": 13.35,
+  "hours_low": 11.65,
+  "hours_rating": "2/5 UNVERIFIED - inferred from request timestamps, not a stopwatch",
+  "inference_sum_h": 12.31,
+  "inference_union_h": 11.1,
+  "metered_inference_usd": 437.35,
+  "operator_over_ae_top": 3.64,
+  "operator_over_sme": 3.91,
+  "rates": [
+   {
+    "key": "operator",
+    "label": "Operator's stated rate",
+    "rating": "5/5 as a stated rate, 0/5 as a market observation - it is the operator's valuation of the operator's own hour",
+    "times_metered_high": 30.5,
+    "times_metered_low": 26.6,
+    "usd_high": 13348.94,
+    "usd_low": 11654.25,
+    "usd_per_hour": 1000.0
+   },
+   {
+    "key": "ae_top",
+    "label": "Top of a published A-E schedule",
+    "rating": "5/5 VERIFIED as published rates; 2/5 as a guide to the New York City market",
+    "times_metered_high": 8.4,
+    "times_metered_low": 7.3,
+    "usd_high": 3670.96,
+    "usd_low": 3204.92,
+    "usd_per_hour": 275.0
+   },
+   {
+    "key": "ae_low",
+    "label": "Lowest principal on the same schedule",
+    "rating": "5/5 VERIFIED as published rates; 2/5 as a guide to the New York City market",
+    "times_metered_high": 5.5,
+    "times_metered_low": 4.8,
+    "usd_high": 2402.81,
+    "usd_low": 2097.77,
+    "usd_per_hour": 180.0
+   },
+   {
+    "key": "sme",
+    "label": "Subject-matter expert, schedule upper quartile",
+    "rating": "5/5 VERIFIED - published GSA awarded ceiling rate",
+    "times_metered_high": 7.8,
+    "times_metered_low": 6.8,
+    "usd_high": 3414.53,
+    "usd_low": 2981.04,
+    "usd_per_hour": 255.79
+   }
+  ],
+  "reading": "The operator's rate is a stated input and the other three are market observations. They are listed together so the gap is visible; they are never averaged and the stated rate is never described as what the market pays.",
+  "wall_span_h": 127.35
+ },
+ "generated_at": "2026-08-06T20:07:33Z",
  "generator": "procurement/build_procurement_data.py",
  "hours": {
-  "high": 4044.9,
-  "low": 1341.1
+  "high": 4273.3,
+  "low": 1418.5
  },
  "inventory": {
-  "artifact_sloc": 7404,
+  "artifact_sloc": 8164,
   "artifacts": 7,
-  "data_sloc": 977,
-  "doc_words": 117379,
+  "data_sloc": 1018,
+  "doc_words": 121082,
   "documents": 12,
   "external_urls": 7,
-  "model_sloc": 1683,
-  "quoted_loci": 328,
+  "model_sloc": 1828,
+  "quoted_loci": 331,
   "scripts": 14,
-  "site_sloc": 3595,
-  "sources": 284,
-  "total_sloc": 13659
+  "site_sloc": 3669,
+  "sources": 289,
+  "total_sloc": 14679
  },
  "measured": {
-  "counterfactual_uncached_usd": 1292.11,
-  "generated_at": "2026-08-04T13:10:24Z",
-  "inference_sum_h": 7.47,
-  "inference_union_h": 6.86,
-  "models": 2,
-  "requests": 1756,
-  "subagents": 3,
-  "turns": 27,
-  "usd": 236.61,
-  "wall_span_h": 72.4
+  "counterfactual_uncached_usd": 2609.14,
+  "generated_at": "2026-08-06T20:07:33Z",
+  "inference_sum_h": 12.31,
+  "inference_union_h": 11.1,
+  "models": 3,
+  "requests": 3443,
+  "subagents": 5,
+  "turns": 47,
+  "usd": 437.35,
+  "wall_span_h": 127.35
  },
  "not_delivered": {
   "low": {
@@ -338,14 +606,14 @@
  "packages": [
   {
    "group": "disc:sme",
-   "hours_high": 426.0,
-   "hours_low": 142.0,
+   "hours_high": 433.5,
+   "hours_low": 144.5,
    "key": "retrieval",
    "label": "Source retrieval and appraisal",
    "measure": "sources",
    "per_unit_high": 1.5,
    "per_unit_low": 0.5,
-   "quantity": 284,
+   "quantity": 289,
    "rate_low": 125.78,
    "rate_median": 201.97,
    "rate_upper": 255.79,
@@ -354,14 +622,14 @@
   },
   {
    "group": "disc:technical-writer",
-   "hours_high": 763.0,
-   "hours_low": 293.4,
+   "hours_high": 787.0,
+   "hours_low": 302.7,
    "key": "authorship",
    "label": "Document authorship, cited",
    "measure": "doc_words",
    "per_unit_high": 6.5,
    "per_unit_low": 2.5,
-   "quantity": 117.38,
+   "quantity": 121.08,
    "rate_low": 62.85,
    "rate_median": 95.76,
    "rate_upper": 118.35,
@@ -370,14 +638,14 @@
   },
   {
    "group": "disc:data-engineer",
-   "hours_high": 122.1,
-   "hours_low": 48.8,
+   "hours_high": 127.2,
+   "hours_low": 50.9,
    "key": "dataeng",
    "label": "Data acquisition and pipelines",
    "measure": "data_sloc",
    "per_unit_high": 12.5,
    "per_unit_low": 5.0,
-   "quantity": 9.77,
+   "quantity": 10.18,
    "rate_low": 99.04,
    "rate_median": 149.77,
    "rate_upper": 182.72,
@@ -386,14 +654,14 @@
   },
   {
    "group": "disc:data-scientist",
-   "hours_high": 252.4,
-   "hours_low": 101.0,
+   "hours_high": 274.2,
+   "hours_low": 109.7,
    "key": "modelling",
    "label": "Quantitative modelling",
    "measure": "model_sloc",
    "per_unit_high": 15.0,
    "per_unit_low": 6.0,
-   "quantity": 16.83,
+   "quantity": 18.28,
    "rate_low": 110.81,
    "rate_median": 167.81,
    "rate_upper": 203.09,
@@ -402,14 +670,14 @@
   },
   {
    "group": "disc:software-engineer",
-   "hours_high": 925.5,
-   "hours_low": 370.2,
+   "hours_high": 1020.5,
+   "hours_low": 408.2,
    "key": "artifacts",
    "label": "Interactive artifacts",
    "measure": "artifact_sloc",
    "per_unit_high": 12.5,
    "per_unit_low": 5.0,
-   "quantity": 74.04,
+   "quantity": 81.64,
    "rate_low": 88.24,
    "rate_median": 138.26,
    "rate_upper": 171.07,
@@ -418,14 +686,14 @@
   },
   {
    "group": "disc:web-developer",
-   "hours_high": 359.5,
-   "hours_low": 143.8,
+   "hours_high": 366.9,
+   "hours_low": 146.8,
    "key": "publication",
    "label": "Site generation and publication",
    "measure": "site_sloc",
    "per_unit_high": 10.0,
    "per_unit_low": 4.0,
-   "quantity": 35.95,
+   "quantity": 36.69,
    "rate_low": 82.3,
    "rate_median": 120.45,
    "rate_upper": 146.85,
@@ -434,8 +702,8 @@
   },
   {
    "group": "disc:sme",
-   "hours_high": 569.7,
-   "hours_low": 109.9,
+   "hours_high": 601.9,
+   "hours_low": 116.3,
    "key": "qa",
    "label": "Review and quality assurance",
    "measure": "fraction of packages above",
@@ -450,8 +718,8 @@
   },
   {
    "group": "disc:project-manager",
-   "hours_high": 626.7,
-   "hours_low": 131.9,
+   "hours_high": 662.1,
+   "hours_low": 139.5,
    "key": "pm",
    "label": "Engagement management",
    "measure": "fraction of packages above",
@@ -623,61 +891,65 @@
   "source": "https://buy.gsa.gov/pricing/api/v3/search/ceilingrates/"
  },
  "ratings": {
+  "ae_schedule": "5/5 VERIFIED as published rates; 2/5 as a guide to the New York City market",
+  "design_awards": "5/5 VERIFIED - obligated dollars on real federal A-E awards",
+  "direction_hours": "2/5 UNVERIFIED - inferred from request timestamps",
   "instrument_a_awards": "5/5 VERIFIED - obligated dollars on real federal contracts",
   "instrument_b_hours": "1/5 INVENTED - this repository's own estimate, carried as a band",
   "instrument_b_rates": "5/5 VERIFIED - published GSA ceiling rates",
   "instrument_c_measured": "5/5 VERIFIED - the client's own billing telemetry",
-  "not_delivered_hours": "1/5 INVENTED - no scoping exercise has been done"
+  "not_delivered_hours": "1/5 INVENTED - no scoping exercise has been done",
+  "operator_rate": "5/5 as a stated rate, 0/5 as a market observation - it is the operator's valuation of the operator's own hour"
  },
  "schema": "procurement-comparison/1",
  "sensitivity": [
   {
-   "band_width_usd": 92865.81,
+   "band_width_usd": 98076.63,
    "key": "qa",
    "label": "Review and quality assurance",
-   "share_of_midpoint": 0.1731
+   "share_of_midpoint": 0.173
   },
   {
-   "band_width_usd": 76775.78,
+   "band_width_usd": 84656.6,
    "key": "artifacts",
    "label": "Interactive artifacts",
-   "share_of_midpoint": 0.2259
+   "share_of_midpoint": 0.2356
   },
   {
-   "band_width_usd": 75184.86,
+   "band_width_usd": 79409.07,
    "key": "pm",
    "label": "Engagement management",
    "share_of_midpoint": 0.1453
   },
   {
-   "band_width_usd": 57359.48,
+   "band_width_usd": 58369.33,
    "key": "retrieval",
    "label": "Source retrieval and appraisal",
-   "share_of_midpoint": 0.1447
+   "share_of_midpoint": 0.1392
   },
   {
-   "band_width_usd": 44968.9,
+   "band_width_usd": 46376.57,
    "key": "authorship",
    "label": "Document authorship, cited",
-   "share_of_midpoint": 0.1276
+   "share_of_midpoint": 0.1245
   },
   {
-   "band_width_usd": 25981.06,
-   "key": "publication",
-   "label": "Site generation and publication",
-   "share_of_midpoint": 0.0764
-  },
-  {
-   "band_width_usd": 25406.43,
+   "band_width_usd": 27604.74,
    "key": "modelling",
    "label": "Quantitative modelling",
-   "share_of_midpoint": 0.0748
+   "share_of_midpoint": 0.0768
   },
   {
-   "band_width_usd": 10978.14,
+   "band_width_usd": 26511.04,
+   "key": "publication",
+   "label": "Site generation and publication",
+   "share_of_midpoint": 0.0738
+  },
+  {
+   "band_width_usd": 11427.45,
    "key": "dataeng",
    "label": "Data acquisition and pipelines",
-   "share_of_midpoint": 0.0323
+   "share_of_midpoint": 0.0318
   }
  ]
 }

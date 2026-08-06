@@ -1,0 +1,142 @@
+name: Field observation
+description: Submit a count from the DUMBO corridor. Ten observations are described in Document 11.
+title: "[observation] "
+labels: ["observation", "field-data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for counting something.
+
+        **Two rules decide whether a count can be used:**
+
+        1. **Every count needs a denominator.** "0 dogs" is worthless.
+           "0 dogs in 143 boardings observed at York St between 08:10 and 09:05"
+           is a publishable figure. A result of zero is a real result — if an
+           event does not happen in `n` trials, the 95% upper bound on its rate
+           is about `3/n`.
+        2. **Say what the count was for, before saying what it showed.** A
+           measurement can only be read for the purpose it was taken for. This
+           repository withdrew a published headline once because two correctly
+           computed datasets were joined that had never been joined in the
+           field.
+
+        Nothing is published under your name without your explicit consent.
+        Consent to publish a count is not consent to publish a name.
+
+  - type: dropdown
+    id: which
+    attributes:
+      label: Which observation
+      description: From Document 11. Pick "Something else" if it is not on the list — unprompted observations have been among the more valuable inputs here.
+      options:
+        - O1 - Dwell, how long a person stays
+        - O2 - Dogs boarding a train
+        - O3 - Arrivals over the Brooklyn Bridge walkway
+        - O4 - Group size and composition
+        - O5 - Trains audible, and whether two overlap
+        - O6 - Where the canyon stops
+        - O7 - The photograph stop
+        - O8 - Ear-covering
+        - O9 - Windows facing the bridge
+        - O10 - The York St to water's edge walk
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: purpose
+    attributes:
+      label: What was this count for?
+      description: Written before the numbers, in your own words. This field is rated 5/5 and nothing computed afterwards can overrule it.
+      placeholder: e.g. To find out whether anyone actually brings a dog onto a bridge train, because the model assumes almost nobody does and nobody has checked.
+    validations:
+      required: true
+
+  - type: input
+    id: where
+    attributes:
+      label: Where exactly
+      description: A corner, a platform, a cordon line. Not "under the bridge".
+      placeholder: e.g. York St F platform, northbound end / the Washington St and Water St corner, north side
+    validations:
+      required: true
+
+  - type: input
+    id: when
+    attributes:
+      label: When
+      description: Date, start time, end time. Clock times, not "morning".
+      placeholder: e.g. 2026-08-12, 08:10 to 09:05
+    validations:
+      required: true
+
+  - type: input
+    id: denominator
+    attributes:
+      label: The denominator
+      description: Out of what? Rides taken, minutes counted, people or parties who passed the line.
+      placeholder: e.g. 143 boardings observed / 90 minutes / 212 parties crossing the line
+    validations:
+      required: true
+
+  - type: textarea
+    id: counts
+    attributes:
+      label: The counts
+      description: Raw numbers. Tallies are fine. Please do not average anything for us — send what you wrote down.
+      placeholder: |
+        dogs in a carrier: 2
+        dogs on a lead: 0
+        by line: B 1, Q 1, F 0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: rule
+    attributes:
+      label: Was the decision to count mechanical?
+      description: Could another person standing beside you have made the same call every time, without knowing what the study is about?
+      options:
+        - "Yes - it was unambiguous"
+        - "Mostly - a few judgement calls"
+        - "No - it required interpretation"
+    validations:
+      required: true
+
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What went wrong
+      description: The most useful field on this form. Anything that might have spoiled it — distraction, weather, an obstructed view, a stretch you stopped counting, uncertainty about a call you made.
+      placeholder: e.g. Lost about four minutes around 08:40 when a delivery truck blocked the sightline. Not sure whether one large bag contained a dog; counted it as no.
+    validations:
+      required: true
+
+  - type: textarea
+    id: gear
+    attributes:
+      label: Anything used to record it
+      description: Optional. Phone model, app, microphone, whether automatic gain control was on or off. Absolute sound levels from a phone are not usable here, but timings, counts and ratios are.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: consent
+    attributes:
+      label: Attribution
+      options:
+        - "Publish the count. Do not use my name."
+        - "Publish the count and credit me by my GitHub handle."
+        - "Publish the count and credit me by the name I give below."
+        - "Do not publish yet - contact me first."
+    validations:
+      required: true
+
+  - type: textarea
+    id: anything
+    attributes:
+      label: Anything else
+      description: Including disagreement with how the observation is specified. Corrections are more valuable than agreement.
+    validations:
+      required: false

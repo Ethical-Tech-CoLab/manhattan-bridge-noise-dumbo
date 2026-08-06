@@ -46,7 +46,7 @@ controls.
 only be defined by who has access to models. It will also be defined by who can
 afford inference, who can measure it, who can govern it, and who benefits from
 the systems built on top of it. This repository was produced for
-**$236.61 of list-price inference** by one person who did not have to ask
+**$437.35 of list-price inference** by one person who did not have to ask
 anyone for the budget. Both halves of that sentence are the finding.
 
 ### The unit is documented, and that is recent
@@ -206,12 +206,12 @@ with its own dashboard at
 [`procurement-dashboard.html`](../procurement/procurement-dashboard.html).
 
 It reaches a conclusion that constrains how this page may be read.
-**The measured $236.61 on this page must never be divided into a consultancy estimate to produce a saving ratio**,
+**The measured $437.35 on this page must never be divided into a consultancy estimate to produce a saving ratio**,
 because the numerator is 5/5 measured and
 the denominator is 1/5 invented. Document 9 states that refusal as its opening
-card. It also prices the human direction this ledger cannot see — roughly nine
-to eleven hours of active attention, which at a consultancy subject-matter-expert
-rate is about **eight and a half times the entire metered inference cost**.
+card. It also prices the human direction this ledger cannot see — between eleven
+and thirteen hours of active attention, which at four different published and
+stated rates comes to **between 4.8 and 30.5 times the entire metered inference cost**. The multiple never falls below five, whichever rate is chosen.
 
 ## Energy
 

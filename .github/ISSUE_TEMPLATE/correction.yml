@@ -1,0 +1,88 @@
+name: Correction
+description: Something published here is wrong. This is the most valuable kind of issue this repository can receive.
+title: "[correction] "
+labels: ["correction"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Corrections are more valuable than agreement.**
+
+        This corpus has withdrawn twenty published claims. Every one of them was
+        found internally, which measures this programme's appetite for finding
+        its own errors and says nothing about anybody else's ability to find
+        them. That is a weakness, and this form exists to fix it.
+
+        How corrections are handled here, so you know what to expect:
+
+        - **Claims are withdrawn in place, never deleted.** The wrong claim is
+          quoted where it stood, followed by the words "That is withdrawn", and
+          the reasoning is left visible. You will be able to see exactly what
+          changed.
+        - **A correction does not need to be certain to be worth filing.** "This
+          looks wrong and here is why" is enough. Several of the withdrawals here
+          started as a suspicion that turned out to be right.
+        - **Arithmetic is either right or wrong.** The event-duration derivation,
+          the cohort identifiability result and the propagation rejection have
+          never been reviewed by anyone. They are the most attackable things on
+          the site.
+
+  - type: input
+    id: where
+    attributes:
+      label: Where does the claim appear
+      description: A page URL, a document and section, or a file and line. If it appears in more than one place, list them — derived counts propagate.
+      placeholder: e.g. read/idea-concept.html section 1.7, and the acoustic demo's continuous mode which depends on it
+    validations:
+      required: true
+
+  - type: textarea
+    id: claim
+    attributes:
+      label: Quote the claim
+      description: Copy the exact wording. Paraphrase makes it hard to find every place the claim was repeated.
+    validations:
+      required: true
+
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What is wrong with it
+      description: The reasoning, the counter-evidence, or the arithmetic. A source is welcome but not required.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of error
+      options:
+        - "The arithmetic is wrong"
+        - "The source does not say this"
+        - "The source is misread or out of date"
+        - "The inference is not licensed by the evidence"
+        - "Two datasets are joined that should not be"
+        - "The claim is right but over-stated"
+        - "A number is stale - it disagrees with another number on this site"
+        - "Something else"
+    validations:
+      required: true
+
+  - type: textarea
+    id: should
+    attributes:
+      label: What should it say instead
+      description: Optional. If you do not know, say so — an identified error with no proposed fix is still worth filing.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: consent
+    attributes:
+      label: Attribution
+      options:
+        - "Record the correction. Do not use my name."
+        - "Credit me by my GitHub handle."
+        - "Credit me by the name I give below."
+    validations:
+      required: true

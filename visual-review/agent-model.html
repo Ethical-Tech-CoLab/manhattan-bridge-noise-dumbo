@@ -794,11 +794,20 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
     a lawn select for prams, and the residential blocks at Farragut Houses have an age structure
     nobody here has looked up. The flat rate is therefore wrong at every one of those places and
     wrong in a different direction at each.</li>
-    <li><strong>The dog rate is the weakest input on the page.</strong> A single per-persona
-    probability, set from the fact that the MTA requires dogs to travel in a container &mdash; so
-    dogs in the corridor are overwhelmingly walked from home rather than carried off a train. That
-    reasoning is sound and the number attached to it is not measured. It drives every dog-hour
-    reported here and it would take one afternoon with a clicker at the run gate to replace.</li>
+    <li><strong>The dog rate is the weakest input on the page, and its documentation contradicts its
+    own constants.</strong> The schema below records <em>&ldquo;near zero for anyone arriving by
+    subway&rdquo;</em>, on the sound reasoning that the MTA requires a dog to travel in a container,
+    so dogs in the corridor are overwhelmingly walked from home rather than carried off a train.
+    <strong>The constants attached to the three subway-ingress personas are 0.02, 0.04 and 0.01
+    &mdash; between one group in a hundred and one in twenty-five.</strong> That is not near zero.
+    If the true rate is nearer 0.2%, as a resident's recollection of a year of daily riding suggests,
+    <strong>the comment and the constants disagree by up to a factor of twenty.</strong>
+    <strong>The number is not being changed here, because there is nothing to change it to.</strong>
+    Replacing one unmeasured constant with another unmeasured constant chosen to match the prose
+    would make the page self-consistent and no more true, and it would destroy the visible
+    disagreement that is currently the most useful thing about this input. It is registered as
+    <a href="../read/observation-protocol.html">Method 45</a>, which costs nothing and rides along
+    with a commute somebody is already taking. It drives every dog-hour reported on this page.</li>
     <li><strong>There is no exposure&ndash;response function anywhere in this layer, and its absence
     is the finding rather than a gap to be filled later.</strong> The model can say who was standing
     there and for how long. It cannot say what that did to them, because the unit conversion
@@ -2218,10 +2227,13 @@ const SCHEMAS = {
   pace        m/s           free-walking speed, jittered per group
   dwellMul    float         multiplies every dwell in the itinerary
   scenarios   [[scenId,w]]  what this persona is here to do
-  dogRate     0..1          probability this group brings a dog. Near zero for
-                            anyone arriving by subway: the MTA requires a dog
-                            to travel in a container, so dogs in the corridor
-                            are walked from home rather than carried off a train.
+  dogRate     0..1          probability this group brings a dog. Reasoned from
+                            the MTA container rule: dogs in the corridor are
+                            walked from home rather than carried off a train.
+                            NOTE - the three subway-ingress personas carry
+                            0.02, 0.04 and 0.01, which is NOT near zero. That
+                            disagreement is left visible rather than tuned
+                            away, and Method 45 settles it with a count.
 }`,
   schemaScenario:
 `Scenario {

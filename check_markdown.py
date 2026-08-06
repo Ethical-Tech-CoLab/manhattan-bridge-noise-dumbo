@@ -33,6 +33,7 @@ DOCS = [
     "procurement/README.md",
     "pedestrian-site-visits/README.md",
     "pedestrian-site-visits/FIELD-KIT.md",
+    "pedestrian-site-visits/OBSERVATION-PROTOCOL.md",
 ]
 
 # Rendered by both GitHub and the site generator, and used deliberately.
