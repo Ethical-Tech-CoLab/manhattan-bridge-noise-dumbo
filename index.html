@@ -40,6 +40,13 @@
   --cp-panel-strong: rgba(255, 255, 255, 0.96);
   --cp-sheen: rgba(255, 255, 255, 0.55);
   --cp-highlight: rgba(177, 31, 75, 0.12);
+  /* The two ends of the scrim laid over the page backdrop photograph. The
+     photograph is near-black on its left half, so light theme needs a much
+     heavier wash than dark theme to stay a page rather than a picture. */
+  --cp-bleed-a: rgba(247, 244, 239, 0.90);
+  --cp-bleed-b: rgba(247, 244, 239, 0.95);
+  --cp-bleed-card: rgba(255, 255, 255, 0.88);
+  --cp-bleed-card-soft: rgba(252, 251, 248, 0.86);
 }
 html[data-theme="dark"] {
   color-scheme: dark;
@@ -66,6 +73,10 @@ html[data-theme="dark"] {
   --cp-panel-strong: rgba(41, 41, 41, 0.96);
   --cp-sheen: rgba(255, 255, 255, 0.04);
   --cp-highlight: rgba(253, 142, 161, 0.12);
+  --cp-bleed-a: rgba(61, 59, 58, 0.74);
+  --cp-bleed-b: rgba(61, 59, 58, 0.84);
+  --cp-bleed-card: rgba(41, 41, 41, 0.84);
+  --cp-bleed-card-soft: rgba(52, 50, 49, 0.82);
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
@@ -158,10 +169,14 @@ p { margin: 0 0 14px; }
 /* -- above the fold ------------------------------------------------------ */
 /* The hero image is grayscale by construction so the theme, not the JPEG,
    decides what colour it is. */
+/* The band is emitted OUTSIDE .wrap, which is how it reaches the edge of the
+   viewport at every width. The 100vw trick was rejected: 100vw counts the
+   scrollbar, so it overshoots by 15-17px and puts a horizontal scrollbar on
+   every desktop browser that reserves gutter space. */
 .hb {
-  position: relative; border-radius: 16px; overflow: hidden;
-  border: 1px solid var(--cp-border); margin: 0 0 22px;
-  background: #101010; isolation: isolate;
+  position: relative; overflow: hidden;
+  border: 0; border-bottom: 1px solid var(--cp-border); border-radius: 0;
+  margin: 0; background: #101010; isolation: isolate;
 }
 .hb .pic {
   position: absolute; inset: 0; width: 100%; height: 100%;
@@ -175,7 +190,12 @@ p { margin: 0 0 14px; }
                     rgba(16,16,16,0.42) 62%, rgba(16,16,16,0.20) 100%),
     linear-gradient(0deg, var(--cp-highlight), var(--cp-highlight));
 }
-.hb .hin { position: relative; z-index: 2; padding: 44px 40px 30px; color: #f2efea; }
+/* Text stays on the same 1180px measure as every card below it, so going
+   full bleed changes where the photograph stops and nothing else. */
+.hb .hin {
+  position: relative; z-index: 2; max-width: 1180px; margin: 0 auto;
+  padding: 52px 22px 34px; color: #f2efea;
+}
 .hb .kicker {
   font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
   color: var(--cp-accent); font-weight: 700; margin: 0 0 10px;
@@ -191,6 +211,15 @@ html[data-theme="light"] .hb .kicker { color: #fd8ea1; }
   font-size: 0.7rem; color: rgba(255,255,255,0.52); line-height: 1.5;
 }
 .hb .cred a { color: rgba(255,255,255,0.74); }
+/* A code chip carries a near-white fill and a border, which is correct in a
+   table and wrong over a photograph &mdash; it reads as a paste artefact. In
+   the credit line the script name is a link like any other, so it takes the
+   link colour and nothing else. */
+.hb .cred code {
+  background: none; border: 0; padding: 0;
+  font-family: inherit; font-size: inherit;
+}
+.hb .cred a code { color: inherit; border-color: transparent; }
 
 /* the statement carousel */
 .wc { position: relative; z-index: 2; margin: 26px 0 34px; min-height: 148px; }
@@ -227,10 +256,40 @@ html[data-theme="light"] .wc .u { color: #ff9bad; }
   .wc .wcslide { transition: none; }
 }
 @media (max-width: 760px) {
-  .hb .hin { padding: 28px 20px 22px; }
+  .hb .hin { padding-top: 30px; padding-bottom: 24px; }
   .hb h1 { font-size: 1.8rem; }
   .hb .cred { position: static; max-width: none; text-align: left; }
   .wc { min-height: 190px; }
+}
+
+/* -- the page backdrop ---------------------------------------------------- */
+/* The same composite that backs the band, held behind the whole page so the
+   treatment does not stop at the fold. position: fixed rather than
+   background-attachment: fixed, which iOS Safari silently ignores and which
+   Chrome repaints badly over a long document. Being viewport-sized, it is
+   responsive without a single breakpoint: cover re-crops at every width.
+   z-index -1 puts it above the propagated body background and below every
+   element in flow, so nothing needs a stacking context to sit on top. */
+body.bleed::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(176deg, var(--cp-bleed-a) 0%, var(--cp-bleed-b) 100%),
+    url("assets/hero-composite-1200.jpg") 62% 30% / cover no-repeat;
+}
+/* Cards go translucent ONLY on the bleed page, so the treatment reads through
+   them instead of being hidden by them. The floor is 0.84 alpha, which keeps
+   body text above 12:1 against the page text colour in both themes even where
+   the photograph is at its lightest. */
+body.bleed .card {
+  background: var(--cp-bleed-card);
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+}
+body.bleed .card.hero { background: var(--cp-bleed-card-soft); }
+@media (prefers-reduced-transparency: reduce) {
+  body.bleed::before { background: linear-gradient(var(--cp-bg), var(--cp-bg)); }
+  body.bleed .card { background: var(--cp-surface); backdrop-filter: none; }
+  body.bleed .card.hero { background: var(--cp-bg-elevated); }
 }
 
 .statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
@@ -395,6 +454,9 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
   .toc { position: static; max-height: none; margin-bottom: 26px; }
   .q { grid-template-columns: 1fr; gap: 4px; }
   .wrap { padding: 22px 16px 70px; }
+  /* The band's side padding has to track .wrap's at every breakpoint, or the
+     headline stops sitting over the left edge of the cards below it. */
+  .hb .hin { padding-left: 16px; padding-right: 16px; }
   .card { padding: 20px 18px; }
 }
 @media (max-width: 560px) {
@@ -402,9 +464,8 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 }
 </style>
 </head>
-<body>
+<body class="bleed">
 <div class="mh-bar"><div class="mh-in"><a class="mh-home" href="index.html" aria-current="page"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="index.html" class="on">Overview</a><a href="index.html#demos">Demos</a><a href="research.html">Research</a></nav></div></div>
-<div class="wrap">
 <div class="hb">
 <img class="pic" src="assets/hero-composite.jpg" alt="" srcset="assets/hero-composite-1200.jpg 1200w, assets/hero-composite.jpg 2400w" sizes="100vw" width="2400" height="1000" fetchpriority="high">
 <div class="tint"></div>
@@ -433,6 +494,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <p class="cred">Photograph: Historic American Engineering Record NY-127-7, Jack E. Boucher, National Park Service, via <a href="https://www.loc.gov/item/ny0980/">Library of Congress</a> &mdash; no known restrictions on images made by the U.S. Government. Overlaid wireframe rendered from this repository's own <a href="visual-review/model-3d.html">3D model</a>, so it is inferred geometry and not a survey. Composited by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/make_hero.py"><code>make_hero.py</code></a>.</p>
 </div>
 </div>
+<div class="wrap">
 <div class="card hero">
 <div class="statrow"><div class="s"><div class="k">MTA-measured peak, Brooklyn Bridge Park</div><div class="big">98.9</div>dB(A) average maximum</div><div class="s"><div class="k">Weekday crossings, busiest hour</div><div class="big">67</div>a train every 54 seconds</div><div class="s"><div class="k">People living in the affected corridor</div><div class="big">15.8k</div>to 21.4k, from tax lots</div><div class="s"><div class="k">Rail noise complaints NYC 311 can accept</div><div class="big">0</div>there is no category</div></div>
 <p style="margin-top:18px">The first two are the MTA's own figures and are the most reliable numbers here. The third is derived from public tax-lot data. <strong>The fourth is the finding this programme did not expect to make.</strong></p>
@@ -488,7 +550,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 </div>
 <p class="small"><a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/new?template=observation.yml">Submit a field observation</a> &nbsp;&middot;&nbsp; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/new?template=correction.yml">File a correction</a> &mdash; both forms make the provenance fields (where, when, out of what, and what it was for) structurally required, because a count without a denominator cannot be used and a count whose purpose was never stated can be read for the wrong thing.</p>
 </div>
-<p class="foot"><strong>Silencing the Span: Defining the Manhattan Bridge Rail-Noise Problem in DUMBO for a Design-Build Intervention.</strong> Ethical Tech CoLab. Research content released under <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/LICENSE">CC BY 4.0</a>. Not peer-reviewed. No option in any document is recommended for procurement.<br><br>This page was generated by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> from commit <code>1ad9225</code> on 2026-08-06. <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo">Repository</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/">Open issues</a></p>
+<p class="foot"><strong>Silencing the Span: Defining the Manhattan Bridge Rail-Noise Problem in DUMBO for a Design-Build Intervention.</strong> Ethical Tech CoLab. Research content released under <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/LICENSE">CC BY 4.0</a>. Not peer-reviewed. No option in any document is recommended for procurement.<br><br>This page was generated by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> from commit <code>d9a4e94</code> on 2026-08-06. <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo">Repository</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/issues/">Open issues</a></p>
 <script>
 (function () {
   var wc = document.getElementById("wc");

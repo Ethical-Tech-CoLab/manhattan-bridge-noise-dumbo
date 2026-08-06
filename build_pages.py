@@ -844,6 +844,13 @@ CSS = """
   --cp-panel-strong: rgba(255, 255, 255, 0.96);
   --cp-sheen: rgba(255, 255, 255, 0.55);
   --cp-highlight: rgba(177, 31, 75, 0.12);
+  /* The two ends of the scrim laid over the page backdrop photograph. The
+     photograph is near-black on its left half, so light theme needs a much
+     heavier wash than dark theme to stay a page rather than a picture. */
+  --cp-bleed-a: rgba(247, 244, 239, 0.90);
+  --cp-bleed-b: rgba(247, 244, 239, 0.95);
+  --cp-bleed-card: rgba(255, 255, 255, 0.88);
+  --cp-bleed-card-soft: rgba(252, 251, 248, 0.86);
 }
 html[data-theme="dark"] {
   color-scheme: dark;
@@ -870,6 +877,10 @@ html[data-theme="dark"] {
   --cp-panel-strong: rgba(41, 41, 41, 0.96);
   --cp-sheen: rgba(255, 255, 255, 0.04);
   --cp-highlight: rgba(253, 142, 161, 0.12);
+  --cp-bleed-a: rgba(61, 59, 58, 0.74);
+  --cp-bleed-b: rgba(61, 59, 58, 0.84);
+  --cp-bleed-card: rgba(41, 41, 41, 0.84);
+  --cp-bleed-card-soft: rgba(52, 50, 49, 0.82);
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
@@ -962,10 +973,14 @@ p { margin: 0 0 14px; }
 /* -- above the fold ------------------------------------------------------ */
 /* The hero image is grayscale by construction so the theme, not the JPEG,
    decides what colour it is. */
+/* The band is emitted OUTSIDE .wrap, which is how it reaches the edge of the
+   viewport at every width. The 100vw trick was rejected: 100vw counts the
+   scrollbar, so it overshoots by 15-17px and puts a horizontal scrollbar on
+   every desktop browser that reserves gutter space. */
 .hb {
-  position: relative; border-radius: 16px; overflow: hidden;
-  border: 1px solid var(--cp-border); margin: 0 0 22px;
-  background: #101010; isolation: isolate;
+  position: relative; overflow: hidden;
+  border: 0; border-bottom: 1px solid var(--cp-border); border-radius: 0;
+  margin: 0; background: #101010; isolation: isolate;
 }
 .hb .pic {
   position: absolute; inset: 0; width: 100%; height: 100%;
@@ -979,7 +994,12 @@ p { margin: 0 0 14px; }
                     rgba(16,16,16,0.42) 62%, rgba(16,16,16,0.20) 100%),
     linear-gradient(0deg, var(--cp-highlight), var(--cp-highlight));
 }
-.hb .hin { position: relative; z-index: 2; padding: 44px 40px 30px; color: #f2efea; }
+/* Text stays on the same 1180px measure as every card below it, so going
+   full bleed changes where the photograph stops and nothing else. */
+.hb .hin {
+  position: relative; z-index: 2; max-width: 1180px; margin: 0 auto;
+  padding: 52px 22px 34px; color: #f2efea;
+}
 .hb .kicker {
   font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
   color: var(--cp-accent); font-weight: 700; margin: 0 0 10px;
@@ -995,6 +1015,15 @@ html[data-theme="light"] .hb .kicker { color: #fd8ea1; }
   font-size: 0.7rem; color: rgba(255,255,255,0.52); line-height: 1.5;
 }
 .hb .cred a { color: rgba(255,255,255,0.74); }
+/* A code chip carries a near-white fill and a border, which is correct in a
+   table and wrong over a photograph &mdash; it reads as a paste artefact. In
+   the credit line the script name is a link like any other, so it takes the
+   link colour and nothing else. */
+.hb .cred code {
+  background: none; border: 0; padding: 0;
+  font-family: inherit; font-size: inherit;
+}
+.hb .cred a code { color: inherit; border-color: transparent; }
 
 /* the statement carousel */
 .wc { position: relative; z-index: 2; margin: 26px 0 34px; min-height: 148px; }
@@ -1031,10 +1060,40 @@ html[data-theme="light"] .wc .u { color: #ff9bad; }
   .wc .wcslide { transition: none; }
 }
 @media (max-width: 760px) {
-  .hb .hin { padding: 28px 20px 22px; }
+  .hb .hin { padding-top: 30px; padding-bottom: 24px; }
   .hb h1 { font-size: 1.8rem; }
   .hb .cred { position: static; max-width: none; text-align: left; }
   .wc { min-height: 190px; }
+}
+
+/* -- the page backdrop ---------------------------------------------------- */
+/* The same composite that backs the band, held behind the whole page so the
+   treatment does not stop at the fold. position: fixed rather than
+   background-attachment: fixed, which iOS Safari silently ignores and which
+   Chrome repaints badly over a long document. Being viewport-sized, it is
+   responsive without a single breakpoint: cover re-crops at every width.
+   z-index -1 puts it above the propagated body background and below every
+   element in flow, so nothing needs a stacking context to sit on top. */
+body.bleed::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(176deg, var(--cp-bleed-a) 0%, var(--cp-bleed-b) 100%),
+    url("assets/hero-composite-1200.jpg") 62% 30% / cover no-repeat;
+}
+/* Cards go translucent ONLY on the bleed page, so the treatment reads through
+   them instead of being hidden by them. The floor is 0.84 alpha, which keeps
+   body text above 12:1 against the page text colour in both themes even where
+   the photograph is at its lightest. */
+body.bleed .card {
+  background: var(--cp-bleed-card);
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+}
+body.bleed .card.hero { background: var(--cp-bleed-card-soft); }
+@media (prefers-reduced-transparency: reduce) {
+  body.bleed::before { background: linear-gradient(var(--cp-bg), var(--cp-bg)); }
+  body.bleed .card { background: var(--cp-surface); backdrop-filter: none; }
+  body.bleed .card.hero { background: var(--cp-bg-elevated); }
 }
 
 .statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
@@ -1199,6 +1258,9 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
   .toc { position: static; max-height: none; margin-bottom: 26px; }
   .q { grid-template-columns: 1fr; gap: 4px; }
   .wrap { padding: 22px 16px 70px; }
+  /* The band's side padding has to track .wrap's at every breakpoint, or the
+     headline stops sitting over the left edge of the cards below it. */
+  .hb .hin { padding-left: 16px; padding-right: 16px; }
   .card { padding: 20px 18px; }
 }
 @media (max-width: 560px) {
@@ -1318,15 +1380,20 @@ def bar(active, depth):
 
 
 
-def shell(title, desc, body, active, depth):
+def shell(title, desc, body, active, depth, body_class="", pre=""):
+    # pre is emitted BETWEEN the masthead and .wrap. It exists for one reason:
+    # a full-bleed band cannot live inside a 1180px centred container.
     return (
         "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"
         "<meta charset=\"utf-8\">\n"
         "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
         "<title>" + title + "</title>\n"
         "<meta name=\"description\" content=\"" + desc + "\">\n"
-        + FAVICON + "\n" + THEME_JS + "\n<style>" + CSS + "</style>\n</head>\n<body>\n"
-        + bar(active, depth) + "\n<div class=\"wrap\">\n" + body
+        + FAVICON + "\n" + THEME_JS + "\n<style>" + CSS + "</style>\n</head>\n"
+        + "<body" + (' class="%s"' % body_class if body_class else "") + ">\n"
+        + bar(active, depth) + "\n"
+        + ((pre + "\n") if pre else "")
+        + "<div class=\"wrap\">\n" + body
         + "\n</div>\n</body>\n</html>\n")
 
 
@@ -1496,6 +1563,7 @@ def _ctx(stats):
 
 
 def sec_hero(stats, c):
+    """The full-bleed banner. Emitted OUTSIDE .wrap, so it returns on its own."""
     o = []
     A = o.append
 
@@ -1552,6 +1620,13 @@ def sec_hero(stats, c):
       '<a href="' + BLOB + 'make_hero.py"><code>make_hero.py</code></a>.</p>')
     A("</div>")
     A("</div>")
+    return o
+
+
+def sec_headline(stats, c):
+    """The four headline numbers. First card inside .wrap, below the band."""
+    o = []
+    A = o.append
 
     A('<div class="card hero">')
     A('<div class="statrow">'
@@ -2292,7 +2367,7 @@ def sec_handoff(stats, c):
 def build_index(stats):
     c = _ctx(stats)
     o = []
-    for fn in (sec_hero, sec_start, sec_demos, sec_findings, sec_handoff,
+    for fn in (sec_headline, sec_start, sec_demos, sec_findings, sec_handoff,
                sec_foot):
         o.extend(fn(stats, c))
     o.append(HERO_JS)
@@ -2302,7 +2377,8 @@ def build_index(stats):
         "Open research on rail noise from the NYC Subway crossing the Manhattan "
         "Bridge into DUMBO, Brooklyn. What the problem is, interactive "
         "demonstrations you can hear and navigate, and what has been found.",
-        "\n".join(o), "home", 0)
+        "\n".join(o), "home", 0,
+        body_class="bleed", pre="\n".join(sec_hero(stats, c)))
 
 
 def build_research(stats):
