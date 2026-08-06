@@ -408,7 +408,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <div class="doclayout">
 <aside class="toc"><div class="h">On this page</div><a href="#why-this-document-exists">Why this document exists</a><a href="#the-rule-that-governs-the-whole-list">The rule that governs the whole list</a><a class="l3" href="#the-arithmetic-of-a-zero">The arithmetic of a zero</a><a href="#what-makes-a-count-usable-here">What makes a count usable here</a><a href="#the-ten-observations">The ten observations</a><a class="l3" href="#o1--dwell-how-long-a-person-stays">O1 — Dwell: how long a person stays</a><a class="l3" href="#o2--dogs-boarding-a-train">O2 — Dogs boarding a train</a><a class="l3" href="#o3--arrivals-over-the-brooklyn-bridge-walkway">O3 — Arrivals over the Brooklyn Bridge walkway</a><a class="l3" href="#o4--group-size-and-composition">O4 — Group size and composition</a><a class="l3" href="#o5--trains-audible-and-whether-two-overlap">O5 — Trains audible, and whether two overlap</a><a class="l3" href="#o6--where-the-canyon-stops">O6 — Where the canyon stops</a><a class="l3" href="#o7--the-photograph-stop">O7 — The photograph stop</a><a class="l3" href="#o8--ear-covering">O8 — Ear-covering</a><a class="l3" href="#o9--windows-facing-the-bridge">O9 — Windows facing the bridge</a><a class="l3" href="#o10--the-york-st-to-waters-edge-walk">O10 — The York St to water's edge walk</a><a href="#how-to-submit-an-observation-and-how-provenance-is-kept">How to submit an observation, and how provenance is kept</a><a class="l3" href="#the-requirement">The requirement</a><a class="l3" href="#route-1--a-github-issue-form-preferred">Route 1 — a GitHub issue form (preferred)</a><a class="l3" href="#route-2--email">Route 2 — email</a><a class="l3" href="#how-a-submission-gets-rated">How a submission gets rated</a><a href="#where-this-document-is-likely-to-be-wrong">Where this document is likely to be wrong</a><a href="#questions-this-raises">Questions this raises</a></aside>
 <main class="doc">
-<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/OBSERVATION-PROTOCOL.md"><code>pedestrian-site-visits/OBSERVATION-PROTOCOL.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 5,049 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/OBSERVATION-PROTOCOL.md"><code>pedestrian-site-visits/OBSERVATION-PROTOCOL.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 5,188 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
 <h1 id="document-11--the-pedestrian-observation-protocol">Document 11 — The pedestrian observation protocol</h1>
 <p><strong>Ten things a person walking through DUMBO can count, each of which moves a number this repository currently invents. With a submission path that keeps provenance, and the arithmetic that makes a null result worth reporting.</strong></p>
 <p>Ethical Tech CoLab · v1.0</p>
@@ -1011,7 +1011,7 @@ open questions at once.</p>
 repository would rather refuse it than quietly downgrade everything around it.
 So the submission path is built to make the provenance fields <strong>structurally required</strong> rather than politely requested.</p>
 <h3 id="route-1--a-github-issue-form-preferred">Route 1 — a GitHub issue form (preferred)</h3>
-<p>Two forms live in <a href="../.github/ISSUE_TEMPLATE"><code>.github/ISSUE_TEMPLATE/</code></a>:</p>
+<p>Two forms live in <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/tree/main/.github/ISSUE_TEMPLATE"><code>.github/ISSUE_TEMPLATE/</code></a>:</p>
 <div class="tw"><table>
 <thead>
 <tr>
@@ -1048,6 +1048,18 @@ is preferred over any form service:</p>
   the property an email thread lacks</li>
 <li><strong>no third party</strong>: nothing passes through a form vendor's database</li>
 </ul>
+<p><strong>One property of the mechanism had to be tested rather than trusted.</strong> A YAML
+issue form that GitHub's parser rejects does not fail visibly — it degrades
+silently to a single plain body textarea, which is <em>precisely</em> the
+unstructured free-text box this whole route exists to replace. A form that
+looks correct in the repository and is broken on the site would remove every
+required provenance field while appearing to have added them. Both forms are
+therefore validated against GitHub's published issue-form JSON schema by
+<a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/.github/verify_issue_forms.py"><code>.github/verify_issue_forms.py</code></a>, which
+reports the field count, the type mix, the number of <em>required</em> fields and the
+number of unique identifiers — 9 required fields on the observation form and 5
+on the correction form at the time of writing. It is committed rather than run
+once, because the failure it guards against is invisible.</p>
 <h3 id="route-2--email">Route 2 — email</h3>
 <p>For anyone without a GitHub account, or who does not want their name attached
 to a public repository. Send the same fields. They will be transcribed into an
@@ -1166,7 +1178,7 @@ standing beneath? Energy addition predicts <code>+3.01 dB</code>; the schedule c
 answer it at all, because its departure times are quantised to <code>:00</code> and <code>:30</code>
 and the merge window is empty by construction. <em>Method 47, and it rides along
 with Method 41.</em></p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/OBSERVATION-PROTOCOL.md">Source on GitHub</a> &middot; Built from <code>58959e6</code> on 2026-08-06.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/pedestrian-site-visits/OBSERVATION-PROTOCOL.md">Source on GitHub</a> &middot; Built from <code>1ad9225</code> on 2026-08-06.</p>
 </main>
 </div>
 

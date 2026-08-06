@@ -421,6 +421,19 @@ is preferred over any form service:
   the property an email thread lacks
 - **no third party**: nothing passes through a form vendor's database
 
+**One property of the mechanism had to be tested rather than trusted.** A YAML
+issue form that GitHub's parser rejects does not fail visibly — it degrades
+silently to a single plain body textarea, which is *precisely* the
+unstructured free-text box this whole route exists to replace. A form that
+looks correct in the repository and is broken on the site would remove every
+required provenance field while appearing to have added them. Both forms are
+therefore validated against GitHub's published issue-form JSON schema by
+[`.github/verify_issue_forms.py`](../.github/verify_issue_forms.py), which
+reports the field count, the type mix, the number of *required* fields and the
+number of unique identifiers — 9 required fields on the observation form and 5
+on the correction form at the time of writing. It is committed rather than run
+once, because the failure it guards against is invisible.
+
 ### Route 2 — email
 
 For anyone without a GitHub account, or who does not want their name attached

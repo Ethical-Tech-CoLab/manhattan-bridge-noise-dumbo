@@ -42,6 +42,7 @@ except ImportError:
 ROOT = os.path.dirname(os.path.abspath(__file__))
 REPO = "Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo"
 BLOB = "https://github.com/" + REPO + "/blob/main/"
+TREE = "https://github.com/" + REPO + "/tree/main/"
 ISSUES = "https://github.com/" + REPO + "/issues/"
 NEW_ISSUE = "https://github.com/" + REPO + "/issues/new"
 
@@ -1355,6 +1356,11 @@ def rewrite_href(href, src_dir):
         return (slug + ".html" + frag) if slug else (BLOB + norm)
     if low.endswith(CODE_EXT) or os.path.basename(norm) == "LICENSE":
         return BLOB + norm
+    # A link to a DIRECTORY has no served counterpart - Pages has no index for
+    # it, and .github/ is not published at all. Send it to the GitHub tree
+    # rather than emitting an href that resolves on disk and 404s on the site.
+    if os.path.isdir(os.path.join(ROOT, norm)):
+        return TREE + norm
     if low.endswith(".html"):
         return "../" + norm + frag
     return "../" + norm + frag
