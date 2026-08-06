@@ -506,17 +506,40 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
   <button type="button" class="btn" id="runArrivals">Run all three at this seed</button>
   <span class="hint" id="arrivalNote">Takes a few seconds, and resets the view afterwards.</span>
 
-  <div class="note" style="margin-top:16px">
+  <div class="note">
     <strong>The answer, over twelve seeds, paired run against run.</strong>
     Bursts do what they should: peak arrivals per minute go from <span class="mono">14.0</span> under
-    the ramp to <span class="mono">31.5</span> under Poisson to <span class="mono">58.9</span> under
-    train doors &mdash; a <strong>4.2&times;</strong> increase in bunching.
-    <strong>And the dose does not move at all.</strong> The paired burst-minus-Poisson difference in
-    mean dose is <span class="mono">+0.001 dB</span> (sd 0.019), with a largest single-seed
-    difference of <span class="mono">0.037 dB</span>. Tightening the stair-climb spread to
-    <span class="mono">0&ndash;2 s</span>, so that a whole train empties onto the street
-    simultaneously, does not rescue it either.
+    the ramp to <span class="mono">31.5</span> under Poisson to <span class="mono">40.0</span> under
+    train doors &mdash; a <strong>2.9&times;</strong> increase in bunching.
+    <strong>And the dose does not move.</strong> The paired burst-minus-Poisson difference in
+    mean dose is <span class="mono">+0.006 dB</span> (sd 0.025), with a largest single-seed
+    difference of <span class="mono">0.047 dB</span>.
   </div>
+  <div class="note bad">
+    <strong>Those were not the first numbers published here, and the first ones were misleading.</strong>
+    <blockquote>
+      &ldquo;peak arrivals per minute go from 14.0 &hellip; to 58.9 under train doors &mdash; a
+      <strong>4.2&times;</strong> increase in bunching &hellip; the paired difference in mean dose is
+      <span class="mono">+0.001 dB</span>&rdquo;
+    </blockquote>
+    Every one of those figures was measured correctly, and <strong>not at this page's settings</strong>:
+    the twelve-seed run behind them was executed with the stair-climb spread tightened to
+    <span class="mono">0&ndash;10 s</span>, which is the adversarial end of the sensitivity sweep and
+    not the default of <span class="mono">25&ndash;150 s</span>. Presenting them without saying so
+    invited a reader to check the figures against the button above and find different ones.
+    <strong>That is withdrawn</strong> and replaced by the default-configuration run in the block
+    above. The tightened run is kept, as what it always was:
+  </div>
+  <p>
+    <strong>An adversarial check, not the headline.</strong> Re-running the same twelve seeds with the
+    stair spread tightened to <span class="mono">0&ndash;10 s</span> &mdash; a whole train reaching the
+    street almost at once, which is physically impossible &mdash; pushes bunching to
+    <span class="mono">58.9</span> per minute, <strong>4.2&times;</strong> the ramp, and the paired dose
+    difference <em>falls</em> to <span class="mono">+0.001 dB</span> with a worst seed of
+    <span class="mono">0.037 dB</span>. <strong>Making the burst as sharp as it can possibly be does
+    not make it matter.</strong> That is a stronger result than the default run, which is why the two
+    are reported separately rather than averaged.
+  </p>
   <p>
     <strong>That null has a mechanism, which is why it is reportable rather than merely observed.</strong>
     Arrival time sets a group's <em>phase</em> against the train cycle, and phase can only matter if
@@ -528,8 +551,8 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
   <div class="note bad">
     <strong>Crowding is the exception, and it is a real one.</strong>
     Contention events rise from a base of about <span class="mono">58</span> per run to
-    <span class="mono">65</span> under train doors &mdash; a paired difference of
-    <span class="mono">+7.0</span> (sd 6.4), positive in eleven of twelve seeds. People who arrive
+    <span class="mono">68</span> under train doors &mdash; a paired difference of
+    <span class="mono">+10.3</span> (sd 6.5), positive in eleven of twelve seeds. People who arrive
     together compete for the same bench at the same moment, which is exactly what a burst should do.
     <strong>So the arrival process is irrelevant to the quantity this page exists to compute, and
     relevant to the one it computes as a side effect.</strong>
@@ -537,7 +560,7 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
   <p class="hint">
     This bounds a worry that has been near the top of the weaknesses list since the model was built.
     &ldquo;The arrivals are invented&rdquo; was true and is still true &mdash; but for the dose it is
-    now invented <em>within 0.04 dB</em>, which is far below every other uncertainty on this page.
+    now invented <em>within 0.05 dB</em>, which is far below every other uncertainty on this page.
     <strong>It would stop being true for anyone whose time in the corridor approached the headway</strong>,
     and nothing in DUMBO produces that: the corridor takes minutes to cross at any pace.
   </p>
@@ -746,8 +769,8 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
     inside the run, and only the arrival <em>structure</em> is modelled. What that costs is now
     bounded rather than guessed &mdash; across twelve paired seeds, moving from the flattest possible
     arrivals to the burstiest moves the mean dose by
-    <span class="mono">0.001 dB</span> and never by more than
-    <span class="mono">0.037 dB</span>. So the rate matters for the <em>mix</em> of personas present
+    <span class="mono">0.006 dB</span> and never by more than
+    <span class="mono">0.047 dB</span>. So the rate matters for the <em>mix</em> of personas present
     at a given hour, and the structure does not matter for the dose at all.</li>
     <li><strong>The feeder headways are invented, and the stair-climb spread is invented.</strong>
     Both are rated 1/5. The feeder headways are one constant away from being measured &mdash;

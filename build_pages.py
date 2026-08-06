@@ -216,7 +216,7 @@ ARTIFACTS = [
      "off a train.",
      "The first panel: the same itinerary started ninety seconds apart gets a "
      "different dose. Then the arrival card, where multiplying peak bunching "
-     "by 4.2 times moves the mean dose by 0.001 dB - and the reason it does "
+     "by 2.9 times moves the mean dose by 0.006 dB - and the reason it does "
      "not move is the interesting part. Then the rejected-propagation panel, "
      "which is a negative result and the most important thing on the page. "
      "Then, at the "
@@ -465,10 +465,10 @@ TODO = [
     ("cheap", "Method 44 - the crowding half, and only if the whole of it is run",
      "The feeder headways are one constant and a minute; the rest is a study",
      "Three arrival processes were compared in the agent model at a fixed "
-     "population, and <b>multiplying peak bunching by 4.2 times moved the mean "
-     "dose by 0.001 dB</b> &mdash; never more than 0.037 dB on any seed &mdash; "
+     "population, and <b>multiplying peak bunching by 2.9 times moved the mean "
+     "dose by 0.006 dB</b> &mdash; never more than 0.047 dB on any seed &mdash; "
      "because dwell dominates headway. Contention is the one quantity that does "
-     "respond, up about 12%. So this method has been <b>demoted by a result "
+     "respond, up about 18%. So this method has been <b>demoted by a result "
      "rather than by a judgement</b>, and it is listed here mostly to say so. "
      "<code>bridge_schedule.py</code> already computes the feeder headways if "
      "one constant is changed, and running that alone would produce a real "

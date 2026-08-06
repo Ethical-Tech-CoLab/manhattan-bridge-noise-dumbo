@@ -397,7 +397,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <div class="doclayout">
 <aside class="toc"><div class="h">On this page</div><a href="#why-not-google-maps">Why not Google Maps</a><a href="#the-premise-correction">The premise correction</a><a href="#four-traps-all-of-which-silently-produce-a-wrong-number">Four traps, all of which silently produce a wrong number</a><a href="#the-result">The result</a><a class="l3" href="#by-noise-period">By noise period</a><a class="l3" href="#the-dashboard">The dashboard</a><a href="#three-findings-that-were-not-being-looked-for">Three findings that were not being looked for</a><a class="l3" href="#1-peak-park-use-and-peak-train-frequency-are-out-of-phase---narrowed">1. Peak park use and peak train frequency are out of phase - narrowed</a><a class="l3" href="#2-the-mtas-own-train-counts-do-not-match-the-mtas-own-schedule">2. The MTA's own train counts do not match the MTA's own schedule</a><a class="l3" href="#3-explanation-3-would-undermine-this-programmes-own-derived-result">3. Explanation 3 would undermine this programme's own derived result</a><a class="l3" href="#what-can-honestly-be-said-instead">What can honestly be said instead</a><a href="#what-these-scripts-still-do-not-give-you">What these scripts still do not give you</a><a href="#counting-the-denominator">Counting the denominator</a><a class="l3" href="#the-direction-trap">The direction trap</a><a class="l3" href="#four-sources-none-of-which-counts-a-pedestrian">Four sources, none of which counts a pedestrian</a><a class="l3" href="#what-it-found">What it found</a><a class="l3" href="#the-corridor-fills-in-the-morning-and-empties-in-the-evening">The corridor fills in the morning and empties in the evening</a><a class="l3" href="#a-cross-check-that-was-not-designed-in">A cross-check that was not designed in</a><a class="l3" href="#residents">Residents</a><a class="l3" href="#littles-law-half-solved">Little's Law, half solved</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong">Where this section is likely to be wrong</a><a href="#who-is-actually-here-hour-by-hour">Who is actually here, hour by hour</a><a class="l3" href="#the-model">The model</a><a class="l3" href="#what-it-is-fitted-to">What it is fitted to</a><a class="l3" href="#the-visitor-prior-and-what-it-costs">The visitor prior, and what it costs</a><a class="l3" href="#the-finding-cohort-labels-are-not-identifiable">The finding: cohort labels are not identifiable</a><a class="l3" href="#the-other-thing-the-curve-is-not">The other thing the curve is not</a><a class="l3" href="#where-this-section-is-likely-to-be-wrong_1">Where this section is likely to be wrong</a><a class="l3" href="#what-would-actually-move-this">What would actually move this</a><a href="#where-the-people-go-not-merely-how-many-there-are">Where the people go, not merely how many there are</a><a class="l3" href="#who-is-standing-in-it-and-the-number-that-is-refused">Who is standing in it, and the number that is refused</a><a class="l3" href="#when-people-arrive-and-the-objection-it-retires">When people arrive, and the objection it retires</a><a href="#what-shape-of-space-they-are-standing-in">What shape of space they are standing in</a></aside>
 <main class="doc">
-<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md"><code>data-collection/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 9,546 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md"><code>data-collection/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 9,760 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
 <h1 id="establishing-train-frequency-over-the-manhattan-bridge-and-who-is-under-it">Establishing train frequency over the Manhattan Bridge, and who is under it</h1>
 <p>Six scripts that answer four questions this programme had been asserting
 answers to without ever deriving them: how many trains actually cross the
@@ -1934,7 +1934,7 @@ same party size, same itinerary, same gateways. A diff across processes is
 therefore a diff of timing and of nothing else, and the verification harness
 asserts exactly that rather than trusting it.</p>
 <p><strong>The result is a clean negative, and it is worth more than a positive would have been.</strong>
-Across twelve seeds run pairwise:</p>
+Across twelve seeds run pairwise, at the model's default settings:</p>
 <div class="tw"><table>
 <thead>
 <tr>
@@ -1959,17 +1959,37 @@ Across twelve seeds run pairwise:</p>
 </tr>
 <tr>
 <td>Train doors</td>
-<td>58.9</td>
-<td>86.083 dB</td>
-<td>65.0</td>
+<td>40.0</td>
+<td>86.088 dB</td>
+<td>68.3</td>
 </tr>
 </tbody>
 </table></div>
-<p>Bunching rises <strong>4.2x</strong>. The paired burst-minus-Poisson difference in mean dose
-is <strong>+0.001 dB</strong>, and the largest single-seed difference across twelve seeds is
-<strong>0.037 dB</strong>. A sensitivity sweep tightened the stair-climb spread from 25-150 s
-down to 0-2 s - a whole train emptying onto the street at once, which is
-physically impossible - and the answer did not move.</p>
+<p>Bunching rises <strong>2.9x</strong>. The paired burst-minus-Poisson difference in mean dose
+is <strong>+0.006 dB</strong>, and the largest single-seed difference across twelve seeds is
+<strong>0.047 dB</strong>.</p>
+<p><strong>One correction, and it is about how a number was framed rather than how it was computed.</strong>
+The first version of this section reported the same run as</p>
+<blockquote>
+<p>"peak arrivals per minute go from 14.0 to 31.5 to <strong>58.9</strong> - a <strong>4.2x</strong>
+increase in bunching - and the paired difference in mean dose is
+<strong>+0.001 dB</strong>"</p>
+</blockquote>
+<p>Those figures are correct and <strong>they are not the model's default settings</strong>. That
+run was executed with the stair-climb spread tightened to 0-10 s, the adversarial
+end of the sensitivity sweep, rather than the default 25-150 s. Reporting them
+plainly invited anyone who re-ran the comparison on the page to get different
+numbers and to have no way of knowing why.
+<strong>That is withdrawn.</strong> The table above is the default run. The tightened
+run is retained below as what it always was: a check, not a headline.</p>
+<p><strong>The adversarial check strengthens the result rather than qualifying it.</strong>
+Re-running the same twelve seeds with the stair spread tightened to 0-10 s - a
+whole train reaching the street almost at once, which is physically impossible -
+pushes bunching to 58.9 per minute, <strong>4.2x</strong> the ramp, and the paired dose
+difference <em>falls</em> to <strong>+0.001 dB</strong> with a worst seed of <strong>0.037 dB</strong>. Making the
+burst as sharp as it can possibly be does not make it matter. The two runs are
+reported separately rather than averaged, because averaging a default against an
+adversarial case would describe neither.</p>
 <p><strong>That null has a mechanism, which is why it is reportable rather than merely observed.</strong>
 Arrival time sets a group's phase against the train cycle, and phase
 can only matter if the visit is comparable to the headway. Weekday daytime
@@ -1978,14 +1998,14 @@ modelled population is in the corridor for a median of about <strong>430 s</stro
 seven crossings. Shifting phase moves that by at most one crossing in seven, and
 across a population it cancels.</p>
 <p><strong>Crowding is the exception, and it is real.</strong> Contention events rise from about
-58 to 65, a paired difference of <strong>+7.0</strong> (sd 6.4), positive in eleven of twelve
+58 to 68, a paired difference of <strong>+10.3</strong> (sd 6.5), positive in eleven of twelve
 seeds. People who arrive together compete for the same bench at the same moment.
 So the arrival process is irrelevant to the quantity this model exists to
 compute, and relevant to the one it computes as a side effect.</p>
 <p>This bounds an objection rather than answering a question, which is the useful
 thing about it. "Your arrivals are invented, therefore your exposure numbers are
 invented" was true and remains true - but for the dose it is now invented
-<em>within 0.04 dB</em>, far below every other uncertainty in the model.</p>
+<em>within 0.05 dB</em>, far below every other uncertainty in the model.</p>
 <p><strong>Q63.</strong> <strong>What is the shortest time anyone actually spends in this corridor?</strong>
 The whole null above rests on one comparison: dwell against headway. It holds
 because the shortest-dwell decile in the model sits at about 430 s against a 58 s
@@ -2112,7 +2132,7 @@ python build_carousel.py
 <p>A 30 s poll against an 85-300 s headway samples every train several times
 before it arrives. Shorter intervals gain nothing and are less polite to a
 free public endpoint.</p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md">Source on GitHub</a> &middot; Built from <code>7a5a7f9</code> on 2026-08-06.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/data-collection/README.md">Source on GitHub</a> &middot; Built from <code>0f62138</code> on 2026-08-06.</p>
 </main>
 </div>
 

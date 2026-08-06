@@ -919,19 +919,41 @@ therefore a diff of timing and of nothing else, and the verification harness
 asserts exactly that rather than trusting it.
 
 **The result is a clean negative, and it is worth more than a positive would have been.**
-Across twelve seeds run pairwise:
+Across twelve seeds run pairwise, at the model's default settings:
 
 | Process | Peak groups/min | Mean dose | Contention events |
 |---|---|---|---|
 | Uniform ramp | 14.0 | 86.083 dB | 57.1 |
 | Poisson | 31.5 | 86.082 dB | 58.0 |
-| Train doors | 58.9 | 86.083 dB | 65.0 |
+| Train doors | 40.0 | 86.088 dB | 68.3 |
 
-Bunching rises **4.2x**. The paired burst-minus-Poisson difference in mean dose
-is **+0.001 dB**, and the largest single-seed difference across twelve seeds is
-**0.037 dB**. A sensitivity sweep tightened the stair-climb spread from 25-150 s
-down to 0-2 s - a whole train emptying onto the street at once, which is
-physically impossible - and the answer did not move.
+Bunching rises **2.9x**. The paired burst-minus-Poisson difference in mean dose
+is **+0.006 dB**, and the largest single-seed difference across twelve seeds is
+**0.047 dB**.
+
+**One correction, and it is about how a number was framed rather than how it was computed.**
+The first version of this section reported the same run as
+
+> "peak arrivals per minute go from 14.0 to 31.5 to **58.9** - a **4.2x**
+> increase in bunching - and the paired difference in mean dose is
+> **+0.001 dB**"
+
+Those figures are correct and **they are not the model's default settings**. That
+run was executed with the stair-climb spread tightened to 0-10 s, the adversarial
+end of the sensitivity sweep, rather than the default 25-150 s. Reporting them
+plainly invited anyone who re-ran the comparison on the page to get different
+numbers and to have no way of knowing why.
+**That is withdrawn.** The table above is the default run. The tightened
+run is retained below as what it always was: a check, not a headline.
+
+**The adversarial check strengthens the result rather than qualifying it.**
+Re-running the same twelve seeds with the stair spread tightened to 0-10 s - a
+whole train reaching the street almost at once, which is physically impossible -
+pushes bunching to 58.9 per minute, **4.2x** the ramp, and the paired dose
+difference *falls* to **+0.001 dB** with a worst seed of **0.037 dB**. Making the
+burst as sharp as it can possibly be does not make it matter. The two runs are
+reported separately rather than averaged, because averaging a default against an
+adversarial case would describe neither.
 
 **That null has a mechanism, which is why it is reportable rather than merely observed.**
 Arrival time sets a group's phase against the train cycle, and phase
@@ -942,7 +964,7 @@ seven crossings. Shifting phase moves that by at most one crossing in seven, and
 across a population it cancels.
 
 **Crowding is the exception, and it is real.** Contention events rise from about
-58 to 65, a paired difference of **+7.0** (sd 6.4), positive in eleven of twelve
+58 to 68, a paired difference of **+10.3** (sd 6.5), positive in eleven of twelve
 seeds. People who arrive together compete for the same bench at the same moment.
 So the arrival process is irrelevant to the quantity this model exists to
 compute, and relevant to the one it computes as a side effect.
@@ -950,7 +972,7 @@ compute, and relevant to the one it computes as a side effect.
 This bounds an objection rather than answering a question, which is the useful
 thing about it. "Your arrivals are invented, therefore your exposure numbers are
 invented" was true and remains true - but for the dose it is now invented
-*within 0.04 dB*, far below every other uncertainty in the model.
+*within 0.05 dB*, far below every other uncertainty in the model.
 
 **Q63.** **What is the shortest time anyone actually spends in this corridor?**
 The whole null above rests on one comparison: dwell against headway. It holds
