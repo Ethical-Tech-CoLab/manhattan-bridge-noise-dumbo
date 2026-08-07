@@ -562,6 +562,16 @@ body.bleed .foot a code { color: #9fd0ff; }
 .badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
 .badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
 .badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+/* The version badge is deliberately QUIETER than the kind badge. It is a
+   caveat, not a label, and it must not compete with the title it sits beside. */
+.badge.ver {
+  text-transform: none; letter-spacing: 0.02em; font-weight: 600;
+  border-style: dashed; margin-left: 4px;
+}
+/* The kind and the version are ONE annotation and must wrap as one. Without
+   this a narrow tile breaks between them and strands the version alone on a
+   line, which reads as a stray number rather than as a qualifier. */
+.badgepair { white-space: nowrap; }
 
 .note {
   border-left: 3px solid var(--cp-accent);
@@ -1282,7 +1292,7 @@ Version 1.0. Questions Q42–Q50. Methods 21–25.</p>
 <p>The document has been written to fail safely if that happens. But it should be attacked at that joint first.</p>
 <hr />
 <p><em>Document 6 of the DUMBO rail-noise research programme. See <a href="readme.html"><code>README.md</code></a> for the full index.</em></p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/COMMUNITY-EVIDENCE-AUDIT.md">Source on GitHub</a> &middot; Built from <code>0062c38</code> on 2026-08-06.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/COMMUNITY-EVIDENCE-AUDIT.md">Source on GitHub</a> &middot; Built from <code>a4f7f2b</code> on 2026-08-07.</p>
 </main>
 </div>
 

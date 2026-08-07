@@ -562,6 +562,16 @@ body.bleed .foot a code { color: #9fd0ff; }
 .badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
 .badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
 .badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+/* The version badge is deliberately QUIETER than the kind badge. It is a
+   caveat, not a label, and it must not compete with the title it sits beside. */
+.badge.ver {
+  text-transform: none; letter-spacing: 0.02em; font-weight: 600;
+  border-style: dashed; margin-left: 4px;
+}
+/* The kind and the version are ONE annotation and must wrap as one. Without
+   this a narrow tile breaks between them and strands the version alone on a
+   line, which reads as a stray number rather than as a qualifier. */
+.badgepair { white-space: nowrap; }
 
 .note {
   border-left: 3px solid var(--cp-accent);
@@ -1545,7 +1555,7 @@ Targets Q38 directly and disciplines the novelty claim in §5.3, which is curren
 <p><strong>Review note.</strong> Draft v1.0 was submitted to an adversarial review that returned <em>not fit to publish</em> with six blocking issues. The most damaging finding is recorded as Part 11 item 9: <strong>this document, written specifically to stop unsupported numbers travelling further than their evidence, contained an unsupported number of exactly the kind it was written to stop.</strong> The correction is not a patch. It changes the programme's priority order, promoting instrumented source apportionment from a useful investigation to a prerequisite for any design-build proposal.</p>
 <p>The reference implementation is <code>visual-review/section-problem.html</code>. It is schematic, not to scale, computes no acoustics, and should not be used for engineering purposes. Its component classifications were reworked in v1.1 after the review found it violating the schema defined in Part 5 of its own accompanying document.</p>
 <p>Released under CC BY 4.0. Corrections, and particularly reclassifications of any component's provenance state, are welcome as repository issues.</p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/VISUAL-MODEL-FRAMEWORK.md">Source on GitHub</a> &middot; Built from <code>0062c38</code> on 2026-08-06.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/VISUAL-MODEL-FRAMEWORK.md">Source on GitHub</a> &middot; Built from <code>a4f7f2b</code> on 2026-08-07.</p>
 </main>
 </div>
 

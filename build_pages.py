@@ -213,7 +213,24 @@ HIGHLIGHTS = {
 # noise problem, not for what it cost to study it.
 BEHIND_THE_SCENES = {"usage", "procurement"}
 
-# (path, kind, title, what it demonstrates, what to look at first)
+# (path, kind, title, what it demonstrates, what to look at first, version)
+#
+# THE VERSION IS A MATURITY STATEMENT, NOT A RELEASE TAG. Nothing here is
+# released; the number says how far the artifact is from standing on measured
+# ground, which is the only ranking this programme is entitled to make:
+#
+#   v0.4    inputs invented throughout
+#   v0.4.1  geometry inferred, nothing in it measured
+#   v0.4.2  inferred, with the rubric for what is known attached to the drawing
+#   v0.4.3  synthesised, pinned to somebody else's published measurements
+#   v0.4.4  captured on site, on an uncalibrated instrument
+#   v0.4.5  a measured feed carrying an invented population
+#   v0.4.6  drawn entirely from open published data
+#   v0.4.7  surveyed data, and the coordinate authority the others inherit
+#
+# The floor is 0.4 rather than 0.1 because the artifacts are complete and
+# working; what they are short of is evidence, not features. Nothing reaches
+# 1.0 until the thing it depicts has been measured on site.
 ARTIFACTS = [
     ("visual-review/acoustic-demo.html", "Audio", "Acoustic demonstration",
      "Web Audio synthesis pinned to the MTA's own measurements. Six receptors, "
@@ -221,33 +238,38 @@ ARTIFACTS = [
      "meters, CEQR threshold marks and a running energy average.",
      "Start at the Brooklyn Bridge Park dog run, play one pass-by, then switch "
      "to continuous at 20x speed and watch the running average settle onto "
-     "87.50 - then read why that convergence is a closed loop and not evidence."),
+     "87.50 - then read why that convergence is a closed loop and not evidence.",
+     "v0.4.3"),
     ("visual-review/model-3d.html", "Bridge", "Navigable 3D model",
      "Both bridges, four zoom tiers from the whole crossing down to a single "
      "rail fastener, with anchored callouts, click-to-inspect components and a "
      "live scale bar that reads in inches at the finest tier.",
      "Turn every provenance filter off. The viewport goes completely empty and "
-     "the display says so. That is the state of public knowledge."),
+     "the display says so. That is the state of public knowledge.",
+     "v0.4.1"),
     ("visual-review/section-problem.html", "Bridge",
      "Provenance-tagged section",
      "The 2D cross-section of the Manhattan Bridge track zone, every component "
      "colour-coded and dash-coded by how well it is actually known, with the "
      "source rubric attached to the drawing.",
-     "Turn off the DOCUMENTED filter and watch most of the drawing disappear."),
+     "Turn off the DOCUMENTED filter and watch most of the drawing disappear.",
+     "v0.4.2"),
     ("visual-review/frequency-dashboard.html", "Data",
      "Frequency and exposure dashboard",
      "Traversals by hour, route and direction across day, evening and night; "
      "pedestrian arrivals, departures, walkway flow and residents; and a "
      "four-cohort presence model that publishes its own non-identifiability.",
      "Drag the coincidence window from 1 s to 29 s. The answer does not move - "
-     "which is a finding about the feed, not about the railway."),
+     "which is a finding about the feed, not about the railway.",
+     "v0.4.5"),
     ("visual-review/noise-canyon.html", "Bridge", "The noise canyon",
      "A five-slide picture essay drawn entirely from open data: the structure "
      "photographed, 76 surveyed buildings extruded around the alignment, a true "
      "section cut across the corridor, the ordinary walk in from the York "
      "Street F platform, and every point along it anyone has ever measured.",
      "The last slide. Four narrow bands of measured evidence against 1,482 m "
-     "of walk - 23% - and the shaded field is not quiet, it is unmeasured."),
+     "of walk - 23% - and the shaded field is not quiet, it is unmeasured.",
+     "v0.4.6"),
     ("visual-review/walkable-map.html", "Bridge", "The walkable model",
      "DUMBO from the York Street F platform to Pier 1, built from 2,342 "
      "surveyed building footprints with surveyed roof heights and the open "
@@ -258,37 +280,35 @@ ARTIFACTS = [
      "The audit table. Two places the population model calls outdoors sit "
      "inside a surveyed building footprint, one of them inside an 81 m "
      "tower. Nothing has been moved; the measured offset is published "
-     "beside the original."),
+     "beside the original.",
+     "v0.4.7"),
     ("visual-review/agent-model.html", "Agents", "Agentic population model",
      "Groups - not individuals - enter DUMBO at persona-specific gateways, "
      "follow scenario itineraries, contend for capacity and accumulate a noise "
      "dose along their actual path. Deterministic, seeded, fully event-logged. "
-     "A fifth rung models who is standing in that dose - reduced sound "
-     "tolerance, autistic listeners with hyperacusis, over-65s, carried "
-     "infants, people with a history of cancer, and dogs - and changes "
-     "nobody's decibels by doing so. Three selectable arrival processes let "
-     "the same population walk in as a flat trickle, at random, or in slugs "
-     "off a train.",
-     "The first panel: the same itinerary started ninety seconds apart gets a "
-     "different dose. Then the arrival card, where multiplying peak bunching "
-     "by 2.9 times moves the mean dose by 0.006 dB - and the reason it does "
-     "not move is the interesting part. Then the rejected-propagation panel, "
-     "which is a negative result and the most important thing on the page. "
-     "Then, at the "
-     "susceptibility rung, the card that refuses to compute the one number "
-     "that would settle the argument, and names the single measurement that "
-     "would unblock it."),
-    ("pedestrian-site-visits/media.html", "Field", "Field media, first capture",
+     "A fifth rung models who is standing in that dose and changes nobody's "
+     "decibels by doing so.",
+     "The least mature thing here: the itineraries, the personas and the "
+     "arrival rates are all invented, so every number it produces is a "
+     "consequence of an assumption rather than an observation. Look at the "
+     "rejected-propagation panel - a negative result, and the most important "
+     "thing on the page.",
+     "v0.4"),
+    ("pedestrian-site-visits/media.html", "Field", "Field media capture",
      "Two days of phone video, stills, by-product audio and stopwatch laps "
      "under the bridge: level traces, a threshold sweep, the stopwatch laps, "
      "and where each capture stood against every point anyone has ever "
      "measured - with the operator's stated purpose for each capture carried "
      "on the page, because a measurement can only be read for the purpose it "
      "was taken for.",
-     "The withdrawal card, which quotes this page's own strongest claim from "
-     "the day before and kills it - the audio and the stopwatch are "
-     "independent samples 62.4 minutes apart. Then the echo-chamber frames, "
-     "which are what the video was actually for."),
+     "<b>What the next capture has to fix.</b> Of the five captures this "
+     "repository specified for itself, this session satisfied none completely "
+     "and two partly: no windscreen, unknown microphone response, automatic "
+     "gain control active throughout. The gap is one shield and one calibrated "
+     "microphone - a UMIK-1 over USB-C, about USD 100-150, ships with a "
+     "serial-numbered calibration file - and it is what would open the closed "
+     "loop the acoustic demonstration runs on.",
+     "v0.4.4"),
     ("usage/usage-dashboard.html", "Meta", "Usage and cost dashboard",
      "What this investigation cost to produce, from the tool's own per-request "
      "log: every model call priced by channel, time measured four ways that "
@@ -298,7 +318,8 @@ ARTIFACTS = [
      "and half the money; what it writes is under one per cent of the tokens "
      "and a fifth of it. Then the process note at the foot - the first "
      "conclusion this dashboard reached about itself was that the data did not "
-     "exist, and that was wrong."),
+     "exist, and that was wrong.",
+     "v0.4.7"),
     ("procurement/procurement-dashboard.html", "Meta",
      "Procurement comparison dashboard",
      "What this same deliverable would have cost to buy, from three "
@@ -309,7 +330,8 @@ ARTIFACTS = [
      "The first card, which withdraws the headline before it is made. Then "
      "the discipline populations near the foot: 12,825 project managers "
      "against seven acoustical engineers on the same schedule - and the "
-     "project manager costs more per hour."),
+     "project manager costs more per hour.",
+     "v0.4.6"),
 ]
 
 # Above-the-fold statements on the index page.
@@ -1397,6 +1419,16 @@ body.bleed .foot a code { color: #9fd0ff; }
 .badge.no { border-color: var(--cp-danger); color: var(--cp-danger); }
 .badge.warn { border-color: var(--cp-warning); color: var(--cp-warning); }
 .badge.acc { border-color: var(--cp-accent); color: var(--cp-accent); }
+/* The version badge is deliberately QUIETER than the kind badge. It is a
+   caveat, not a label, and it must not compete with the title it sits beside. */
+.badge.ver {
+  text-transform: none; letter-spacing: 0.02em; font-weight: 600;
+  border-style: dashed; margin-left: 4px;
+}
+/* The kind and the version are ONE annotation and must wrap as one. Without
+   this a narrow tile breaks between them and strands the version alone on a
+   line, which reads as a stray number rather than as a qualifier. */
+.badgepair { white-space: nowrap; }
 
 .note {
   border-left: 3px solid var(--cp-accent);
@@ -1833,6 +1865,13 @@ def render_doc(src, slug, title, stats):
 #                   twelve of them reads a wall, not a menu.
 # ---------------------------------------------------------------------------
 
+def _vkey(ver):
+    """Sort key for 'v0.4.7'. Missing components are zero, so v0.4 sorts below
+    v0.4.1 rather than beside it."""
+    parts = ver.lstrip("v").split(".")
+    return tuple(int(p) for p in parts) + (0,) * (3 - len(parts))
+
+
 def _ctx(stats):
     """Everything more than one section needs, computed once."""
     return {
@@ -1843,8 +1882,18 @@ def _ctx(stats):
         # The two "Meta" dashboards are about the work rather than about the
         # bridge. Listing them beside the demonstrations is what made the demos
         # and the usage page look like the same thing.
-        "demos": [a for a in ARTIFACTS if a[1] != "Meta"],
-        "metas": [a for a in ARTIFACTS if a[1] == "Meta"],
+        #
+        # ORDERED BY VERSION, STRONGEST FIRST. The version is a maturity
+        # ranking, and a ranking printed in arbitrary order does not read as
+        # one - the reader has to sort eight numbers by eye before the scale
+        # means anything. Descending rather than ascending so the reader meets
+        # the artifact standing on surveyed data before the one whose inputs
+        # are invented, and so the least mature lands last, where its own card
+        # says it belongs.
+        "demos": sorted([a for a in ARTIFACTS if a[1] != "Meta"],
+                        key=lambda a: _vkey(a[5]), reverse=True),
+        "metas": sorted([a for a in ARTIFACTS if a[1] == "Meta"],
+                        key=lambda a: _vkey(a[5]), reverse=True),
     }
 
 
@@ -1995,13 +2044,28 @@ def sec_demos(stats, c):
       'it here, or download it and double-click. Each applies the same '
       'provenance discipline to a different medium.</p>')
     A('<div class="tiles">')
-    for path, kind, title, what, look in demos:
+    for path, kind, title, what, look, ver in demos:
         A('<a class="tile" href="%s">'
-          '<div class="t">%s <span class="badge acc">%s</span></div>'
+          '<div class="t">%s <span class="badgepair">'
+          '<span class="badge acc">%s</span>'
+          '<span class="badge ver">%s</span></span></div>'
           '<div class="d">%s</div>'
           '<div class="look">%s</div></a>'
-          % (path, title, kind, what, look))
+          % (path, title, kind, ver, what, look))
     A('</div>')
+    A('<div class="note"><strong>What the version number means.</strong> '
+      'Nothing here is released, so it is not a release tag. It says how far '
+      'an artifact is from standing on measured ground &mdash; the only '
+      'ranking this programme is entitled to make, and <strong>the cards are '
+      'ordered by it</strong>, strongest evidence first. '
+      '<strong>v0.4.7</strong> is surveyed data; the steps below it run '
+      'through open published data, a measured feed carrying an invented '
+      'population, capture on an uncalibrated instrument, synthesis pinned to '
+      'somebody else\'s published measurements, and inferred geometry; '
+      '<strong>v0.4</strong> is inputs invented throughout. They are complete '
+      'and working software; what they are short of is evidence, not '
+      'features. <strong>Nothing reaches 1.0 until the thing it depicts has '
+      'been measured on site.</strong></div>')
     A('<div class="note"><strong>A warning that applies to all %s.</strong> The '
       '3D model contains <strong>zero measured elements</strong>. The audio is '
       '<strong>synthesised, not recorded</strong>. The agent model\'s '
@@ -2397,12 +2461,14 @@ def sec_behind(stats, c):
         A('<a class="tile" href="read/%s.html">'
           '<div class="t">%s <span class="badge acc">Document</span></div>'
           '<div class="d">%s</div></a>' % (slug, title, desc))
-    for path, kind, title, what, look in metas:
+    for path, kind, title, what, look, ver in metas:
         A('<a class="tile" href="%s">'
-          '<div class="t">%s <span class="badge acc">%s</span></div>'
+          '<div class="t">%s <span class="badgepair">'
+          '<span class="badge acc">%s</span>'
+          '<span class="badge ver">%s</span></span></div>'
           '<div class="d">%s</div>'
           '<div class="look">%s</div></a>'
-          % (path, title, kind, what, look))
+          % (path, title, kind, ver, what, look))
     A('</div>')
     A('<div class="note">Why this is published at all: the cost of producing '
       'research with these tools is <strong>routinely asserted and almost '
@@ -2864,14 +2930,14 @@ def main():
     for src, slug, title, _label, _desc in DOCS:
         write("read/%s.html" % slug, render_doc(src, slug, title, stats))
 
-    missing = [p for p, _, _, _, _ in ARTIFACTS
-               if not os.path.exists(os.path.join(ROOT, p))]
+    missing = [a[0] for a in ARTIFACTS
+               if not os.path.exists(os.path.join(ROOT, a[0]))]
     if missing:
         print("WARNING: artifacts referenced but not present: %s" % missing)
         return 1
-    for path, _, _, _, _ in ARTIFACTS:
-        ensure_favicon(path)
-        ensure_masthead(path)
+    for a in ARTIFACTS:
+        ensure_favicon(a[0])
+        ensure_masthead(a[0])
     print("Done.")
     return 0
 
