@@ -279,6 +279,229 @@ def active_time(events):
     return out
 
 
+# ---------------------------------------------------------------------------
+# Day-by-day. Three things have to be right here or the table lies quietly.
+#
+# 1. THE DAY BOUNDARY IS LOCAL, NOT UTC. In this project 19% of requests land
+#    between 00:00 and 04:00 UTC, which is the previous evening where the work
+#    happened. Splitting on UTC days files a fifth of the work under the wrong
+#    date - one day in this run moves by a factor of five. Local days are taken
+#    from the PLATFORM's own zone database via astimezone(), not from zoneinfo:
+#    zoneinfo needs the tzdata package, which a clean Windows Python does not
+#    have, and a build script that dies on a bare interpreter is a landmine.
+#    astimezone() also gets daylight saving right, which a fixed offset cannot.
+#
+# 2. A SITTING STARTS WHEN ITS FIRST REQUEST STARTED, not when that request
+#    returned. Otherwise the first inference of every sitting sits outside the
+#    engaged window and the person/model split can go negative.
+#
+# 3. THE MODEL FIGURE IS A UNION, NOT A SUM. Sub-agents run beside the main
+#    agent, so adding durations double-counts wall time that only passed once.
+# ---------------------------------------------------------------------------
+
+def busy_intervals(events):
+    """Merged wall-clock intervals during which at least one request was in flight."""
+    iv = sorted((e["ts"] - e["duration_ms"] / 1000.0, e["ts"]) for e in events)
+    merged = []
+    for a, b in iv:
+        if merged and a <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], b)
+        else:
+            merged.append([a, b])
+    return [(a, b) for a, b in merged]
+
+
+def sitting_intervals(events, cutoff):
+    """Clusters of requests, split wherever the pause between two exceeds cutoff."""
+    ev = sorted(events, key=lambda e: e["ts"])
+    groups, cur = [], [ev[0]]
+    for prev, nxt in zip(ev, ev[1:]):
+        if nxt["ts"] - prev["ts"] > cutoff:
+            groups.append(cur)
+            cur = [nxt]
+        else:
+            cur.append(nxt)
+    groups.append(cur)
+    return merge([
+        (min(e["ts"] - e["duration_ms"] / 1000.0 for e in g), g[-1]["ts"])
+        for g in groups
+    ])
+
+
+def merge(intervals):
+    """Union of a set of intervals.
+
+    LOAD-BEARING, NOT TIDINESS. Two sittings can overlap: a sub-agent request
+    that runs for minutes completes after the pause that ended the previous
+    sitting, so the next sitting's start - which is when its first request
+    STARTED - can precede the previous sitting's end. Summing such a list
+    without merging counts the overlap twice, and the error is small enough to
+    hide. It showed up here as model hours drifting 12 seconds across idle
+    cut-offs they cannot logically depend on at all.
+    """
+    out = []
+    for a, b in sorted(intervals):
+        if out and a <= out[-1][1]:
+            out[-1][1] = max(out[-1][1], b)
+        else:
+            out.append([a, b])
+    return [(a, b) for a, b in out]
+
+
+def clip(intervals, lo, hi):
+    """The parts of intervals that fall inside [lo, hi), merged."""
+    out = []
+    for a, b in intervals:
+        s, e = max(a, lo), min(b, hi)
+        if e > s:
+            out.append((s, e))
+    return merge(out)
+
+
+def intersect(xs, ys):
+    """Overlap of two interval lists, merged. Both are small; O(n*m) is fine."""
+    out = []
+    for a0, a1 in xs:
+        for b0, b1 in ys:
+            s, e = max(a0, b0), min(a1, b1)
+            if e > s:
+                out.append((s, e))
+    return merge(out)
+
+
+def span(intervals):
+    return sum(b - a for a, b in intervals)
+
+
+def local_day_bounds(ts):
+    """Epoch seconds for local midnight either side of the instant at ts."""
+    local = dt.datetime.fromtimestamp(ts).astimezone()
+    start = local.replace(hour=0, minute=0, second=0, microsecond=0)
+    return start.timestamp(), (start + dt.timedelta(days=1)).timestamp()
+
+
+def daily(events, turns):
+    """One row per local calendar day on which a request was issued.
+
+    Within a sitting either a model was working or it was not, so
+
+        engaged = model + person
+
+    holds by construction and the person figure can never come out negative.
+    That identity is the whole reason the split is defensible; what it does
+    NOT do is prove the person was present. See "person_note" - the residual
+    over-counts when somebody walked away mid-sitting and under-counts the
+    reading done after a sitting's last request, which is exactly when a
+    reader of a research document does it.
+    """
+    busy = busy_intervals(events)
+    union_total = span(busy)
+    sits = {c: sitting_intervals(events, c) for c in IDLE_CUTOFFS}
+
+    buckets = {}
+    for e in events:
+        key = dt.datetime.fromtimestamp(e["ts"]).astimezone().date().isoformat()
+        buckets.setdefault(key, []).append(e)
+
+    starts = {}
+    for t in turns:
+        d = parse_ts(t["started"]).astimezone().date().isoformat()
+        starts[d] = starts.get(d, 0) + 1
+
+    rows = []
+    for day in sorted(buckets):
+        evs = buckets[day]
+        lo, hi = local_day_bounds(evs[0]["ts"])
+        times = {}
+        for c in IDLE_CUTOFFS:
+            eng = clip(sits[c], lo, hi)
+            mod = intersect(busy, eng)
+            e_s, m_s = span(eng), span(mod)
+            times[str(c)] = {
+                "engaged_s": round(e_s, 1),
+                "model_s": round(m_s, 1),
+                "person_s": round(max(0.0, e_s - m_s), 1),
+                "sittings": len(eng),
+            }
+        rows.append(
+            {
+                "date": day,
+                "requests": len(evs),
+                "turns_started": starts.get(day, 0),
+                "nano_aiu": sum(e["nano"] for e in evs),
+                "usd": round(usd(sum(e["nano"] for e in evs)), 2),
+                "tokens": sum(
+                    tok(e, k)
+                    for e in evs
+                    for k in ("input", "cache_read", "cache_write", "output")
+                ),
+                "first": dt.datetime.fromtimestamp(evs[0]["ts"]).astimezone().isoformat(),
+                "last": dt.datetime.fromtimestamp(evs[-1]["ts"]).astimezone().isoformat(),
+                "times": times,
+            }
+        )
+
+    # Model time cannot depend on how long a pause has to be before it stops
+    # counting - it is a union of intervals that were measured. If it moves
+    # with the cut-off, the interval arithmetic is double-counting somewhere,
+    # which is how the overlapping-sittings bug was found. Assert it rather
+    # than hope, and check the total against the figure the rest of the page
+    # already publishes.
+    for c in IDLE_CUTOFFS:
+        got = sum(r["times"][str(c)]["model_s"] for r in rows)
+        if abs(got - union_total) > 1.0:
+            die(
+                "daily model time sums to %.1f s at the %d s cut-off but the "
+                "measured union is %.1f s. The interval arithmetic is wrong."
+                % (got, c, union_total)
+            )
+    return rows
+
+
+def local_zone():
+    """What the platform calls the local zone, and its offset now.
+
+    Reported rather than assumed: a day-by-day table is meaningless until the
+    reader knows whose midnight was used to cut it.
+    """
+    now = dt.datetime.now().astimezone()
+    off = now.utcoffset() or dt.timedelta(0)
+    mins = int(off.total_seconds() // 60)
+    return {
+        "name": now.tzname(),
+        "utc_offset": "%+03d:%02d" % (mins // 60, abs(mins) % 60),
+    }
+
+
+def dates(events):
+    """When the research started, and when it was last touched.
+
+    THESE ARE TWO DIFFERENT QUESTIONS AND THEY HAVE DIFFERENT ANSWERS. The
+    last request is when a model last ran; the last commit is when the
+    published work last changed. A reader asking "is this current" means the
+    second. Both are reported because quoting either alone is misleading -
+    a session can burn requests without publishing anything, and a commit can
+    land long after the reasoning behind it.
+    """
+    first = parse_ts(events[0]["at"]).astimezone()
+    last = parse_ts(events[-1]["at"]).astimezone()
+    commit = git("log", "-1", "--pretty=format:%aI")
+    first_commit = git("log", "--reverse", "--pretty=format:%aI")
+    first_commit = first_commit.splitlines()[0] if first_commit else ""
+    return {
+        "started": first.isoformat(),
+        "started_source": "first request issued in this session",
+        "last_request": last.isoformat(),
+        "last_commit": commit,
+        "first_commit": first_commit,
+        "calendar_days": (last.date() - first.date()).days + 1,
+        "active_days": len({
+            dt.datetime.fromtimestamp(e["ts"]).astimezone().date() for e in events
+        }),
+        "generated": dt.datetime.now().astimezone().isoformat(),
+    }
+
+
 def group(events, key, label="key"):
     out = {}
     for e in events:
@@ -569,6 +792,22 @@ def build(args):
             "inference_union_s": round(union_s, 1),
             "busy_blocks": blocks,
             "active": active_time(events),
+        },
+        "dates": dates(events),
+        "days": {
+            "zone": local_zone(),
+            "cutoffs": list(IDLE_CUTOFFS),
+            "default_cutoff_s": 300,
+            "person_note": (
+                "Person time is a RESIDUAL, not a measurement. No keystroke or "
+                "focus telemetry exists in this store. Within a sitting either "
+                "a model was working or it was not, so engaged minus model is "
+                "the time somebody could have been reading, typing or thinking "
+                "- and it counts the same if they walked away. It also misses "
+                "the reading done after a sitting's last request, so it errs in "
+                "both directions rather than bounding the truth on one side."
+            ),
+            "rows": daily(events, turns),
         },
         "channels": channels,
         "models": group(events, "model", "model"),

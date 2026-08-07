@@ -121,7 +121,7 @@ the cost of every row from the details and refuses to write output if any row
 disagrees with the cost the client recorded. On the current data all rows
 reconcile exactly.
 
-## Four traps, in the style of the seven in `data-collection`
+## Five traps, in the style of the seven in `data-collection`
 
 **Trap 1: the obvious log is the wrong log.** `main.jsonl` in the extension's
 debug directory is not the usage record; it holds session lifecycle events. It
@@ -146,6 +146,79 @@ The fresh-input figure lives only in the details, under `tokenType: "input"`.
 the main agent, so their durations overlap it. The generator merges the
 intervals instead: here the sum is about nine per cent above the union. Report
 the union, or say which one is being reported.
+
+**Trap 5: a timestamp is UTC and a working day is not.**
+Nineteen per cent of the requests in this store fall between 00:00 and 04:00
+UTC, which is the previous evening in New York. Cutting days on UTC midnightmoves those to the following date. On one day here that is the difference
+between 404 requests and 80 &mdash; a five-fold misattribution, with no error
+and nothing on the page to suggest anything is wrong. The generator cuts on
+**local** midnight, using the platform's own zone database via
+`datetime.astimezone()` rather than a named zone, so anyone who runs it gets
+their own days and no timezone package is required. The resolved zone name and
+offset are written into the JSON and printed on the page, because a day
+boundary that is not stated cannot be checked.
+
+## The day-by-day split, and one column that is not a measurement
+
+The dashboard reports each day twice: what a model was **generating**, and what
+was left over. They are not the same kind of number and the panel says so.
+
+**Model active time is measured.** It is the union of every request's
+`[ts - duration, ts]` interval, by trap 4 above. Nothing about it depends on
+any choice made afterwards.
+
+**Person active time is a residual, not an observation.** There is no keystroke
+or focus telemetry in this store, and none is invented here. Within a sitting
+either a model was working or it was not, so the panel reports
+
+    person = engaged - model
+
+which holds by construction and can never go negative. What it cannot do is
+tell reading from absence. It over-counts when somebody walked away mid-sitting
+and under-counts the reading done after a sitting's last request, so it errs in
+both directions rather than bounding the truth on one side. That is worse than
+a bound and better than a guess, and it is the reason the column is labelled on
+the page as a residual rather than as time.
+
+**The sensitivity is the argument, not a caveat attached to it.** A sitting ends
+at a pause longer than the idle cut-off, and there is no correct cut-off, so the
+page offers four and lets a reader move between them. Across 2 min to 30 min:
+
+| | 2 min | 5 min | 10 min | 30 min |
+| --- | --- | --- | --- | --- |
+| Model hours | 14.39 | 14.39 | 14.39 | 14.39 |
+| Person hours | 3.31 | 4.31 | 7.41 | 11.17 |
+| Person share | 18.7% | 23.1% | 34.0% | 43.7% |
+| Sittings | 102 | 62 | 30 | 18 |
+
+Those figures are a snapshot of one generator run and this document does not
+regenerate itself; the dashboard is the authority and its selector will show
+the current values. What is not a snapshot is the **shape**: the model row is
+flat by construction, and the generator refuses to write output if it ever
+stops being flat, because a model figure that moves with the cut-off means the
+interval arithmetic is double-counting somewhere. It did, once &mdash; two
+sittings could overlap when a long sub-agent request finished after the pause
+that ended the previous one, and the overlap was counted twice. Twelve seconds
+across the whole corpus, invisible to the `engaged = model + person` check
+because it inflated both sides equally, and caught only because a paragraph
+conditional on flatness silently declined to render.
+
+Model hours do not move at all. Person hours move by a factor of 3.4 under a
+decision nobody can justify from the data. That difference is the whole reason
+one column is evidence and the other is an inference, and it is far more useful
+printed than hidden behind a single default. The finding that survives every
+setting is that **the person is the smaller half of an engaged day**, which is
+the same conclusion as finding 3 below, now stated with its sensitivity
+attached.
+
+Two arithmetic notes, stated rather than smoothed over. A sitting is counted
+from when its first request **started**, not when that request returned;
+otherwise the first inference of a sitting falls outside its own engaged window
+and the residual can go negative. That is also why the daily engaged total runs
+slightly above the single active-time figure elsewhere on the page, which
+measures gaps between requests. And the day totals reconcile exactly to the
+page totals for requests, turns and cost &mdash; the generator refuses to write
+output if they do not.
 
 ## Three findings that were not the point of the exercise
 
@@ -248,17 +321,29 @@ instrumentation list a client cannot supply for itself.
 3. **Engaged time cannot distinguish thinking from absence.** It also cannot see
    time spent reading output after the last request of a sitting, which is
    exactly when a reader of a research document would spend it.
-4. **The energy panel applies a source outside its stated domain.** Rated 2/5 as
+4. **The daily person column errs in both directions and is not a bound.** It is
+   engaged minus model, so it inherits everything in entry 3 and adds nothing to
+   correct it. Read the model column as the measurement and the person column as
+   the part that is left, and read both across the cut-off selector rather than
+   at one setting. Anyone quoting a person-hours figure from this page should
+   quote the range, not the default.
+5. **The dates are a property of this store, not of the project.** "Research
+   started" is the first request recorded in this session's rows, and any
+   thinking, reading or writing done before or outside it is invisible. "Last
+   updated" prefers the most recent commit, which means committing this
+   dashboard changes the number the dashboard displays &mdash; the same
+   self-measurement problem as entry 7, in a place where it is easier to miss.
+6. **The energy panel applies a source outside its stated domain.** Rated 2/5 as
    applied, and the bracket is reported instead of a point estimate for that
    reason.
-5. **The output side counts artifacts and appraises nothing.** This repository
+7. **The output side counts artifacts and appraises nothing.** This repository
    has withdrawn several published claims; each withdrawal improved the work and
    reduced the word count. A cost-per-word figure prices typing.
-6. **The instrument measures itself.** Building this dashboard cost requests
+8. **The instrument measures itself.** Building this dashboard cost requests
    that appear in the next run of the generator, so the totals were already
    stale when they rendered. A self-measuring instrument cannot record its own
    last measurement.
-7. **Retention is not guaranteed.** The store held one project cleanly. Nothing
+9. **Retention is not guaranteed.** The store held one project cleanly. Nothing
    promises it will next month, and a case study whose evidence expires is an
    anecdote.
 

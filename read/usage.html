@@ -705,9 +705,9 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../index.html">Overview</a><a href="../index.html#demos">Demos</a><a href="../research.html" class="on">Research</a></nav></div></div>
 <div class="wrap">
 <div class="doclayout">
-<aside class="toc"><div class="h">On this page</div><a href="#why-a-noise-study-carries-a-usage-page-at-all">Why a noise study carries a usage page at all</a><a class="l3" href="#the-unit-is-documented-and-that-is-recent">The unit is documented, and that is recent</a><a href="#where-the-numbers-come-from">Where the numbers come from</a><a class="l3" href="#the-unit">The unit</a><a class="l3" href="#the-rule-the-generator-enforces">The rule the generator enforces</a><a href="#four-traps-in-the-style-of-the-seven-in-data-collection">Four traps, in the style of the seven in data-collection</a><a href="#three-findings-that-were-not-the-point-of-the-exercise">Three findings that were not the point of the exercise</a><a href="#two-numbers-and-why-both-still-have-to-be-quoted">Two numbers, and why both still have to be quoted</a><a href="#the-number-this-page-deliberately-does-not-compute">The number this page deliberately does not compute</a><a href="#energy">Energy</a><a href="#where-this-is-likely-to-be-wrong">Where this is likely to be wrong</a><a href="#process-note-a-claim-this-directory-made-and-withdrew">Process note: a claim this directory made and withdrew</a></aside>
+<aside class="toc"><div class="h">On this page</div><a href="#why-a-noise-study-carries-a-usage-page-at-all">Why a noise study carries a usage page at all</a><a class="l3" href="#the-unit-is-documented-and-that-is-recent">The unit is documented, and that is recent</a><a href="#where-the-numbers-come-from">Where the numbers come from</a><a class="l3" href="#the-unit">The unit</a><a class="l3" href="#the-rule-the-generator-enforces">The rule the generator enforces</a><a href="#five-traps-in-the-style-of-the-seven-in-data-collection">Five traps, in the style of the seven in data-collection</a><a href="#the-day-by-day-split-and-one-column-that-is-not-a-measurement">The day-by-day split, and one column that is not a measurement</a><a href="#three-findings-that-were-not-the-point-of-the-exercise">Three findings that were not the point of the exercise</a><a href="#two-numbers-and-why-both-still-have-to-be-quoted">Two numbers, and why both still have to be quoted</a><a href="#the-number-this-page-deliberately-does-not-compute">The number this page deliberately does not compute</a><a href="#energy">Energy</a><a href="#where-this-is-likely-to-be-wrong">Where this is likely to be wrong</a><a href="#process-note-a-claim-this-directory-made-and-withdrew">Process note: a claim this directory made and withdrew</a></aside>
 <main class="doc">
-<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md"><code>usage/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 2,585 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md"><code>usage/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 3,495 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
 <h1 id="usage-what-this-investigation-cost-and-how-that-was-established">Usage: what this investigation cost, and how that was established</h1>
 <p><strong>Dashboard:</strong> <a href="../usage/usage-dashboard.html"><code>usage-dashboard.html</code></a> &middot;
 <strong>Data:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/usage-data.json"><code>usage-data.json</code></a> &middot;
@@ -882,7 +882,7 @@ direction.</p>
 the cost of every row from the details and refuses to write output if any row
 disagrees with the cost the client recorded. On the current data all rows
 reconcile exactly.</p>
-<h2 id="four-traps-in-the-style-of-the-seven-in-data-collection">Four traps, in the style of the seven in <code>data-collection</code></h2>
+<h2 id="five-traps-in-the-style-of-the-seven-in-data-collection">Five traps, in the style of the seven in <code>data-collection</code></h2>
 <p><strong>Trap 1: the obvious log is the wrong log.</strong> <code>main.jsonl</code> in the extension's
 debug directory is not the usage record; it holds session lifecycle events. It
 is easy to find, it looks authoritative, and a search that stops there concludes
@@ -903,6 +903,103 @@ The fresh-input figure lives only in the details, under <code>tokenType: "input"
 the main agent, so their durations overlap it. The generator merges the
 intervals instead: here the sum is about nine per cent above the union. Report
 the union, or say which one is being reported.</p>
+<p><strong>Trap 5: a timestamp is UTC and a working day is not.</strong>
+Nineteen per cent of the requests in this store fall between 00:00 and 04:00
+UTC, which is the previous evening in New York. Cutting days on UTC midnightmoves those to the following date. On one day here that is the difference
+between 404 requests and 80 &mdash; a five-fold misattribution, with no error
+and nothing on the page to suggest anything is wrong. The generator cuts on
+<strong>local</strong> midnight, using the platform's own zone database via
+<code>datetime.astimezone()</code> rather than a named zone, so anyone who runs it gets
+their own days and no timezone package is required. The resolved zone name and
+offset are written into the JSON and printed on the page, because a day
+boundary that is not stated cannot be checked.</p>
+<h2 id="the-day-by-day-split-and-one-column-that-is-not-a-measurement">The day-by-day split, and one column that is not a measurement</h2>
+<p>The dashboard reports each day twice: what a model was <strong>generating</strong>, and what
+was left over. They are not the same kind of number and the panel says so.</p>
+<p><strong>Model active time is measured.</strong> It is the union of every request's
+<code>[ts - duration, ts]</code> interval, by trap 4 above. Nothing about it depends on
+any choice made afterwards.</p>
+<p><strong>Person active time is a residual, not an observation.</strong> There is no keystroke
+or focus telemetry in this store, and none is invented here. Within a sitting
+either a model was working or it was not, so the panel reports</p>
+<pre><code>person = engaged - model
+</code></pre>
+<p>which holds by construction and can never go negative. What it cannot do is
+tell reading from absence. It over-counts when somebody walked away mid-sitting
+and under-counts the reading done after a sitting's last request, so it errs in
+both directions rather than bounding the truth on one side. That is worse than
+a bound and better than a guess, and it is the reason the column is labelled on
+the page as a residual rather than as time.</p>
+<p><strong>The sensitivity is the argument, not a caveat attached to it.</strong> A sitting ends
+at a pause longer than the idle cut-off, and there is no correct cut-off, so the
+page offers four and lets a reader move between them. Across 2 min to 30 min:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>2 min</th>
+<th>5 min</th>
+<th>10 min</th>
+<th>30 min</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model hours</td>
+<td>14.39</td>
+<td>14.39</td>
+<td>14.39</td>
+<td>14.39</td>
+</tr>
+<tr>
+<td>Person hours</td>
+<td>3.31</td>
+<td>4.31</td>
+<td>7.41</td>
+<td>11.17</td>
+</tr>
+<tr>
+<td>Person share</td>
+<td>18.7%</td>
+<td>23.1%</td>
+<td>34.0%</td>
+<td>43.7%</td>
+</tr>
+<tr>
+<td>Sittings</td>
+<td>102</td>
+<td>62</td>
+<td>30</td>
+<td>18</td>
+</tr>
+</tbody>
+</table></div>
+<p>Those figures are a snapshot of one generator run and this document does not
+regenerate itself; the dashboard is the authority and its selector will show
+the current values. What is not a snapshot is the <strong>shape</strong>: the model row is
+flat by construction, and the generator refuses to write output if it ever
+stops being flat, because a model figure that moves with the cut-off means the
+interval arithmetic is double-counting somewhere. It did, once &mdash; two
+sittings could overlap when a long sub-agent request finished after the pause
+that ended the previous one, and the overlap was counted twice. Twelve seconds
+across the whole corpus, invisible to the <code>engaged = model + person</code> check
+because it inflated both sides equally, and caught only because a paragraph
+conditional on flatness silently declined to render.</p>
+<p>Model hours do not move at all. Person hours move by a factor of 3.4 under a
+decision nobody can justify from the data. That difference is the whole reason
+one column is evidence and the other is an inference, and it is far more useful
+printed than hidden behind a single default. The finding that survives every
+setting is that <strong>the person is the smaller half of an engaged day</strong>, which is
+the same conclusion as finding 3 below, now stated with its sensitivity
+attached.</p>
+<p>Two arithmetic notes, stated rather than smoothed over. A sitting is counted
+from when its first request <strong>started</strong>, not when that request returned;
+otherwise the first inference of a sitting falls outside its own engaged window
+and the residual can go negative. That is also why the daily engaged total runs
+slightly above the single active-time figure elsewhere on the page, which
+measures gaps between requests. And the day totals reconcile exactly to the
+page totals for requests, turns and cost &mdash; the generator refuses to write
+output if they do not.</p>
 <h2 id="three-findings-that-were-not-the-point-of-the-exercise">Three findings that were not the point of the exercise</h2>
 <p><strong>1. Compaction is a first-class cost centre.</strong> It is invisible in every other
 account. The requests whose only job is to summarise the conversation so it
@@ -1003,6 +1100,18 @@ instrumentation list a client cannot supply for itself.</p>
 <li><strong>Engaged time cannot distinguish thinking from absence.</strong> It also cannot see
    time spent reading output after the last request of a sitting, which is
    exactly when a reader of a research document would spend it.</li>
+<li><strong>The daily person column errs in both directions and is not a bound.</strong> It is
+   engaged minus model, so it inherits everything in entry 3 and adds nothing to
+   correct it. Read the model column as the measurement and the person column as
+   the part that is left, and read both across the cut-off selector rather than
+   at one setting. Anyone quoting a person-hours figure from this page should
+   quote the range, not the default.</li>
+<li><strong>The dates are a property of this store, not of the project.</strong> "Research
+   started" is the first request recorded in this session's rows, and any
+   thinking, reading or writing done before or outside it is invisible. "Last
+   updated" prefers the most recent commit, which means committing this
+   dashboard changes the number the dashboard displays &mdash; the same
+   self-measurement problem as entry 7, in a place where it is easier to miss.</li>
 <li><strong>The energy panel applies a source outside its stated domain.</strong> Rated 2/5 as
    applied, and the bracket is reported instead of a point estimate for that
    reason.</li>
@@ -1043,7 +1152,7 @@ as the central result of a case study whose entire purpose was measurement.
 It is also the exact inverse of the claim this page now makes &mdash; that the
 unit is documented, the ledger is readable, and the reason so little work of
 this kind is published is not that the data is missing.</p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md">Source on GitHub</a> &middot; Built from <code>28b74e0</code> on 2026-08-07.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md">Source on GitHub</a> &middot; Built from <code>da6e3c5</code> on 2026-08-07.</p>
 </main>
 </div>
 

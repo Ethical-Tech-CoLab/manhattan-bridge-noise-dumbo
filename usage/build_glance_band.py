@@ -52,6 +52,11 @@ CSS = """
 }
 .ig .igbig b { display: block; font-size: 2.05rem; line-height: 1.08;
   letter-spacing: -0.025em; color: var(--cp-accent); }
+/* A date is eleven characters where every other headline is three or four, so
+   it wraps in a tile sized for a number. Smaller here rather than a wider
+   tile: widening the minimum would re-flow the whole band to fit two cells
+   that are the least important thing in it. */
+.ig .igbig b.dt { font-size: 1.42rem; letter-spacing: -0.01em; }
 .ig .igbig span { display: block; font-size: 0.76rem; margin-top: 6px;
   text-transform: uppercase; letter-spacing: 0.05em;
   color: var(--cp-text-muted); }
@@ -138,8 +143,25 @@ function renderBand() {
   const allTokens = tk.input + tk.cache_read + tk.cache_write + tk.output;
   const active = (T.active || []).find(a => a.cutoff_s === 300) ||
                  (T.active || [])[0] || null;
+  // Dates are shown as plain calendar days in the zone the work happened in.
+  // A reader asking "is this current" is asking about the published work, so
+  // last-updated is the last COMMIT where one exists, not the last request -
+  // a session can burn requests without publishing a line.
+  const D = d.dates || {};
+  const day = iso => {
+    if (!iso) return "\\u2014";
+    const p = String(iso).slice(0, 10).split("-").map(Number);
+    return new Date(p[0], p[1] - 1, p[2]).toLocaleDateString("en-US",
+      { year: "numeric", month: "short", day: "numeric" });
+  };
+  const updated = D.last_commit || D.last_request;
 
   $("igbig").innerHTML = [
+    [day(D.started), "research started",
+     D.active_days ? D.active_days + " active days over " + D.calendar_days + " calendar days"
+                   : "first request issued", "dt"],
+    [day(updated), "last updated",
+     D.last_commit ? "most recent commit" : "most recent model request", "dt"],
     [usd(t.usd), "total metered cost",
      n0(Math.round(t.aiu)) + " AI credits, at published rates"],
     [n0(t.requests), "model requests",
@@ -153,8 +175,8 @@ function renderBand() {
      pct(tk.cache_read, allTokens) + " of them re-read from cache"],
     [n0(d.outputs.markdown_words), "words published",
      n0(d.outputs.commit_count) + " commits"]
-  ].map(([b, s, e]) =>
-    `<div><b>${esc(b)}</b><span>${esc(s)}</span><em>${esc(e)}</em></div>`
+  ].map(([b, s, e, k]) =>
+    `<div><b class="${k || ""}">${esc(b)}</b><span>${esc(s)}</span><em>${esc(e)}</em></div>`
   ).join("");
 
   // Models, biggest first, measured by spend rather than by request count -
