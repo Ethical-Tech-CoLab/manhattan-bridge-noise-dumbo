@@ -48,17 +48,7 @@
   --cp-bleed-card: rgba(255, 255, 255, 0.88);
   --cp-bleed-card-soft: rgba(252, 251, 248, 0.86);
 }
-/* The dark surface set, declared once and claimed by two selectors.
-   The second is the opening page, which keeps the band's darkness all the way
-   down instead of dissolving into a light page. Doing it here rather than by
-   patching elements is the whole point: every colour on that page already
-   comes from these tokens, so repointing them reaches the page backdrop, the
-   masthead, every card, every rule and the footer in one move. Declared on
-   body so it also reaches body's own ::before, which paints the backdrop.
-   These are the dark theme's existing values, so the light-theme opening page
-   introduces no new colour, and the whole block is inert when the dark theme
-   is already in force. */
-html[data-theme="dark"], body.bleed {
+html[data-theme="dark"] {
   color-scheme: dark;
   --cp-bg: #3d3b3a;
   --cp-bg-elevated: #343231;
@@ -88,11 +78,23 @@ html[data-theme="dark"], body.bleed {
   --cp-bleed-card: rgba(41, 41, 41, 0.84);
   --cp-bleed-card-soft: rgba(52, 50, 49, 0.82);
 }
-/* color-scheme is inherited, so the rule above dresses every control inside
-   the opening page - but not the scrollbar, which is painted from the root.
-   :has() carries it up one element. Where :has() is unsupported the only
+/* color-scheme is inherited, so declaring it below would dress every control
+   inside the opening page - but not the scrollbar, which is painted from the
+   root. :has() carries it up one element. Where :has() is unsupported the only
    casualty is a light scrollbar, so this needs no fallback. */
 html:has(body.bleed) { color-scheme: dark; }
+/* THE FIELD IS DARK; THE THINGS LAID ON IT ARE NOT.
+   An earlier version of this made the opening page dark by claiming the whole
+   dark token set, which was too blunt a tool: it took the cards and the accent
+   with it, so the sheets went charcoal and the crimson turned pink. A card is
+   a sheet laid ON the field, not part of it, and it keeps the reader's theme.
+   So only the three tokens that describe the FIELD move here, and every other
+   token is left exactly as the reader's theme set it. */
+body.bleed {
+  --cp-bg: #26241f;
+  --cp-bleed-a: rgba(18, 17, 16, 0.30);
+  --cp-bleed-b: rgba(18, 17, 16, 0.46);
+}
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 body {
@@ -217,7 +219,7 @@ p { margin: 0 0 14px; }
   min-height: 100vh; min-height: 100svh;
   display: flex; flex-direction: column; justify-content: center;
 }
-.hb .pic, .hb .tint {
+.hb .tint {
   -webkit-mask-image: var(--hb-mask); mask-image: var(--hb-mask);
 }
 .hb {
@@ -230,22 +232,44 @@ p { margin: 0 0 14px; }
     rgba(0,0,0,0.09) calc(100% - var(--hb-fade-h) * 0.09),
     rgba(0,0,0,0) 100%);
 }
-.hb .pic {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; object-position: 62% 46%; z-index: 0;
+/* ONE PHOTOGRAPH, HELD STILL, FOR THE WHOLE DOCUMENT.
+   The band used to carry its own copy of the image and the page carried a
+   second one behind everything below. Two copies is one too many in three
+   separate ways: they scrolled at different speeds so the dissolve was
+   cross-fading a moving picture into a stationary one; they were served at
+   different widths, so a desktop downloaded BOTH the 2400px and the 1200px
+   file; and they had to be kept in register by hand, which is a standing
+   invitation for them to drift apart.
+   Now there is one <img>, fixed to the viewport, sitting behind everything -
+   and the only thing that changes between the opening screen and the rest of
+   the page is the shading laid over it. Nothing to keep in register, because
+   there is nothing to keep in register WITH.
+   An <img> rather than a CSS background so it keeps srcset, so it is the
+   element the preload scanner finds first, and so it can carry an empty alt
+   and be correctly ignored rather than being invisible to the markup. */
+.bgpic {
+  position: fixed; inset: 0; z-index: -2;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 62% 46%;
+  pointer-events: none;
 }
-/* Deliberately heavier than it was. The band is now the whole first screen,
-   so the photograph has stopped being a strip of decoration and become the
-   room the type is standing in - and white type over a mid-grey photograph is
-   legible without being emphatic. The vertical layer darkens the top so the
-   overlaid masthead has something to sit on. */
+/* The band's shading now composites OVER the page's, because the photograph
+   moved out from under it: what a reader sees above the fold is the fixed
+   scrim plus this. So these are not the numbers that were here before - they
+   are the numbers that ADD UP to them. Stacked alpha composites as
+   1-(1-a)(1-b), so against a scrim of about 0.34 these reproduce the shipped
+   0.96 / 0.91 / 0.66 / 0.46 to within a percent. Setting the old values here
+   would have darkened the band by exactly the scrim, which is what made it go
+   muddy and maroon the first time this was tried.
+   The vertical layer is lighter than it was for the same reason: the scrim is
+   already darkest at the top of the viewport, which is where the masthead is. */
 .hb .tint {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0.10) 24%,
+    linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.06) 24%,
                     rgba(0,0,0,0) 54%),
-    linear-gradient(90deg, rgba(9,9,10,0.96) 0%, rgba(9,9,10,0.91) 34%,
-                    rgba(9,9,10,0.66) 62%, rgba(9,9,10,0.46) 100%),
+    linear-gradient(90deg, rgba(9,9,10,0.94) 0%, rgba(9,9,10,0.86) 34%,
+                    rgba(9,9,10,0.48) 62%, rgba(9,9,10,0.18) 100%),
     linear-gradient(0deg, var(--cp-highlight), var(--cp-highlight));
 }
 /* Text stays on the same 1180px measure as every card below it, so going
@@ -378,25 +402,18 @@ body.bleed .mh-bar.mh-over .mh-nav a:hover {
 }
 body.bleed .mh-bar.mh-over .mh-nav .mh-sep { background: rgba(255,255,255,0.26); }
 
-/* -- the page backdrop ---------------------------------------------------- */
-/* The same composite that backs the band, held behind the whole page so the
-   treatment does not stop at the fold. position: fixed rather than
-   background-attachment: fixed, which iOS Safari silently ignores and which
-   Chrome repaints badly over a long document. Being viewport-sized, it is
-   responsive without a single breakpoint: cover re-crops at every width.
-   z-index -1 puts it above the propagated body background and below every
-   element in flow, so nothing needs a stacking context to sit on top.
-   The crop is the band's crop, deliberately. At the top of the page this
-   element and the band's photograph occupy the same viewport-sized box, so
-   matching object-position makes them the same pixels - and the dissolve then
-   has nothing to cross-fade but the scrim. Two different crops would ghost,
-   which was invisible while the page below was nearly white and would not be
-   now that the photograph reads through it. */
+/* -- the shading over the photograph -------------------------------------- */
+/* This is now the ONLY thing standing between the page and the image, which
+   is why it is a gradient and nothing else: the picture is painted once, by
+   .bgpic, and every region of the page differs from every other only in how
+   heavily it is shaded. position: fixed rather than background-attachment:
+   fixed, which iOS Safari silently ignores and which Chrome repaints badly
+   over a long document. Being viewport-sized it is responsive without a
+   single breakpoint. z-index -1 puts it above the photograph at -2 and below
+   every element in flow, so nothing needs a stacking context to sit on top. */
 body.bleed::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background:
-    linear-gradient(176deg, var(--cp-bleed-a) 0%, var(--cp-bleed-b) 100%),
-    url("assets/hero-composite-1200.jpg") 62% 46% / cover no-repeat;
+  background: linear-gradient(176deg, var(--cp-bleed-a) 0%, var(--cp-bleed-b) 100%);
 }
 /* Cards go translucent ONLY on the bleed page, so the treatment reads through
    them instead of being hidden by them. The floor is 0.84 alpha, which keeps
@@ -408,8 +425,21 @@ body.bleed .card {
   backdrop-filter: blur(9px);
 }
 body.bleed .card.hero { background: var(--cp-bleed-card-soft); }
+/* The footer is the one piece of running text with no card under it, so it is
+   the one place where the dark field reaches the type directly. It cannot take
+   the theme's soft grey there, and the link colour that is correct on paper is
+   not correct on a photograph. Everything else on this page is either inside a
+   card or inside the band, both of which bring their own ground. */
+body.bleed .foot { color: rgba(255,255,255,0.72); border-top-color: rgba(255,255,255,0.18); }
+body.bleed .foot a { color: #9fd0ff; }
+body.bleed .foot code {
+  background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.86);
+}
+body.bleed .foot a code { color: #9fd0ff; }
 @media (prefers-reduced-transparency: reduce) {
   body.bleed::before { background: linear-gradient(var(--cp-bg), var(--cp-bg)); }
+  body.bleed .bgpic { display: none; }
   body.bleed .card { background: var(--cp-surface); backdrop-filter: none; }
   body.bleed .card.hero { background: var(--cp-bg-elevated); }
 }
@@ -928,7 +958,7 @@ as the central result of a case study whose entire purpose was measurement.
 It is also the exact inverse of the claim this page now makes &mdash; that the
 unit is documented, the ledger is readable, and the reason so little work of
 this kind is published is not that the data is missing.</p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md">Source on GitHub</a> &middot; Built from <code>8d4672a</code> on 2026-08-06.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md">Source on GitHub</a> &middot; Built from <code>9b959a7</code> on 2026-08-06.</p>
 </main>
 </div>
 
