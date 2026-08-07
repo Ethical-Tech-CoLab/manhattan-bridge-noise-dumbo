@@ -173,28 +173,73 @@ p { margin: 0 0 14px; }
    viewport at every width. The 100vw trick was rejected: 100vw counts the
    scrollbar, so it overshoots by 15-17px and puts a horizontal scrollbar on
    every desktop browser that reserves gutter space. */
+/* The band fills the viewport and then DISSOLVES into the page rather than
+   ending on a rule. There used to be a 1px bottom border, and at the join
+   between a near-black band and a near-white page a hairline reads as a drawn
+   line across the screen - which is exactly what it was.
+
+   The dissolve is a MASK on the band's own layers, not a gradient painted on
+   top of them. A painted gradient has to fade toward a colour, and the colour
+   underneath here is a fixed photograph behind a themed scrim - so any
+   constant would be right at one scroll position, in one theme, and visibly
+   wrong everywhere else. Masking makes the band itself go transparent, so
+   what it fades into is whatever is genuinely there. It cannot mismatch.
+
+   The ramp is in PIXELS, not a percentage. A percentage ramp grows with the
+   viewport, so the credit line would sit inside the fade on a tall screen and
+   clear it on a short one. One number, declared once, and .hin reserves it as
+   bottom padding so nothing is ever set in the dissolving region.
+
+   The stops are an ease rather than a straight line: alpha falls slowly at
+   first and quickly at the end. A linear ramp between two very different
+   luminances reads as a visible band about a third of the way down, because
+   perceived lightness is not linear in alpha. */
 .hb {
+  --hb-fade-h: 200px;
   position: relative; overflow: hidden;
-  border: 0; border-bottom: 1px solid var(--cp-border); border-radius: 0;
-  margin: 0; background: #101010; isolation: isolate;
+  border: 0; border-radius: 0; margin: 0;
+  background: transparent; isolation: isolate;
+  min-height: 100vh; min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.hb .pic, .hb .tint {
+  -webkit-mask-image: var(--hb-mask); mask-image: var(--hb-mask);
+}
+.hb {
+  --hb-mask: linear-gradient(to bottom,
+    #000 calc(100% - var(--hb-fade-h)),
+    rgba(0,0,0,0.94) calc(100% - var(--hb-fade-h) * 0.78),
+    rgba(0,0,0,0.80) calc(100% - var(--hb-fade-h) * 0.58),
+    rgba(0,0,0,0.55) calc(100% - var(--hb-fade-h) * 0.40),
+    rgba(0,0,0,0.28) calc(100% - var(--hb-fade-h) * 0.22),
+    rgba(0,0,0,0.09) calc(100% - var(--hb-fade-h) * 0.09),
+    rgba(0,0,0,0) 100%);
 }
 .hb .pic {
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; object-position: 62% 46%; z-index: 0;
-  opacity: 0.95;
 }
+/* Deliberately heavier than it was. The band is now the whole first screen,
+   so the photograph has stopped being a strip of decoration and become the
+   room the type is standing in - and white type over a mid-grey photograph is
+   legible without being emphatic. The vertical layer darkens the top so the
+   overlaid masthead has something to sit on. */
 .hb .tint {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(16,16,16,0.94) 0%, rgba(16,16,16,0.86) 34%,
-                    rgba(16,16,16,0.42) 62%, rgba(16,16,16,0.20) 100%),
+    linear-gradient(180deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0.10) 24%,
+                    rgba(0,0,0,0) 54%),
+    linear-gradient(90deg, rgba(9,9,10,0.96) 0%, rgba(9,9,10,0.91) 34%,
+                    rgba(9,9,10,0.66) 62%, rgba(9,9,10,0.46) 100%),
     linear-gradient(0deg, var(--cp-highlight), var(--cp-highlight));
 }
 /* Text stays on the same 1180px measure as every card below it, so going
-   full bleed changes where the photograph stops and nothing else. */
+   full bleed changes where the photograph stops and nothing else. The bottom
+   padding reserves the whole dissolve, so no glyph ever lands in it. */
 .hb .hin {
   position: relative; z-index: 2; max-width: 1180px; margin: 0 auto;
-  padding: 52px 22px 34px; color: #f2efea;
+  padding: 80px 22px calc(var(--hb-fade-h) + 22px); color: #f2efea;
+  width: 100%;
 }
 .hb .kicker {
   font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
@@ -256,11 +301,61 @@ html[data-theme="light"] .wc .u { color: #ff9bad; }
   .wc .wcslide { transition: none; }
 }
 @media (max-width: 760px) {
-  .hb .hin { padding-top: 30px; padding-bottom: 24px; }
+  .hb { --hb-fade-h: 150px; }
+  .hb .hin { padding-top: 74px; }
   .hb h1 { font-size: 1.8rem; }
   .hb .cred { position: static; max-width: none; text-align: left; }
   .wc { min-height: 190px; }
 }
+
+/* -- the masthead over the band ------------------------------------------ */
+/* On the opening page the header is not a separate object. The band is the
+   whole first screen, so a solid bar above it is a strip of chrome sitting
+   between the reader and the thing the page is about.
+   The wordmark goes with it. "Silencing the Span" in 15px is redundant three
+   centimetres above "Silencing the Span" in 40px, and repeating it does not
+   reinforce the title, it competes with it. The mark stays: it is the way
+   home and it is not a word.
+   Everything comes back the moment the band does not: below the fold the bar
+   is over a light page and has to be a bar again. The class is ADDED by
+   script, so with no script the page keeps the solid header - the graceful
+   direction, since a transparent bar over a light page would be invisible. */
+body.bleed .mh-bar {
+  position: fixed; left: 0; right: 0; top: 0;
+  background: transparent; border-bottom-color: transparent;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+/* Two layers cross-fading rather than one property flipping. A background
+   IMAGE cannot be transitioned, so switching the bar in one step would snap;
+   and the snap would land at the one scroll position a reader is already
+   watching, which is the join. ::before is the ordinary bar, ::after is a
+   soft scrim that lets the band's own text pass underneath the mark without
+   colliding with it. */
+body.bleed .mh-bar::before, body.bleed .mh-bar::after {
+  content: ""; position: absolute; left: 0; right: 0; z-index: -1;
+  pointer-events: none; transition: opacity .28s ease;
+}
+body.bleed .mh-bar::before {
+  top: 0; bottom: 0; opacity: 1;
+  background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+body.bleed .mh-bar::after {
+  top: 0; height: 220%; opacity: 0;
+  background: linear-gradient(180deg, rgba(6,6,7,0.88) 0%,
+              rgba(6,6,7,0.58) 38%, rgba(6,6,7,0.22) 70%, rgba(6,6,7,0) 100%);
+}
+body.bleed .mh-bar.mh-over::before { opacity: 0; }
+body.bleed .mh-bar.mh-over::after { opacity: 1; }
+body.bleed .mh-bar.mh-over .mh-wm { display: none; }
+body.bleed .mh-bar.mh-over .mh-home { color: #f4f1ec; }
+body.bleed .mh-bar.mh-over .mh-home:hover { color: var(--cp-accent); }
+body.bleed .mh-bar.mh-over .mh-nav a { color: rgba(255,255,255,0.82); }
+body.bleed .mh-bar.mh-over .mh-nav a:hover {
+  background: rgba(255,255,255,0.16); color: #fff;
+}
+body.bleed .mh-bar.mh-over .mh-nav .mh-sep { background: rgba(255,255,255,0.26); }
 
 /* -- the page backdrop ---------------------------------------------------- */
 /* The same composite that backs the band, held behind the whole page so the
@@ -1286,7 +1381,7 @@ Draft v1.1 · August 2026 · revised after adversarial review</p>
 <p><strong>Review note.</strong> Draft v1.0 was submitted to an adversarial review that returned <em>not fit to publish</em> with eight blocking issues, on the same pattern as the reviews of <code>IDEA-CONCEPT.md</code> and <code>PRECEDENT-AND-MATERIALS.md</code>. The recurring cause identified in issue #11 — reading at abstract level rather than at the locus — is not the cause here. <strong>The cause in this document is different, and worth recording separately: over-claiming inferential strength from a design that does not support it.</strong> v1.0 knew the design was weak, said so in Part 9 item 8, and then wrote the rest of the document as though it were strong. That failure mode is filed as its own methodological finding.</p>
 <hr />
 <p><em>Ethical Tech CoLab. Released under CC BY 4.0. Not peer-reviewed. Part 9 is the best guide to how much to trust the rest.</em></p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/WILLIAMSBURG-COMPARATOR.md">Source on GitHub</a> &middot; Built from <code>a378eb7</code> on 2026-08-06.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/WILLIAMSBURG-COMPARATOR.md">Source on GitHub</a> &middot; Built from <code>ab9e8a5</code> on 2026-08-06.</p>
 </main>
 </div>
 
