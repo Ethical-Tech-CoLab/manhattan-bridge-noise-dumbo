@@ -26,10 +26,16 @@
   --cp-text: #242424;
   --cp-text-muted: #5c5c5c;
   --cp-text-soft: #6f6f6f;
+  /* The measure every container on the page shares: masthead, opening band,
+     cards and footer all line up on it, so widening the page is one number. */
+  --cp-measure: 1180px;
   --cp-accent: #b11f4b;
   --cp-accent-hover: #9a1a41;
   --cp-accent-soft: rgba(177, 31, 75, 0.08);
   --cp-accent-fg: #ffffff;
+  /* The accent as it appears on a dark photographic ground. Everywhere except
+     the opening page there is no such ground, so it is simply the accent. */
+  --cp-accent-field: var(--cp-accent);
   --cp-success: #16a34a;
   --cp-danger: #dc2626;
   --cp-warning: #f59e0b;
@@ -89,11 +95,31 @@ html:has(body.bleed) { color-scheme: dark; }
    with it, so the sheets went charcoal and the crimson turned pink. A card is
    a sheet laid ON the field, not part of it, and it keeps the reader's theme.
    So only the three tokens that describe the FIELD move here, and every other
-   token is left exactly as the reader's theme set it. */
+   token is left exactly as the reader's theme set it.
+
+   THE FOURTH IS THE ACCENT THE FIELD NEEDS, AND IT EXISTS BECAUSE ONE RED
+   CANNOT SERVE BOTH. The house crimson #b11f4b is 2.3:1 on this photograph -
+   unreadable - so every accent over the band had been hand-lightened at the
+   point of use, and they had drifted to four different values: #fd8ea1 on the
+   kicker, #ff9bad on the carousel labels, #ffd0da on links, and whatever
+   --cp-accent happened to be. That is what "the crimson varies oddly down the
+   page" was. One token, one value, declared once. It sits at hue 344 against
+   the house crimson's 342 - the same red, lifted only as far as legibility
+   demands, measured at 5.4:1 rather than guessed at.
+   Cards keep #b11f4b, because a card is a near-white sheet and #ef4370 is only
+   3.4:1 on one. Two grounds, two values, one rule: crimson on paper, this on
+   the photograph. */
 body.bleed {
   --cp-bg: #26241f;
   --cp-bleed-a: rgba(18, 17, 16, 0.30);
   --cp-bleed-b: rgba(18, 17, 16, 0.46);
+  --cp-accent-field: #ef4370;
+  /* A 1180px column on a 2560px monitor is a strip down the middle with a
+     third of the screen empty on either side. This grows the whole page
+     together - masthead, band, cards, footer - so nothing comes off the line
+     it shares with everything else. The floor is the old fixed value, so
+     every screen up to about 1440px is pixel-identical to what it was. */
+  --cp-measure: clamp(1180px, 82vw, 1680px);
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
@@ -140,7 +166,7 @@ pre code { background: none; border: 0; padding: 0; }
   border-bottom: 1px solid var(--cp-border);
 }
 .mh-bar .mh-in {
-  max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+  max-width: var(--cp-measure); margin: 0 auto; padding: 10px 22px;
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
 }
 .mh-bar .mh-home {
@@ -164,7 +190,7 @@ pre code { background: none; border: 0; padding: 0; }
 .mh-bar .mh-nav .mh-sep { width: 1px; height: 17px; flex: none; margin: 0 7px;
   background: var(--cp-border-strong); border-radius: 1px; }
 
-.wrap { max-width: 1180px; margin: 0 auto; padding: 30px 22px 90px; }
+.wrap { max-width: var(--cp-measure); margin: 0 auto; padding: 30px 22px 90px; }
 
 h1 { font-size: 2.15rem; line-height: 1.18; margin: 0 0 10px; letter-spacing: -0.01em; }
 h2 { font-size: 1.42rem; margin: 0 0 14px; letter-spacing: -0.005em; }
@@ -262,37 +288,57 @@ p { margin: 0 0 14px; }
    would have darkened the band by exactly the scrim, which is what made it go
    muddy and maroon the first time this was tried.
    The vertical layer is lighter than it was for the same reason: the scrim is
-   already darkest at the top of the viewport, which is where the masthead is. */
+   already darkest at the top of the viewport, which is where the masthead is.
+   THERE IS NO THIRD LAYER. A flat --cp-highlight wash used to sit on top of
+   these two, and it was the reason the opening screen read rose while the rest
+   of the page read neutral grey: the band was tinted and nothing below it was.
+   It was never in front of the text - .tint is z-index 1 and .hin is 2, and the
+   h1 measures a clean rgb(255,255,255) - but a wash the width of the screen
+   does not have to cover the letters to make everything near it look pink. */
 .hb .tint {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background:
     linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.06) 24%,
                     rgba(0,0,0,0) 54%),
     linear-gradient(90deg, rgba(9,9,10,0.94) 0%, rgba(9,9,10,0.86) 34%,
-                    rgba(9,9,10,0.48) 62%, rgba(9,9,10,0.18) 100%),
-    linear-gradient(0deg, var(--cp-highlight), var(--cp-highlight));
+                    rgba(9,9,10,0.48) 62%, rgba(9,9,10,0.18) 100%);
 }
-/* Text stays on the same 1180px measure as every card below it, so going
-   full bleed changes where the photograph stops and nothing else. The bottom
-   padding reserves the whole dissolve, so no glyph ever lands in it. */
+/* WHAT SCALES IS THE TYPE AND THE MEASURE, TOGETHER. The container is the same
+   --cp-measure the masthead, the cards and the footer use, so the opening text
+   starts on exactly the line every card below it starts on no matter how wide
+   the screen gets. Widening it ALONE would have broken that alignment; leaving
+   it fixed left a 1180px strip down the middle of a 2560px monitor.
+   Every size below is a clamp, and every text block is measured in em rather
+   than rem so its width grows WITH its type instead of staying put while the
+   letters get bigger inside it. */
 .hb .hin {
-  position: relative; z-index: 2; max-width: 1180px; margin: 0 auto;
-  padding: 80px 22px calc(var(--hb-fade-h) + 22px); color: #f2efea;
-  width: 100%;
+  position: relative; z-index: 2; max-width: var(--cp-measure); margin: 0 auto;
+  padding: clamp(80px, 7vh, 132px) 22px calc(var(--hb-fade-h) + 22px);
+  color: #f2efea; width: 100%;
 }
 .hb .kicker {
-  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
-  color: var(--cp-accent); font-weight: 700; margin: 0 0 10px;
+  font-size: clamp(0.72rem, 0.62rem + 0.34vw, 1rem);
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--cp-accent-field); font-weight: 700; margin: 0 0 10px;
 }
-html[data-theme="light"] .hb .kicker { color: #fd8ea1; }
-.hb h1 { font-size: 2.5rem; margin: 0 0 10px; letter-spacing: -0.02em; color: #fff; }
-.hb .sub { font-size: 1.06rem; margin: 0 0 6px; max-width: 44rem; color: #e6e1da; }
-.hb .sub a { color: #ffd0da; }
-.hb .lede { font-size: 0.95rem; margin: 0; max-width: 44rem; color: #bdb7b0; }
+.hb h1 {
+  font-size: clamp(1.95rem, 1.15rem + 3.4vw, 5rem);
+  margin: 0 0 12px; letter-spacing: -0.025em; line-height: 1.02; color: #fff;
+}
+.hb .sub {
+  font-size: clamp(1.06rem, 0.9rem + 0.55vw, 1.5rem);
+  margin: 0 0 8px; max-width: 40em; color: #e6e1da; line-height: 1.42;
+}
+.hb .sub a { color: var(--cp-accent-field); }
+.hb .lede {
+  font-size: clamp(0.95rem, 0.86rem + 0.3vw, 1.18rem);
+  margin: 0; max-width: 46em; color: #bdb7b0;
+}
 .hb .cred {
   position: relative; z-index: 2; margin: 22px 0 0; padding-top: 14px;
   border-top: 1px solid rgba(255,255,255,0.14);
-  font-size: 0.7rem; color: rgba(255,255,255,0.52); line-height: 1.5;
+  font-size: clamp(0.7rem, 0.66rem + 0.16vw, 0.86rem);
+  color: rgba(255,255,255,0.52); line-height: 1.5;
 }
 .hb .cred a { color: rgba(255,255,255,0.74); }
 /* A code chip carries a near-white fill and a border, which is correct in a
@@ -306,30 +352,43 @@ html[data-theme="light"] .hb .kicker { color: #fd8ea1; }
 .hb .cred a code { color: inherit; border-color: transparent; }
 
 /* the statement carousel */
-.wc { position: relative; z-index: 2; margin: 26px 0 34px; min-height: 148px; }
+/* All six slides occupy ONE grid cell, so the box is exactly as tall as its
+   tallest slide at every width, forever. They used to be absolutely positioned
+   inside a min-height, which meant the height was a number somebody had to
+   guess - and once the type became fluid that guess had to be right at every
+   viewport width simultaneously. It was not: measurement found the longest
+   slide overflowing its box by one line at 1280 and 1440, silently, on top of
+   the pause control. A grid cell cannot be wrong about this. */
+.wc {
+  position: relative; z-index: 2; margin: 26px 0 34px;
+  display: grid; align-items: start;
+}
 .wc .wcslide {
-  position: absolute; inset: 0; opacity: 0; transition: opacity .5s ease;
+  grid-area: 1 / 1; opacity: 0; transition: opacity .5s ease;
   pointer-events: none; display: block; color: inherit;
 }
 .wc .wcslide.on { opacity: 1; pointer-events: auto; }
 .wc .wcslide:hover { text-decoration: none; }
 .wc .n {
-  font-size: clamp(3rem, 8.5vw, 5.4rem); font-weight: 700; line-height: 0.94;
+  font-size: clamp(3rem, 7.6vw, 7.5rem); font-weight: 700; line-height: 0.94;
   letter-spacing: -0.035em; color: #fff; display: block;
 }
 .wc .u {
-  font-size: 0.96rem; font-weight: 700; letter-spacing: 0.04em;
-  text-transform: uppercase; color: var(--cp-accent); margin: 8px 0 6px;
+  font-size: clamp(0.96rem, 0.86rem + 0.34vw, 1.24rem);
+  font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--cp-accent-field); margin: 8px 0 6px;
 }
-html[data-theme="light"] .wc .u { color: #ff9bad; }
-.wc .l { font-size: 0.98rem; color: #ded8d1; max-width: 40rem; }
-.wc .wcslide:hover .n { color: #ffd0da; }
+.wc .l {
+  font-size: clamp(0.98rem, 0.9rem + 0.28vw, 1.2rem);
+  color: #ded8d1; max-width: 40em;
+}
+.wc .wcslide:hover .n { color: var(--cp-accent-field); }
 .wcnav { position: relative; z-index: 2; display: flex; align-items: center; gap: 8px; }
 .wcnav button {
   width: 30px; height: 6px; border-radius: 3px; border: 0; cursor: pointer;
   background: rgba(255,255,255,0.26); padding: 0;
 }
-.wcnav button[aria-current="true"] { background: var(--cp-accent); }
+.wcnav button[aria-current="true"] { background: var(--cp-accent-field); }
 .wcnav button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .wcnav .pp {
   width: auto; height: auto; border-radius: 0.625rem; padding: 4px 10px;
@@ -342,9 +401,7 @@ html[data-theme="light"] .wc .u { color: #ff9bad; }
 @media (max-width: 760px) {
   .hb { --hb-fade-h: 150px; }
   .hb .hin { padding-top: 74px; }
-  .hb h1 { font-size: 1.8rem; }
   .hb .cred { position: static; max-width: none; text-align: left; }
-  .wc { min-height: 190px; }
 }
 
 /* -- the masthead over the band ------------------------------------------ */
@@ -363,6 +420,15 @@ body.bleed .mh-bar {
   position: fixed; left: 0; right: 0; top: 0;
   background: transparent; border-bottom-color: transparent;
   -webkit-backdrop-filter: none; backdrop-filter: none;
+  /* THE PILL AND THE MARK ARE SHEETS, NOT TEXT ON THE PHOTOGRAPH. They carry
+     their own ground, so the reason the band's accent had to be lifted does
+     not apply to them and they keep the house crimson - in BOTH themes, so
+     that the opening screen is the same red for every reader rather than
+     crimson for one and pink for another. White on #b11f4b measures 6.6:1;
+     the same white on the band's #ef4370 would be 3.7:1, which is why these
+     are two values and not one. */
+  --cp-accent: #b11f4b;
+  --cp-accent-fg: #ffffff;
 }
 /* Two layers cross-fading rather than one property flipping. A background
    IMAGE cannot be transitioned, so switching the bar in one step would snap;
@@ -395,7 +461,7 @@ body.bleed .mh-bar.mh-over::before { opacity: 0; }
 body.bleed .mh-bar.mh-over::after { opacity: 1; }
 body.bleed .mh-bar.mh-over .mh-wm { display: none; }
 body.bleed .mh-bar.mh-over .mh-home { color: #f4f1ec; }
-body.bleed .mh-bar.mh-over .mh-home:hover { color: var(--cp-accent); }
+body.bleed .mh-bar.mh-over .mh-home:hover { color: var(--cp-accent-field); }
 body.bleed .mh-bar.mh-over .mh-nav a { color: rgba(255,255,255,0.82); }
 body.bleed .mh-bar.mh-over .mh-nav a:hover {
   background: rgba(255,255,255,0.16); color: #fff;
@@ -454,6 +520,15 @@ body.bleed .foot a code { color: #9fd0ff; }
 .s .big { font-size: 1.9rem; font-weight: 700; color: var(--cp-accent); line-height: 1.1; }
 
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 14px; }
+/* Once the page is allowed to grow past its old fixed width, an auto-fit grid
+   with a 268px floor answers by adding columns rather than widening them, and
+   five tiles across is a list, not a set of choices. Raising the floor only
+   where the page is actually wider keeps it at four, and leaves every narrower
+   screen - where the floor decides whether a tablet gets one column or two -
+   exactly as it was. */
+@media (min-width: 1400px) {
+  body.bleed .tiles { grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); }
+}
 .tile {
   display: block; background: var(--cp-surface-soft);
   border: 1px solid var(--cp-border); border-radius: 0.625rem;
@@ -1879,7 +1954,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <blockquote>
 <p><em>Silencing the Span: Defining the Manhattan Bridge Rail-Noise Problem in DUMBO for a Design-Build Intervention.</em> Ethical Tech CoLab, 2026.</p>
 </blockquote>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/README.md">Source on GitHub</a> &middot; Built from <code>9b959a7</code> on 2026-08-06.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/README.md">Source on GitHub</a> &middot; Built from <code>0062c38</code> on 2026-08-06.</p>
 </main>
 </div>
 
