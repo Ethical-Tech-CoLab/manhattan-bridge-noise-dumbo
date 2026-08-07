@@ -301,13 +301,10 @@ ARTIFACTS = [
      "measured - with the operator's stated purpose for each capture carried "
      "on the page, because a measurement can only be read for the purpose it "
      "was taken for.",
-     "<b>What the next capture has to fix.</b> Of the five captures this "
-     "repository specified for itself, this session satisfied none completely "
-     "and two partly: no windscreen, unknown microphone response, automatic "
-     "gain control active throughout. The gap is one shield and one calibrated "
-     "microphone - a UMIK-1 over USB-C, about USD 100-150, ships with a "
-     "serial-numbered calibration file - and it is what would open the closed "
-     "loop the acoustic demonstration runs on.",
+     "The gap is one shield and one calibrated microphone - a UMIK-1 over "
+     "USB-C, about USD 100-150, ships with a serial-numbered calibration file "
+     "- and it is what would open the closed loop the acoustic demonstration "
+     "runs on.",
      "v0.4.4"),
     ("usage/usage-dashboard.html", "Meta", "Usage and cost dashboard",
      "What this investigation cost to produce, from the tool's own per-request "
@@ -1865,13 +1862,6 @@ def render_doc(src, slug, title, stats):
 #                   twelve of them reads a wall, not a menu.
 # ---------------------------------------------------------------------------
 
-def _vkey(ver):
-    """Sort key for 'v0.4.7'. Missing components are zero, so v0.4 sorts below
-    v0.4.1 rather than beside it."""
-    parts = ver.lstrip("v").split(".")
-    return tuple(int(p) for p in parts) + (0,) * (3 - len(parts))
-
-
 def _ctx(stats):
     """Everything more than one section needs, computed once."""
     return {
@@ -1883,17 +1873,13 @@ def _ctx(stats):
         # bridge. Listing them beside the demonstrations is what made the demos
         # and the usage page look like the same thing.
         #
-        # ORDERED BY VERSION, STRONGEST FIRST. The version is a maturity
-        # ranking, and a ranking printed in arbitrary order does not read as
-        # one - the reader has to sort eight numbers by eye before the scale
-        # means anything. Descending rather than ascending so the reader meets
-        # the artifact standing on surveyed data before the one whose inputs
-        # are invented, and so the least mature lands last, where its own card
-        # says it belongs.
-        "demos": sorted([a for a in ARTIFACTS if a[1] != "Meta"],
-                        key=lambda a: _vkey(a[5]), reverse=True),
-        "metas": sorted([a for a in ARTIFACTS if a[1] == "Meta"],
-                        key=lambda a: _vkey(a[5]), reverse=True),
+        # DECLARATION ORDER IS THE READING ORDER, and it is deliberate: the
+        # cards open with the two artifacts that explain the problem fastest,
+        # not with the one carrying the strongest evidence. The version is a
+        # maturity label the reader can consult per card; it is NOT the running
+        # order, and sorting by it buries the introduction.
+        "demos": [a for a in ARTIFACTS if a[1] != "Meta"],
+        "metas": [a for a in ARTIFACTS if a[1] == "Meta"],
     }
 
 
@@ -2056,16 +2042,15 @@ def sec_demos(stats, c):
     A('<div class="note"><strong>What the version number means.</strong> '
       'Nothing here is released, so it is not a release tag. It says how far '
       'an artifact is from standing on measured ground &mdash; the only '
-      'ranking this programme is entitled to make, and <strong>the cards are '
-      'ordered by it</strong>, strongest evidence first. '
-      '<strong>v0.4.7</strong> is surveyed data; the steps below it run '
-      'through open published data, a measured feed carrying an invented '
-      'population, capture on an uncalibrated instrument, synthesis pinned to '
-      'somebody else\'s published measurements, and inferred geometry; '
-      '<strong>v0.4</strong> is inputs invented throughout. They are complete '
-      'and working software; what they are short of is evidence, not '
-      'features. <strong>Nothing reaches 1.0 until the thing it depicts has '
-      'been measured on site.</strong></div>')
+      'ranking this programme is entitled to make. <strong>v0.4</strong> is '
+      'inputs invented throughout; the steps above it run through inferred '
+      'geometry, synthesis pinned to somebody else\'s published measurements, '
+      'capture on an uncalibrated instrument, a measured feed carrying an '
+      'invented population, and open published data; <strong>v0.4.7</strong> '
+      'is surveyed data. The cards are ordered to introduce the problem, not '
+      'by this number. They are complete and working software; what they are '
+      'short of is evidence, not features. <strong>Nothing reaches 1.0 until '
+      'the thing it depicts has been measured on site.</strong></div>')
     A('<div class="note"><strong>A warning that applies to all %s.</strong> The '
       '3D model contains <strong>zero measured elements</strong>. The audio is '
       '<strong>synthesised, not recorded</strong>. The agent model\'s '
