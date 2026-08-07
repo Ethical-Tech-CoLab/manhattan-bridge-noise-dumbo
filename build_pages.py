@@ -248,6 +248,17 @@ ARTIFACTS = [
      "Street F platform, and every point along it anyone has ever measured.",
      "The last slide. Four narrow bands of measured evidence against 1,482 m "
      "of walk - 23% - and the shaded field is not quiet, it is unmeasured."),
+    ("visual-review/walkable-map.html", "Bridge", "The walkable model",
+     "DUMBO from the York Street F platform to Pier 1, built from 2,342 "
+     "surveyed building footprints with surveyed roof heights and the open "
+     "street and footway network. Three views - an orbiting model, a plan, "
+     "and eye level at 1.62 m - over one routing graph, and every position "
+     "on the same local grid as the agent model. It exists to test the "
+     "coordinates every other page inherited.",
+     "The audit table. Two places the population model calls outdoors sit "
+     "inside a surveyed building footprint, one of them inside an 81 m "
+     "tower. Nothing has been moved; the measured offset is published "
+     "beside the original."),
     ("visual-review/agent-model.html", "Agents", "Agentic population model",
      "Groups - not individuals - enter DUMBO at persona-specific gateways, "
      "follow scenario itineraries, contend for capacity and accumulate a noise "
@@ -356,11 +367,16 @@ SCRIPTS = [
     ("data-collection/fetch_geodata.py",
      "Fetches NYC building footprints with surveyed roof heights and the "
      "OpenStreetMap street, park, water and footway network for the corridor. "
-     "The reproducibility path for every line in the noise-canyon drawings."),
+     "The reproducibility path for every line in the noise-canyon drawings "
+     "and the walkable model."),
     ("build_carousel.py",
      "Draws the noise-canyon slides from that geodata and emits the page. "
      "Slides are declared in visual-review/carousel.json, and the build "
      "refuses to run if any of them lacks a source or a caveat."),
+    ("build_walkable_map.py",
+     "Builds the walkable model: the routing graph, the shortest-path walk "
+     "from York Street to Pier 1, and the audit of every inherited "
+     "coordinate against surveyed building footprints."),
     ("make_hero.py",
      "Composites the hero band on this page from a public-domain HAER "
      "photograph and a render taken from this repository's own 3D model."),
@@ -494,6 +510,21 @@ TODO = [
      "<b>Record individual crossings, not only a total.</b> The arrival-process "
      "result in the agent model turns on the <i>bottom</i> of the dwell "
      "distribution rather than its mean, and a running tally throws that away."),
+    ("cheap", "Method 48 - re-derive every digitised position, and write the rule",
+     "A desk afternoon; the surveyed ground is already in the repository",
+     "The walkable model tests every inherited coordinate against 2,342 "
+     "surveyed building footprints. <b>Two places the population model marks "
+     "as outdoors fall inside a building</b>, one of them inside an 81 m "
+     "tower, and one MTA point <b>named for a street intersection resolves "
+     "inside a footprint</b>. For an outdoor place that is not an "
+     "approximation &mdash; it is a coordinate that cannot be right. "
+     "<b>Nothing has been moved</b>, and moving the points is not the method. "
+     "The method is writing down a <i>rule</i> &mdash; something like <i>the "
+     "centre of the publicly accessible footway area nearest the named "
+     "feature, snapped to the network</i> &mdash; which is checkable, "
+     "reproducible and can be wrong in a statable way. An eye-placed point is "
+     "none of those, and every position in this repository is currently "
+     "eye-placed."),
     ("cheap", "Method 42 - count the corridor by attribute, not just by head",
      "The same session as Method 28, one extra clicker",
      "Every susceptibility share in the agent model is a <b>national "

@@ -1016,15 +1016,18 @@ Two public sources, no key, no account:
 
 | Source | Supplies | Rows |
 |---|---|---|
-| NYC OpenData `5zhs-2jue` BUILDING | Footprint polygon, `height_roof`, `ground_elevation`, `construction_year` | 960 footprints in the corridor |
-| OpenStreetMap via Overpass, ODbL 1.0 | Streets, footways, parks, water, coastline, piers, the subway alignment, station nodes | 2,826 ways and 9 nodes |
+| NYC OpenData `5zhs-2jue` BUILDING | Footprint polygon, `height_roof`, `ground_elevation`, `construction_year` | 2,342 footprints, of which 1,034 are in the walkable extent |
+| OpenStreetMap via Overpass, ODbL 1.0 | Streets, footways, parks, water, coastline, piers, the subway alignment, station nodes | 3,142 ways and 9 nodes |
 
 `build_carousel.py` in the repository root draws
 [`../visual-review/noise-canyon.html`](../visual-review/noise-canyon.html) from
 them. Slides are declared in `../visual-review/carousel.json`; the build refuses
-to run if any slide lacks a source or a caveat.
+to run if any slide lacks a source or a caveat. `build_walkable_map.py`, also in
+the root, draws
+[`../visual-review/walkable-map.html`](../visual-review/walkable-map.html) from
+the same two files.
 
-**Three traps, in the same style as the four above.**
+**Five traps, in the same style as the four above.**
 
 **Trap 5. Overpass returns 406 for a reason that has nothing to do with the query.**
 Adding `Accept: application/json` is necessary and not sufficient. The
@@ -1060,6 +1063,94 @@ which is the honest rendering, and is also the argument.
 Along the 1,482 m walk from the York Street F platform to Pier 1,
 **347 m lies within a measured band - 23.4 per cent** - and those bands are drawn
 as wide as the position uncertainty in the MTA memos rather than as points.
+
+### Two extents, and why the boundary is now named rather than assumed
+
+The fetch originally used one bounding box for everything. That box was wrong in
+two directions at once and neither error announced itself.
+
+It **cut Pier 1 in half**. The western edge sat at `-73.9975`, and the walk this
+repository keeps describing ends at Pier 1, which starts further west than that.
+**74 buildings were missing**, 9.0 m to 92.4 m tall, median 56.0 m.
+
+It **contained no Manhattan at all**, so the bridge could only ever be drawn
+leaving the frame. A drawing of a crossing that shows one bank is not a drawing
+of a crossing.
+
+The fetch now names two extents and says which is for what:
+
+| Extent | Bounds | What comes from it |
+|---|---|---|
+| `STUDY` | 40.6955 – 40.7085 N, 74.0030 – 73.9775 W | Everything walkable, routable and **measured**. All footway, street and park geometry. |
+| `CONTEXT` | 40.6955 – **40.7175** N, same east and west | **Buildings only**, plus the bridge-carried track geometry. The far bank and the full river span. |
+
+Every building record now carries `near: 1` if its centroid lies in `STUDY` and
+`near: 0` otherwise, and **every measurement in this repository is taken over `near` only**. The count went from 960 to 2,342, of which 1,034 are near. The
+carousel was rebuilt after the extension and **every published statistic is byte-identical** — 76 buildings in the section, tallest 99.36 m, 91.22 m between
+facades, height-to-width 0.29, 347.25 m of measured coverage. That is the check
+that the extension is additive rather than a silent restatement.
+
+**Trap 8. Overpass `out geom` returns a way's *entire* geometry when the way merely touches the box.** Extending north to reach Manhattan moved the corner of
+the request far enough to clip the Williamsburg Bridge. Overpass returned **the whole Williamsburg Bridge** — about 1.5 km of track, most of it more than a
+kilometre outside the request, tagged identically to the geometry that was
+wanted, with no error and no warning.
+
+The fitted bridge bearing moved from **337.26° to 43.41°**. That error was large
+enough to be obvious. **A four-degree error would not have been**, and this
+repository has already published a 2.3° discrepancy as a finding. The fetch now
+runs `_outside()`, a vertex test that rejects any way with a vertex beyond the
+requested box, and `build_carousel.py` asserts the fitted bearing lands between
+325° and 350° and names `fetch_geodata._outside` in the assertion message.
+
+**Trap 9. Chaining ways by endpoint proximity is wrong for parallel tracks.**
+The Manhattan Bridge carries four tracks about 10 m apart. Joining ways whose
+endpoints come within 40 m — correct for a route split into consecutive pieces —
+runs up one track and back down the next, producing a centreline that doubles
+back on itself. It draws as a fold in the deck and raises nothing. The span is
+now built by projecting every vertex onto the fitted axis, binning by chainage at
+60 m and averaging, so **the deck centreline is the mean of the tracks it carries** and no two ways are ever joined.
+
+### The walkable model, and the audit it made possible
+
+[`../visual-review/walkable-map.html`](../visual-review/walkable-map.html) is
+built by `build_walkable_map.py` from the same two files. It carries a routing
+graph over the footway network — 8,712 connected nodes, 10,200 edges — and
+routes the walk from the York Street F platform to Pier 1 by shortest path
+rather than drawing it between waypoints.
+
+**That walk is 1,528.3 m and the carousel's is 1,482.44 m. These are two different walks, not two estimates of one walk.** The carousel route has five
+waypoints and stops at the water. This one adds a sixth, Fulton Ferry Landing,
+because a route that stops at the water's edge omits the half of the walk that
+turns back under the bridge — which is the half the canyon argument is about.
+Neither figure corrects the other and they must not be quoted against each other.
+
+The graph made a check possible that nothing here could previously perform:
+**every inherited coordinate can now be tested against surveyed ground.**
+
+| What was tested | Result |
+|---|---|
+| 18 places in the population model | **2 marked outdoors fall inside a surveyed building footprint** — "Washington St view" inside an 81 m tower, "York St (F)" inside a 15 m building |
+| The same 18 | 2 more fall inside a footprint and are marked *indoors*, which is correct |
+| Pier 1 lawn and promenade | **47.9 m from the nearest walkable path** |
+| 4 MTA measurement points | 2 resolve inside a footprint, one of them **"Front and Pine Street"** |
+
+A position inside a building, for a place the model itself marks as outdoors, is
+not an approximation. It is a coordinate that cannot be right.
+
+**Nothing has been moved.** Every offset is published beside the original.
+Editing a coordinate quietly would replace one guess with another and delete the
+audit trail, and this repository has no written rule yet for how a place named in
+words becomes a point. Writing that rule is Method 48.
+
+**Q68.** **Is "Front and Pine Street" inside a building because we digitised it wrongly, or because the MTA measured indoors there?** The memo describes some
+sessions indoors and some outdoors, and section 1.7 of the concept document found
+independently that the indoor rows behave differently from the outdoor ones. But
+*Front and Pine Street* is the name of an intersection, and an intersection
+cannot be inside a building. Either the position is ours and wrong, or the label
+is the MTA's and describes the nearest cross-streets to an indoor session. **The two readings imply different corrections and the difference is not cosmetic**: a
+level attributed to a street corner and the same level attributed to a room are
+different pieces of evidence about the same railway. Settling it needs the memo
+re-read for its exact wording, not more arithmetic.
 
 ---
 

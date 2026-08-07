@@ -101,11 +101,23 @@ def geodata():
     return _cache["b"], _cache["o"]
 
 
-def building_rings():
-    """Flatten every footprint to a list of (ring_in_metres, height_m, bin)."""
+def building_rings(near_only=True):
+    """Flatten every footprint to a list of (ring_in_metres, height_m, bin).
+
+    near_only defaults True and every caller in this file wants it. The
+    footprint set covers two extents: the walkable study area, and a context
+    band across the East River that exists purely so the far shore can be
+    drawn behind the near field on the walkable map. None of the drawings
+    here are about the far shore, and the canyon massing in particular is a
+    claim about buildings a pedestrian stands between. Letting Manhattan
+    into that set would not raise an error - it would quietly restate a
+    finding about 76 surveyed Brooklyn buildings over a different population.
+    """
     b, _ = geodata()
     out = []
     for rec in b["buildings"]:
+        if near_only and not rec.get("near", 1):
+            continue
         gm = rec["geom"]
         polys = []
         if gm["type"] == "Polygon":
@@ -148,6 +160,21 @@ def bridge_axis():
     ux, uy = math.cos(theta), math.sin(theta)
     if uy < 0:
         ux, uy = -ux, -uy
+
+    # The Manhattan Bridge runs river-crossing north-north-west on this grid.
+    # Anything far from that is not this bridge, and the way it gets in is
+    # documented in fetch_geodata._outside: Overpass returns a way whole when
+    # it merely clips the bounding box, so a neighbouring crossing tagged
+    # identically can join the fit and drag the axis with it. The fit is the
+    # datum every chainage in this file is measured against, so it is asserted
+    # rather than trusted.
+    brg = math.degrees(math.atan2(ux, uy)) % 360
+    if not (325.0 <= brg <= 350.0):
+        raise SystemExit(
+            "bridge axis fitted to %.2f deg, outside the 325-350 deg the\n"
+            "Manhattan Bridge occupies. Something other than this bridge is\n"
+            "in the fit - check for ways whose geometry leaves the requested\n"
+            "extent (see data-collection/fetch_geodata.py _outside)." % brg)
 
     # The fitted points are the river span, so their centroid is out in the
     # water. Slide the origin along the axis to the DUMBO Archway instead, so
