@@ -48,7 +48,17 @@
   --cp-bleed-card: rgba(255, 255, 255, 0.88);
   --cp-bleed-card-soft: rgba(252, 251, 248, 0.86);
 }
-html[data-theme="dark"] {
+/* The dark surface set, declared once and claimed by two selectors.
+   The second is the opening page, which keeps the band's darkness all the way
+   down instead of dissolving into a light page. Doing it here rather than by
+   patching elements is the whole point: every colour on that page already
+   comes from these tokens, so repointing them reaches the page backdrop, the
+   masthead, every card, every rule and the footer in one move. Declared on
+   body so it also reaches body's own ::before, which paints the backdrop.
+   These are the dark theme's existing values, so the light-theme opening page
+   introduces no new colour, and the whole block is inert when the dark theme
+   is already in force. */
+html[data-theme="dark"], body.bleed {
   color-scheme: dark;
   --cp-bg: #3d3b3a;
   --cp-bg-elevated: #343231;
@@ -78,6 +88,11 @@ html[data-theme="dark"] {
   --cp-bleed-card: rgba(41, 41, 41, 0.84);
   --cp-bleed-card-soft: rgba(52, 50, 49, 0.82);
 }
+/* color-scheme is inherited, so the rule above dresses every control inside
+   the opening page - but not the scrollbar, which is painted from the root.
+   :has() carries it up one element. Where :has() is unsupported the only
+   casualty is a light scrollbar, so this needs no fallback. */
+html:has(body.bleed) { color-scheme: dark; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 body {
@@ -341,10 +356,16 @@ body.bleed .mh-bar::before {
   border-bottom: 1px solid var(--cp-border);
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
 }
+/* The first 50-odd pixels are the bar's own height, and anything scrolling
+   through them has to be genuinely suppressed rather than dimmed: at 0.6 alpha
+   the credit line was still legible under the mark, which reads as a collision
+   rather than as depth. Held near-opaque for the bar's height, then released.
+   Nothing of the band is lost to it - .hin does not begin until 80px. */
 body.bleed .mh-bar::after {
   top: 0; height: 220%; opacity: 0;
-  background: linear-gradient(180deg, rgba(6,6,7,0.88) 0%,
-              rgba(6,6,7,0.58) 38%, rgba(6,6,7,0.22) 70%, rgba(6,6,7,0) 100%);
+  background: linear-gradient(180deg, rgba(6,6,7,0.96) 0%,
+              rgba(6,6,7,0.93) 24%, rgba(6,6,7,0.74) 46%,
+              rgba(6,6,7,0.34) 72%, rgba(6,6,7,0) 100%);
 }
 body.bleed .mh-bar.mh-over::before { opacity: 0; }
 body.bleed .mh-bar.mh-over::after { opacity: 1; }
@@ -364,12 +385,18 @@ body.bleed .mh-bar.mh-over .mh-nav .mh-sep { background: rgba(255,255,255,0.26);
    Chrome repaints badly over a long document. Being viewport-sized, it is
    responsive without a single breakpoint: cover re-crops at every width.
    z-index -1 puts it above the propagated body background and below every
-   element in flow, so nothing needs a stacking context to sit on top. */
+   element in flow, so nothing needs a stacking context to sit on top.
+   The crop is the band's crop, deliberately. At the top of the page this
+   element and the band's photograph occupy the same viewport-sized box, so
+   matching object-position makes them the same pixels - and the dissolve then
+   has nothing to cross-fade but the scrim. Two different crops would ghost,
+   which was invisible while the page below was nearly white and would not be
+   now that the photograph reads through it. */
 body.bleed::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
     linear-gradient(176deg, var(--cp-bleed-a) 0%, var(--cp-bleed-b) 100%),
-    url("assets/hero-composite-1200.jpg") 62% 30% / cover no-repeat;
+    url("assets/hero-composite-1200.jpg") 62% 46% / cover no-repeat;
 }
 /* Cards go translucent ONLY on the bleed page, so the treatment reads through
    them instead of being hidden by them. The floor is 0.84 alpha, which keeps
@@ -1120,7 +1147,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <li><a href="../visual-review/model-3d.html"><code>visual-review/model-3d.html</code></a> — the model that currently contains zero measured elements</li>
 </ul>
 <p><strong>Methods this protocol would advance:</strong> 7 (full-spectrum before/after — establishes the "before"), 11 (two-site survey, in a weaker instrument but available now), 16 (walkway photogrammetric survey), 17 (rephotogrammetry, by supplying a modern control set), 19 (the L1 model, by supplying its first measured elements).</p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/FIELD-CAPTURE-PROTOCOL.md">Source on GitHub</a> &middot; Built from <code>ab9e8a5</code> on 2026-08-06.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/FIELD-CAPTURE-PROTOCOL.md">Source on GitHub</a> &middot; Built from <code>8d4672a</code> on 2026-08-06.</p>
 </main>
 </div>
 
