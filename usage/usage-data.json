@@ -1,6 +1,6 @@
 {
  "schema": "copilot-usage/1",
- "generated_at": "2026-08-07T19:49:24Z",
+ "generated_at": "2026-08-10T03:05:33Z",
  "generator": "usage/build_usage_data.py",
  "project": {
   "name": "Manhattan Bridge Design",
@@ -11,7 +11,7 @@
  "session": {
   "id": "427b73d5-2337-48d8-ac50-a2e20a220074",
   "created_at": "2026-08-01T12:46:25.992Z",
-  "updated_at": "2026-08-07T19:37:33.987Z"
+  "updated_at": "2026-08-10T02:56:02.393Z"
  },
  "units": {
   "aiu_is": "one US cent",
@@ -19,22 +19,22 @@
   "note": "AIU prices in the store match the per-model prices the client publishes in models.json, which in turn match three vendor list prices to the cent. See usage/README.md."
  },
  "totals": {
-  "requests": 4486,
-  "turns": 66,
+  "requests": 4572,
+  "turns": 69,
   "models": 4,
   "subagents": 7,
   "subagent_requests": 264,
-  "nano_aiu": 57210413335000,
-  "aiu": 57210.413,
-  "usd": 572.1,
+  "nano_aiu": 58256883860000,
+  "aiu": 58256.884,
+  "usd": 582.57,
   "tokens": {
-   "input": 144468,
-   "cache_read": 646324767,
-   "cache_write": 24056813,
-   "output": 3961098,
-   "reasoning": 804462
+   "input": 146394,
+   "cache_read": 658341905,
+   "cache_write": 24495298,
+   "output": 4029337,
+   "reasoning": 814667
   },
-  "premium_requests": 62,
+  "premium_requests": 65,
   "multipliers": [
    1.0,
    3.0
@@ -42,43 +42,43 @@
  },
  "time": {
   "first_request": "2026-08-01T12:46:34.717Z",
-  "last_request": "2026-08-07T19:49:24.117Z",
-  "wall_span_s": 543769.4,
-  "inference_sum_s": 58065.7,
-  "inference_union_s": 51799.5,
-  "busy_blocks": 3798,
+  "last_request": "2026-08-10T03:05:28.550Z",
+  "wall_span_s": 742733.8,
+  "inference_sum_s": 59076.2,
+  "inference_union_s": 52703.5,
+  "busy_blocks": 3873,
   "active": [
    {
     "cutoff_s": 120,
-    "active_s": 57178.4,
-    "sittings": 103
+    "active_s": 58388.9,
+    "sittings": 104
    },
    {
     "cutoff_s": 300,
-    "active_s": 64204.1,
-    "sittings": 63
+    "active_s": 65414.6,
+    "sittings": 64
    },
    {
     "cutoff_s": 600,
-    "active_s": 77926.8,
-    "sittings": 30
+    "active_s": 79137.3,
+    "sittings": 31
    },
    {
     "cutoff_s": 1800,
-    "active_s": 91656.2,
-    "sittings": 17
+    "active_s": 92866.7,
+    "sittings": 18
    }
   ]
  },
  "dates": {
   "started": "2026-08-01T08:46:34.717000-04:00",
   "started_source": "first request issued in this session",
-  "last_request": "2026-08-07T15:49:24.117000-04:00",
-  "last_commit": "2026-08-07T14:57:15-04:00",
+  "last_request": "2026-08-09T23:05:28.550000-04:00",
+  "last_commit": "2026-08-07T15:58:03-04:00",
   "first_commit": "2026-08-01T09:45:30-04:00",
-  "calendar_days": 7,
-  "active_days": 7,
-  "generated": "2026-08-07T15:49:25.104027-04:00"
+  "calendar_days": 9,
+  "active_days": 8,
+  "generated": "2026-08-09T23:05:33.257429-04:00"
  },
  "days": {
   "zone": {
@@ -312,37 +312,73 @@
    },
    {
     "date": "2026-08-07",
-    "requests": 192,
+    "requests": 235,
     "turns_started": 4,
-    "nano_aiu": 2420980125000,
-    "usd": 24.21,
-    "tokens": 29284288,
+    "nano_aiu": 3006286725000,
+    "usd": 30.06,
+    "tokens": 36118199,
     "first": "2026-08-07T08:48:08.616000-04:00",
-    "last": "2026-08-07T15:49:24.117000-04:00",
+    "last": "2026-08-07T16:00:22.589000-04:00",
     "times": {
      "120": {
-      "engaged_s": 3749.7,
-      "model_s": 2636.4,
-      "person_s": 1113.3,
+      "engaged_s": 4408.1,
+      "model_s": 3029.1,
+      "person_s": 1379.0,
       "sittings": 5
      },
      "300": {
-      "engaged_s": 3847.9,
-      "model_s": 2636.4,
-      "person_s": 1211.5,
+      "engaged_s": 4506.4,
+      "model_s": 3029.1,
+      "person_s": 1477.3,
       "sittings": 4
      },
      "600": {
-      "engaged_s": 3847.9,
-      "model_s": 2636.4,
-      "person_s": 1211.5,
+      "engaged_s": 4506.4,
+      "model_s": 3029.1,
+      "person_s": 1477.3,
       "sittings": 4
      },
      "1800": {
-      "engaged_s": 5357.4,
-      "model_s": 2636.4,
-      "person_s": 2721.0,
+      "engaged_s": 6015.9,
+      "model_s": 3029.1,
+      "person_s": 2986.8,
       "sittings": 3
+     }
+    }
+   },
+   {
+    "date": "2026-08-09",
+    "requests": 43,
+    "turns_started": 3,
+    "nano_aiu": 461163925000,
+    "usd": 4.61,
+    "tokens": 5691877,
+    "first": "2026-08-09T22:56:16.518000-04:00",
+    "last": "2026-08-09T23:05:28.550000-04:00",
+    "times": {
+     "120": {
+      "engaged_s": 562.6,
+      "model_s": 511.3,
+      "person_s": 51.3,
+      "sittings": 1
+     },
+     "300": {
+      "engaged_s": 562.6,
+      "model_s": 511.3,
+      "person_s": 51.3,
+      "sittings": 1
+     },
+     "600": {
+      "engaged_s": 562.6,
+      "model_s": 511.3,
+      "person_s": 51.3,
+      "sittings": 1
+     },
+     "1800": {
+      "engaged_s": 562.6,
+      "model_s": 511.3,
+      "person_s": 51.3,
+      "sittings": 1
      }
     }
    }
@@ -353,27 +389,27 @@
    "model": "claude-opus-5",
    "type": "cache_read",
    "price_nano_per_token": 50000,
-   "tokens": 624649273,
-   "nano_aiu": 31232463650000,
-   "usd": 312.3246,
+   "tokens": 636666411,
+   "nano_aiu": 31833320550000,
+   "usd": 318.3332,
    "usd_per_1m": 0.5
   },
   {
    "model": "claude-opus-5",
    "type": "cache_write",
    "price_nano_per_token": 625000,
-   "tokens": 23326843,
-   "nano_aiu": 14579276875000,
-   "usd": 145.7928,
+   "tokens": 23765328,
+   "nano_aiu": 14853330000000,
+   "usd": 148.5333,
    "usd_per_1m": 6.25
   },
   {
    "model": "claude-opus-5",
    "type": "output",
    "price_nano_per_token": 2500000,
-   "tokens": 3823920,
-   "nano_aiu": 9559800000000,
-   "usd": 95.598,
+   "tokens": 3892159,
+   "nano_aiu": 9730397500000,
+   "usd": 97.304,
    "usd_per_1m": 25.0
   },
   {
@@ -461,9 +497,9 @@
    "model": "claude-opus-5",
    "type": "input",
    "price_nano_per_token": 500000,
-   "tokens": 70563,
-   "nano_aiu": 35281500000,
-   "usd": 0.3528,
+   "tokens": 72489,
+   "nano_aiu": 36244500000,
+   "usd": 0.3624,
    "usd_per_1m": 5.0
   },
   {
@@ -497,15 +533,15 @@
  "models": [
   {
    "model": "claude-opus-5",
-   "requests": 4222,
-   "nano_aiu": 55406822025000,
-   "duration_ms": 55288025,
-   "reasoning": 762020,
-   "input": 70563,
-   "cache_read": 624649273,
-   "cache_write": 23326843,
-   "output": 3823920,
-   "usd": 554.0682
+   "requests": 4308,
+   "nano_aiu": 56453292550000,
+   "duration_ms": 56298435,
+   "reasoning": 772225,
+   "input": 72489,
+   "cache_read": 636666411,
+   "cache_write": 23765328,
+   "output": 3892159,
+   "usd": 564.5329
   },
   {
    "model": "claude-opus-4.6",
@@ -547,39 +583,39 @@
  "initiators": [
   {
    "initiator": "agent",
-   "requests": 4108,
-   "nano_aiu": 45930799350000,
-   "duration_ms": 48265094,
-   "reasoning": 702367,
-   "input": 70335,
-   "cache_read": 619663712,
-   "cache_write": 10809754,
-   "output": 3262540,
-   "usd": 459.308
+   "requests": 4190,
+   "nano_aiu": 46771073700000,
+   "duration_ms": 49117525,
+   "reasoning": 711334,
+   "input": 72253,
+   "cache_read": 631440494,
+   "cache_write": 10984868,
+   "output": 3318952,
+   "usd": 467.7107
   },
   {
    "initiator": "compaction",
-   "requests": 52,
-   "nano_aiu": 5799495200000,
-   "duration_ms": 5669226,
+   "requests": 53,
+   "nano_aiu": 5926856800000,
+   "duration_ms": 5791251,
    "reasoning": 0,
-   "input": 104,
-   "cache_read": 1880939,
-   "cache_write": 7227134,
-   "output": 475375,
-   "usd": 57.995
+   "input": 106,
+   "cache_read": 1916401,
+   "cache_write": 7390166,
+   "output": 484852,
+   "usd": 59.2686
   },
   {
    "initiator": "user",
-   "requests": 62,
-   "nano_aiu": 3676527475000,
-   "duration_ms": 1353705,
-   "reasoning": 59653,
-   "input": 124,
-   "cache_read": 3104622,
-   "cache_write": 5289955,
-   "output": 86005,
-   "usd": 36.7653
+   "requests": 65,
+   "nano_aiu": 3755362050000,
+   "duration_ms": 1389659,
+   "reasoning": 60891,
+   "input": 130,
+   "cache_read": 3309516,
+   "cache_write": 5390294,
+   "output": 88355,
+   "usd": 37.5536
   },
   {
    "initiator": "sub-agent",
@@ -597,27 +633,27 @@
  "efforts": [
   {
    "effort": "xhigh",
-   "requests": 3915,
-   "nano_aiu": 46443186925000,
-   "duration_ms": 45650151,
-   "reasoning": 721640,
-   "input": 60584,
-   "cache_read": 589728936,
-   "cache_write": 14790089,
-   "output": 3073057,
-   "usd": 464.4319
+   "requests": 4000,
+   "nano_aiu": 47362295850000,
+   "duration_ms": 46538536,
+   "reasoning": 731845,
+   "input": 62508,
+   "cache_read": 601710612,
+   "cache_write": 15065542,
+   "output": 3131819,
+   "usd": 473.623
   },
   {
    "effort": null,
-   "requests": 52,
-   "nano_aiu": 5799495200000,
-   "duration_ms": 5669226,
+   "requests": 53,
+   "nano_aiu": 5926856800000,
+   "duration_ms": 5791251,
    "reasoning": 0,
-   "input": 104,
-   "cache_read": 1880939,
-   "cache_write": 7227134,
-   "output": 475375,
-   "usd": 57.995
+   "input": 106,
+   "cache_read": 1916401,
+   "cache_write": 7390166,
+   "output": 484852,
+   "usd": 59.2686
   },
   {
    "effort": "medium",
@@ -1755,52 +1791,98 @@
   },
   {
    "index": 66,
-   "label": "",
+   "label": "On the Research - Usage dashboard we should have a \"Date research started\" and \"Last Updated Dat...",
    "started": "2026-08-07T19:37:45.018Z",
-   "requests": 47,
-   "nano_aiu": 611818625000,
-   "usd": 6.118,
-   "duration_ms": 655575,
-   "reasoning": 15422,
-   "input": 1978,
-   "cache_read": 7632655,
-   "cache_write": 198171,
-   "output": 42136,
+   "requests": 90,
+   "nano_aiu": 1197125225000,
+   "usd": 11.971,
+   "duration_ms": 1154690,
+   "reasoning": 17890,
+   "input": 2064,
+   "cache_read": 14150077,
+   "cache_write": 481699,
+   "output": 75011,
+   "subagent_requests": 0
+  },
+  {
+   "index": 67,
+   "label": "update the stats dashboard on hours and tokens spent. Note that I have also been working in a fe...",
+   "started": "2026-08-10T02:56:16.518Z",
+   "requests": 4,
+   "nano_aiu": 87266200000,
+   "usd": 0.873,
+   "duration_ms": 64496,
+   "reasoning": 974,
+   "input": 8,
+   "cache_read": 293994,
+   "cache_write": 101712,
+   "output": 3597,
+   "subagent_requests": 0
+  },
+  {
+   "index": 68,
+   "label": "store it running on my other machine",
+   "started": "2026-08-10T02:57:40.896Z",
+   "requests": 1,
+   "nano_aiu": 9037850000,
+   "usd": 0.09,
+   "duration_ms": 20328,
+   "reasoning": 936,
+   "input": 2,
+   "cache_read": 101712,
+   "cache_write": 1470,
+   "output": 1213,
+   "subagent_requests": 0
+  },
+  {
+   "index": 69,
+   "label": "",
+   "started": "2026-08-10T02:57:46.265Z",
+   "requests": 38,
+   "nano_aiu": 364859875000,
+   "usd": 3.649,
+   "duration_ms": 426471,
+   "reasoning": 5827,
+   "input": 1830,
+   "cache_read": 5104010,
+   "cache_write": 51775,
+   "output": 30554,
    "subagent_requests": 0
   }
  ],
  "counterfactual": {
-  "actual_usd": 572.1,
-  "uncached_usd": 3446.11,
-  "ratio": 6.024,
+  "actual_usd": 582.57,
+  "uncached_usd": 3510.11,
+  "ratio": 6.025,
   "models_without_an_input_price_sample": []
  },
+ "fleet": null,
  "energy": {
-  "requests": 4486,
+  "requests": 4572,
   "scenarios": [
    {
     "scenario": "Traditional query, IQR low",
     "wh_per_request": 0.18,
-    "kwh": 0.807,
-    "household_hours": 0.67
+    "kwh": 0.823,
+    "household_hours": 0.69
    },
    {
     "scenario": "Traditional query, median",
     "wh_per_request": 0.34,
-    "kwh": 1.525,
-    "household_hours": 1.27
+    "kwh": 1.554,
+    "household_hours": 1.3
    },
    {
     "scenario": "Traditional query, IQR high",
     "wh_per_request": 0.67,
-    "kwh": 3.006,
-    "household_hours": 2.51
+    "kwh": 3.063,
+    "household_hours": 2.56
    },
    {
     "scenario": "Test-time scaling, median",
     "wh_per_request": 4.32,
-    "kwh": 19.38,
-    "household_hours": 16.17
+    "kwh": 19.751,
+    "household_hours": 16.48
    }
   ],
   "spread": 24.0,
@@ -1819,6 +1901,45 @@
    "url": "https://www.eia.gov/energyexplained/use-of-energy/electricity-use-in-homes.php",
    "venue": "US Energy Information Administration"
   }
+ },
+ "siblings": {
+  "rows": [
+   {
+    "repo": "Ethical-Tech-CoLab/dumbo-district-3d",
+    "name": "dumbo-district-3d",
+    "commits": 12,
+    "first_commit": "2026-08-09T16:56:39Z",
+    "last_commit": "2026-08-10T01:50:38Z",
+    "reachable": true
+   },
+   {
+    "repo": "Ethical-Tech-CoLab/manhattan-bridge-3d",
+    "name": "manhattan-bridge-3d",
+    "commits": 21,
+    "first_commit": "2026-08-09T16:28:56Z",
+    "last_commit": "2026-08-10T02:07:47Z",
+    "reachable": true
+   },
+   {
+    "repo": "Ethical-Tech-CoLab/brooklyn-bridge-3d",
+    "name": "brooklyn-bridge-3d",
+    "commits": 8,
+    "first_commit": "2026-08-09T22:12:56Z",
+    "last_commit": "2026-08-10T02:38:38Z",
+    "reachable": true
+   },
+   {
+    "repo": "Ethical-Tech-CoLab/williamsburg-bridge-3d",
+    "name": "williamsburg-bridge-3d",
+    "commits": 8,
+    "first_commit": "2026-08-09T22:00:51Z",
+    "last_commit": "2026-08-10T01:50:22Z",
+    "reachable": true
+   }
+  ],
+  "fetched": "2026-08-09T23:05:35.022974-04:00",
+  "why": "These repositories are part of the same project and were worked on from a second machine. The usage store is a local SQLite file with no API to query, so their requests, tokens and cost are not in any figure on this page. Commit counts come from GitHub, which is why they are visible when the spend is not. To fold them in, run usage/export_session.py on that machine and drop the files into usage/contrib/.",
+  "caveat": "Every total on this page is therefore a FLOOR for the project as a whole, and an exact figure only for the repository it was generated in."
  },
  "catalogue": {
   "offered": 39,
@@ -2366,11 +2487,16 @@
     "sha": "da6e3c5",
     "at": "2026-08-07T14:57:15-04:00",
     "subject": "Put the cards back in the order that introduces the problem"
+   },
+   {
+    "sha": "2e9d762",
+    "at": "2026-08-07T15:58:03-04:00",
+    "subject": "Cut the usage ledger into days, and say which column was measured"
    }
   ],
-  "commit_count": 44,
-  "insertions": 101693,
-  "deletions": 21724,
+  "commit_count": 45,
+  "insertions": 103287,
+  "deletions": 21901,
   "tracked_files": 97,
   "files_by_ext": {
    ".html": 24,
@@ -2385,8 +2511,8 @@
    ".png": 1,
    ".txt": 1
   },
-  "bytes": 13358522,
-  "markdown_words": 129756
+  "bytes": 13413487,
+  "markdown_words": 130666
  },
  "not_measured": [
   [

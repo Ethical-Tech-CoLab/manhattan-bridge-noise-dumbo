@@ -502,6 +502,248 @@ def dates(events):
     }
 
 
+def read_contributions(primary_sid):
+    """Load usage exported from other machines, if any are present.
+
+    The store is per-machine. This project was also worked on from a second
+    machine, in four sibling repositories, and no API exists to ask that
+    machine for its numbers - the store is a local SQLite file. So
+    `export_session.py` runs over there and drops JSON here.
+
+    A contribution is trusted only as far as it checks out: the format and
+    version must match, and the per-request costs must sum to the stated
+    total. A file that fails either is refused rather than quietly halved.
+    """
+    d = os.path.join(HERE, "contrib")
+    if not os.path.isdir(d):
+        return []
+    out = []
+    for name in sorted(os.listdir(d)):
+        if not name.endswith(".json"):
+            continue
+        path = os.path.join(d, name)
+        with open(path, encoding="utf-8") as fh:
+            c = json.load(fh)
+        if c.get("format") != "mbd-usage-contribution":
+            die("%s is not a usage contribution file" % name)
+        if c.get("version") != 1:
+            die("%s is contribution version %s; this generator reads 1"
+                % (name, c.get("version")))
+        if c.get("session_id") == primary_sid:
+            # The primary session is read from the live store. Counting an
+            # export of it as well would double every figure on the page.
+            print("  skipping %s: it is this session, already counted" % name)
+            continue
+        cols = c["columns"]
+        idx = {k: cols.index(k) for k in cols}
+        events, tot = [], 0
+        for r in c["requests"]:
+            g = lambda k: r[idx[k]] if k in idx else 0
+            nano = r[idx["nano"]]
+            tot += nano
+            ts = r[idx["ts"]]
+            events.append({
+                "ts": ts,
+                "at": dt.datetime.fromtimestamp(ts, dt.timezone.utc)
+                        .strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "duration_ms": r[idx["duration_ms"]],
+                "model": r[idx["model"]],
+                "turn": "%s:%s" % (c["session_id"][:8], r[idx["turn"]]),
+                "agent_id": "sub" if g("sub") else None,
+                "initiator": "imported",
+                "effort": None,
+                "multiplier": None,
+                "reasoning": g("reasoning"),
+                "nano": nano,
+                "chans": {k: {"tokens": g(k)} for k in
+                          ("input", "cache_read", "cache_write", "output")
+                          if g(k)},
+            })
+        stated = c["totals"]["nano_aiu"]
+        if tot != stated:
+            die("%s: its %d requests sum to %d nano-AIU but the file states %d. "
+                "Truncated or edited; refusing to merge it."
+                % (name, len(events), tot, stated))
+        if len(events) != c["totals"]["requests"]:
+            die("%s: %d request rows but the file states %d"
+                % (name, len(events), c["totals"]["requests"]))
+        events.sort(key=lambda e: e["ts"])
+        out.append({"meta": c, "events": events, "file": name})
+    return out
+
+
+def fleet(primary_label, primary_meta, primary_events, contribs):
+    """Everything spent on this project, across every machine that worked on it.
+
+    ONE RULE GOVERNS THIS WHOLE BLOCK: money is additive and a person is not.
+
+    Requests, tokens and cost can simply be added - two machines spending at
+    once spend twice as much. Wall-clock time cannot. If both machines were
+    generating at 14:32, then two models really were working, so model WORK
+    seconds add up; but only one minute of clock passed, so model WALL time is
+    a union. And there is only one person, who cannot be at two keyboards at
+    once, so engaged time is a union too and person time must be computed from
+    the merged clock rather than summed per machine.
+
+    Summing person time across machines is the error this function exists to
+    avoid. It would inflate the one column on the page that is already the
+    weakest, and it would do it invisibly.
+    """
+    if not contribs:
+        return None
+
+    sources = [{"label": primary_label, "meta": primary_meta, "events": primary_events,
+                "primary": True}]
+    for c in contribs:
+        sources.append({
+            "label": c["meta"].get("project") or c["file"],
+            "meta": {"machine": c["meta"].get("machine"),
+                     "repository": c["meta"].get("repository"),
+                     "session": c["meta"].get("session_id"),
+                     "file": c["file"]},
+            "events": c["events"],
+            "primary": False,
+        })
+
+    rows, all_events, all_busy = [], [], []
+    for s in sources:
+        evs = s["events"]
+        busy = busy_intervals(evs)
+        nano = sum(e["nano"] for e in evs)
+        rows.append({
+            "project": s["label"],
+            "machine": s["meta"].get("machine") or "this machine",
+            "primary": s["primary"],
+            "requests": len(evs),
+            "turns": len({e["turn"] for e in evs if e["turn"] is not None}),
+            "subagent_requests": sum(1 for e in evs if e.get("agent_id")),
+            "nano_aiu": nano,
+            "usd": round(usd(nano), 2),
+            "tokens": sum(tok(e, k) for e in evs
+                          for k in ("input", "cache_read", "cache_write", "output")),
+            "model_s": round(span(busy), 1),
+            "first": dt.datetime.fromtimestamp(evs[0]["ts"]).astimezone().isoformat(),
+            "last": dt.datetime.fromtimestamp(evs[-1]["ts"]).astimezone().isoformat(),
+            "days": len({dt.datetime.fromtimestamp(e["ts"]).astimezone().date()
+                         for e in evs}),
+            "models": sorted({e["model"] for e in evs}),
+        })
+        all_events.extend(evs)
+        all_busy.extend(busy)
+
+    all_events.sort(key=lambda e: e["ts"])
+    union_busy = merge(all_busy)
+    model_wall = span(union_busy)
+    model_work = sum(r["model_s"] for r in rows)
+
+    times = {}
+    for c in IDLE_CUTOFFS:
+        sits = merge([iv for s in sources
+                      for iv in sitting_intervals(s["events"], c)])
+        eng = span(sits)
+        mod = span(intersect(union_busy, sits))
+        times[str(c)] = {
+            "engaged_s": round(eng, 1),
+            "model_s": round(mod, 1),
+            "person_s": round(max(0.0, eng - mod), 1),
+            "sittings": len(sits),
+        }
+
+    total_nano = sum(r["nano_aiu"] for r in rows)
+    return {
+        "sources": sorted(rows, key=lambda r: -r["nano_aiu"]),
+        "totals": {
+            "projects": len(rows),
+            "machines": len({r["machine"] for r in rows}),
+            "requests": sum(r["requests"] for r in rows),
+            "turns": sum(r["turns"] for r in rows),
+            "nano_aiu": total_nano,
+            "usd": round(usd(total_nano), 2),
+            "tokens": sum(r["tokens"] for r in rows),
+            "days": len({dt.datetime.fromtimestamp(e["ts"]).astimezone().date()
+                         for e in all_events}),
+        },
+        "time": {
+            "model_work_s": round(model_work, 1),
+            "model_wall_s": round(model_wall, 1),
+            "concurrent_s": round(model_work - model_wall, 1),
+            "span_s": round(all_events[-1]["ts"] - all_events[0]["ts"], 1),
+            "cutoffs": list(IDLE_CUTOFFS),
+            "default_cutoff_s": 300,
+            "times": times,
+        },
+        "days": daily(all_events, [{"started": e["at"]} for e in all_events
+                                   if e.get("turn") is not None]),
+        "note": (
+            "Money is additive and a person is not. Requests, tokens and cost "
+            "are summed across machines. Wall-clock time is not: model time is "
+            "the union of intervals across every machine, and engaged time is "
+            "the union of sittings, because one person cannot be at two "
+            "keyboards at once. Summing person-hours per machine would inflate "
+            "the weakest column on this page and do it invisibly."
+        ),
+    }
+
+
+def siblings():
+    """The sibling repositories whose usage this store cannot see.
+
+    Four 3D repositories are part of this project and were worked on from a
+    second machine. Their cost is real and this dashboard cannot reach it: the
+    usage store is a local SQLite file, per machine, with no API to query.
+
+    Rather than let that silently shrink the published total, the repositories
+    are named, what CAN be seen from here is fetched (commits and dates, which
+    live on GitHub), and the part that cannot is labelled as missing. A stated
+    hole is evidence; an unstated one is an understatement.
+
+    Network failure is not fatal - the names and the caveat still publish.
+    """
+    names = [
+        "dumbo-district-3d",
+        "manhattan-bridge-3d",
+        "brooklyn-bridge-3d",
+        "williamsburg-bridge-3d",
+    ]
+    owner = "Ethical-Tech-CoLab"
+    rows = []
+    for n in names:
+        row = {"repo": "%s/%s" % (owner, n), "name": n, "commits": None,
+               "first_commit": None, "last_commit": None, "reachable": False}
+        try:
+            raw = subprocess.run(
+                ["gh", "api", "repos/%s/%s/commits?per_page=100" % (owner, n)],
+                capture_output=True, text=True, timeout=30,
+            )
+            if raw.returncode == 0:
+                cs = json.loads(raw.stdout)
+                if isinstance(cs, list) and cs:
+                    dates = sorted(c["commit"]["author"]["date"] for c in cs)
+                    row.update(commits=len(cs), first_commit=dates[0],
+                               last_commit=dates[-1], reachable=True)
+        except Exception:
+            pass
+        rows.append(row)
+    return {
+        "rows": rows,
+        "fetched": dt.datetime.now().astimezone().isoformat(),
+        "why": (
+            "These repositories are part of the same project and were worked "
+            "on from a second machine. The usage store is a local SQLite file "
+            "with no API to query, so their requests, tokens and cost are not "
+            "in any figure on this page. Commit counts come from GitHub, which "
+            "is why they are visible when the spend is not. To fold them in, "
+            "run usage/export_session.py on that machine and drop the files "
+            "into usage/contrib/."
+        ),
+        "caveat": (
+            "Every total on this page is therefore a FLOOR for the project as "
+            "a whole, and an exact figure only for the repository it was "
+            "generated in."
+        ),
+    }
+
+
 def group(events, key, label="key"):
     out = {}
     for e in events:
@@ -685,6 +927,8 @@ def build(args):
         con.close()
         shutil.rmtree(tmp, ignore_errors=True)
 
+    contribs = read_contributions(sid)
+
     chans = {}
     for e in events:
         for kind, ch in e["chans"].items():
@@ -793,8 +1037,7 @@ def build(args):
             "busy_blocks": blocks,
             "active": active_time(events),
         },
-        "dates": dates(events),
-        "days": {
+        "dates": dates(events),        "days": {
             "zone": local_zone(),
             "cutoffs": list(IDLE_CUTOFFS),
             "default_cutoff_s": 300,
@@ -816,7 +1059,14 @@ def build(args):
         "agents": agents,
         "turns": turns,
         "counterfactual": counterfactual(events),
-        "energy": energy(len(events)),
+        "fleet": fleet(
+            (sess["repository"] or os.path.basename(str(sess["cwd"]).rstrip("\\/"))
+             or "this project").split("/")[-1],
+            {"machine": None, "repository": sess["repository"], "session": sid},
+            events,
+            contribs,
+        ),        "energy": energy(len(events)),
+        "siblings": siblings(),        "energy": energy(len(events)),
         "catalogue": offered_models({e["model"] for e in events}),
         "outputs": outputs(),
         "not_measured": [

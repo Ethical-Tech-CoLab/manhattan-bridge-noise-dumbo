@@ -163,7 +163,11 @@ function renderBand() {
     [day(updated), "last updated",
      D.last_commit ? "most recent commit" : "most recent model request", "dt"],
     [usd(t.usd), "total metered cost",
-     n0(Math.round(t.aiu)) + " AI credits, at published rates"],
+     (d.fleet
+        ? n0(d.fleet.totals.projects) + " repositories merged"
+        : (d.siblings && d.siblings.rows.length
+             ? "a floor: " + n0(d.siblings.rows.length) + " sibling repos unmeasured"
+             : n0(Math.round(t.aiu)) + " AI credits, at published rates"))],
     [n0(t.requests), "model requests",
      n0(t.turns) + " human turns drove them"],
     [t.models + " of " + d.catalogue.offered, "models used",

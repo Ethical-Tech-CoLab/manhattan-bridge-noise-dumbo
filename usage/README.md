@@ -309,6 +309,54 @@ twenty-four and no arithmetic available here narrows it. What would narrow it is
 a per-request energy figure returned by the server, which is the one item on the
 instrumentation list a client cannot supply for itself.
 
+## The store is per machine, and this project outgrew one machine
+
+Everything above is read from `~/.copilot/session-store.db` on **one** machine.
+Four sibling repositories &mdash; `dumbo-district-3d`, `manhattan-bridge-3d`,
+`brooklyn-bridge-3d` and `williamsburg-bridge-3d` &mdash; are part of the same
+project and were worked on from a second one. Their cost is real and this
+dashboard cannot reach it. There is no API to ask: the store is a local SQLite
+file and nothing uploads it.
+
+The temptation is to say nothing, because the number that results still looks
+like a total. It is not one.
+**Every figure on the dashboard is exact for this repository and a floor for the project.**
+The page now says so in three places: on the cost tile, in a card that names
+the four repositories, and in the wrong-list.
+What can be seen from here is fetched anyway &mdash; commit counts and dates
+live on GitHub &mdash; so the card shows a repository with twelve commits and
+the words "not measured" in the two columns that matter. A stated hole is
+evidence. An unstated one is an understatement.
+
+`usage/export_session.py` closes it. It runs on the other machine, needs no
+checkout and no dependencies, and writes one JSON file per session into
+`usage/contrib/`, from which the generator merges. It carries counts,
+timestamps, durations, model names and prices, and carries
+**no prompt text, responses, file contents, turn labels or summaries.**
+A contribution says what was
+spent, not what was said. The generator refuses any file whose per-request
+costs do not sum to its stated total, and skips any file describing the session
+it is already reading live, because counting both would double the page.
+
+### Merging is not adding
+
+**Money is additive and a person is not.**
+
+| Quantity | Across machines | Why |
+| --- | --- | --- |
+| Requests, tokens, cost | **Sum** | Two machines spending at once really do spend twice |
+| Model work seconds | **Sum** | Both models really were generating |
+| Model wall time | **Union** | Only one minute of clock passed |
+| Engaged time | **Union of sittings** | One person, who cannot be at two keyboards at once |
+| Person time | **Recomputed** from the merged clock | Never the sum of per-machine residuals |
+
+Summing per-machine person-hours is the specific error this design exists to
+avoid: it inflates the weakest column on the page, and it does it invisibly.
+The gap between the sum and the union is reported directly as *concurrent
+time*. Exercising the merge on two unrelated local sessions found 325 seconds
+of it &mdash; five and a half minutes during which two machines were genuinely
+generating at once, which a naive sum would have counted as eleven.
+
 ## Where this is likely to be wrong
 
 1. **The dollar figure is a list-price equivalent, not a bill.** See "two
@@ -346,6 +394,12 @@ instrumentation list a client cannot supply for itself.
 9. **Retention is not guaranteed.** The store held one project cleanly. Nothing
    promises it will next month, and a case study whose evidence expires is an
    anecdote.
+10. **The totals are a floor, not a total.** The store is per machine and this
+    project was worked on from two. Four sibling repositories contribute
+    nothing to any figure here until someone runs the exporter on the other
+    machine. Worse, nothing on this page can detect a *third* machine nobody
+    remembered: the merge can only be as complete as the set of files it was
+    handed, and its completeness is asserted by a person rather than measured.
 
 ## Process note: a claim this directory made and withdrew
 
