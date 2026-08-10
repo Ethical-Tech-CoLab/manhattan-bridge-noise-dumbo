@@ -355,11 +355,11 @@ session's own requests keep landing in the left-hand column:
 
 | | this repository | all five, merged |
 | --- | --- | --- |
-| Requests | 4,692 | 8,049 |
+| Requests | 4,711 | 8,086 |
 | Turns | 70 | 121 |
-| Cost | $597.44 | $1,475.96 |
-| Model work | 16.71 h | 28.06 h |
-| Model wall | 14.91 h | 24.50 h |
+| Cost | $599.62 | $1,484.30 |
+| Model work | 16.75 h | 28.20 h |
+| Model wall | 14.95 h | 24.65 h |
 
 **The unmerged figure was 40 per cent of the number.** Anyone quoting it as
 the project's cost would have understated it by two and a half times, and
@@ -370,7 +370,7 @@ predictable from this repository alone. All four sibling repositories were
 worked on **within a single day**, 2026-08-09, which is why that one day
 carries close to $900 and 13 engaged hours against a median day of about
 1.5 h. And
-**3.56 h of model work &mdash; 12.7 per cent &mdash; ran concurrently**,
+**3.56 h of model work &mdash; 12.6 per cent &mdash; ran concurrently**,
 two machines generating at the same wall-clock moment. That is
 the figure a summed total would have hidden.
 
@@ -406,10 +406,10 @@ published so the choice is checkable rather than buried:
 
 | Cut-off | Per machine | Pooled | Bridged |
 | --- | --- | --- | --- |
-| 2 min | 30.59 h | 30.62 h | +1.7 min |
-| 5 min | 31.79 h | 31.94 h | +9.0 min |
-| 10 min | 35.25 h | 35.41 h | +9.6 min |
-| 30 min | 39.53 h | 39.89 h | +21.4 min |
+| 2 min | 30.88 h | 30.91 h | +2.2 min |
+| 5 min | 32.07 h | 32.23 h | +9.5 min |
+| 10 min | 35.54 h | 35.71 h | +10.1 min |
+| 30 min | 39.62 h | 39.98 h | +21.4 min |
 
 The gap widens with the cut-off, which is the signature of the mechanism
 rather than of a rounding error: a longer cut-off bridges more gaps, so it
