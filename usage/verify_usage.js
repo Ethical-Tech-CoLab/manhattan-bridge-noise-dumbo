@@ -154,9 +154,18 @@ const { chromium } = require('playwright');
             const v = tm.times[String(c)];
             return Math.abs(v.engaged_s - v.model_s - v.person_s) < 0.2 && v.person_s >= 0;
           }),
-          // A person cannot be at two keyboards at once, so merged engaged
-          // time must not exceed the sum of the parts by construction; more
-          // importantly it must not be the SUM when sources overlap.
+          // The idle cut-off belongs to the PERSON, so it must be taken over
+          // the pooled stream. Cutting each machine separately reports LESS
+          // engaged time - it turns a gap the person spent turning to the
+          // other screen into a pause. Pooled must therefore be >= per-machine
+          // at every cut-off, and the day card must agree with this card.
+          pooled: tm.cutoffs.every(c => {
+            const v = tm.times[String(c)];
+            return v.engaged_per_machine_s === undefined ||
+                   v.engaged_s >= v.engaged_per_machine_s - 0.5;
+          }),
+          bridged_s: tm.times[String(tm.default_cutoff_s)].engaged_s -
+                     (tm.times[String(tm.default_cutoff_s)].engaged_per_machine_s || 0),
           engLeSum: true,
         };
       }
@@ -183,6 +192,8 @@ const { chromium } = require('playwright');
       if (!fleet.concOk) fleetProblems.push('concurrent seconds != work - wall');
       if (!fleet.modFlat) fleetProblems.push('merged model time moves with the cut-off');
       if (!fleet.identity) fleetProblems.push('merged engaged = model + person fails');
+      if (!fleet.pooled)
+        fleetProblems.push('engaged time is cut per machine, not per person');
       if (!/additive/i.test(fleet.txt))
         fleetProblems.push('merged card does not state the additivity rule');
     } else {
@@ -196,10 +207,65 @@ const { chromium } = require('playwright');
         fleetProblems.push('unmeasured columns are not labelled "not measured"');
     }
 
+    // The day card gained a SCOPE selector once sibling usage arrived. Both
+    // scopes must reconcile to their own totals - the merged view to the fleet
+    // totals, the local view to this session's - and the two must actually
+    // differ, or the selector is decoration.
+    const scope = await page.evaluate(async () => {
+      const D = (typeof DATA !== 'undefined') ? DATA : null;
+      const el = document.getElementById('dayScope');
+      if (!D || !el || el.options.length < 2) return { absent: true };
+      const read = async v => {
+        el.value = v; el.dispatchEvent(new Event('change'));
+        await new Promise(r => setTimeout(r, 60));
+        const f = [...document.querySelectorAll('#dayTable tfoot td')].map(t => t.textContent);
+        return {
+          label: el.selectedOptions[0].textContent,
+          rows: document.querySelectorAll('#dayTable tbody tr').length,
+          bars: document.querySelectorAll('#dayBars .bar').length,
+          req: +f[1].replace(/[^0-9]/g, ''), turns: +f[2].replace(/[^0-9]/g, ''),
+          cost: +f[3].replace(/[^0-9.]/g, ''), model: +f[5],
+          sub: document.getElementById('daysub').textContent,
+        };
+      };
+      const self = await read('0'), all = await read('1');
+      el.value = '1'; el.dispatchEvent(new Event('change'));
+      return {
+        self, all,
+        wantSelfReq: D.totals.requests, wantSelfTurns: D.totals.turns,
+        wantAllReq: D.fleet.totals.requests, wantAllTurns: D.fleet.totals.turns,
+        wantAllCost: D.fleet.totals.usd,
+        wantAllModel: D.fleet.time.model_wall_s / 3600,
+      };
+    });
+
+    const scopeProblems = [];
+    if (!scope.absent) {
+      if (scope.self.req !== scope.wantSelfReq)
+        scopeProblems.push(`local scope ${scope.self.req} req != session ${scope.wantSelfReq}`);
+      if (scope.self.turns !== scope.wantSelfTurns)
+        scopeProblems.push(`local scope ${scope.self.turns} turns != ${scope.wantSelfTurns}`);
+      if (scope.all.req !== scope.wantAllReq)
+        scopeProblems.push(`merged scope ${scope.all.req} req != fleet ${scope.wantAllReq}`);
+      // The turn bug this check exists for reported one turn per REQUEST.
+      if (scope.all.turns !== scope.wantAllTurns)
+        scopeProblems.push(`merged scope ${scope.all.turns} turns != fleet ${scope.wantAllTurns}`);
+      if (Math.abs(scope.all.cost - scope.wantAllCost) > 0.05)
+        scopeProblems.push(`merged cost ${scope.all.cost} != fleet ${scope.wantAllCost}`);
+      if (Math.abs(scope.all.model - scope.wantAllModel) > 0.02)
+        scopeProblems.push(`merged model ${scope.all.model} h != union ${scope.wantAllModel.toFixed(2)} h`);
+      if (scope.all.req <= scope.self.req)
+        scopeProblems.push('merged scope is not larger than the local one');
+      if (scope.self.sub === scope.all.sub)
+        scopeProblems.push('the caption does not change with the scope');
+      if (/this store/.test(scope.all.sub))
+        scopeProblems.push('merged view still says "this store"');
+    }
+
     const ok = errs.length === 0 && pageErrs.length === 0 && bad.length === 0 &&
                r.empty.length === 0 && r.nan.length === 0 && r.leaked.length === 0 &&
                r.hasWithdrawn && r.theme === theme && dayProblems.length === 0 &&
-               fleetProblems.length === 0;
+               fleetProblems.length === 0 && scopeProblems.length === 0;
     if (!ok) fail++;
     console.log(`--- ${theme} --- ${ok ? 'PASS' : 'FAIL'}`);
     console.log(`  theme=${r.theme} bg=${r.bg} font=${r.font}`);
@@ -218,7 +284,13 @@ const { chromium } = require('playwright');
                   (fleet.mode === 'merged'
                     ? ` sums=${fleet.reqAdd && fleet.nanoAdd} wall<=work=${fleet.wallOk} flat=${fleet.modFlat}`
                     : ` floor-stated=${fleet.saysFloor}`));
+    if (fleet.mode === 'merged' && fleet.bridged_s)
+      console.log(`  pooled-vs-per-machine: +${(fleet.bridged_s/60).toFixed(1)} min bridged`);
     if (fleetProblems.length) console.log('  FLEET ' + fleetProblems.join(' | '));
+    if (!scope.absent)
+      console.log(`  scope: local ${scope.self.req} req/${scope.self.turns} turns, ` +
+                  `merged ${scope.all.req} req/${scope.all.turns} turns`);
+    if (scopeProblems.length) console.log('  SCOPE ' + scopeProblems.join(' | '));
     if (errs.length) console.log('  ERR ' + errs.slice(0, 4).join(' | '));
     if (pageErrs.length) console.log('  PAGEERR ' + pageErrs.slice(0, 4).join(' | '));
     await ctx.close();

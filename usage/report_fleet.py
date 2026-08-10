@@ -88,6 +88,16 @@ def main():
     print("SILENCING THE SPAN - merged usage across contributing repositories")
     print("=" * 78)
     print()
+    # SCOPE, stated before any number. This reads usage/contrib/ ONLY. On the
+    # machine holding the bridge repositories that is the whole story; on the
+    # machine holding this repository it omits the primary session, so these
+    # totals are LOWER than the dashboard's and legitimately so.
+    print("Scope: %d contribution file(s) in usage/contrib/. This reporter does NOT"
+          % len(contribs))
+    print("read any local session store, so if a session for this repository lives on")
+    print("the machine you are running this on, it is NOT counted below. The published")
+    print("dashboard merges both; this is the contribution side of that merge.")
+    print()
     print("%-24s %8s %7s %10s %9s %10s" % ("repository", "requests", "turns", "AIU", "USD", "model time"))
     print("-" * 78)
     for r in rows:
@@ -134,8 +144,12 @@ def main():
           % (human(overlap), (overlap / model_work * 100) if model_work else 0))
     print()
     for cutoff in B.IDLE_CUTOFFS:
-        sits = B.merge([iv for c in contribs
-                        for iv in B.sitting_intervals(c["events"], cutoff)])
+        # Cut the POOLED stream, not each contribution separately. The idle
+        # cut-off describes a person, so a gap that counts as engaged within
+        # one session must not become a pause merely because the next request
+        # landed in another. See usage/README.md, "the cut-off belongs to the
+        # person, not to the keyboard".
+        sits = B.sitting_intervals(all_events, cutoff)
         eng = B.span(sits)
         mod = B.span(B.intersect(union_busy, sits))
         print("  idle cutoff %4ds  engaged %9s   model %9s   person %9s   %d sittings"

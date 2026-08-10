@@ -315,20 +315,20 @@ Everything above is read from `~/.copilot/session-store.db` on **one** machine.
 Four sibling repositories &mdash; `dumbo-district-3d`, `manhattan-bridge-3d`,
 `brooklyn-bridge-3d` and `williamsburg-bridge-3d` &mdash; are part of the same
 project and were worked on from a second one. Their cost is real and this
-dashboard cannot reach it. There is no API to ask: the store is a local SQLite
-file and nothing uploads it.
+dashboard could not reach it. There is no API to ask: the store is a local
+SQLite file and nothing uploads it.
 
-The temptation is to say nothing, because the number that results still looks
-like a total. It is not one.
-**Every figure on the dashboard is exact for this repository and a floor for the project.**
-The page now says so in three places: on the cost tile, in a card that names
-the four repositories, and in the wrong-list.
-What can be seen from here is fetched anyway &mdash; commit counts and dates
-live on GitHub &mdash; so the card shows a repository with twelve commits and
-the words "not measured" in the two columns that matter. A stated hole is
-evidence. An unstated one is an understatement.
+The temptation was to say nothing, because the number that results still looks
+like a total. It was not one. Until those four repositories were exported,
+every figure here was
+**exact for this repository and a floor for the project**,
+and the page said so on the cost tile, in a card naming the four,
+and in the wrong-list. What could be seen from here was fetched anyway
+&mdash; commit counts and dates live on GitHub &mdash; so the card showed
+repositories with commits and the words "not measured" in the two columns that
+mattered. A stated hole is evidence. An unstated one is an understatement.
 
-`usage/export_session.py` closes it. It runs on the other machine, needs no
+`usage/export_session.py` closed it. It runs on the other machine, needs no
 checkout and no dependencies, and writes one JSON file per session into
 `usage/contrib/`, from which the generator merges. It carries counts,
 timestamps, durations, model names and prices, and carries
@@ -337,6 +337,42 @@ A contribution says what was
 spent, not what was said. The generator refuses any file whose per-request
 costs do not sum to its stated total, and skips any file describing the session
 it is already reading live, because counting both would double the page.
+
+`usage/report_fleet.py` is the companion, written on the contributing machine.
+It reads `usage/contrib/` and prints the merge to a terminal without writing
+`usage-data.json` or touching the dashboard &mdash; which is the right shape
+there, because that machine holds no session for *this* repository and running
+the full generator would publish a dashboard headlined by a bridge repo. It
+states its scope before its first number for the same reason: run here it omits
+the primary session, so its total is the contribution side of the merge
+($878.52) rather than the project total.
+
+### What the gap turned out to be worth
+
+Four contributions arrived and the totals moved by more than half. Figures
+below are the snapshot of 2026-08-10; the live page recomputes them, and this
+session's own requests keep landing in the left-hand column:
+
+| | this repository | all five, merged |
+| --- | --- | --- |
+| Requests | 4,692 | 8,049 |
+| Turns | 70 | 121 |
+| Cost | $597.44 | $1,475.96 |
+| Model work | 16.71 h | 28.06 h |
+| Model wall | 14.91 h | 24.50 h |
+
+**The unmerged figure was 40 per cent of the number.** Anyone quoting it as
+the project's cost would have understated it by two and a half times, and
+nothing on the page would have looked wrong.
+
+Two properties of the merged data are worth stating because neither was
+predictable from this repository alone. All four sibling repositories were
+worked on **within a single day**, 2026-08-09, which is why that one day
+carries close to $900 and 13 engaged hours against a median day of about
+1.5 h. And
+**3.56 h of model work &mdash; 12.7 per cent &mdash; ran concurrently**,
+two machines generating at the same wall-clock moment. That is
+the figure a summed total would have hidden.
 
 ### Merging is not adding
 
@@ -353,9 +389,32 @@ it is already reading live, because counting both would double the page.
 Summing per-machine person-hours is the specific error this design exists to
 avoid: it inflates the weakest column on the page, and it does it invisibly.
 The gap between the sum and the union is reported directly as *concurrent
-time*. Exercising the merge on two unrelated local sessions found 325 seconds
-of it &mdash; five and a half minutes during which two machines were genuinely
-generating at once, which a naive sum would have counted as eleven.
+time*, and in the real data it is 3.56 h.
+
+### The cut-off belongs to the person, not to the keyboard
+
+The first working merge got this subtly wrong, and the error was only visible
+because two cards on the same page disagreed by nine minutes about the same
+quantity. Sittings were being cut **per source** and then unioned. That applies
+the idle cut-off to a machine: a three-minute gap counts as engaged when both
+requests land on one keyboard and as a pause when the second lands on the
+other &mdash; which is the same person turning to the other screen.
+
+It contradicts the rule in the table above while appearing to implement it.
+The cut is now taken over the pooled stream, and the two readings are both
+published so the choice is checkable rather than buried:
+
+| Cut-off | Per machine | Pooled | Bridged |
+| --- | --- | --- | --- |
+| 2 min | 30.59 h | 30.62 h | +1.7 min |
+| 5 min | 31.79 h | 31.94 h | +9.0 min |
+| 10 min | 35.25 h | 35.41 h | +9.6 min |
+| 30 min | 39.53 h | 39.89 h | +21.4 min |
+
+The gap widens with the cut-off, which is the signature of the mechanism
+rather than of a rounding error: a longer cut-off bridges more gaps, so it
+bridges more cross-machine ones. The verifier now asserts pooled is never
+below per-machine, so this cannot quietly revert.
 
 ## Where this is likely to be wrong
 
@@ -394,12 +453,19 @@ generating at once, which a naive sum would have counted as eleven.
 9. **Retention is not guaranteed.** The store held one project cleanly. Nothing
    promises it will next month, and a case study whose evidence expires is an
    anecdote.
-10. **The totals are a floor, not a total.** The store is per machine and this
-    project was worked on from two. Four sibling repositories contribute
-    nothing to any figure here until someone runs the exporter on the other
-    machine. Worse, nothing on this page can detect a *third* machine nobody
-    remembered: the merge can only be as complete as the set of files it was
-    handed, and its completeness is asserted by a person rather than measured.
+10. **The totals cover every machine anyone remembered.** The store is per
+    machine and this project was worked on from two; the second one's four
+    repositories are now merged in, and they turned out to be 60 per cent of
+    the project. That is exactly why the residual risk matters: nothing on
+    this page can detect a *third* machine nobody remembered. The merge can
+    only be as complete as the set of files it was handed, and its
+    completeness is asserted by a person rather than measured.
+11. **Concurrent time is measured; simultaneous attention is not.** The page
+    reports 3.56 h during which two machines were generating at once. It does
+    not follow that a person was attending to both. The concurrency figure
+    corrects the *clock*; it says nothing about how divided the direction was,
+    and if anything it is a reason to read the person residual as even softer
+    on those hours than elsewhere.
 
 ## Process note: a claim this directory made and withdrew
 

@@ -572,6 +572,24 @@ def read_contributions(primary_sid):
     return out
 
 
+def merged_turns(events):
+    """One entry per distinct turn, stamped when that turn's first request ran.
+
+    `daily()` counts turns by counting the entries handed to it, so passing one
+    entry per REQUEST would report 3,435 turns on a day that had 39. Turn keys
+    are already namespaced by session on import, so distinct keys across
+    machines cannot collide.
+    """
+    first = {}
+    for e in events:
+        k = e.get("turn")
+        if k is None:
+            continue
+        if k not in first or e["ts"] < first[k][0]:
+            first[k] = (e["ts"], e["at"])
+    return [{"started": at} for _, at in sorted(first.values())]
+
+
 def fleet(primary_label, primary_meta, primary_events, contribs):
     """Everything spent on this project, across every machine that worked on it.
 
@@ -637,9 +655,17 @@ def fleet(primary_label, primary_meta, primary_events, contribs):
     model_work = sum(r["model_s"] for r in rows)
 
     times = {}
+    # A SITTING IS A PROPERTY OF THE PERSON, NOT OF A MACHINE. Cutting each
+    # source's stream separately and then unioning applies the idle cut-off
+    # per keyboard: a three-minute gap counts as engaged when both requests
+    # land on one machine and as a pause when the second lands on the other,
+    # which is the same person turning to the other screen. That contradicts
+    # the rule this function is built on while appearing to implement it, so
+    # the cut is taken over the POOLED stream. It reads 9 min higher at the
+    # default cut-off and 21 min higher at 30 min - the gap widens with the
+    # cut-off precisely because a longer cut-off bridges more of them.
     for c in IDLE_CUTOFFS:
-        sits = merge([iv for s in sources
-                      for iv in sitting_intervals(s["events"], c)])
+        sits = sitting_intervals(all_events, c)
         eng = span(sits)
         mod = span(intersect(union_busy, sits))
         times[str(c)] = {
@@ -647,6 +673,9 @@ def fleet(primary_label, primary_meta, primary_events, contribs):
             "model_s": round(mod, 1),
             "person_s": round(max(0.0, eng - mod), 1),
             "sittings": len(sits),
+            "engaged_per_machine_s": round(
+                span(merge([iv for s in sources
+                            for iv in sitting_intervals(s["events"], c)])), 1),
         }
 
     total_nano = sum(r["nano_aiu"] for r in rows)
@@ -672,8 +701,7 @@ def fleet(primary_label, primary_meta, primary_events, contribs):
             "default_cutoff_s": 300,
             "times": times,
         },
-        "days": daily(all_events, [{"started": e["at"]} for e in all_events
-                                   if e.get("turn") is not None]),
+        "days": daily(all_events, merged_turns(all_events)),
         "note": (
             "Money is additive and a person is not. Requests, tokens and cost "
             "are summed across machines. Wall-clock time is not: model time is "

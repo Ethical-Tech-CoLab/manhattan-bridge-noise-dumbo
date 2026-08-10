@@ -156,27 +156,49 @@ function renderBand() {
   };
   const updated = D.last_commit || D.last_request;
 
+  // WHEN THE LABEL SAYS FIVE REPOSITORIES, THE NUMBER BESIDE IT MUST COVER
+  // FIVE REPOSITORIES. Merged usage makes the headline figures project-wide;
+  // without it they are this repository's and the tile says the total is a
+  // floor. Getting this pairing wrong would understate the project by more
+  // than half while looking authoritative.
+  const F = d.fleet;
+  const bigUsd = F ? F.totals.usd : t.usd;
+  const bigReq = F ? F.totals.requests : t.requests;
+  const bigTurns = F ? F.totals.turns : t.turns;
+  const bigTok = F ? F.totals.tokens : allTokens;
+  const bigHrs = F ? F.time.times[String(F.time.default_cutoff_s)].engaged_s / 3600
+                   : (active ? active.active_s / 3600 : null);
+  // Models used is a SET across repositories, not a sum: the sibling work
+  // reached for one the primary session never used, and adding the counts
+  // would have claimed nine of thirty-nine.
+  const bigModels = F
+    ? new Set([].concat(...F.sources.map(s => s.models || []))).size
+    : t.models;
+
   $("igbig").innerHTML = [
     [day(D.started), "research started",
      D.active_days ? D.active_days + " active days over " + D.calendar_days + " calendar days"
                    : "first request issued", "dt"],
     [day(updated), "last updated",
      D.last_commit ? "most recent commit" : "most recent model request", "dt"],
-    [usd(t.usd), "total metered cost",
-     (d.fleet
-        ? n0(d.fleet.totals.projects) + " repositories merged"
+    [usd(bigUsd), "total metered cost",
+     (F
+        ? "across " + n0(F.totals.projects) + " repositories, " +
+          usd(t.usd) + " of it here"
         : (d.siblings && d.siblings.rows.length
              ? "a floor: " + n0(d.siblings.rows.length) + " sibling repos unmeasured"
              : n0(Math.round(t.aiu)) + " AI credits, at published rates"))],
-    [n0(t.requests), "model requests",
-     n0(t.turns) + " human turns drove them"],
-    [t.models + " of " + d.catalogue.offered, "models used",
+    [n0(bigReq), "model requests",
+     n0(bigTurns) + " human turns drove them"],
+    [bigModels + " of " + d.catalogue.offered, "models used",
      d.catalogue.selectable + " were selectable"],
-    [active ? n1(active.active_s / 3600) + " h" : "\\u2014", "active time",
-     active ? "over " + n1(T.wall_span_s / 3600) + " h of calendar"
-            : "not computed"],
-    [n0(Math.round(allTokens / 1e6)) + "M", "tokens billed",
-     pct(tk.cache_read, allTokens) + " of them re-read from cache"],
+    [bigHrs === null ? "\\u2014" : n1(bigHrs) + " h", "engaged time",
+     F ? n1(F.time.model_wall_s / 3600) + " h of it a model generating"
+       : (active ? "over " + n1(T.wall_span_s / 3600) + " h of calendar"
+                 : "not computed")],
+    [n0(Math.round(bigTok / 1e6)) + "M", "tokens billed",
+     F ? n0(Math.round(allTokens / 1e6)) + "M of them in this repository"
+       : pct(tk.cache_read, allTokens) + " of them re-read from cache"],
     [n0(d.outputs.markdown_words), "words published",
      n0(d.outputs.commit_count) + " commits"]
   ].map(([b, s, e, k]) =>
