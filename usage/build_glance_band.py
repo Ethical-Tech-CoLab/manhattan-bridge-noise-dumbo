@@ -52,11 +52,17 @@ CSS = """
 }
 .ig .igbig b { display: block; font-size: 2.05rem; line-height: 1.08;
   letter-spacing: -0.025em; color: var(--cp-accent); }
-/* A date is eleven characters where every other headline is three or four, so
-   it wraps in a tile sized for a number. Smaller here rather than a wider
-   tile: widening the minimum would re-flow the whole band to fit two cells
-   that are the least important thing in it. */
-.ig .igbig b.dt { font-size: 1.42rem; letter-spacing: -0.01em; }
+/* A date is fourteen characters where every other headline is three or four,
+   so it wraps in a tile sized for a number - and it wraps at its own hyphen,
+   which turns 11-August-2026 into two lines that each look like a date.
+   nowrap forbids that outright; the smaller size is what makes nowrap fit
+   rather than overflow. Smaller here rather than a wider tile: widening the
+   minimum would re-flow the whole band to fit two cells that are the least
+   important thing in it. The tiles are NARROWER above 1024, not wider, because
+   the grid answers width by adding columns - so this size is set by the
+   narrowest tile the band ever produces, not by the viewport. */
+.ig .igbig b.dt { font-size: 1.06rem; letter-spacing: -0.01em;
+  white-space: nowrap; }
 .ig .igbig span { display: block; font-size: 0.76rem; margin-top: 6px;
   text-transform: uppercase; letter-spacing: 0.05em;
   color: var(--cp-text-muted); }
@@ -143,16 +149,20 @@ function renderBand() {
   const allTokens = tk.input + tk.cache_read + tk.cache_write + tk.output;
   const active = (T.active || []).find(a => a.cutoff_s === 300) ||
                  (T.active || [])[0] || null;
-  // Dates are shown as plain calendar days in the zone the work happened in.
+  // Dates are shown as plain calendar days in the zone the work happened in,
+  // in the one format the whole page uses: 10-August-2026. "Aug 10, 2026" is
+  // locale-bound and "10/8" is ambiguous between two continents.
   // A reader asking "is this current" is asking about the published work, so
   // last-updated is the last COMMIT where one exists, not the last request -
   // a session can burn requests without publishing a line.
   const D = d.dates || {};
+  const MONTHS = ["January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November",
+                  "December"];
   const day = iso => {
     if (!iso) return "\\u2014";
     const p = String(iso).slice(0, 10).split("-").map(Number);
-    return new Date(p[0], p[1] - 1, p[2]).toLocaleDateString("en-US",
-      { year: "numeric", month: "short", day: "numeric" });
+    return p[2] + "-" + MONTHS[p[1] - 1] + "-" + p[0];
   };
   const updated = D.last_commit || D.last_request;
 

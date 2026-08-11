@@ -472,6 +472,60 @@ rather than of a rounding error: a longer cut-off bridges more gaps, so it
 bridges more cross-machine ones. The verifier now asserts pooled is never
 below per-machine, so this cannot quietly revert.
 
+## One selector, and three panels that cannot all answer it
+
+Five repositories contribute to this project, and before this the page
+alternated between them without saying so &mdash; a day chart offering "this
+repository or all repositories", and other panels that were silently one or the
+other with only the surrounding prose to tell them apart. Prose is not a
+control, and "this one" means nothing to a reader who does not already know
+where the page was generated.
+
+Every panel below the headline band now takes the **same** list: `All
+repositories`, `manhattan-bridge-noise-dumbo (main)`, and the four siblings.
+Change one and they all follow. The headline band is deliberately left alone:
+it is the project total and it has no scope to choose.
+
+The panels do not all hold the same data, and each says which it has rather
+than guessing:
+
+| Panel | All | Main | A sibling |
+| --- | --- | --- | --- |
+| Day by day | pooled rows | its own rows | its own rows |
+| Was any of it planned? | no | yes | **no &mdash; and it says so** |
+| What there is to show for it | commit count only | commits, lines, words, files | commits and dates only |
+
+Three limits follow from that, and all three are printed on the page:
+
+**Per-repository time does not sum.** Cost and requests add. Engaged time does
+not, because sittings are cut over whichever stream is selected, so a pause
+spent in a sibling reads as idle in one view and as work in the other. Only the
+merged view cuts the pooled stream, which is the reading that matches one
+person. The day panel says so whenever a single repository is selected.
+
+**The plan is the main repository's only.** Todos live in the session state of
+the machine a session ran on; a contribution file carries none. The panel names
+the repository its figures belong to instead of relabelling them, because a
+plan coverage figure under a sibling's name would be a fabrication.
+
+**Sibling outputs stop at commits.** There is no checkout here for the other
+four repositories, so lines, words and files read **"not measured"** &mdash;
+never zero, because zero is a measurement. Cost per commit and requests per
+commit *are* published per sibling, because spend is known per repository.
+`stats/contributors` was tried and rejected: it returned 33 commits on a
+repository whose authoritative commit list says 20, on a repository with one
+branch, and that is unreconcilable without a checkout.
+
+### One date format
+
+Every date on the page reads `10-August-2026`. It had carried three at once
+&mdash; `Mon 10/8` on the bar labels, `Aug 10, 2026` in the band, and raw ISO
+stamps in the sibling table and the footer. Two of those are ambiguous or
+locale-bound, so a reader had to work out the convention per panel before
+comparing two figures. The weekday survives in each bar's tooltip, where it
+cannot become a second format. The verifier greps the rendered page for the
+legacy forms and fails on any of them.
+
 ## Nothing has to be collected in advance
 
 A reasonable worry, given how much of the above is about exporting and
