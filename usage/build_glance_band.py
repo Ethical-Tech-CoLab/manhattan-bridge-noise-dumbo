@@ -227,6 +227,14 @@ function renderBand() {
   const bigModels = F
     ? new Set([].concat(...F.sources.map(s => s.models || []))).size
     : t.models;
+  // Commits across every repository named in the project, which is what the
+  // scope list already computes - it reaches GitHub for the ones that are not
+  // checked out here. Falls back to this repository's own count when there is
+  // no scope list to ask.
+  const allScope = (typeof SC !== "undefined" && SC)
+    ? SC.entries.find(e => e.kind === "all") : null;
+  const bigCommits = allScope && allScope.commits != null
+    ? allScope.commits : d.outputs.commit_count;
 
   $("igbig").innerHTML = [
     [shortDay(D.started), "research started",
@@ -254,15 +262,33 @@ function renderBand() {
     [n0(Math.round(bigTok / 1e6)) + "M", "tokens billed",
      F ? n0(Math.round(allTokens / 1e6)) + "M of them in this repository"
        : pct(tk.cache_read, allTokens) + " of them re-read from cache"],
+    // COMMITS ARE POOLED AND WORDS ARE NOT, and the tile has to say so. It
+    // used to print this repository's commit count beside a row of pooled
+    // headlines, so the band read 55 commits while the cards below it read
+    // 147 for the same selection. Commits are known for every repository
+    // because they come from GitHub rather than from a checkout; words are
+    // counted from a working tree, and only one of the five is checked out
+    // here, so the count is named rather than quietly generalised.
     [n0(d.outputs.markdown_words), "words published",
-     n0(d.outputs.commit_count) + " commits"]
+     bigCommits == null ? "commits not counted"
+       : n0(bigCommits) + " commits" +
+         (F ? " \\u00b7 words counted in 1 of " + n0(F.totals.projects) +
+              " repositories" : "")]
   ].map(([b, s, e, k]) =>
     `<div><b class="${k || ""}">${esc(b)}</b><span>${esc(s)}</span><em>${esc(e)}</em></div>`
   ).join("");
 
   // Models, biggest first, measured by spend rather than by request count -
   // requests are not equal in size and ranking by them flatters the cheap one.
-  const ms = d.models.slice().sort((a, b) => b.usd - a.usd);
+  //
+  // POOLED, BECAUSE THE TILES ABOVE ARE POOLED. This row used to read the
+  // primary repository's split while the tile directly above it counted models
+  // across all five, so the row summed to $675 under a headline of $1,559 and
+  // showed four models beside a tile saying five. Both panels now answer the
+  // same question about the same repositories.
+  const ms = (F && F.models ? F.models : d.models)
+    .slice().sort((a, b) => b.usd - a.usd);
+  const msReq = F ? F.totals.requests : t.requests;
   const top = ms.length ? ms[0].usd : 1;
   $("igmodels").innerHTML = ms.map(m => `
     <div class="igm">
@@ -273,24 +299,39 @@ function renderBand() {
 
   // The delegation identity. Asserted from the data rather than typed, and it
   // says nothing at all if the identity does not hold.
+  //
+  // Sub-agent counts are the one thing here that does NOT pool cleanly: a
+  // contribution records which of its requests ran inside a sub-agent but not
+  // which model or which agent, so the identity below can only be tested on
+  // the repository whose agents are named. It is therefore tested on the
+  // primary and stated as such; the pooled count is reported beside it.
   const subReq = (d.agents || []).reduce((s, a) => s + a.requests, 0);
+  // The page defines MAIN; the band must not depend on that having happened.
+  const bandMain = (typeof SC !== "undefined" && SC)
+    ? SC.main : (d.project.repository || d.project.name);
+  const fleetSub = F && F.totals.subagent_requests != null
+    ? F.totals.subagent_requests : subReq;
   const subModels = [...new Set((d.agents || []).flatMap(a => a.models || []))];
-  const delegated = ms.filter(m => subModels.includes(m.model));
+  const pModels = d.models.slice().sort((a, b) => b.usd - a.usd);
+  const delegated = pModels.filter(m => subModels.includes(m.model));
   const exact = subModels.length === 1 && delegated.length === 1 &&
                 delegated[0].requests === subReq && subReq > 0;
   $("igmodelfind").innerHTML = exact
-    ? `<b>The model split is exactly the delegation boundary.</b> All
-       ${n0(subReq)} <code>${esc(subModels[0])}</code> requests are sub-agent
-       requests &mdash; it never ran on the main thread, and the main model
-       never ran inside a sub-agent. The second model is not a second opinion;
-       it is ${d.totals.subagents} delegated searches.`
-    : `${n0(subReq)} of ${n0(t.requests)} requests ran inside
-       ${d.totals.subagents} sub-agents.`;
+    ? `<b>The model split is exactly the delegation boundary.</b> In
+       <code>${esc(bandMain)}</code> all ${n0(subReq)}
+       <code>${esc(subModels[0])}</code> requests are sub-agent requests
+       &mdash; it never ran on the main thread, and the main model never ran
+       inside a sub-agent. The second model is not a second opinion; it is
+       ${d.totals.subagents} delegated searches.`
+    : `${n0(fleetSub)} of ${n0(msReq)} requests ran inside sub-agents.`;
 
-  // Money by channel, pooled across models. Cache read is the cheapest token
-  // there is and still the largest line, which is the whole point.
+  // Money by channel, pooled across models AND across repositories. Cache read
+  // is the cheapest token there is and still the largest line, which is the
+  // whole point. A contribution states no per-request price, so its split
+  // comes from the aggregate its exporter wrote; the merge checks that the
+  // four channels add up to the fleet's own bill before any of this renders.
   const byType = {};
-  (d.channels || []).forEach(c => {
+  ((F && F.channels) ? F.channels : (d.channels || [])).forEach(c => {
     byType[c.type] = (byType[c.type] || 0) + c.usd;
   });
   const LABEL = {
@@ -316,16 +357,25 @@ function renderBand() {
     `<span><i style="background:${COLOR[k] || "var(--cp-accent)"}"></i>${esc(LABEL[k] || k)} &mdash; ${usd(v)}</span>`
   ).join("");
 
-  const cf = d.counterfactual || {};
+  // Pooled counterfactual and pooled output share, so this sentence describes
+  // the same bar it sits under. The output share is read from the same channel
+  // rows the bar is drawn from rather than from the primary token totals,
+  // which is what kept it consistent when the bar went project-wide.
+  const cf = (F && F.counterfactual) ? F.counterfactual : (d.counterfactual || {});
+  const chTok = {};
+  ((F && F.channels) ? F.channels : (d.channels || [])).forEach(c => {
+    chTok[c.type] = (chTok[c.type] || 0) + c.tokens;
+  });
+  const chAll = Object.values(chTok).reduce((s, v) => s + v, 0) || allTokens;
+  const wrote = pct(chTok.output || tk.output, chAll);
   $("igmoneyfind").innerHTML = cf.uncached_usd
     ? `<b>Most of the bill is re-reading.</b> An agent's context is resent on
        every request, so the same words are paid for again and again. Caching
        held that to ${usd(cf.actual_usd)}; without it the identical work would
        have listed at <b>${usd(cf.uncached_usd)}</b>, or
        ${cf.ratio.toFixed(1)}&times; more. What the model actually wrote is
-       ${pct(tk.output, allTokens)} of the tokens.`
-    : `What the model actually wrote is ${pct(tk.output, allTokens)} of the
-       tokens billed.`;
+       ${wrote} of the tokens.`
+    : `What the model actually wrote is ${wrote} of the tokens billed.`;
 }
 """
 

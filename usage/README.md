@@ -491,11 +491,13 @@ than guessing:
 
 | Panel | All | Main | A sibling |
 | --- | --- | --- | --- |
+| What it cost | pooled | its own | its own |
+| Without the prompt cache | pooled | its own | its own |
 | Day by day | pooled rows | its own rows | its own rows |
 | Was any of it planned? | no | yes | **no &mdash; and it says so** |
 | What there is to show for it | commit count only | commits, lines, words, files | commits and dates only |
 
-Three limits follow from that, and all three are printed on the page:
+Four limits follow from that, and all four are printed on the page:
 
 **Per-repository time does not sum.** Cost and requests add. Engaged time does
 not, because sittings are cut over whichever stream is selected, so a pause
@@ -515,6 +517,51 @@ commit *are* published per sibling, because spend is known per repository.
 `stats/contributors` was tried and rejected: it returned 33 commits on a
 repository whose authoritative commit list says 20, on a repository with one
 branch, and that is unreconcilable without a checkout.
+
+**User-initiated requests cannot be told apart fleet-wide.** The exporter
+carries no `initiator` field, so a contribution cannot say which of its requests
+a person began and which the model raised for itself. That column is the main
+repository's only, and the page says so rather than pooling a number that would
+mean something different in each fifth of itself.
+
+### The cost panels used to answer a narrower question than they asked
+
+This is worth recording because it shipped, and because nothing on the page
+looked wrong while it did.
+
+Directly beneath a headline band covering all five repositories, three panels
+&mdash; where the money went, which models ran, and what it would have cost
+without the prompt cache &mdash; were reading the **main repository's** figures.
+A reader met `$1,569` above the fold and `$684` two inches below it under a
+heading saying what the investigation cost. Both numbers were arithmetically
+correct. Neither was wrong in any way a check could see, because *a
+primary-only split and a pooled one have the same shape, the same units and
+equally plausible values*. The only thing distinguishing them is which
+population they cover, and that is not a property of the number.
+
+Two things made the fix exact rather than approximate:
+
+**The money split needs no price table.** Every contribution file carries a
+file-level channel aggregate that sums to its own stated total &mdash; verified
+on all four, to the nano. So the fleet split is the sum of the source
+aggregates, with no residual and no repricing. `_source_channels` re-checks each
+source against its own bill and raises rather than merging a split that does not
+add up.
+
+**The counterfactual does need one, so it is proved before it is used.**
+Repricing cached tokens at the full input rate needs a per-model input price,
+and contribution rows carry tokens but no prices. The table is learned from this
+machine's rows and then *proved*: for every model whose channels are all priced,
+it must reproduce that model's stated cost on that source exactly, or the build
+refuses. A model that never ran here &mdash; `claude-haiku-4.5`, 17 requests
+&mdash; has no sample anywhere, so it is charged at what it actually cost. That
+adds no uplift, which makes the repriced column a **floor**, and the model is
+named on the page rather than quietly absorbed.
+
+One tempting shortcut was rejected: a contribution's own blended nano-per-token
+rate. `manhattan-bridge-3d` reports 217,608, which is not a price but a
+haiku-weighted average of two very different models. Using it would have
+understated the counterfactual badly and looked entirely reasonable.
 
 ### One date format
 
@@ -656,6 +703,22 @@ having two machines.
 13. **Three uncovered days is not automatically three days of waste.** Some work
     is one long obvious task and writing it down would be ceremony. The figure
     is a question worth asking, not a verdict already reached.
+14. **The counterfactual is a floor with a named hole in it, not an estimate.**
+    `claude-haiku-4.5` ran 17 requests on the other machine and never ran here,
+    so no input price for it was ever observed and it is charged at what it
+    actually cost. Every other model's repricing is proved against that model's
+    own stated bill before publication, but the haiku sliver carries no uplift
+    at all, which means the repriced total is understated by an unknown amount
+    bounded by that model's share. The page names the model rather than
+    smoothing it in.
+15. **A split that adds up is not thereby about the right population.** The
+    money and model panels were primary-only beneath a pooled headline for
+    several builds, and every reconciliation check on the page passed
+    throughout &mdash; because each figure was internally consistent with the
+    population it covered. What now guards it is not another arithmetic check
+    but an assertion tying each panel's total to the *fleet's* bill, which is
+    the only statement that can distinguish two correct numbers answering
+    different questions.
 
 ## Process note: a claim this directory made and withdrew
 
