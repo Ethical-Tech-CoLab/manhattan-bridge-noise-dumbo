@@ -286,6 +286,43 @@ the dashboard labels it as the legacy unit.
 
 ## The number this page deliberately does not compute
 
+Two of them, in fact. The first is below; the second is a completion rate.
+
+The dashboard now carries a **plan coverage** panel, built from the session's
+own todo list — a second SQLite file the CLI keeps beside the billing store,
+keyed by the same session id, so the plan joins to the money.
+
+The obvious headline from that list is *153 of 153 items done*.
+**That figure is not reported, and would not be worth reporting.**
+It reads 100 % because of how a working list is used rather than how the work
+went: items are closed as the session goes, so anything abandoned was either
+closed or never written down. The rate measures tidying. A number that reads
+100 % for every session, forever, separates nothing, and publishing it would
+have been worse than publishing nothing at all.
+
+What is reported is **coverage weighted by spend**: the share of billed requests
+made on a day that had any plan written for it. For this project that is
+**about 91 %**, with three working days — 7, 9 and 10 August — carrying
+**roughly 430 requests and no plan at all.**
+Those days are named on the page rather than smoothed away, because that is
+where unplanned spend hides. The exact counts move with every rebuild, for the
+reason given in entry 8 below; the dashboard is the current figure and this
+paragraph is the shape of it.
+
+A second caveat sits on the same panel. How long an item stayed open is mostly
+**not measurable**: the store's `updated_at` defaults to `created_at`, so an
+item created and closed without an intervening status change records a
+zero-second lifetime, which means *never observed in progress* and not *done
+instantly*. That is **119 of the 153 items**. The median is therefore quoted
+over the 34 items where it is real, with that count printed beside it.
+Averaging the other 119 in as zeroes would have halved it and produced a
+fiction.
+
+Coverage measures whether a plan was **written**, not whether it was followed.
+It is a floor on deliberateness, not a measure of it.
+
+---
+
 A cost is meaningless without a comparator, and the obvious comparator —
 what the same work would have cost from a consultancy —
 **is not computed here**,
@@ -555,6 +592,16 @@ having two machines.
     corrects the *clock*; it says nothing about how divided the direction was,
     and if anything it is a reason to read the person residual as even softer
     on those hours than elsewhere.
+12. **Plan coverage sees whether a plan existed, not whether it was any good.**
+    A day with forty unrelated todos scores the same as a day that was
+    genuinely thought through. It is a floor on deliberateness. Nor does it
+    reach the other machine: the four sibling repositories contribute their
+    spend to this page but their todo lists live in that machine's own state
+    directory, so the coverage figure is scoped to this session's requests
+    while the fleet totals beside it are not.
+13. **Three uncovered days is not automatically three days of waste.** Some work
+    is one long obvious task and writing it down would be ceremony. The figure
+    is a question worth asking, not a verdict already reached.
 
 ## Process note: a claim this directory made and withdrew
 
