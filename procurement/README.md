@@ -579,7 +579,7 @@ answer.
 ```bash
 python procurement/fetch_rates.py           # ~4 min, 346 API calls, no key
 python procurement/fetch_awards.py          # ~1 min, no key
-python usage/build_usage_data.py            # reads the local billing store
+usage-calc build                            # reads the local billing store
 python procurement/build_procurement_data.py
 ```
 

@@ -2,22 +2,41 @@
 
 **Dashboard:** [`usage-dashboard.html`](usage-dashboard.html) &middot;
 **Data:** [`usage-data.json`](usage-data.json) &middot;
-**Generator:** [`build_usage_data.py`](build_usage_data.py)
+**Generator:** [`usage-calc`](https://github.com/Ethical-Tech-CoLab/usage-calc)
 
 This directory answers a question about the study rather than a question about
 the bridge: what did producing this repository consume, and what would have to
 be instrumented to answer that properly next time.
 
-It is deliberately separable. Nothing in `build_usage_data.py` knows about the
-Manhattan Bridge. Point it at another working directory and it produces the
-same JSON and the same page.
+**The generator no longer lives here.** It was written in this repository,
+proved on this repository, and has now been extracted to
+[Ethical-Tech-CoLab/usage-calc](https://github.com/Ethical-Tech-CoLab/usage-calc)
+so that any project can run it. This directory keeps what is specific to this
+study: the styled page, the data behind it, the contributed exports from the
+other machine, and the method below.
+
+The extraction was itself the test. Both the old in-repo generator and the
+extracted module were run over **one frozen copy of the store**, and their
+payloads agree on every substantive key — including the cross-machine merge, at
+8,203 requests and $1,502.14 either way. The page you can open above is now
+produced entirely by the module.
 
 ```
-python usage/build_usage_data.py                # this repository
-python usage/build_usage_data.py --list         # every session in the store
-python usage/build_usage_data.py --cwd C:\Dev\Other
-python usage/build_usage_data.py --session <uuid> --no-inject
+pip install git+https://github.com/Ethical-Tech-CoLab/usage-calc.git
+
+usage-calc build                 # regenerate this repository's dashboard
+usage-calc sessions              # every session in the local store
+usage-calc query --days 7        # what this machine has been doing lately
+usage-calc verify                # drive the page in a browser and check it
+usage-calc export --all --out .  # run on ANOTHER machine, copy into contrib/
 ```
+
+Configuration lives in [`../usage-calc.json`](../usage-calc.json), which is
+where the four sibling repositories are named.
+
+**Re-running `build` splices new numbers into the existing page rather than replacing it**, so this repository's own styling and masthead survive
+regeneration. That was verified byte-for-byte at cutover: everything outside
+the payload was unchanged.
 
 ## Why a noise study carries a usage page at all
 
@@ -328,24 +347,24 @@ and in the wrong-list. What could be seen from here was fetched anyway
 repositories with commits and the words "not measured" in the two columns that
 mattered. A stated hole is evidence. An unstated one is an understatement.
 
-`usage/export_session.py` closed it. It runs on the other machine, needs no
-checkout and no dependencies, and writes one JSON file per session into
-`usage/contrib/`, from which the generator merges. It carries counts,
-timestamps, durations, model names and prices, and carries
+`usage-calc export` closed it. It runs on the other machine as a single
+standalone script, needs no checkout and no dependencies, and writes one JSON
+file per session into `usage/contrib/`, from which the generator merges. It
+carries counts, timestamps, durations, model names and prices, and carries
 **no prompt text, responses, file contents, turn labels or summaries.**
 A contribution says what was
 spent, not what was said. The generator refuses any file whose per-request
 costs do not sum to its stated total, and skips any file describing the session
 it is already reading live, because counting both would double the page.
 
-`usage/report_fleet.py` is the companion, written on the contributing machine.
-It reads `usage/contrib/` and prints the merge to a terminal without writing
-`usage-data.json` or touching the dashboard &mdash; which is the right shape
-there, because that machine holds no session for *this* repository and running
-the full generator would publish a dashboard headlined by a bridge repo. It
-states its scope before its first number for the same reason: run here it omits
-the primary session, so its total is the contribution side of the merge
-($878.52) rather than the project total.
+`usage-calc report` is the companion, meant to be run on the contributing
+machine. It reads the contributions directory and prints the merge to a
+terminal without writing `usage-data.json` or touching the dashboard &mdash;
+which is the right shape there, because that machine holds no session for
+*this* repository and running the full generator would publish a dashboard
+headlined by a bridge repo. It states its scope before its first number for the
+same reason: run here it omits the primary session, so its total is the
+contribution side of the merge ($878.52) rather than the project total.
 
 ### What the gap turned out to be worth
 
@@ -423,18 +442,18 @@ merging, is that this telemetry only exists because it was gathered on
 purpose. It is not. The client writes `assistant_usage_events` as it goes,
 one row per request, and `sessions.repository` and `sessions.cwd` record
 which project each row belongs to. Nothing needs to be running, scheduled or
-remembered. `usage/export_session.py` exists to move that record *between
+remembered. `usage-calc export` exists to move that record *between
 machines*, not to create it.
 
 So a question like "what has this machine been doing this week, by project"
 is answerable at any moment, retrospectively, for work nobody instrumented.
-`usage/query_sessions.py` asks it:
+`usage-calc query` asks it:
 
 ```
-python usage/query_sessions.py            # last 7 days, by project/session
-python usage/query_sessions.py --days 30
-python usage/query_sessions.py --by day   # or model, or repo
-python usage/query_sessions.py --all --json
+usage-calc query                  # last 7 days, by project/session
+usage-calc query --days 30
+usage-calc query --by day         # or model, or repo
+usage-calc query --all --json
 ```
 
 It is read-only, snapshots the store before reading so it is safe to run
@@ -479,7 +498,7 @@ What that does **not** establish is the absence of a longer retention window.
 This store contains no usage older than ten days, so a thirty- or ninety-day
 policy would be invisible here and this evidence cannot exclude it. Anyone
 depending on a long historical window should export periodically rather than
-assume the store is an archive &mdash; which is what `export_session.py`
+assume the store is an archive &mdash; which is what `usage-calc export`
 already does, and is a second reason to run it that has nothing to do with
 having two machines.
 

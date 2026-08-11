@@ -1,0 +1,14 @@
+{
+  "title": "Silencing the Span",
+  "out_html": "usage/usage-dashboard.html",
+  "out_json": "usage/usage-data.json",
+  "contrib_dir": "usage/contrib",
+  "siblings": [
+    "dumbo-district-3d",
+    "manhattan-bridge-3d",
+    "brooklyn-bridge-3d",
+    "williamsburg-bridge-3d"
+  ],
+  "owner": "Ethical-Tech-CoLab",
+  "turn_labels": true
+}

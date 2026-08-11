@@ -136,6 +136,22 @@ blockquote.wrong {
 .bar .track { background: var(--cp-surface-soft); border-radius: 4px; height: 15px; overflow: hidden; border: 1px solid var(--cp-border); }
 .bar .fill { display: block; height: 100%; background: var(--cp-accent); }
 .bar .val { font-family: Consolas, "Courier New", Courier, monospace; font-size: 0.82rem; color: var(--cp-text-muted); min-width: 74px; text-align: right; }
+/* -- day-by-day stacked bar ------------------------------------------------
+   Two segments inside one fill: the part of an engaged sitting a model spent
+   generating, and the remainder. The fill is made a flex container here rather
+   than by nesting another wrapper, because .bar .track already clips overflow
+   and a second wrapper would need its own height inherited through two levels.
+   The segments are <i> so they cannot inherit .fill's own accent background
+   and paint over each other when one of them rounds to zero width. */
+.bar .fill.stack { display: flex; background: none; }
+.bar .fill.stack i { display: block; height: 100%; }
+.daykey { display: flex; flex-wrap: wrap; gap: 16px; margin: 14px 0 2px;
+  font-size: 0.82rem; color: var(--cp-text-muted); align-items: center; }
+.daykey i { display: inline-block; width: 11px; height: 11px; border-radius: 3px;
+  margin-right: 6px; vertical-align: -1px; }
+.daykey select { font: inherit; font-size: 0.82rem; padding: 3px 7px;
+  border-radius: 6px; border: 1px solid var(--cp-border);
+  background: var(--cp-surface); color: var(--cp-text); }
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 @media (max-width: 780px) { .split { grid-template-columns: 1fr; } .bar { grid-template-columns: minmax(90px,130px) 1fr auto; } }
 .dual { margin-top: 8px; }
@@ -192,6 +208,11 @@ h3 { font-size: 1rem; margin: 22px 0 6px; }
 }
 .ig .igbig b { display: block; font-size: 2.05rem; line-height: 1.08;
   letter-spacing: -0.025em; color: var(--cp-accent); }
+/* A date is eleven characters where every other headline is three or four, so
+   it wraps in a tile sized for a number. Smaller here rather than a wider
+   tile: widening the minimum would re-flow the whole band to fit two cells
+   that are the least important thing in it. */
+.ig .igbig b.dt { font-size: 1.42rem; letter-spacing: -0.01em; }
 .ig .igbig span { display: block; font-size: 0.76rem; margin-top: 6px;
   text-transform: uppercase; letter-spacing: 0.05em;
   color: var(--cp-text-muted); }

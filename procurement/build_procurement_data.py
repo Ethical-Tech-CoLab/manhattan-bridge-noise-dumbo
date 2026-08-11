@@ -18,7 +18,8 @@ estimated one launders the estimate.
      sensitivity-swept rather than stated as a number.
 
   C  MEASURED, 5/5.  What this programme actually cost, from the
-     client's own billing telemetry (usage/build_usage_data.py).
+     client's own billing telemetry (the usage-calc module, extracted from
+     this repository to github.com/Ethical-Tech-CoLab/usage-calc).
 
 The comparison is deliberately SCOPE-MATCHED in two columns:
 
@@ -291,7 +292,6 @@ def inventory():
                     "procurement/fetch_rates.py",
                     "procurement/fetch_awards.py"]
     model_scripts = ["data-collection/build_cohort_model.py",
-                     "usage/build_usage_data.py",
                      "procurement/build_procurement_data.py"]
     site_scripts = ["build_pages.py", "build_carousel.py", "make_hero.py",
                     "check_markdown.py"]
@@ -299,7 +299,23 @@ def inventory():
                  for f in sorted(os.listdir(os.path.join(ROOT, "visual-review")))
                  if f.endswith(".html")]
     artifacts += ["usage/usage-dashboard.html"]
-    harnesses = ["visual-review/verify_carousel.js", "usage/verify_usage.js"]
+    harnesses = ["visual-review/verify_carousel.js"]
+
+    # The usage generator and its verifier were written for this deliverable and
+    # were later extracted to Ethical-Tech-CoLab/usage-calc so other projects
+    # could use them. They are no longer files in this repository, and sloc()
+    # returns 0 for a path that does not exist - so leaving them in the lists
+    # would have quietly dropped 1,248 lines from a published total between two
+    # versions of the same dashboard, making the delivered work look smaller
+    # than it was for a reason that has nothing to do with the work.
+    #
+    # The last counted values are therefore recorded here, at the commit that
+    # removed them, and still counted. This is a stated figure rather than a
+    # measured one and is labelled as such in the payload.
+    EXTRACTED = {
+        "usage/build_usage_data.py": 993,
+        "usage/verify_usage.js": 255,
+    }
 
     def total(rel_paths, fn):
         return sum(fn(os.path.join(ROOT, p)) for p in rel_paths)
@@ -313,11 +329,22 @@ def inventory():
         "quoted_loci": quoted,
         "external_urls": urls,
         "data_sloc": total(data_scripts, sloc),
-        "model_sloc": total(model_scripts, sloc),
-        "site_sloc": total(site_scripts, sloc) + total(harnesses, sloc),
+        "model_sloc": total(model_scripts, sloc)
+                      + EXTRACTED["usage/build_usage_data.py"],
+        "site_sloc": total(site_scripts, sloc) + total(harnesses, sloc)
+                     + EXTRACTED["usage/verify_usage.js"],
         "artifact_sloc": total(artifacts, html_sloc),
         "artifacts": len(artifacts),
-        "scripts": len(data_scripts) + len(model_scripts) + len(site_scripts),
+        "scripts": len(data_scripts) + len(model_scripts) + len(site_scripts)
+                   + len(EXTRACTED),
+        "extracted": {
+            "note": "Written for this deliverable, since extracted to "
+                    "github.com/Ethical-Tech-CoLab/usage-calc. Counted at the "
+                    "value measured immediately before removal, not re-measured "
+                    "at each build.",
+            "files": EXTRACTED,
+            "sloc": sum(EXTRACTED.values()),
+        },
     }
     inv["total_sloc"] = (inv["data_sloc"] + inv["model_sloc"]
                          + inv["site_sloc"] + inv["artifact_sloc"])

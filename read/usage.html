@@ -707,22 +707,38 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 <div class="doclayout">
 <aside class="toc"><div class="h">On this page</div><a href="#why-a-noise-study-carries-a-usage-page-at-all">Why a noise study carries a usage page at all</a><a class="l3" href="#the-unit-is-documented-and-that-is-recent">The unit is documented, and that is recent</a><a href="#where-the-numbers-come-from">Where the numbers come from</a><a class="l3" href="#the-unit">The unit</a><a class="l3" href="#the-rule-the-generator-enforces">The rule the generator enforces</a><a href="#five-traps-in-the-style-of-the-seven-in-data-collection">Five traps, in the style of the seven in data-collection</a><a href="#the-day-by-day-split-and-one-column-that-is-not-a-measurement">The day-by-day split, and one column that is not a measurement</a><a href="#three-findings-that-were-not-the-point-of-the-exercise">Three findings that were not the point of the exercise</a><a href="#two-numbers-and-why-both-still-have-to-be-quoted">Two numbers, and why both still have to be quoted</a><a href="#the-number-this-page-deliberately-does-not-compute">The number this page deliberately does not compute</a><a href="#energy">Energy</a><a href="#the-store-is-per-machine-and-this-project-outgrew-one-machine">The store is per machine, and this project outgrew one machine</a><a class="l3" href="#what-the-gap-turned-out-to-be-worth">What the gap turned out to be worth</a><a class="l3" href="#merging-is-not-adding">Merging is not adding</a><a class="l3" href="#the-cut-off-belongs-to-the-person-not-to-the-keyboard">The cut-off belongs to the person, not to the keyboard</a><a href="#nothing-has-to-be-collected-in-advance">Nothing has to be collected in advance</a><a class="l3" href="#two-aggregations-that-look-obvious-and-are-wrong">Two aggregations that look obvious and are wrong</a><a class="l3" href="#what-is-retained-and-the-part-that-is-not-established">What is retained, and the part that is not established</a><a href="#where-this-is-likely-to-be-wrong">Where this is likely to be wrong</a><a href="#process-note-a-claim-this-directory-made-and-withdrew">Process note: a claim this directory made and withdrew</a></aside>
 <main class="doc">
-<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md"><code>usage/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 5,230 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
+<div class="note"><b>Rendered copy.</b> The authoritative version of this document is <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md"><code>usage/README.md</code></a> in the repository. This page is regenerated from it by <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/build_pages.py"><code>build_pages.py</code></a> &mdash; roughly 5,411 words. Not peer-reviewed. No option in this document is recommended for procurement.</div>
 <h1 id="usage-what-this-investigation-cost-and-how-that-was-established">Usage: what this investigation cost, and how that was established</h1>
 <p><strong>Dashboard:</strong> <a href="../usage/usage-dashboard.html"><code>usage-dashboard.html</code></a> &middot;
 <strong>Data:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/usage-data.json"><code>usage-data.json</code></a> &middot;
-<strong>Generator:</strong> <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/build_usage_data.py"><code>build_usage_data.py</code></a></p>
+<strong>Generator:</strong> <a href="https://github.com/Ethical-Tech-CoLab/usage-calc"><code>usage-calc</code></a></p>
 <p>This directory answers a question about the study rather than a question about
 the bridge: what did producing this repository consume, and what would have to
 be instrumented to answer that properly next time.</p>
-<p>It is deliberately separable. Nothing in <code>build_usage_data.py</code> knows about the
-Manhattan Bridge. Point it at another working directory and it produces the
-same JSON and the same page.</p>
-<pre><code>python usage/build_usage_data.py                # this repository
-python usage/build_usage_data.py --list         # every session in the store
-python usage/build_usage_data.py --cwd C:\Dev\Other
-python usage/build_usage_data.py --session &lt;uuid&gt; --no-inject
+<p><strong>The generator no longer lives here.</strong> It was written in this repository,
+proved on this repository, and has now been extracted to
+<a href="https://github.com/Ethical-Tech-CoLab/usage-calc">Ethical-Tech-CoLab/usage-calc</a>
+so that any project can run it. This directory keeps what is specific to this
+study: the styled page, the data behind it, the contributed exports from the
+other machine, and the method below.</p>
+<p>The extraction was itself the test. Both the old in-repo generator and the
+extracted module were run over <strong>one frozen copy of the store</strong>, and their
+payloads agree on every substantive key — including the cross-machine merge, at
+8,203 requests and $1,502.14 either way. The page you can open above is now
+produced entirely by the module.</p>
+<pre><code>pip install git+https://github.com/Ethical-Tech-CoLab/usage-calc.git
+
+usage-calc build                 # regenerate this repository's dashboard
+usage-calc sessions              # every session in the local store
+usage-calc query --days 7        # what this machine has been doing lately
+usage-calc verify                # drive the page in a browser and check it
+usage-calc export --all --out .  # run on ANOTHER machine, copy into contrib/
 </code></pre>
+<p>Configuration lives in <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage-calc.json"><code>../usage-calc.json</code></a>, which is
+where the four sibling repositories are named.</p>
+<p><strong>Re-running <code>build</code> splices new numbers into the existing page rather than replacing it</strong>, so this repository's own styling and masthead survive
+regeneration. That was verified byte-for-byte at cutover: everything outside
+the payload was unchanged.</p>
 <h2 id="why-a-noise-study-carries-a-usage-page-at-all">Why a noise study carries a usage page at all</h2>
 <p><strong>From tokens to public infrastructure.</strong> Every infrastructure system becomes
 governable at the moment it becomes measurable. Electricity became governable
@@ -1104,23 +1120,23 @@ and in the wrong-list. What could be seen from here was fetched anyway
 &mdash; commit counts and dates live on GitHub &mdash; so the card showed
 repositories with commits and the words "not measured" in the two columns that
 mattered. A stated hole is evidence. An unstated one is an understatement.</p>
-<p><code>usage/export_session.py</code> closed it. It runs on the other machine, needs no
-checkout and no dependencies, and writes one JSON file per session into
-<code>usage/contrib/</code>, from which the generator merges. It carries counts,
-timestamps, durations, model names and prices, and carries
+<p><code>usage-calc export</code> closed it. It runs on the other machine as a single
+standalone script, needs no checkout and no dependencies, and writes one JSON
+file per session into <code>usage/contrib/</code>, from which the generator merges. It
+carries counts, timestamps, durations, model names and prices, and carries
 <strong>no prompt text, responses, file contents, turn labels or summaries.</strong>
 A contribution says what was
 spent, not what was said. The generator refuses any file whose per-request
 costs do not sum to its stated total, and skips any file describing the session
 it is already reading live, because counting both would double the page.</p>
-<p><code>usage/report_fleet.py</code> is the companion, written on the contributing machine.
-It reads <code>usage/contrib/</code> and prints the merge to a terminal without writing
-<code>usage-data.json</code> or touching the dashboard &mdash; which is the right shape
-there, because that machine holds no session for <em>this</em> repository and running
-the full generator would publish a dashboard headlined by a bridge repo. It
-states its scope before its first number for the same reason: run here it omits
-the primary session, so its total is the contribution side of the merge
-($878.52) rather than the project total.</p>
+<p><code>usage-calc report</code> is the companion, meant to be run on the contributing
+machine. It reads the contributions directory and prints the merge to a
+terminal without writing <code>usage-data.json</code> or touching the dashboard &mdash;
+which is the right shape there, because that machine holds no session for
+<em>this</em> repository and running the full generator would publish a dashboard
+headlined by a bridge repo. It states its scope before its first number for the
+same reason: run here it omits the primary session, so its total is the
+contribution side of the merge ($878.52) rather than the project total.</p>
 <h3 id="what-the-gap-turned-out-to-be-worth">What the gap turned out to be worth</h3>
 <p>Four contributions arrived and the totals moved by more than half. Figures
 below are the snapshot of 2026-08-10; the live page recomputes them, and this
@@ -1270,15 +1286,15 @@ merging, is that this telemetry only exists because it was gathered on
 purpose. It is not. The client writes <code>assistant_usage_events</code> as it goes,
 one row per request, and <code>sessions.repository</code> and <code>sessions.cwd</code> record
 which project each row belongs to. Nothing needs to be running, scheduled or
-remembered. <code>usage/export_session.py</code> exists to move that record <em>between
+remembered. <code>usage-calc export</code> exists to move that record <em>between
 machines</em>, not to create it.</p>
 <p>So a question like "what has this machine been doing this week, by project"
 is answerable at any moment, retrospectively, for work nobody instrumented.
-<code>usage/query_sessions.py</code> asks it:</p>
-<pre><code>python usage/query_sessions.py            # last 7 days, by project/session
-python usage/query_sessions.py --days 30
-python usage/query_sessions.py --by day   # or model, or repo
-python usage/query_sessions.py --all --json
+<code>usage-calc query</code> asks it:</p>
+<pre><code>usage-calc query                  # last 7 days, by project/session
+usage-calc query --days 30
+usage-calc query --by day         # or model, or repo
+usage-calc query --all --json
 </code></pre>
 <p>It is read-only, snapshots the store before reading so it is safe to run
 while the CLI is working, and needs no checkout of anything.</p>
@@ -1314,7 +1330,7 @@ their usage being deleted.</p>
 This store contains no usage older than ten days, so a thirty- or ninety-day
 policy would be invisible here and this evidence cannot exclude it. Anyone
 depending on a long historical window should export periodically rather than
-assume the store is an archive &mdash; which is what <code>export_session.py</code>
+assume the store is an archive &mdash; which is what <code>usage-calc export</code>
 already does, and is a second reason to run it that has nothing to do with
 having two machines.</p>
 <h2 id="where-this-is-likely-to-be-wrong">Where this is likely to be wrong</h2>
@@ -1397,7 +1413,7 @@ as the central result of a case study whose entire purpose was measurement.
 It is also the exact inverse of the claim this page now makes &mdash; that the
 unit is documented, the ledger is readable, and the reason so little work of
 this kind is published is not that the data is missing.</p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md">Source on GitHub</a> &middot; Built from <code>3c51347</code> on 2026-08-10.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/usage/README.md">Source on GitHub</a> &middot; Built from <code>a4ca606</code> on 2026-08-11.</p>
 </main>
 </div>
 

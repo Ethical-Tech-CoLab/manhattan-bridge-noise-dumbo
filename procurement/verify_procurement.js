@@ -1,7 +1,7 @@
 // Structural harness for procurement/procurement-dashboard.html.
 //
 // Committed rather than written and deleted each time, for the same reason
-// usage/verify_usage.js is: every phase that wrote its own throwaway checker
+// the usage-calc verifier is: every phase that wrote its own throwaway checker
 // wrote one that caught the PREVIOUS phase's mistake, and a defect shipped
 // for three phases as a result.
 //
