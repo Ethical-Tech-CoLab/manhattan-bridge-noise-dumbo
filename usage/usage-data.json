@@ -1,6 +1,6 @@
 {
  "schema": "copilot-usage/1",
- "generated_at": "2026-08-11T16:35:50Z",
+ "generated_at": "2026-08-11T18:50:52Z",
  "generator": "usage-calc",
  "project": {
   "name": "Silencing the Span",
@@ -11,7 +11,7 @@
  "session": {
   "id": "427b73d5-2337-48d8-ac50-a2e20a220074",
   "created_at": "2026-08-01T12:46:25.992Z",
-  "updated_at": "2026-08-11T16:12:57.049Z"
+  "updated_at": "2026-08-11T18:12:27.564Z"
  },
  "units": {
   "aiu_is": "one US cent",
@@ -19,22 +19,22 @@
   "note": "AIU prices in the store match the per-model prices the client publishes in models.json, which in turn match vendor list prices to the cent. See the README."
  },
  "totals": {
-  "requests": 5119,
-  "turns": 76,
+  "requests": 5299,
+  "turns": 80,
   "models": 4,
   "subagents": 7,
   "subagent_requests": 264,
-  "nano_aiu": 65143765185000,
-  "aiu": 65143.765,
-  "usd": 651.44,
+  "nano_aiu": 67478413010000,
+  "aiu": 67478.413,
+  "usd": 674.78,
   "tokens": {
-   "input": 151674,
-   "cache_read": 748089919,
-   "cache_write": 26884291,
-   "output": 4390825,
-   "reasoning": 864250
+   "input": 152034,
+   "cache_read": 776945038,
+   "cache_write": 27864090,
+   "output": 4502560,
+   "reasoning": 887948
   },
-  "premium_requests": 72,
+  "premium_requests": 76,
   "multipliers": [
    1.0,
    3.0
@@ -42,43 +42,43 @@
  },
  "time": {
   "first_request": "2026-08-01T12:46:34.717Z",
-  "last_request": "2026-08-11T16:35:09.479Z",
-  "wall_span_s": 877714.8,
-  "inference_sum_s": 64556.8,
-  "inference_union_s": 57823.9,
-  "busy_blocks": 4385,
+  "last_request": "2026-08-11T18:49:01.397Z",
+  "wall_span_s": 885746.7,
+  "inference_sum_s": 66377.3,
+  "inference_union_s": 59482.5,
+  "busy_blocks": 4547,
   "active": [
    {
     "cutoff_s": 120,
-    "active_s": 65453.6,
-    "sittings": 113
+    "active_s": 68363.8,
+    "sittings": 116
    },
    {
     "cutoff_s": 300,
-    "active_s": 72937.1,
-    "sittings": 70
+    "active_s": 76040.4,
+    "sittings": 72
    },
    {
     "cutoff_s": 600,
-    "active_s": 87171.4,
-    "sittings": 36
+    "active_s": 90618.0,
+    "sittings": 37
    },
    {
     "cutoff_s": 1800,
-    "active_s": 103432.2,
-    "sittings": 21
+    "active_s": 106878.8,
+    "sittings": 22
    }
   ]
  },
  "dates": {
   "started": "2026-08-01T08:46:34.717000-04:00",
   "started_source": "first request issued in this session",
-  "last_request": "2026-08-11T12:35:09.479000-04:00",
-  "last_commit": "2026-08-11T10:12:25-04:00",
+  "last_request": "2026-08-11T14:49:01.397000-04:00",
+  "last_commit": "2026-08-11T14:20:41-04:00",
   "first_commit": "2026-08-01T09:45:30-04:00",
   "calendar_days": 11,
   "active_days": 10,
-  "generated": "2026-08-11T12:35:50.981506-04:00"
+  "generated": "2026-08-11T14:50:52.406847-04:00"
  },
  "days": {
   "zone": {
@@ -420,37 +420,37 @@
    },
    {
     "date": "2026-08-11",
-    "requests": 396,
-    "turns_started": 6,
-    "nano_aiu": 5027350450000,
-    "usd": 50.27,
-    "tokens": 65697275,
+    "requests": 576,
+    "turns_started": 10,
+    "nano_aiu": 7361998275000,
+    "usd": 73.62,
+    "tokens": 95644288,
     "first": "2026-08-11T07:52:43.643000-04:00",
-    "last": "2026-08-11T12:35:09.479000-04:00",
+    "last": "2026-08-11T14:49:01.397000-04:00",
     "times": {
      "120": {
-      "engaged_s": 5099.7,
-      "model_s": 3880.7,
-      "person_s": 1218.9,
-      "sittings": 8
+      "engaged_s": 8042.5,
+      "model_s": 5539.4,
+      "person_s": 2503.1,
+      "sittings": 11
      },
      "300": {
-      "engaged_s": 5538.8,
-      "model_s": 3880.7,
-      "person_s": 1658.1,
-      "sittings": 5
+      "engaged_s": 8664.8,
+      "model_s": 5539.4,
+      "person_s": 3125.4,
+      "sittings": 7
      },
      "600": {
-      "engaged_s": 6043.3,
-      "model_s": 3880.7,
-      "person_s": 2162.6,
-      "sittings": 4
+      "engaged_s": 9503.3,
+      "model_s": 5539.4,
+      "person_s": 3963.9,
+      "sittings": 5
      },
      "1800": {
-      "engaged_s": 6792.5,
-      "model_s": 3880.7,
-      "person_s": 2911.8,
-      "sittings": 3
+      "engaged_s": 10252.5,
+      "model_s": 5539.4,
+      "person_s": 4713.1,
+      "sittings": 4
      }
     }
    }
@@ -515,9 +515,9 @@
     "2026-08-09",
     "2026-08-10"
    ],
-   "requests_total": 5119,
-   "requests_planned": 4690,
-   "pct": 91.6,
+   "requests_total": 5299,
+   "requests_planned": 4870,
+   "pct": 91.9,
    "note": "Share of billed requests made on a day that had any todo written. Low is not automatically bad - some days are one long obvious task - but it is where unplanned spend hides."
   }
  },
@@ -526,27 +526,27 @@
    "model": "claude-opus-5",
    "type": "cache_read",
    "price_nano_per_token": 50000,
-   "tokens": 726414425,
-   "nano_aiu": 36320721250000,
-   "usd": 363.2072,
+   "tokens": 755269544,
+   "nano_aiu": 37763477200000,
+   "usd": 377.6348,
    "usd_per_1m": 0.5
   },
   {
    "model": "claude-opus-5",
    "type": "cache_write",
    "price_nano_per_token": 625000,
-   "tokens": 26154321,
-   "nano_aiu": 16346450625000,
-   "usd": 163.4645,
+   "tokens": 27134120,
+   "nano_aiu": 16958825000000,
+   "usd": 169.5883,
    "usd_per_1m": 6.25
   },
   {
    "model": "claude-opus-5",
    "type": "output",
    "price_nano_per_token": 2500000,
-   "tokens": 4253647,
-   "nano_aiu": 10634117500000,
-   "usd": 106.3412,
+   "tokens": 4365382,
+   "nano_aiu": 10913455000000,
+   "usd": 109.1346,
    "usd_per_1m": 25.0
   },
   {
@@ -634,9 +634,9 @@
    "model": "claude-opus-5",
    "type": "input",
    "price_nano_per_token": 500000,
-   "tokens": 77769,
-   "nano_aiu": 38884500000,
-   "usd": 0.3888,
+   "tokens": 78129,
+   "nano_aiu": 39064500000,
+   "usd": 0.3906,
    "usd_per_1m": 5.0
   },
   {
@@ -670,15 +670,15 @@
  "models": [
   {
    "model": "claude-opus-5",
-   "requests": 4855,
-   "nano_aiu": 63340173875000,
-   "duration_ms": 61779062,
-   "reasoning": 821808,
-   "input": 77769,
-   "cache_read": 726414425,
-   "cache_write": 26154321,
-   "output": 4253647,
-   "usd": 633.4017
+   "requests": 5035,
+   "nano_aiu": 65674821700000,
+   "duration_ms": 63599610,
+   "reasoning": 845506,
+   "input": 78129,
+   "cache_read": 755269544,
+   "cache_write": 27134120,
+   "output": 4365382,
+   "usd": 656.7482
   },
   {
    "model": "claude-opus-4.6",
@@ -720,39 +720,39 @@
  "initiators": [
   {
    "initiator": "agent",
-   "requests": 4726,
-   "nano_aiu": 52617824650000,
-   "duration_ms": 54133955,
-   "reasoning": 760010,
-   "input": 77511,
-   "cache_read": 720843008,
-   "cache_write": 11880746,
-   "output": 3644581,
-   "usd": 526.1782
+   "requests": 4900,
+   "nano_aiu": 54574978275000,
+   "duration_ms": 55649542,
+   "reasoning": 780472,
+   "input": 77859,
+   "cache_read": 749216538,
+   "cache_write": 12389659,
+   "output": 3732674,
+   "usd": 545.7498
   },
   {
    "initiator": "compaction",
-   "requests": 57,
-   "nano_aiu": 6402155075000,
-   "duration_ms": 6193344,
+   "requests": 59,
+   "nano_aiu": 6665485825000,
+   "duration_ms": 6412484,
    "reasoning": 0,
-   "input": 114,
-   "cache_read": 2058249,
-   "cache_write": 8008601,
-   "output": 517524,
-   "usd": 64.0216
+   "input": 118,
+   "cache_read": 2129224,
+   "cache_write": 8353185,
+   "output": 535290,
+   "usd": 66.6549
   },
   {
    "initiator": "user",
-   "requests": 72,
-   "nano_aiu": 4320194150000,
-   "duration_ms": 1451763,
-   "reasoning": 61798,
-   "input": 144,
-   "cache_read": 3513168,
-   "cache_write": 6264974,
-   "output": 91542,
-   "usd": 43.2019
+   "requests": 76,
+   "nano_aiu": 4434357600000,
+   "duration_ms": 1537584,
+   "reasoning": 65034,
+   "input": 152,
+   "cache_read": 3923782,
+   "cache_write": 6391276,
+   "output": 97418,
+   "usd": 44.3436
   },
   {
    "initiator": "sub-agent",
@@ -782,27 +782,27 @@
   },
   {
    "effort": "medium",
-   "requests": 753,
-   "nano_aiu": 7821029235000,
-   "duration_ms": 7952114,
-   "reasoning": 68476,
-   "input": 78396,
-   "cache_read": 100071300,
-   "cache_write": 2731015,
-   "output": 483491,
-   "usd": 78.2103
+   "requests": 931,
+   "nano_aiu": 9892346310000,
+   "duration_ms": 9553522,
+   "reasoning": 92174,
+   "input": 78752,
+   "cache_read": 128855444,
+   "cache_write": 3366230,
+   "output": 577460,
+   "usd": 98.9235
   },
   {
    "effort": null,
-   "requests": 57,
-   "nano_aiu": 6402155075000,
-   "duration_ms": 6193344,
+   "requests": 59,
+   "nano_aiu": 6665485825000,
+   "duration_ms": 6412484,
    "reasoning": 0,
-   "input": 114,
-   "cache_read": 2058249,
-   "cache_write": 8008601,
-   "output": 517524,
-   "usd": 64.0216
+   "input": 118,
+   "cache_read": 2129224,
+   "cache_write": 8353185,
+   "output": 535290,
+   "usd": 66.6549
   },
   {
    "effort": "max",
@@ -2078,24 +2078,84 @@
   },
   {
    "index": 76,
-   "label": "",
+   "label": "a couple of challenges with formatting and what is on the HTML page: 1.we should standardize on ...",
    "started": "2026-08-11T16:13:11.849Z",
-   "requests": 111,
-   "nano_aiu": 1514411575000,
-   "usd": 15.144,
-   "duration_ms": 1158323,
-   "reasoning": 16122,
+   "requests": 178,
+   "nano_aiu": 2370618025000,
+   "usd": 23.706,
+   "duration_ms": 1754849,
+   "reasoning": 18722,
    "subagent_requests": 0,
-   "input": 222,
-   "cache_read": 19698599,
-   "cache_write": 533537,
-   "output": 78364
+   "input": 356,
+   "cache_read": 30661813,
+   "cache_write": 864463,
+   "output": 118824
+  },
+  {
+   "index": 77,
+   "label": "make these headlines more impactful as follows: <reminder> IMPORTANT: this context may or may no...",
+   "started": "2026-08-11T18:12:44.042Z",
+   "requests": 4,
+   "nano_aiu": 110284275000,
+   "usd": 1.103,
+   "duration_ms": 87244,
+   "reasoning": 3629,
+   "subagent_requests": 0,
+   "input": 8,
+   "cache_read": 366418,
+   "cache_write": 125111,
+   "output": 5506
+  },
+  {
+   "index": 79,
+   "label": "box on right: T+11 - days elapsed",
+   "started": "2026-08-11T18:14:49.540Z",
+   "requests": 10,
+   "nano_aiu": 97459375000,
+   "usd": 0.975,
+   "duration_ms": 124523,
+   "reasoning": 3048,
+   "subagent_requests": 0,
+   "input": 20,
+   "cache_read": 1331875,
+   "cache_write": 12541,
+   "output": 9207
+  },
+  {
+   "index": 80,
+   "label": "remove the decimal in the mone box",
+   "started": "2026-08-11T18:16:32.095Z",
+   "requests": 14,
+   "nano_aiu": 118734475000,
+   "usd": 1.187,
+   "duration_ms": 96803,
+   "reasoning": 1328,
+   "subagent_requests": 0,
+   "input": 28,
+   "cache_read": 1991272,
+   "cache_write": 10199,
+   "output": 5113
+  },
+  {
+   "index": 81,
+   "label": "",
+   "started": "2026-08-11T18:20:09.289Z",
+   "requests": 85,
+   "nano_aiu": 1151963250000,
+   "usd": 11.52,
+   "duration_ms": 915452,
+   "reasoning": 13093,
+   "subagent_requests": 0,
+   "input": 170,
+   "cache_read": 14202340,
+   "cache_write": 501022,
+   "output": 51449
   }
  ],
  "counterfactual": {
-  "actual_usd": 651.44,
-  "uncached_usd": 3979.85,
-  "ratio": 6.109,
+  "actual_usd": 674.78,
+  "uncached_usd": 4131.82,
+  "ratio": 6.123,
   "models_without_an_input_price_sample": []
  },
  "fleet": {
@@ -2104,15 +2164,15 @@
     "project": "manhattan-bridge-noise-dumbo",
     "machine": "this machine",
     "primary": true,
-    "requests": 5119,
-    "turns": 76,
+    "requests": 5299,
+    "turns": 80,
     "subagent_requests": 264,
-    "nano_aiu": 65143765185000,
-    "usd": 651.44,
-    "tokens": 779516709,
-    "model_s": 57823.9,
+    "nano_aiu": 67478413010000,
+    "usd": 674.78,
+    "tokens": 809463722,
+    "model_s": 59482.5,
     "first": "2026-08-01T08:46:34.717000-04:00",
-    "last": "2026-08-11T12:35:09.479000-04:00",
+    "last": "2026-08-11T14:49:01.397000-04:00",
     "days": 10,
     "models": [
      "claude-opus-4.6",
@@ -2447,37 +2507,37 @@
      },
      {
       "date": "2026-08-11",
-      "requests": 396,
-      "turns_started": 6,
-      "nano_aiu": 5027350450000,
-      "usd": 50.27,
-      "tokens": 65697275,
+      "requests": 576,
+      "turns_started": 10,
+      "nano_aiu": 7361998275000,
+      "usd": 73.62,
+      "tokens": 95644288,
       "first": "2026-08-11T07:52:43.643000-04:00",
-      "last": "2026-08-11T12:35:09.479000-04:00",
+      "last": "2026-08-11T14:49:01.397000-04:00",
       "times": {
        "120": {
-        "engaged_s": 5099.7,
-        "model_s": 3880.7,
-        "person_s": 1218.9,
-        "sittings": 8
+        "engaged_s": 8042.5,
+        "model_s": 5539.4,
+        "person_s": 2503.1,
+        "sittings": 11
        },
        "300": {
-        "engaged_s": 5538.8,
-        "model_s": 3880.7,
-        "person_s": 1658.1,
-        "sittings": 5
+        "engaged_s": 8664.8,
+        "model_s": 5539.4,
+        "person_s": 3125.4,
+        "sittings": 7
        },
        "600": {
-        "engaged_s": 6043.3,
-        "model_s": 3880.7,
-        "person_s": 2162.6,
-        "sittings": 4
+        "engaged_s": 9503.3,
+        "model_s": 5539.4,
+        "person_s": 3963.9,
+        "sittings": 5
        },
        "1800": {
-        "engaged_s": 6792.5,
-        "model_s": 3880.7,
-        "person_s": 2911.8,
-        "sittings": 3
+        "engaged_s": 10252.5,
+        "model_s": 5539.4,
+        "person_s": 4713.1,
+        "sittings": 4
        }
       }
      }
@@ -2712,18 +2772,18 @@
   "totals": {
    "projects": 5,
    "machines": 2,
-   "requests": 8494,
-   "turns": 127,
-   "nano_aiu": 153612206355000,
-   "usd": 1536.12,
-   "tokens": 2117833550,
+   "requests": 8674,
+   "turns": 131,
+   "nano_aiu": 155946854180000,
+   "usd": 1559.47,
+   "tokens": 2147780563,
    "days": 10
   },
   "time": {
-   "model_work_s": 105550.0,
-   "model_wall_s": 92741.6,
-   "concurrent_s": 12808.4,
-   "span_s": 877714.8,
+   "model_work_s": 107208.6,
+   "model_wall_s": 94400.3,
+   "concurrent_s": 12808.3,
+   "span_s": 885746.7,
    "cutoffs": [
     120,
     300,
@@ -2733,32 +2793,32 @@
    "default_cutoff_s": 300,
    "times": {
     "120": {
-     "engaged_s": 116638.9,
-     "model_s": 92741.6,
-     "person_s": 23897.3,
-     "sittings": 127,
-     "engaged_per_machine_s": 116504.5
+     "engaged_s": 119581.7,
+     "model_s": 94400.3,
+     "person_s": 25181.5,
+     "sittings": 130,
+     "engaged_per_machine_s": 119447.3
     },
     "300": {
-     "engaged_s": 121820.0,
-     "model_s": 92741.6,
-     "person_s": 29078.4,
-     "sittings": 74,
-     "engaged_per_machine_s": 121250.8
+     "engaged_s": 124946.0,
+     "model_s": 94400.3,
+     "person_s": 30545.7,
+     "sittings": 76,
+     "engaged_per_machine_s": 124376.8
     },
     "600": {
-     "engaged_s": 134840.8,
-     "model_s": 92741.6,
-     "person_s": 42099.2,
-     "sittings": 38,
-     "engaged_per_machine_s": 134237.4
+     "engaged_s": 138300.8,
+     "model_s": 94400.3,
+     "person_s": 43900.5,
+     "sittings": 39,
+     "engaged_per_machine_s": 137697.3
     },
     "1800": {
-     "engaged_s": 150962.9,
-     "model_s": 92741.6,
-     "person_s": 58221.3,
-     "sittings": 22,
-     "engaged_per_machine_s": 149677.1
+     "engaged_s": 154422.9,
+     "model_s": 94400.3,
+     "person_s": 60022.6,
+     "sittings": 23,
+     "engaged_per_machine_s": 153137.1
     }
    }
   },
@@ -3089,37 +3149,37 @@
    },
    {
     "date": "2026-08-11",
-    "requests": 396,
-    "turns_started": 6,
-    "nano_aiu": 5027350450000,
-    "usd": 50.27,
-    "tokens": 65697275,
+    "requests": 576,
+    "turns_started": 10,
+    "nano_aiu": 7361998275000,
+    "usd": 73.62,
+    "tokens": 95644288,
     "first": "2026-08-11T07:52:43.643000-04:00",
-    "last": "2026-08-11T12:35:09.479000-04:00",
+    "last": "2026-08-11T14:49:01.397000-04:00",
     "times": {
      "120": {
-      "engaged_s": 5099.7,
-      "model_s": 3880.7,
-      "person_s": 1218.9,
-      "sittings": 8
+      "engaged_s": 8042.5,
+      "model_s": 5539.4,
+      "person_s": 2503.1,
+      "sittings": 11
      },
      "300": {
-      "engaged_s": 5538.8,
-      "model_s": 3880.7,
-      "person_s": 1658.1,
-      "sittings": 5
+      "engaged_s": 8664.8,
+      "model_s": 5539.4,
+      "person_s": 3125.4,
+      "sittings": 7
      },
      "600": {
-      "engaged_s": 6043.3,
-      "model_s": 3880.7,
-      "person_s": 2162.6,
-      "sittings": 4
+      "engaged_s": 9503.3,
+      "model_s": 5539.4,
+      "person_s": 3963.9,
+      "sittings": 5
      },
      "1800": {
-      "engaged_s": 6792.5,
-      "model_s": 3880.7,
-      "person_s": 2911.8,
-      "sittings": 3
+      "engaged_s": 10252.5,
+      "model_s": 5539.4,
+      "person_s": 4713.1,
+      "sittings": 4
      }
     }
    }
@@ -3165,7 +3225,7 @@
     "truncated": false
    }
   ],
-  "fetched": "2026-08-11T12:35:49.285317-04:00",
+  "fetched": "2026-08-11T14:50:50.527592-04:00",
   "why": "These repositories are part of the same project and were worked on from another machine. The usage store is a local SQLite file with no API to query, so their requests, tokens and cost are not in any figure on this page. Commit counts come from GitHub, which is why they are visible when the spend is not. To fold them in, run `usage-calc export` on that machine and drop the files into the contributions directory.",
   "caveat": "Every total on this page is therefore a FLOOR for the project as a whole, and an exact figure only for the repository it was generated in.",
   "outputs_note": "Commits and dates for the other repositories come from GitHub. Lines changed, words written and file counts do not: they are read from a local checkout, and only this repository is checked out here. The API endpoint that reports lines disagreed with the commit list by two thirds on a test repository, so it is not used. Those cells are marked as not measured rather than shown as zero."
@@ -3182,9 +3242,9 @@
     "days": true,
     "plan": false,
     "output": "commits",
-    "requests": 8494,
-    "usd": 1536.12,
-    "commits": 144,
+    "requests": 8674,
+    "usd": 1559.47,
+    "commits": 146,
     "commits_partial": false
    },
    {
@@ -3195,10 +3255,10 @@
     "days": true,
     "plan": true,
     "output": "full",
-    "requests": 5119,
-    "usd": 651.44,
+    "requests": 5299,
+    "usd": 674.78,
     "machine": "this machine",
-    "commits": 53,
+    "commits": 55,
     "first_commit": null,
     "last_commit": null
    },
@@ -3266,31 +3326,31 @@
   "note": "Selecting one repository shows that repository's own stream. Cost and requests add up across selections; TIME DOES NOT. Engaged time is cut into sittings over whichever stream is selected, so a pause spent in a sibling repository reads as idle in one and as work in the other. Only the merged view cuts the pooled stream, which is the reading that matches one person."
  },
  "energy": {
-  "requests": 5119,
+  "requests": 5299,
   "scenarios": [
    {
     "scenario": "Traditional query, IQR low",
     "wh_per_request": 0.18,
-    "kwh": 0.921,
-    "household_hours": 0.77
+    "kwh": 0.954,
+    "household_hours": 0.8
    },
    {
     "scenario": "Traditional query, median",
     "wh_per_request": 0.34,
-    "kwh": 1.74,
-    "household_hours": 1.45
+    "kwh": 1.802,
+    "household_hours": 1.5
    },
    {
     "scenario": "Traditional query, IQR high",
     "wh_per_request": 0.67,
-    "kwh": 3.43,
-    "household_hours": 2.86
+    "kwh": 3.55,
+    "household_hours": 2.96
    },
    {
     "scenario": "Test-time scaling, median",
     "wh_per_request": 4.32,
-    "kwh": 22.114,
-    "household_hours": 18.45
+    "kwh": 22.892,
+    "household_hours": 19.1
    }
   ],
   "spread": 24.0,
@@ -3901,11 +3961,21 @@
     "sha": "ee0a310",
     "at": "2026-08-11T10:12:25-04:00",
     "subject": "feat: the usage dashboard now reports whether the work was planned"
+   },
+   {
+    "sha": "f37c89b",
+    "at": "2026-08-11T12:52:53-04:00",
+    "subject": "Add one repository selector and standardise every date on the usage dashboard"
+   },
+   {
+    "sha": "35f9d4b",
+    "at": "2026-08-11T14:20:41-04:00",
+    "subject": "Lead the glance band with a span and a rounded total, not a spelled-out date"
    }
   ],
-  "commit_count": 53,
-  "insertions": 107889,
-  "deletions": 25650,
+  "commit_count": 55,
+  "insertions": 109382,
+  "deletions": 26035,
   "tracked_files": 101,
   "files_by_ext": {
    ".html": 24,
@@ -3920,8 +3990,8 @@
    ".png": 1,
    ".txt": 1
   },
-  "bytes": 13711413,
-  "markdown_words": 133519
+  "bytes": 13773892,
+  "markdown_words": 134041
  },
  "not_measured": [
   [

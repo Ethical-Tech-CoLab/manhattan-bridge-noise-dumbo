@@ -1022,6 +1022,11 @@ a { color: var(--cp-link); text-decoration: none; }
 a:hover { text-decoration: underline; }
 code { font-family: Consolas, "Courier New", Courier, monospace; font-size: 0.9em; }
 
+/* This page keeps its own 1320px measure - the drawings are sized to it. It
+   declares that width as --cp-measure so the masthead injected by
+   build_pages.py aligns with the content instead of falling back to 1180. */
+:root { --cp-measure: 1320px; }
+
 .bar {
   position: sticky; top: 0; z-index: 60;
   background: var(--cp-panel-strong);

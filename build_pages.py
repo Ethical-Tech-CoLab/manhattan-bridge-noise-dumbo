@@ -881,8 +881,27 @@ CSS = """
   --cp-text-muted: #5c5c5c;
   --cp-text-soft: #6f6f6f;
   /* The measure every container on the page shares: masthead, opening band,
-     cards and footer all line up on it, so widening the page is one number. */
-  --cp-measure: 1180px;
+     cards and footer all line up on it, so widening the page is one number.
+
+     A 1180px column on a 2560px monitor is a strip down the middle with a
+     third of the screen empty on either side. This grows the whole page
+     together, so nothing comes off the line it shares with everything else.
+     The floor is the old fixed value, so every screen up to about 1440px is
+     pixel-identical to what it was, and the ceiling stops a very wide monitor
+     from stretching the layout past the point where the eye can track a row.
+
+     THIS WIDENS CONTAINERS, NOT PROSE. A text column that grows with the
+     viewport is the standard way this goes wrong: 1,680px of running text is
+     roughly 170 characters a line, and the eye loses its place returning to
+     the left margin. The document pages cap their prose separately and spend
+     the extra width on the things that were actually cramped - wide tables,
+     figures and the contents rail. */
+  --cp-measure: clamp(1180px, 82vw, 1680px);
+  /* The running-text cap, quoted from what the document pages measured before
+     the page became fluid: 1180px of measure, less 44px of padding, less the
+     250px contents rail and its 34px gap. Set here so prose and containers
+     cannot drift apart silently. */
+  --cp-prose: 852px;
   --cp-accent: #b11f4b;
   --cp-accent-hover: #9a1a41;
   --cp-accent-soft: rgba(177, 31, 75, 0.08);
@@ -968,13 +987,20 @@ body.bleed {
   --cp-bleed-a: rgba(18, 17, 16, 0.30);
   --cp-bleed-b: rgba(18, 17, 16, 0.46);
   --cp-accent-field: #ef4370;
-  /* A 1180px column on a 2560px monitor is a strip down the middle with a
-     third of the screen empty on either side. This grows the whole page
-     together - masthead, band, cards, footer - so nothing comes off the line
-     it shares with everything else. The floor is the old fixed value, so
-     every screen up to about 1440px is pixel-identical to what it was. */
-  --cp-measure: clamp(1180px, 82vw, 1680px);
 }
+/* A DOCUMENT PAGE TAKES A LOWER CEILING THAN A DASHBOARD, and the reason is
+   that its prose is capped while its container is not. On a 2560px monitor the
+   full 1680px measure leaves a paragraph sitting in the left two-thirds of a
+   very wide column with several hundred pixels of nothing beside it - the page
+   reads as though it failed to load rather than as though it was laid out.
+   Stopping the measure at 1400px keeps the masthead, the text and the footer
+   on one shared line, which is the rule the rest of the site follows, and
+   still gives the tables about a quarter more room than they had.
+
+   Centring the prose inside the wider column was tried first and was worse:
+   it opened a gap between the contents rail and the text, and left headings
+   and paragraphs on visibly different left edges. */
+body.docpage { --cp-measure: clamp(1180px, 82vw, 1400px); }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 body {
@@ -1532,6 +1558,22 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 .toc a:hover { color: var(--cp-accent); border-left-color: var(--cp-accent); text-decoration: none; }
 .toc a.l3 { padding-left: 20px; font-size: 0.95em; color: var(--cp-text-soft); }
 .doc { min-width: 0; }
+/* THE PAGE GETS WIDER; THE PROSE DOES NOT. On a 2560px monitor the document
+   column runs to about 1,350px, and a paragraph set to that is roughly 170
+   characters a line - past the width at which the eye reliably finds the start
+   of the next line, so the reader loses their place on the return sweep. The
+   cap is the width these pages already used at 1180px, so running text is
+   unchanged on every screen; what the extra room buys is the tables.
+
+   Measured across six document pages, 2,261 table cells: 448 of them wrapped
+   onto a second line in the 852px column against 306 in the wide one, 32 per
+   cent fewer, and the tables lost 7,057px of height between them. A first
+   draft of this comment claimed the tables had been scrolling sideways. THAT
+   IS WITHDRAWN - not one of the 135 tables scrolled at either width, because
+   they fit by compressing their cells instead. The cost was always vertical,
+   never horizontal, and it took measuring both to see it. */
+.doc > * { max-width: var(--cp-prose); }
+.doc > .tw, .doc > pre, .doc > figure, .doc > img, .doc > .fig { max-width: none; }
 .doc h1 { font-size: 1.95rem; margin-top: 0; }
 .doc h2 { font-size: 1.38rem; margin: 34px 0 12px; padding-bottom: 6px;
           border-bottom: 1px solid var(--cp-border); }
@@ -1836,7 +1878,7 @@ def render_doc(src, slug, title, stats):
     return shell("%s &mdash; Silencing the Span" % title,
                  "Rendered copy of %s from the Manhattan Bridge rail-noise "
                  "research repository." % src.replace("\\", "/"),
-                 body, "research", 1)
+                 body, "research", 1, body_class="docpage")
 
 
 # ---------------------------------------------------------------------------
@@ -2782,7 +2824,12 @@ MASTHEAD_CSS = """
 .mh-bar { position: sticky; top: 0; z-index: 200; display: block;
   background: var(--cp-panel-strong); backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--cp-border); }
-.mh-bar .mh-in { max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+/* The masthead sits on the same line as the page under it, so it takes that
+   page's own measure. THE FALLBACK IS LOAD-BEARING: the interactive demos are
+   canvases sized to their drawing geometry and do not define --cp-measure, so
+   they keep the fixed 1180px they were built against. A masthead that widened
+   while the page beneath it did not would be worse than either width. */
+.mh-bar .mh-in { max-width: var(--cp-measure, 1180px); margin: 0 auto; padding: 10px 22px;
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .mh-bar .mh-home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
   text-decoration: none; display: inline-flex; align-items: center; gap: 9px;

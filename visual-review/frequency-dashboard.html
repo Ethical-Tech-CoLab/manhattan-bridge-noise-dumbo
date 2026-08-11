@@ -214,7 +214,12 @@ li { margin-bottom: 5px; }
 .mh-bar { position: sticky; top: 0; z-index: 200; display: block;
   background: var(--cp-panel-strong); backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--cp-border); }
-.mh-bar .mh-in { max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+/* The masthead sits on the same line as the page under it, so it takes that
+   page's own measure. THE FALLBACK IS LOAD-BEARING: the interactive demos are
+   canvases sized to their drawing geometry and do not define --cp-measure, so
+   they keep the fixed 1180px they were built against. A masthead that widened
+   while the page beneath it did not would be worse than either width. */
+.mh-bar .mh-in { max-width: var(--cp-measure, 1180px); margin: 0 auto; padding: 10px 22px;
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .mh-bar .mh-home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
   text-decoration: none; display: inline-flex; align-items: center; gap: 9px;

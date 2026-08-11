@@ -77,7 +77,16 @@ body {
   line-height: 1.6;
 }
 code, .mono, th.num, td.num { font-family: Consolas, "Courier New", Courier, monospace; }
-.wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px 90px; }
+/* One measure for the whole page, so the masthead, the cards and the footer
+   all line up on it and widening the page stays a single number. A 1180px
+   column on a 2560px monitor is a strip down the middle with a third of the
+   screen empty either side. The floor is the old fixed value, so every screen
+   up to about 1440px is pixel-identical to what it was; the ceiling stops a
+   very wide monitor from stretching a row past what the eye can track.
+   This page is cards and tables, not running text - there is no prose column
+   here to grow too long, which is why it can take the full measure. */
+:root { --cp-measure: clamp(1180px, 82vw, 1680px); }
+.wrap { max-width: var(--cp-measure); margin: 0 auto; padding: 0 20px 90px; }
 header.top {
   background: var(--cp-bg-elevated);
   border-bottom: 1px solid var(--cp-border);
@@ -210,11 +219,15 @@ h3 { font-size: 1rem; margin: 22px 0 6px; }
 }
 .ig .igbig b { display: block; font-size: 2.05rem; line-height: 1.08;
   letter-spacing: -0.025em; color: var(--cp-accent); }
-/* A date is eleven characters where every other headline is three or four, so
-   it wraps in a tile sized for a number. Smaller here rather than a wider
-   tile: widening the minimum would re-flow the whole band to fit two cells
-   that are the least important thing in it. */
-.ig .igbig b.dt { font-size: 1.42rem; letter-spacing: -0.01em; }
+/* These two tiles used to carry a spelled-out date, which is fourteen
+   characters where every other headline is three or four, and had to be set at
+   roughly half size to fit. They now carry "Aug 1st" and "T+11", so they take
+   the band's full headline size like everything beside them. nowrap stays:
+   "Aug 1st" would otherwise break between the month and the day, which reads
+   as two lines of nothing. The band's tiles get NARROWER above 1024px, because
+   the grid answers width by adding columns - so this is set by the narrowest
+   tile the band ever produces, not by the viewport. */
+.ig .igbig b.dt { white-space: nowrap; }
 .ig .igbig span { display: block; font-size: 0.76rem; margin-top: 6px;
   text-transform: uppercase; letter-spacing: 0.05em;
   color: var(--cp-text-muted); }
@@ -345,7 +358,12 @@ td.st.part { color: var(--cp-warning); }
 .mh-bar { position: sticky; top: 0; z-index: 200; display: block;
   background: var(--cp-panel-strong); backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--cp-border); }
-.mh-bar .mh-in { max-width: 1180px; margin: 0 auto; padding: 10px 22px;
+/* The masthead sits on the same line as the page under it, so it takes that
+   page's own measure. THE FALLBACK IS LOAD-BEARING: the interactive demos are
+   canvases sized to their drawing geometry and do not define --cp-measure, so
+   they keep the fixed 1180px they were built against. A masthead that widened
+   while the page beneath it did not would be worse than either width. */
+.mh-bar .mh-in { max-width: var(--cp-measure, 1180px); margin: 0 auto; padding: 10px 22px;
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .mh-bar .mh-home { font-weight: 700; color: var(--cp-text); font-size: 0.95rem;
   text-decoration: none; display: inline-flex; align-items: center; gap: 9px;

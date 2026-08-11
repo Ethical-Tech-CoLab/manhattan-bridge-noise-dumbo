@@ -27,8 +27,27 @@
   --cp-text-muted: #5c5c5c;
   --cp-text-soft: #6f6f6f;
   /* The measure every container on the page shares: masthead, opening band,
-     cards and footer all line up on it, so widening the page is one number. */
-  --cp-measure: 1180px;
+     cards and footer all line up on it, so widening the page is one number.
+
+     A 1180px column on a 2560px monitor is a strip down the middle with a
+     third of the screen empty on either side. This grows the whole page
+     together, so nothing comes off the line it shares with everything else.
+     The floor is the old fixed value, so every screen up to about 1440px is
+     pixel-identical to what it was, and the ceiling stops a very wide monitor
+     from stretching the layout past the point where the eye can track a row.
+
+     THIS WIDENS CONTAINERS, NOT PROSE. A text column that grows with the
+     viewport is the standard way this goes wrong: 1,680px of running text is
+     roughly 170 characters a line, and the eye loses its place returning to
+     the left margin. The document pages cap their prose separately and spend
+     the extra width on the things that were actually cramped - wide tables,
+     figures and the contents rail. */
+  --cp-measure: clamp(1180px, 82vw, 1680px);
+  /* The running-text cap, quoted from what the document pages measured before
+     the page became fluid: 1180px of measure, less 44px of padding, less the
+     250px contents rail and its 34px gap. Set here so prose and containers
+     cannot drift apart silently. */
+  --cp-prose: 852px;
   --cp-accent: #b11f4b;
   --cp-accent-hover: #9a1a41;
   --cp-accent-soft: rgba(177, 31, 75, 0.08);
@@ -114,13 +133,20 @@ body.bleed {
   --cp-bleed-a: rgba(18, 17, 16, 0.30);
   --cp-bleed-b: rgba(18, 17, 16, 0.46);
   --cp-accent-field: #ef4370;
-  /* A 1180px column on a 2560px monitor is a strip down the middle with a
-     third of the screen empty on either side. This grows the whole page
-     together - masthead, band, cards, footer - so nothing comes off the line
-     it shares with everything else. The floor is the old fixed value, so
-     every screen up to about 1440px is pixel-identical to what it was. */
-  --cp-measure: clamp(1180px, 82vw, 1680px);
 }
+/* A DOCUMENT PAGE TAKES A LOWER CEILING THAN A DASHBOARD, and the reason is
+   that its prose is capped while its container is not. On a 2560px monitor the
+   full 1680px measure leaves a paragraph sitting in the left two-thirds of a
+   very wide column with several hundred pixels of nothing beside it - the page
+   reads as though it failed to load rather than as though it was laid out.
+   Stopping the measure at 1400px keeps the masthead, the text and the footer
+   on one shared line, which is the rule the rest of the site follows, and
+   still gives the tables about a quarter more room than they had.
+
+   Centring the prose inside the wider column was tried first and was worse:
+   it opened a gap between the contents rail and the text, and left headings
+   and paragraphs on visibly different left edges. */
+body.docpage { --cp-measure: clamp(1180px, 82vw, 1400px); }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 body {
@@ -678,6 +704,22 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 .toc a:hover { color: var(--cp-accent); border-left-color: var(--cp-accent); text-decoration: none; }
 .toc a.l3 { padding-left: 20px; font-size: 0.95em; color: var(--cp-text-soft); }
 .doc { min-width: 0; }
+/* THE PAGE GETS WIDER; THE PROSE DOES NOT. On a 2560px monitor the document
+   column runs to about 1,350px, and a paragraph set to that is roughly 170
+   characters a line - past the width at which the eye reliably finds the start
+   of the next line, so the reader loses their place on the return sweep. The
+   cap is the width these pages already used at 1180px, so running text is
+   unchanged on every screen; what the extra room buys is the tables.
+
+   Measured across six document pages, 2,261 table cells: 448 of them wrapped
+   onto a second line in the 852px column against 306 in the wide one, 32 per
+   cent fewer, and the tables lost 7,057px of height between them. A first
+   draft of this comment claimed the tables had been scrolling sideways. THAT
+   IS WITHDRAWN - not one of the 135 tables scrolled at either width, because
+   they fit by compressing their cells instead. The cost was always vertical,
+   never horizontal, and it took measuring both to see it. */
+.doc > * { max-width: var(--cp-prose); }
+.doc > .tw, .doc > pre, .doc > figure, .doc > img, .doc > .fig { max-width: none; }
 .doc h1 { font-size: 1.95rem; margin-top: 0; }
 .doc h2 { font-size: 1.38rem; margin: 34px 0 12px; padding-bottom: 6px;
           border-bottom: 1px solid var(--cp-border); }
@@ -701,7 +743,7 @@ hr { border: 0; border-top: 1px solid var(--cp-border); margin: 26px 0; }
 }
 </style>
 </head>
-<body>
+<body class="docpage">
 <div class="mh-bar"><div class="mh-in"><a class="mh-home" href="../index.html"><svg class="mh-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="var(--cp-accent)"/><path d="M3 22h26" stroke="var(--cp-accent-fg)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 8v14M23 8v14" stroke="var(--cp-accent-fg)" stroke-width="2" stroke-linecap="round"/><path d="M3 14L9 8Q16 17 23 8L29 14" stroke="var(--cp-accent-fg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mh-wm">Silencing the Span</span></a><nav class="mh-nav"><a href="../index.html">Overview</a><a href="../index.html#demos">Demos</a><a href="../research.html" class="on">Research</a></nav></div></div>
 <div class="wrap">
 <div class="doclayout">
@@ -1292,7 +1334,7 @@ Version 1.0. Questions Q42–Q50. Methods 21–25.</p>
 <p>The document has been written to fail safely if that happens. But it should be attacked at that joint first.</p>
 <hr />
 <p><em>Document 6 of the DUMBO rail-noise research programme. See <a href="readme.html"><code>README.md</code></a> for the full index.</em></p>
-<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/COMMUNITY-EVIDENCE-AUDIT.md">Source on GitHub</a> &middot; Built from <code>f37c89b</code> on 2026-08-11.</p>
+<p class="foot"><a href="../research.html">&larr; All research</a> &middot; <a href="../index.html">Overview</a> &middot; <a href="https://github.com/Ethical-Tech-CoLab/manhattan-bridge-noise-dumbo/blob/main/COMMUNITY-EVIDENCE-AUDIT.md">Source on GitHub</a> &middot; Built from <code>35f9d4b</code> on 2026-08-11.</p>
 </main>
 </div>
 
