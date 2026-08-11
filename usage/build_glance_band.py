@@ -52,17 +52,15 @@ CSS = """
 }
 .ig .igbig b { display: block; font-size: 2.05rem; line-height: 1.08;
   letter-spacing: -0.025em; color: var(--cp-accent); }
-/* A date is fourteen characters where every other headline is three or four,
-   so it wraps in a tile sized for a number - and it wraps at its own hyphen,
-   which turns 11-August-2026 into two lines that each look like a date.
-   nowrap forbids that outright; the smaller size is what makes nowrap fit
-   rather than overflow. Smaller here rather than a wider tile: widening the
-   minimum would re-flow the whole band to fit two cells that are the least
-   important thing in it. The tiles are NARROWER above 1024, not wider, because
-   the grid answers width by adding columns - so this size is set by the
-   narrowest tile the band ever produces, not by the viewport. */
-.ig .igbig b.dt { font-size: 1.06rem; letter-spacing: -0.01em;
-  white-space: nowrap; }
+/* These two tiles used to carry a spelled-out date, which is fourteen
+   characters where every other headline is three or four, and had to be set at
+   roughly half size to fit. They now carry "Aug 1st" and "T+11", so they take
+   the band's full headline size like everything beside them. nowrap stays:
+   "Aug 1st" would otherwise break between the month and the day, which reads
+   as two lines of nothing. The band's tiles get NARROWER above 1024px, because
+   the grid answers width by adding columns - so this is set by the narrowest
+   tile the band ever produces, not by the viewport. */
+.ig .igbig b.dt { white-space: nowrap; }
 .ig .igbig span { display: block; font-size: 0.76rem; margin-top: 6px;
   text-transform: uppercase; letter-spacing: 0.05em;
   color: var(--cp-text-muted); }
@@ -166,14 +164,59 @@ function renderBand() {
   };
   const updated = D.last_commit || D.last_request;
 
+  // A DATE IS NOT A HEADLINE. Every other tile in this band leads with a
+  // quantity and explains it underneath; these two led with a fourteen-
+  // character string, which had to be set at half the size of its neighbours
+  // to fit and so read as the least important thing in the row.
+  //
+  // They are now a matched pair: the day the work started, and how far from
+  // it the last publication sits. A reader should not have to subtract two
+  // dates in their head to learn the answer the band exists to give.
+  //
+  // THE FULL DATE IS NOT DROPPED, IT MOVES DOWN. "Aug 1st" on its own is
+  // unreadable on a page opened in 2028, so the canonical 1-August-2026 sits
+  // in the sub-line of both tiles - which also keeps the whole page in one
+  // date format.
+  const ORD = n => {
+    const t = n % 100;
+    if (t >= 11 && t <= 13) return n + "th";
+    return n + (["th", "st", "nd", "rd"][n % 10] || "th");
+  };
+  const shortDay = iso => {
+    if (!iso) return "\\u2014";
+    const p = String(iso).slice(0, 10).split("-").map(Number);
+    return MONTHS[p[1] - 1].slice(0, 3) + " " + ORD(p[2]);
+  };
+  // T+N COUNTS DAYS SPANNED, NOT DAYS ELAPSED, and the difference is not
+  // pedantry: 1 to 11 August is ten days elapsed and eleven days spanned, so
+  // the same pair of dates supports two different headline numbers. The
+  // spanned count is used because it is the one already published beside it -
+  // the tile to its left reads "10 of 11 days were active", which is what
+  // tells a reader which convention T+ follows without a sentence spent on it.
+  const spanDays = (a, b) => {
+    if (!a || !b) return null;
+    const x = String(a).slice(0, 10).split("-").map(Number);
+    const y = String(b).slice(0, 10).split("-").map(Number);
+    return Math.round((Date.UTC(y[0], y[1] - 1, y[2]) -
+                       Date.UTC(x[0], x[1] - 1, x[2])) / 86400000) + 1;
+  };
+  const span = D.calendar_days || spanDays(D.started, updated);
+
+  // WHOLE DOLLARS IN THE BAND ONLY. Cents are meaningless at a glance - the
+  // reader is being told the order of magnitude of a bill, not reconciling it -
+  // and ".12" on a four-figure number is two characters of noise in the widest
+  // headline in the row. Every place the number is used as EVIDENCE still
+  // carries cents: the tables, the per-model rows, the unit rates. This is
+  // rounded for display and nothing is recomputed from it.
+  const usd0 = x => (x > 0 && x < 0.5) ? "<$1" : "$" + n0(x);
+
   // WHEN THE LABEL SAYS FIVE REPOSITORIES, THE NUMBER BESIDE IT MUST COVER
   // FIVE REPOSITORIES. Merged usage makes the headline figures project-wide;
   // without it they are this repository's and the tile says the total is a
   // floor. Getting this pairing wrong would understate the project by more
   // than half while looking authoritative.
   const F = d.fleet;
-  const bigUsd = F ? F.totals.usd : t.usd;
-  const bigReq = F ? F.totals.requests : t.requests;
+  const bigUsd = F ? F.totals.usd : t.usd;  const bigReq = F ? F.totals.requests : t.requests;
   const bigTurns = F ? F.totals.turns : t.turns;
   const bigTok = F ? F.totals.tokens : allTokens;
   const bigHrs = F ? F.time.times[String(F.time.default_cutoff_s)].engaged_s / 3600
@@ -186,15 +229,17 @@ function renderBand() {
     : t.models;
 
   $("igbig").innerHTML = [
-    [day(D.started), "research started",
-     D.active_days ? D.active_days + " active days over " + D.calendar_days + " calendar days"
-                   : "first request issued", "dt"],
-    [day(updated), "last updated",
-     D.last_commit ? "most recent commit" : "most recent model request", "dt"],
-    [usd(bigUsd), "total metered cost",
+    [shortDay(D.started), "research started",
+     day(D.started) + (D.active_days
+        ? " \\u00b7 " + D.active_days + " of " + D.calendar_days + " days were active"
+        : " \\u00b7 first request issued"), "dt"],
+    [span ? "T+" + n0(span) : "\\u2014", "last updated",
+     day(updated) + " \\u00b7 " +
+     (D.last_commit ? "most recent commit" : "most recent model request"), "dt"],
+    [usd0(bigUsd), "total metered cost",
      (F
         ? "across " + n0(F.totals.projects) + " repositories, " +
-          usd(t.usd) + " of it here"
+          usd0(t.usd) + " of it here"
         : (d.siblings && d.siblings.rows.length
              ? "a floor: " + n0(d.siblings.rows.length) + " sibling repos unmeasured"
              : n0(Math.round(t.aiu)) + " AI credits, at published rates"))],
