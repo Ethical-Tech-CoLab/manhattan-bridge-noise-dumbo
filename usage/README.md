@@ -416,6 +416,73 @@ rather than of a rounding error: a longer cut-off bridges more gaps, so it
 bridges more cross-machine ones. The verifier now asserts pooled is never
 below per-machine, so this cannot quietly revert.
 
+## Nothing has to be collected in advance
+
+A reasonable worry, given how much of the above is about exporting and
+merging, is that this telemetry only exists because it was gathered on
+purpose. It is not. The client writes `assistant_usage_events` as it goes,
+one row per request, and `sessions.repository` and `sessions.cwd` record
+which project each row belongs to. Nothing needs to be running, scheduled or
+remembered. `usage/export_session.py` exists to move that record *between
+machines*, not to create it.
+
+So a question like "what has this machine been doing this week, by project"
+is answerable at any moment, retrospectively, for work nobody instrumented.
+`usage/query_sessions.py` asks it:
+
+```
+python usage/query_sessions.py            # last 7 days, by project/session
+python usage/query_sessions.py --days 30
+python usage/query_sessions.py --by day   # or model, or repo
+python usage/query_sessions.py --all --json
+```
+
+It is read-only, snapshots the store before reading so it is safe to run
+while the CLI is working, and needs no checkout of anything.
+
+### Two aggregations that look obvious and are wrong
+
+The reason this is a script rather than a line of SQL is that the two
+natural `SUM()`s both mislead, and neither announces it.
+
+**`SUM(duration_ms)` overstates model time.** Sub-agent requests run *beside*
+the main agent, not after it, so their durations overlap in wall-clock time.
+The first version of this query, written in a single pass, reported 16.79 h
+for this repository's session against a true union of 14.99 h &mdash;
+**12 per cent high**, and higher still over a week of heavy sub-agent use
+(15.2 per cent). The tool unions the intervals and prints both figures with
+the reason for the difference, because a reader who has just run `SUM` needs
+to know why the numbers disagree.
+
+**`SUM(input_tokens)` disagrees with the billing detail.** `token_details_json`
+is a list of per-channel entries carrying their own rates; it is what
+reconciles to the recorded cost, and it disagrees with the flat columns on
+compaction rows. The tool reads the details and falls back to columns only
+where the details are absent.
+
+The tool and the dashboard are independent implementations. Filtered to the
+dashboard's generation timestamp they agree exactly &mdash; 4,711 requests,
+70 turns, $599.62, 14.948 h &mdash; on all four measures. That agreement is
+the check that either of them is right.
+
+### What is retained, and the part that is not established
+
+Usage rows in this store go back to 2026-08-01, which is when this project
+began, and the first row is the first request of the session rather than an
+arbitrary cut. **Nothing has been pruned in the ten days since**, and the
+daily series is continuous over that span. Sessions from 2026-06-16 survive
+with their turns intact but carry no usage rows at all, which is most
+consistent with the telemetry table arriving after them rather than with
+their usage being deleted.
+
+What that does **not** establish is the absence of a longer retention window.
+This store contains no usage older than ten days, so a thirty- or ninety-day
+policy would be invisible here and this evidence cannot exclude it. Anyone
+depending on a long historical window should export periodically rather than
+assume the store is an archive &mdash; which is what `export_session.py`
+already does, and is a second reason to run it that has nothing to do with
+having two machines.
+
 ## Where this is likely to be wrong
 
 1. **The dollar figure is a list-price equivalent, not a bill.** See "two
@@ -450,9 +517,12 @@ below per-machine, so this cannot quietly revert.
    that appear in the next run of the generator, so the totals were already
    stale when they rendered. A self-measuring instrument cannot record its own
    last measurement.
-9. **Retention is not guaranteed.** The store held one project cleanly. Nothing
-   promises it will next month, and a case study whose evidence expires is an
-   anecdote.
+9. **Retention is not guaranteed, and it has only been tested to ten days.**
+   The store held one project cleanly and pruned nothing over the span this
+   work occupies. But it contains no usage older than ten days, so a
+   thirty- or ninety-day expiry policy would be invisible here and this
+   evidence cannot exclude one. Nothing promises the rows will be there next
+   month, and a case study whose evidence expires is an anecdote.
 10. **The totals cover every machine anyone remembered.** The store is per
     machine and this project was worked on from two; the second one's four
     repositories are now merged in, and they turned out to be 60 per cent of
